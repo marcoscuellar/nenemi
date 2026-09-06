@@ -192,6 +192,11 @@
   .re-btn { flex-shrink: 0; padding: 11px 16px; border-radius: 10px; border: none; background: #8BC4B0; color: var(--sanctuary); font-family: var(--font-body); font-weight: 700; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
   .re-btn:hover { background: var(--sage-text); }
   .room-quiet { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
+  .sync-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); cursor: pointer; }
+  .sync-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
+  .sync-badge.on { color: var(--sage-text); }
+  .sync-badge.on::before { background: var(--sage); }
+  .sync-badge:hover { text-decoration: underline; }
 
   .brief-card { background: var(--surface); border: 1px solid var(--line2); border-radius: 18px; padding: 20px; margin-bottom: 22px; }
   .brief-label { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--sage-text); letter-spacing: 0.04em; margin-bottom: 10px; }
@@ -378,6 +383,7 @@
         <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
         <div class="hub-title">Your rooms</div>
         <div class="hub-sub">The ones that have gone quiet float up. No red badges here.</div>
+        <div class="sync-badge" id="syncBadge" onclick="changeSync()" title="Click to change your sync code">Saved on this device</div>
       </div>
       <div class="room-grid" id="roomList"></div>
     </div>
@@ -919,6 +925,7 @@
   const STORE_KEY = 'nenemi.v1';
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, savedAt: Date.now() })); } catch (e) {}
+    clearTimeout(syncTimer); syncTimer = setTimeout(pushState, 800);
   }
   function restore() {
     try {
@@ -931,6 +938,54 @@
     } catch (e) { return false; }
   }
   function resetDemo() { try { localStorage.removeItem(STORE_KEY); } catch (e) {} location.reload(); }
+
+  // ---------- sync (Vercel function + Neon at /api/state; falls back to this device only) ----------
+  // The sync code is the key. Type the same code on another device and both share one brain.
+  const SYNC_KEY = 'nenemi.sync';
+  const SYNC_WORDS = ['sage','river','moss','cedar','lark','ember','quiet','north','amber','fern','stone','willow','harbor','meadow'];
+  let syncTimer = null, syncOn = false;
+  function newSyncCode() { const w = () => SYNC_WORDS[Math.floor(Math.random() * SYNC_WORDS.length)]; return `${w()}-${w()}-${Math.floor(1000 + Math.random() * 9000)}`; }
+  function syncCode() { try { let c = localStorage.getItem(SYNC_KEY); if (!c) { c = newSyncCode(); localStorage.setItem(SYNC_KEY, c); } return c; } catch (e) { return 'local-only'; } }
+  function apiUrl() { return `/api/state?device=${encodeURIComponent(syncCode())}`; }
+  function renderSyncBadge() {
+    const el = document.getElementById('syncBadge'); if (!el) return;
+    el.classList.toggle('on', syncOn);
+    el.textContent = syncOn ? `Synced · code ${syncCode()} · use it on your phone` : 'Saved on this device only · click to sync';
+  }
+  async function pushState() {
+    if (location.protocol === 'file:') return;
+    try {
+      const body = localStorage.getItem(STORE_KEY); if (!body) return;
+      const r = await fetch(apiUrl(), { method: 'PUT', headers: { 'content-type': 'application/json' }, body });
+      syncOn = r.ok;
+    } catch (e) { syncOn = false; }
+    renderSyncBadge();
+  }
+  function applyState(data) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) {}
+    restore(); renderCal(); renderRoomList();
+    if (currentRoom) { currentRoom = rooms.find(r => r.id === currentRoom.id) || null; if (currentRoom) renderRoomView(); else go('rooms'); }
+  }
+  async function pullState(force) {
+    if (location.protocol === 'file:') { renderSyncBadge(); return; }
+    try {
+      const r = await fetch(apiUrl());
+      if (!r.ok) { syncOn = false; renderSyncBadge(); return; }
+      const j = await r.json(); syncOn = true;
+      let local = null; try { local = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+      if (j.data && (force || !local || (j.data.savedAt || 0) > (local.savedAt || 0))) applyState(j.data);
+      else if (local) pushState();
+    } catch (e) { syncOn = false; }
+    renderSyncBadge();
+  }
+  function changeSync() {
+    const c = prompt('Your sync code. Type the same code on your phone or another laptop to share your rooms.\n\nAnyone with the code can see your rooms, so treat it like a password.', syncCode());
+    if (!c) return;
+    const code = c.trim();
+    if (!/^[A-Za-z0-9_-]{4,64}$/.test(code)) { alert('Letters, numbers, dashes. 4 to 64 characters.'); return; }
+    try { localStorage.setItem(SYNC_KEY, code); } catch (e) {}
+    pullState(true);
+  }
 
   // ---------- voice (browser speech-to-text, no key; Chrome / Edge / Safari, needs https) ----------
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -959,6 +1014,7 @@
   restore();
   renderCal();
   renderRoomList();
+  pullState();
 </script>
 
 </body>

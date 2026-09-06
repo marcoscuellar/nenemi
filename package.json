@@ -1,0 +1,10 @@
+{
+  "name": "nenemi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "NENEMI — a memory app for ADHD brains. Static prototype + one Vercel function for sync.",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  }
+}
