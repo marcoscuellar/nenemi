@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DOS — prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sanctuary: #0C0D0A;
+    --surface: #17181A;
+    --surface2: #1D1F19;
+    --card: #1A1B16;
+    --ink: #F1F1EA;
+    --muted: #9A9C93;
+    --faint: #6C6E62;
+    --line: rgba(241,241,234,0.09);
+    --line2: rgba(241,241,234,0.16);
+    --sage: #7FA99C;
+    --sage-text: #9DC6BA;
+    --sage-fill: #22332E;
+    --on-sage: #0C0D0A;
+
+    --font-display: 'Archivo', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-body);
+    background: #050604;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh;
+    color: var(--ink);
+  }
+
+  .phone {
+    width: 390px; height: 844px;
+    background: var(--sanctuary);
+    border-radius: 44px;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.6);
+    overflow: hidden;
+    position: relative;
+    border: 10px solid #000;
+  }
+  .screen {
+    position: absolute; inset: 0;
+    display: none; flex-direction: column;
+    overflow: hidden;
+    background: var(--sanctuary);
+  }
+  .screen.active { display: flex; }
+
+  svg.icon { width: 16px; height: 16px; display: block; }
+
+  /* ---------- top bar ---------- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 8px; flex-shrink: 0; }
+  .brand-mark { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.02em; display: flex; align-items: center; gap: 2px; }
+  .brand-mark .bracket { color: var(--faint); }
+  .brand-mark .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sage); display: inline-block; margin-left: 6px; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 10px;
+    border: 1px solid var(--line2); background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted);
+  }
+  .icon-btn:active { background: var(--surface2); }
+  .icon-btn svg { stroke: currentColor; }
+
+  /* ---------- HOME (minimal, centered) ---------- */
+  #home {
+    justify-content: center; align-items: center;
+    background: radial-gradient(circle at 50% 42%, #14241d 0%, var(--sanctuary) 58%);
+  }
+  .home-center { display: flex; flex-direction: column; align-items: center; padding: 0 26px; width: 100%; }
+  .greeting-big {
+    font-family: var(--font-display); font-weight: 700; font-size: 25px; line-height: 1.35;
+    text-align: center; margin-bottom: 26px; letter-spacing: -0.01em;
+  }
+  .greeting-big .accent { color: var(--sage-text); }
+
+  .composer-pill {
+    position: relative;
+    width: 100%;
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(23,24,26,0.75);
+    border: 1px solid var(--line2);
+    border-radius: 999px;
+    padding: 12px 12px 12px 10px;
+    box-shadow: 0 0 50px rgba(127,169,156,0.10);
+  }
+  .plus-btn {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    background: var(--surface2); border: 1px solid var(--line2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer;
+  }
+  .plus-btn.open { color: var(--sage-text); border-color: var(--sage); }
+  .composer-pill input {
+    flex: 1; min-width: 0; border: none; background: transparent; outline: none;
+    font-family: var(--font-body); font-style: italic; font-size: 14.5px; color: var(--ink);
+  }
+  .composer-pill input::placeholder { color: var(--faint); font-style: italic; }
+  .mic-btn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; flex-shrink: 0; }
+  .send-btn {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    background: var(--sage); border: none; color: var(--on-sage);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .send-btn:active { opacity: 0.85; }
+
+  .plus-menu {
+    position: absolute;
+    bottom: calc(100% + 10px); left: 0;
+    background: var(--surface);
+    border: 1px solid var(--line2);
+    border-radius: 16px;
+    padding: 6px;
+    width: 190px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+    z-index: 40;
+  }
+  .plus-menu.open { display: flex; }
+  .menu-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    font-size: 13.5px; color: var(--ink); cursor: pointer;
+  }
+  .menu-item:hover { background: var(--surface2); }
+  .menu-item svg { stroke: var(--sage-text); flex-shrink: 0; }
+
+  .stuck-link { text-align: center; color: var(--muted); font-size: 13px; margin-top: 18px; cursor: pointer; }
+  .stuck-link span { color: var(--sage-text); font-weight: 600; }
+
+  .chat-log { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; width: 100%; max-height: 220px; overflow-y: auto; }
+  .bubble { max-width: 82%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.45; }
+  .bubble.user { align-self: flex-end; background: var(--ink); color: var(--sanctuary); border-bottom-right-radius: 4px; }
+  .bubble.dos { align-self: flex-start; background: var(--card); border: 1px solid var(--line); color: var(--ink); border-bottom-left-radius: 4px; }
+  .bubble.dos.confirm { background: var(--sage-fill); border-color: var(--sage-fill); color: var(--sage-text); font-family: var(--font-mono); font-size: 12.5px; }
+
+  /* ---------- shared simple pane header (Rooms / Calendar / Humans) ---------- */
+  .pane-topbar { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 8px; flex-shrink: 0; }
+
+
+  /* ---------- CALENDAR (day view + chat) ---------- */
+  .cal-wrap { flex: 1; display: flex; overflow: hidden; }
+  .cal-left { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--line); }
+  .cal-head { padding: 22px 28px 12px; }
+  .cal-date { font-family: var(--font-display); font-weight: 700; font-size: 22px; }
+  .cal-sub { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .week-strip { display: flex; gap: 6px; padding: 0 28px 12px; }
+  .wday { flex: 1; text-align: center; padding: 8px 0; border-radius: 12px; cursor: pointer; border: 1px solid transparent; }
+  .wday .l { font-family: var(--font-mono); font-size: 9.5px; color: var(--faint); }
+  .wday .n { font-family: var(--font-display); font-weight: 700; font-size: 15px; margin-top: 2px; }
+  .wday:hover { background: var(--surface2); }
+  .wday.active { background: var(--sage-fill); border-color: var(--sage); }
+  .wday.active .l, .wday.active .n { color: var(--sage-text); }
+  .day-grid { flex: 1; overflow-y: auto; padding: 4px 28px 30px; position: relative; }
+  .hour { display: flex; height: 56px; border-top: 1px solid var(--line); position: relative; }
+  .hour .hl { width: 46px; font-family: var(--font-mono); font-size: 10px; color: var(--faint); padding-top: 4px; flex-shrink: 0; }
+  .hour .hb { flex: 1; position: relative; }
+  .evt { position: absolute; left: 0; right: 0; background: var(--sage-fill); border-left: 2px solid var(--sage); border-radius: 8px; padding: 6px 10px; overflow: hidden; cursor: pointer; }
+  .evt .et { font-family: var(--font-mono); font-size: 9.5px; color: var(--sage-text); }
+  .evt .en { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .evt.buffer { background: transparent; border-left: 2px dashed var(--line2); }
+  .evt.buffer .en { color: var(--faint); font-weight: 500; }
+  .now-line { position: absolute; left: 46px; right: 0; height: 1px; background: var(--sage); z-index: 5; pointer-events: none; }
+  .now-line::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
+
+
+  /* ---------- rollover (zero-shame) ---------- */
+  .rollover { margin: 0 28px 12px; background: var(--card); border: 1px solid var(--line2); border-radius: 16px; padding: 14px 16px; }
+  .rollover-text { font-size: 13.5px; line-height: 1.55; color: var(--ink); }
+  .rollover-text .names { color: var(--sage-text); font-weight: 600; }
+  .rollover-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .ro-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .ro-item .nm { flex: 1; }
+  .ro-btn { font-family: var(--font-mono); font-size: 10.5px; padding: 5px 9px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; white-space: nowrap; }
+  .ro-btn:hover { color: var(--sage-text); border-color: var(--sage); }
+  .ro-btn.done { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
+  #calendar .rollover { margin: 0 20px 10px; }
+
+  .cal-chat { display: flex; flex-direction: column; background: var(--surface); }
+  .cal-chat-head { padding: 22px 22px 8px; }
+  .cal-chat-title { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+  .cal-chat-sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 22px 6px; }
+  .chip { font-size: 12px; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
+  .chip:hover { color: var(--sage-text); border-color: var(--sage); }
+  .cal-log { flex: 1; overflow-y: auto; padding: 8px 22px; display: flex; flex-direction: column; gap: 10px; }
+  .cal-log .bubble { font-size: 13.5px; }
+  .cal-composer { padding: 12px 16px 18px; border-top: 1px solid var(--line); }
+  .cal-composer .composer-pill { padding: 8px 8px 8px 12px; box-shadow: none; }
+  .cal-composer .send-btn { width: 32px; height: 32px; }
+
+  #calendar { }
+  #calendar .cal-wrap { flex-direction: column; }
+  #calendar .cal-left { border-right: none; flex: 1; min-height: 0; }
+  #calendar .cal-head { padding: 18px 20px 8px; }
+  #calendar .week-strip { padding: 0 20px 8px; }
+  #calendar .day-grid { padding: 4px 20px 16px; }
+  #calendar .cal-chat { height: 280px; flex-shrink: 0; border-top: 1px solid var(--line); }
+  #calendar .cal-chat-head { padding: 12px 18px 4px; }
+  #calendar .chips { padding: 6px 18px 4px; }
+  #calendar .cal-log { padding: 4px 18px; }
+  #calendar .cal-composer { padding: 8px 12px 14px; }
+  .back-home { display:inline-flex; align-items:center; gap:6px; color: var(--muted); font-size: 12px; cursor:pointer; margin-bottom: 10px; }
+
+  /* ---------- ROOMS HUB ---------- */
+  .hub-header { padding: 20px 24px 6px; flex-shrink: 0; }
+  .hub-title { font-family: var(--font-display); font-weight: 700; font-size: 24px; }
+  .hub-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .room-list { padding: 14px 20px 90px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+  .room-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; cursor: pointer; transition: background 120ms ease; }
+  .room-card:active { background: var(--surface2); }
+  .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .room-icon { width: 30px; height: 30px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); margin-bottom: 10px; }
+  .room-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; }
+  .room-touch { font-family: var(--font-mono); font-size: 10px; color: var(--faint); white-space: nowrap; margin-left: 8px; margin-top: 3px; }
+  .room-oneliner { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  .room-loops { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+  .loop-pill { font-family: var(--font-mono); font-size: 10.5px; background: var(--sage-fill); color: var(--sage-text); padding: 4px 9px; border-radius: 999px; }
+  .new-room-card { border: 1.5px dashed var(--line2); border-radius: 18px; padding: 20px 16px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+  /* ---------- ROOM VIEW ---------- */
+  .rv-header { padding: 16px 20px 4px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .rv-title-wrap { flex: 1; }
+  .rv-name { font-family: var(--font-display); font-weight: 700; font-size: 19px; }
+  .rv-oneliner { color: var(--muted); font-size: 12.5px; }
+  .rv-body { flex: 1; overflow-y: auto; padding: 14px 20px 24px; }
+
+  .brief-card { background: var(--surface); border: 1px solid var(--line2); border-radius: 18px; padding: 18px; margin-bottom: 20px; }
+  .brief-label { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10px; color: var(--sage-text); letter-spacing: 0.04em; margin-bottom: 8px; }
+  .brief-text { font-size: 14.5px; line-height: 1.6; color: var(--ink); }
+
+  .room-link-row { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; padding: 10px 14px; background: var(--sage-fill); border-radius: 12px; color: var(--sage-text); font-size: 13px; cursor: pointer; }
+  .room-link-row svg { flex-shrink: 0; }
+
+  .section-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.04em; margin: 4px 0 10px; }
+
+  .loop-row { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+  .loop-check { width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid var(--line2); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .loop-row.resolved .loop-check { background: var(--sage); border-color: var(--sage); }
+  .loop-row.resolved .loop-check svg { display: block; }
+  .loop-check svg { display: none; width: 11px; height: 11px; stroke: var(--sanctuary); }
+  .loop-row.resolved .loop-text { text-decoration: line-through; color: var(--faint); }
+  .loop-text { flex: 1; font-size: 14px; }
+  .loop-focus { display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); cursor: pointer; white-space: nowrap; }
+
+  .log-entry { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); margin-bottom: 4px; }
+  .log-text { font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+
+  .quickadd { margin-top: 18px; display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--line2); border-radius: 14px; padding: 8px 8px 8px 14px; align-items: center; }
+  .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 13.5px; color: var(--ink); }
+  .quickadd input::placeholder { color: var(--faint); }
+  .quickadd button { width: 30px; height: 30px; border-radius: 50%; background: var(--sage); border: none; color: var(--on-sage); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* ---------- STUCK SANCTUARY ---------- */
+  #stuck { background: radial-gradient(circle at 50% 32%, #16241f 0%, var(--sanctuary) 62%); align-items: center; justify-content: space-between; padding: 0; }
+  .stuck-close { align-self: flex-end; margin: 20px 20px 0 0; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .stuck-mark { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; margin-top: 10px; box-shadow: 0 0 40px rgba(127,169,156,0.35); }
+  .stuck-mark::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--sage); }
+  .stuck-eyebrow { font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); letter-spacing: 0.06em; margin-top: 22px; }
+  .stuck-nudge { font-family: var(--font-display); font-weight: 700; font-size: 23px; color: var(--ink); text-align: center; max-width: 280px; line-height: 1.32; margin: 14px auto 0; }
+  .stuck-sub { color: var(--muted); font-size: 13px; text-align: center; margin-top: 10px; max-width: 260px; }
+  .stuck-actions { width: 100%; padding: 0 28px 40px; display: flex; flex-direction: column; gap: 10px; }
+  .stuck-btn { width: 100%; padding: 15px; border-radius: 16px; border: none; font-family: var(--font-body); font-weight: 600; font-size: 14.5px; cursor: pointer; }
+  .stuck-btn.primary { background: var(--sage-fill); color: var(--sage-text); }
+  .stuck-btn.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line2); }
+
+  .toast {
+    position: absolute; bottom: 90px; left: 20px; right: 20px;
+    background: var(--surface); border: 1px solid var(--line2); color: var(--ink);
+    padding: 12px 16px; border-radius: 14px; font-size: 13px; font-family: var(--font-mono);
+    display: flex; align-items: center; gap: 8px;
+    opacity: 0; transform: translateY(8px); transition: all 220ms ease;
+    pointer-events: none; z-index: 50;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); flex-shrink: 0; }
+
+  /* ---------- LOCKDOWN / FOCUS ---------- */
+  #lockdown { background: var(--sanctuary); align-items: center; justify-content: space-between; padding: 0; }
+  .lockdown-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.06em; margin-top: 60px; }
+  .lockdown-task { font-family: var(--font-display); font-weight: 700; font-size: 24px; text-align: center; max-width: 280px; margin: 16px auto 0; }
+  .lockdown-timer { font-family: var(--font-mono); font-size: 40px; color: var(--sage-text); margin-top: 30px; }
+  .lockdown-hint { color: var(--muted); font-size: 13px; text-align: center; margin-top: 14px; max-width: 250px; }
+  .lockdown-exit { background: none; border: none; color: var(--faint); font-family: var(--font-mono); font-size: 12px; margin-bottom: 44px; cursor: pointer; }
+
+  .friction-overlay { position: absolute; inset: 0; background: rgba(5,6,4,0.9); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 60; }
+  .friction-card { background: var(--surface); border: 1px solid var(--line2); border-radius: 20px; padding: 24px 20px; width: 100%; }
+  .friction-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--sage-text); letter-spacing: 0.06em; }
+  .friction-prompt { font-family: var(--font-display); font-weight: 700; font-size: 17px; margin: 12px 0 6px; line-height: 1.3; }
+  .friction-sub { color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+  .friction-actions { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+  .friction-btn { padding: 13px; border-radius: 14px; border: none; font-family: var(--font-body); font-weight: 600; font-size: 13.5px; cursor: pointer; }
+  .friction-stay { background: var(--sage-fill); color: var(--sage-text); }
+  .friction-leave { background: transparent; color: var(--muted); border: 1px solid var(--line2); }
+  .friction-leave:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  ::-webkit-scrollbar { width: 0; height: 0; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- ============ HOME (minimal entry point) ============ -->
+  <div class="screen active" id="home">
+    <div class="home-center">
+      <div class="greeting-big" id="greetingText">Hey there,<br><span class="accent">what's on your mind?</span></div>
+
+      <div class="composer-pill">
+        <div class="plus-menu" id="plusMenu">
+          <div class="menu-item" onclick="closeMenuAnd('rooms')">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2"/></svg>
+            Rooms
+          </div>
+          <div class="menu-item" onclick="closeMenuAnd('calendar')">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
+            Calendar
+          </div>
+          <div class="menu-item" onclick="closeMenuAnd('stuck')">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
+            I'm stuck
+          </div>
+          <div class="menu-item" onclick="closeMenuAnd('humans')">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="5.5" cy="5" r="2.2"/><circle cx="11" cy="5.5" r="1.8"/><path d="M1.5 14c0-2.5 1.8-4.3 4-4.3s4 1.8 4 4.3M9.8 9.9c1.8.1 3.2 1.6 3.2 3.7" stroke-linecap="round"/></svg>
+            Humans heal
+          </div>
+        </div>
+        <div class="plus-btn" id="plusBtn" onclick="toggleMenu()">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
+        </div>
+        <input id="composerInput" placeholder="Dump anything here…" />
+        <div class="mic-btn" title="Voice capture">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="send-btn" onclick="sendCapture()">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+
+      <div class="stuck-link" onclick="go('stuck')">Feeling stuck? <span>we got you →</span></div>
+
+      <div class="chat-log" id="chatLog"></div>
+    </div>
+    <div class="toast" id="toast"><div class="dot"></div><span id="toastText">Got it — logged to Memory App</span></div>
+  </div>
+
+  <!-- ============ CALENDAR ============ -->
+  <div class="screen" id="calendar">
+    <div class="cal-wrap">
+    <div class="cal-left">
+      <div class="cal-head">
+        <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
+        <div class="cal-date" id="calDate">Today</div>
+        <div class="cal-sub" id="calSub">Only what's realistic. Room to breathe is built in.</div>
+      </div>
+      <div class="week-strip" id="weekStrip"></div>
+      <div class="rollover" id="rollover"></div>
+      <div class="day-grid" id="dayGrid"></div>
+    </div>
+    <div class="cal-chat">
+      <div class="cal-chat-head">
+        <div class="cal-chat-title">Talk to your day</div>
+        <div class="cal-chat-sub">Say it or type it — add, move, ask, or just start.</div>
+      </div>
+      <div class="chips">
+        <div class="chip" onclick="calQuick('Start my day')">Start my day</div>
+        <div class="chip" onclick="calQuick('What\'s realistic today?')">What's realistic?</div>
+        <div class="chip" onclick="calQuick('Move the walk to 5pm')">Move something</div>
+      </div>
+      <div class="cal-log" id="calLog"></div>
+      <div class="cal-composer">
+        <div class="composer-pill">
+          <input id="calInput" placeholder="Add a 3pm call with Sam…" />
+          <div class="mic-btn" title="Voice"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+          <div class="send-btn" onclick="calSend()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <!-- ============ HUMANS HEAL ============ -->
+  <div class="screen" id="humans">
+    <div class="pane-topbar">
+      <div class="icon-btn" onclick="go('home')">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-mark"><span class="bracket">[</span>DOS<span class="bracket">]</span><span class="dot"></span></div>
+      <div style="width:34px"></div>
+    </div>
+    <div class="hub-header">
+      <div class="hub-title">Humans heal</div>
+      <div class="hub-sub">DOS is the nudge, not the treatment.</div>
+    </div>
+    <div class="room-list">
+      <div class="room-card"><div class="room-name" style="font-size:14.5px">Find an ADHD coach</div><div class="room-oneliner">ADDA · CHADD</div></div>
+      <div class="room-card"><div class="room-name" style="font-size:14.5px">Talk to a therapist</div><div class="room-oneliner">Psychology Today finder</div></div>
+      <div class="room-card"><div class="room-name" style="font-size:14.5px">Ask about medication</div><div class="room-oneliner">A real, valid option — a psychiatrist can help you decide.</div></div>
+      <div class="room-card" style="border-color: var(--sage)"><div class="room-name" style="font-size:14.5px; color: var(--sage-text)">Heavy right now?</div><div class="room-oneliner">Call or text 988 — free, 24/7.</div></div>
+    </div>
+  </div>
+
+  <!-- ============ ROOMS HUB ============ -->
+  <div class="screen" id="rooms">
+    <div class="topbar">
+      <div class="icon-btn" onclick="go('home')">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-mark"><span class="bracket">[</span>DOS<span class="bracket">]</span><span class="dot"></span></div>
+      <div style="width:34px"></div>
+    </div>
+    <div class="hub-header">
+      <div class="hub-title">Your rooms</div>
+      <div class="hub-sub">One tile per project. Tap in to pick up where you left off.</div>
+    </div>
+    <div class="room-list" id="roomList"></div>
+  </div>
+
+  <!-- ============ ROOM VIEW ============ -->
+  <div class="screen" id="roomview">
+    <div class="rv-header">
+      <div class="icon-btn" onclick="go('rooms')">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="rv-title-wrap">
+        <div class="rv-name" id="rvName">Memory App</div>
+        <div class="rv-oneliner" id="rvOneliner">the memory app — DOS itself</div>
+      </div>
+    </div>
+    <div class="rv-body">
+      <div class="brief-card">
+        <div class="brief-label">
+          <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="width:12px;height:12px"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5" stroke-linecap="round"/></svg>
+          BRIEF
+        </div>
+        <div class="brief-text" id="rvBrief">Loading…</div>
+      </div>
+
+      <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6.5 9.5L9.5 6.5M7 5L8.2 3.8a2.3 2.3 0 0 1 3.3 3.3L10 8.5M9 11l-1.2 1.2a2.3 2.3 0 0 1-3.3-3.3L6 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="rvLinkLabel">Continue in Claude</span>
+      </div>
+
+      <div class="section-label">Still open</div>
+      <div id="rvLoops"></div>
+
+      <div class="section-label" style="margin-top:20px;">Recent</div>
+      <div id="rvLog"></div>
+
+      <div class="quickadd">
+        <input id="quickAddInput" placeholder="Add a note to this room…" />
+        <button onclick="quickAdd()">
+          <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" style="width:13px;height:13px"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STUCK SANCTUARY ============ -->
+  <div class="screen" id="stuck">
+    <div class="stuck-close" onclick="go('home')">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:12px;height:12px"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; flex:1; justify-content:center;">
+      <div class="stuck-mark"></div>
+      <div class="stuck-eyebrow">[ ONE SMALL MOVE ]</div>
+      <div class="stuck-nudge" id="nudgeText">Stand up. Shake it out for 15 seconds. That's the whole task.</div>
+      <div class="stuck-sub">No pressure to do anything after. Just this.</div>
+    </div>
+    <div class="stuck-actions">
+      <button class="stuck-btn primary" onclick="stuckDone()">Did it</button>
+      <button class="stuck-btn ghost" onclick="nextNudge()">Give me another</button>
+      <button class="stuck-btn ghost" onclick="go('home')">Just breathe with me</button>
+    </div>
+  </div>
+
+  <!-- ============ LOCKDOWN / FOCUS ============ -->
+  <div class="screen" id="lockdown">
+    <div class="lockdown-label">[ FOCUS · ONE THING ]</div>
+    <div style="display:flex; flex-direction:column; align-items:center; flex:1; justify-content:center;">
+      <div class="lockdown-task" id="lockdownTask">Pick final logo direction</div>
+      <div class="lockdown-timer" id="lockdownTimer">0:00</div>
+      <div class="lockdown-hint">Everything else is put away. This is the only thing here.</div>
+    </div>
+    <button class="lockdown-exit" onclick="requestExit()">[ step away ]</button>
+    <div class="friction-overlay" id="frictionOverlay" style="display:none">
+      <div class="friction-card">
+        <div class="friction-label">[ QUICK PAUSE ]</div>
+        <div class="friction-prompt">What's pulling you away, in one breath?</div>
+        <div class="friction-sub">No judgment either way. Just naming it sometimes changes the pull.</div>
+        <div class="friction-actions">
+          <button class="friction-btn friction-stay" onclick="cancelExit()">Actually, I'll stay</button>
+          <button class="friction-btn friction-leave" id="leaveBtn" onclick="confirmExit()" disabled>Leave in 10s</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---------- nav ----------
+  function go(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'rooms') renderRoomList();
+  }
+
+  // ---------- greeting ----------
+  (function setGreeting() {
+    const h = new Date().getHours();
+    let g = 'Good morning,';
+    if (h >= 12 && h < 18) g = 'Good afternoon,';
+    else if (h >= 18 || h < 4) g = 'Still up,';
+    document.getElementById('greetingText').innerHTML = g + '<br><span class="accent">what\'s on your mind?</span>';
+  })();
+
+  // ---------- plus menu ----------
+  function toggleMenu() {
+    document.getElementById('plusMenu').classList.toggle('open');
+    document.getElementById('plusBtn').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('plusMenu').classList.remove('open');
+    document.getElementById('plusBtn').classList.remove('open');
+  }
+  function closeMenuAnd(id) { closeMenu(); go(id); }
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('plusMenu');
+    const btn = document.getElementById('plusBtn');
+    if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
+  });
+
+  // ---------- room icon (line-art, no emoji) ----------
+  const roomIconSvg = `<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 7.5L8 2l6 5.5M3.5 6.5V13.5h9V6.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+  // ---------- fake data ----------
+  const rooms = [
+    {
+      id: 'memory',
+      name: 'Memory App',
+      one_liner: 'the memory app — DOS itself',
+      brief: "You're deep in v0 — rooms, capture routing, the auto-brief. Latest: a big composer so you can drop files and logos straight in. Still open: lock a logo direction.",
+      loops: [{ text: 'Lock a logo direction', resolved: false }, { text: 'Auto-route silently vs. ask', resolved: false }],
+      log: [
+        { source: 'voice', time: '2h ago', text: 'Make the composer bigger.' },
+        { source: 'typed', time: 'yesterday', text: 'Pure white background.' },
+      ],
+      link: { url: 'https://claude.ai/', label: 'Continue in Claude' },
+    },
+    {
+      id: 'taxes',
+      name: 'Taxes',
+      one_liner: 'taxes — the thing I keep dodging',
+      brief: "Estimated payment is due soon. 1099s are pulled but not reconciled against QuickBooks yet. Nothing urgent today — just don't let this one go quiet again.",
+      loops: [{ text: 'Reconcile 1099s vs QuickBooks', resolved: false }],
+      log: [
+        { source: 'typed', time: 'yesterday', text: 'Pulled all 1099s from the PayPal export.' },
+      ],
+      link: null,
+    },
+    {
+      id: 'studycards',
+      name: 'Study Cards',
+      one_liner: 'spaced-repetition app — separate idea',
+      brief: "Resting. FSRS-6 scheduler spec is written but this is a separate product from DOS — not merged in, no active loops right now.",
+      loops: [],
+      log: [
+        { source: 'typed', time: '5 days ago', text: 'Wrote the FSRS-6 scheduler spec.' },
+      ],
+      link: null,
+    },
+  ];
+
+  function renderRoomList() {
+    const el = document.getElementById('roomList');
+    el.innerHTML = rooms.map(r => {
+      const openCount = r.loops.filter(l => !l.resolved).length;
+      const badge = openCount > 0
+        ? `<div class="loop-pill">${openCount} to pick up</div>`
+        : `<div class="loop-pill" style="opacity:0.55">resting</div>`;
+      return `
+      <div class="room-card" onclick="openRoom('${r.id}')">
+        <div class="room-card-top">
+          <div class="room-icon">${roomIconSvg}</div>
+          <div class="room-touch">${r.log[0] ? r.log[0].time : ''}</div>
+        </div>
+        <div class="room-name">${r.name}</div>
+        <div class="room-oneliner">${r.one_liner}</div>
+        <div class="room-loops">${badge}</div>
+      </div>`;
+    }).join('') + `
+      <div class="new-room-card" onclick="go('home')">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
+        New room — or just say it on the home screen
+      </div>`;
+  }
+
+  let currentRoom = null;
+  function openRoom(id) {
+    currentRoom = rooms.find(r => r.id === id);
+    renderRoomView();
+    go('roomview');
+  }
+
+  function renderRoomView() {
+    const r = currentRoom;
+    document.getElementById('rvName').textContent = r.name;
+    document.getElementById('rvOneliner').textContent = r.one_liner;
+    document.getElementById('rvBrief').textContent = r.brief;
+
+    const linkRow = document.getElementById('rvLinkRow');
+    if (r.link) {
+      linkRow.style.display = 'flex';
+      document.getElementById('rvLinkLabel').textContent = r.link.label;
+    } else {
+      linkRow.style.display = 'none';
+    }
+
+    document.getElementById('rvLoops').innerHTML = r.loops.length ? r.loops.map((l, i) => `
+      <div class="loop-row ${l.resolved ? 'resolved' : ''}">
+        <div class="loop-check" onclick="toggleLoop(${i})">
+          <svg viewBox="0 0 16 16" fill="none" stroke-width="2"><path d="M3 8l3.5 3.5L13 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="loop-text">${l.text}</div>
+        ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop('${l.text.replace(/'/g, "\\'")}')">Focus on this <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" style="width:10px;height:10px"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
+      </div>
+    `).join('') : `<div style="color:var(--faint); font-size:13px; padding:8px 0;">Nothing open right now.</div>`;
+
+    document.getElementById('rvLog').innerHTML = r.log.map(e => `
+      <div class="log-entry">
+        <div class="log-time">
+          ${e.source === 'voice'
+            ? '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="width:10px;height:10px"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg> VOICE'
+            : '<svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" style="width:10px;height:10px"><path d="M2.5 3.5h11v9h-11z" stroke-linejoin="round"/><path d="M4.5 6.5h7M4.5 9h5" stroke-linecap="round"/></svg> TYPED'}
+          · ${e.time}
+        </div>
+        <div class="log-text">${e.text}</div>
+      </div>
+    `).join('');
+  }
+
+  function toggleLoop(i) {
+    currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved;
+    renderRoomView();
+  }
+
+  function openRoomLink() {
+    if (currentRoom && currentRoom.link) window.open(currentRoom.link.url, '_blank');
+  }
+
+  function quickAdd() {
+    const input = document.getElementById('quickAddInput');
+    const text = input.value.trim();
+    if (!text) return;
+    currentRoom.log.unshift({ source: 'typed', time: 'just now', text });
+    currentRoom.brief = "Just logged: \u201c" + text + "\u201d — the Brief will re-summarize from here.";
+    input.value = '';
+    renderRoomView();
+  }
+
+  // ---------- home composer -> routing simulation ----------
+  function sendCapture() {
+    const input = document.getElementById('composerInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const log = document.getElementById('chatLog');
+    log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
+    input.value = '';
+
+    const stuckWords = ['stuck', "can't start", 'overwhelmed', 'paralyzed', "don't know where", 'too much'];
+    if (stuckWords.some(w => text.toLowerCase().includes(w))) {
+      setTimeout(() => go('stuck'), 350);
+      return;
+    }
+
+    const match = rooms.find(r => text.toLowerCase().includes(r.name.toLowerCase().split(' ')[0]));
+    setTimeout(() => {
+      if (match) {
+        match.log.unshift({ source: 'typed', time: 'just now', text });
+        log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${match.name}.</div>`;
+        showToast(`Logged to ${match.name}`);
+      } else {
+        log.innerHTML += `<div class="bubble dos">Noted. Want a new room for this, or keep it loose for now?</div>`;
+      }
+      log.scrollTop = log.scrollHeight;
+    }, 450);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastText').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  document.getElementById('composerInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendCapture();
+  });
+  document.getElementById('quickAddInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') quickAdd();
+  });
+
+  // ---------- stuck nudges ----------
+  const nudges = [
+    "Stand up. Shake it out for 15 seconds. That's the whole task.",
+    "Open the file. Just open it — nothing else required.",
+    "Set a 2-minute timer. You're allowed to quit at 2:01.",
+    "Write one silly, wrong sentence to start the draft.",
+    "Say the first tiny step out loud, right now.",
+    "Drink some water before anything else.",
+    "Put on one song. Just one.",
+    "Move to a different spot — even the next room over.",
+    "I'll sit here with you while you start.",
+    "Ask future-you: what's the one easier thing?",
+  ];
+  let nudgeIdx = 0;
+  function nextNudge() {
+    nudgeIdx = (nudgeIdx + 1) % nudges.length;
+    document.getElementById('nudgeText').textContent = nudges[nudgeIdx];
+  }
+  function stuckDone() {
+    document.getElementById('nudgeText').textContent = "That's a real start. Proud of you.";
+    document.querySelector('.stuck-sub').textContent = '';
+    setTimeout(() => go('home'), 1400);
+  }
+
+  // ---------- lockdown / friction pause ----------
+  let lockdownSeconds = 0;
+  let lockdownInterval = null;
+  function focusOnLoop(taskText) {
+    document.getElementById('lockdownTask').textContent = taskText;
+    lockdownSeconds = 0;
+    document.getElementById('lockdownTimer').textContent = '0:00';
+    clearInterval(lockdownInterval);
+    lockdownInterval = setInterval(() => {
+      lockdownSeconds++;
+      const m = Math.floor(lockdownSeconds / 60);
+      const s = lockdownSeconds % 60;
+      document.getElementById('lockdownTimer').textContent = m + ':' + String(s).padStart(2, '0');
+    }, 1000);
+    go('lockdown');
+  }
+
+  let frictionInterval = null;
+  function requestExit() {
+    document.getElementById('frictionOverlay').style.display = 'flex';
+    let secondsLeft = 10;
+    const btn = document.getElementById('leaveBtn');
+    btn.disabled = true;
+    btn.textContent = `Leave in ${secondsLeft}s`;
+    clearInterval(frictionInterval);
+    frictionInterval = setInterval(() => {
+      secondsLeft--;
+      if (secondsLeft <= 0) {
+        clearInterval(frictionInterval);
+        btn.disabled = false;
+        btn.textContent = "Leave — that's okay";
+      } else {
+        btn.textContent = `Leave in ${secondsLeft}s`;
+      }
+    }, 1000);
+  }
+  function cancelExit() {
+    clearInterval(frictionInterval);
+    document.getElementById('frictionOverlay').style.display = 'none';
+  }
+  function confirmExit() {
+    clearInterval(frictionInterval);
+    clearInterval(lockdownInterval);
+    document.getElementById('frictionOverlay').style.display = 'none';
+    if (currentRoom) {
+      const mins = Math.round(lockdownSeconds / 60);
+      currentRoom.log.unshift({ source: 'typed', time: 'just now', text: `Stepped out of a focus session on "${document.getElementById('lockdownTask').textContent}" after ${mins} min.` });
+    }
+    go(currentRoom ? 'roomview' : 'home');
+    if (currentRoom) renderRoomView();
+  }
+
+
+
+  // ---------- zero-shame rollover ----------
+  let carried = [ { name: 'Confirm Q3 estimate amount' }, { name: 'Send invite text to siblings' } ];
+  function renderRollover() {
+    const el = document.getElementById('rollover');
+    const isToday = dkey(selectedDay) === dkey(today);
+    if (!isToday || !carried.length) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    const names = carried.map(c => c.name).join(', ');
+    el.innerHTML = `<div class="rollover-text">You had these from yesterday: <span class="names">${escapeHtml(names)}</span>. No stress — we can put them on today, or just knock 'em out.</div>
+      <div class="rollover-list">${carried.map((c, i) => `
+        <div class="ro-item"><div class="nm">${escapeHtml(c.name)}</div>
+          <div class="ro-btn" onclick="roToday(${i})">put on today</div>
+          <div class="ro-btn done" onclick="roDone(${i})">knock it out</div>
+          <div class="ro-btn" onclick="roDrop(${i})">leave it</div>
+        </div>`).join('')}</div>`;
+  }
+  function nextFreeSlot() {
+    const list = events[dkey(selectedDay)] || (events[dkey(selectedDay)] = []);
+    let h = Math.max(DAY_START + 1, Math.ceil(today.getHours() + 1));
+    const taken = t => list.some(e => t < e.end && t + 0.5 > e.start);
+    while (taken(h) && h < DAY_END - 1) h += 0.5;
+    return h;
+  }
+  function roToday(i) {
+    const c = carried.splice(i, 1)[0];
+    const t = nextFreeSlot();
+    (events[dkey(selectedDay)] || (events[dkey(selectedDay)] = [])).push({ start: t, end: t + 0.5, name: c.name });
+    renderCal(); calBubble('dos confirm', `Put "${c.name}" on today at ${fmtTime(t)}.`);
+  }
+  function roDone(i) {
+    const c = carried.splice(i, 1)[0];
+    renderRollover(); calBubble('dos confirm', `"${c.name}" — done. That's a real one.`);
+  }
+  function roDrop(i) {
+    const c = carried.splice(i, 1)[0];
+    renderRollover(); calBubble('dos', `Left "${c.name}" in the past. It wasn't that important — and it's not lost if you want it back.`);
+  }
+
+  // ---------- calendar ----------
+  const DAY_START = 7, DAY_END = 21, HOUR_PX = 56;
+  const today = new Date();
+  let selectedDay = new Date(today);
+  const events = {}; // key: yyyy-mm-dd -> [{start, end, name, buffer}]
+  function dkey(d) { return d.toISOString().slice(0,10); }
+  (function seed() {
+    const t = dkey(today);
+    events[t] = [
+      { start: 9, end: 9.5, name: 'Coffee + brief' },
+      { start: 10.5, end: 11, name: 'Reply to Sam re: invoice' },
+      { start: 11, end: 11.5, name: 'breathing room', buffer: true },
+      { start: 13, end: 14.5, name: 'Memory app — logo pass' },
+      { start: 16, end: 17, name: 'Walk + call mom' },
+    ];
+    const tm = new Date(today); tm.setDate(tm.getDate()+1);
+    events[dkey(tm)] = [ { start: 10, end: 11, name: 'Taxes — reconcile 1099s' } ];
+  })();
+  function fmtTime(h) {
+    const hr = Math.floor(h), m = Math.round((h - hr) * 60);
+    const ap = hr >= 12 ? 'pm' : 'am'; const h12 = ((hr + 11) % 12) + 1;
+    return m ? `${h12}:${String(m).padStart(2,'0')}${ap}` : `${h12}${ap}`;
+  }
+  function renderWeek() {
+    const strip = document.getElementById('weekStrip');
+    const start = new Date(selectedDay); start.setDate(start.getDate() - start.getDay());
+    let html = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start); d.setDate(start.getDate() + i);
+      const active = dkey(d) === dkey(selectedDay);
+      html += `<div class="wday ${active ? 'active' : ''}" onclick="pickDay('${dkey(d)}')"><div class="l">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}</div><div class="n">${d.getDate()}</div></div>`;
+    }
+    strip.innerHTML = html;
+  }
+  function pickDay(k) { selectedDay = new Date(k + 'T12:00:00'); renderCal(); }
+  function renderCal() {
+    renderWeek();
+    renderRollover();
+    const isToday = dkey(selectedDay) === dkey(today);
+    document.getElementById('calDate').textContent = isToday ? 'Today' : selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+    const list = (events[dkey(selectedDay)] || []).slice().sort((a,b)=>a.start-b.start);
+    const grid = document.getElementById('dayGrid');
+    let html = '';
+    for (let h = DAY_START; h < DAY_END; h++) html += `<div class="hour"><div class="hl">${fmtTime(h)}</div><div class="hb"></div></div>`;
+    grid.innerHTML = html;
+    const hbs = grid.querySelectorAll('.hb');
+    list.forEach(e => {
+      const idx = Math.floor(e.start) - DAY_START;
+      if (idx < 0 || idx >= hbs.length) return;
+      const top = (e.start - Math.floor(e.start)) * HOUR_PX;
+      const height = Math.max(22, (e.end - e.start) * HOUR_PX - 4);
+      const el = document.createElement('div');
+      el.className = 'evt' + (e.buffer ? ' buffer' : '');
+      el.style.top = top + 'px'; el.style.height = height + 'px';
+      el.innerHTML = e.buffer ? `<div class="en">${e.name}</div>` : `<div class="et">${fmtTime(e.start)} – ${fmtTime(e.end)}</div><div class="en">${e.name}</div>`;
+      hbs[idx].appendChild(el);
+    });
+    if (isToday) {
+      const nowH = today.getHours() + today.getMinutes()/60;
+      if (nowH >= DAY_START && nowH < DAY_END) {
+        const line = document.createElement('div'); line.className = 'now-line';
+        line.style.top = (4 + (nowH - DAY_START) * HOUR_PX) + 'px';
+        grid.appendChild(line);
+        grid.scrollTop = Math.max(0, (nowH - DAY_START) * HOUR_PX - 120);
+      }
+    }
+  }
+  function calBubble(cls, text) {
+    const log = document.getElementById('calLog');
+    log.innerHTML += `<div class="bubble ${cls}">${escapeHtml(text)}</div>`;
+    log.scrollTop = log.scrollHeight;
+  }
+  function calQuick(t) { document.getElementById('calInput').value = t; calSend(); }
+  function parseTime(text) {
+    const m = text.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
+    if (!m) return null;
+    let h = parseInt(m[1],10); const min = m[2] ? parseInt(m[2],10) : 0;
+    if (m[3].toLowerCase() === 'pm' && h < 12) h += 12;
+    if (m[3].toLowerCase() === 'am' && h === 12) h = 0;
+    return h + min/60;
+  }
+  function calSend() {
+    const input = document.getElementById('calInput');
+    const text = input.value.trim(); if (!text) return;
+    input.value = '';
+    calBubble('user', text);
+    const lower = text.toLowerCase();
+    const list = events[dkey(selectedDay)] || (events[dkey(selectedDay)] = []);
+    setTimeout(() => {
+      if (lower.includes('start my day')) {
+        const real = list.filter(e => !e.buffer);
+        const first = real[0];
+        if (carried.length) calBubble('dos', `You had these from yesterday: ${carried.map(c=>c.name).join(', ')}. No stress — put them on today, or knock 'em out from the card up top.`);
+        calBubble('dos', real.length
+          ? `Morning. ${real.length} things today, nothing before ${fmtTime(first.start)}. First up: ${first.name}. The rest of the day has breathing room on purpose — you don't have to fill it.`
+          : `Nothing on the books today. That's allowed. Want me to hold one small thing, or leave it open?`);
+        return;
+      }
+      if (lower.includes('realistic')) {
+        const busy = list.filter(e=>!e.buffer).reduce((s,e)=>s+(e.end-e.start),0);
+        calBubble('dos', `About ${busy} hours are actually scheduled. That leaves most of the day unplanned — that's the buffer working, not a gap to fill. One more thing at most.`);
+        return;
+      }
+      const t = parseTime(text);
+      if (lower.startsWith('move') && t !== null) {
+        const target = list.find(e => !e.buffer && lower.includes(e.name.toLowerCase().split(' ')[0]));
+        if (target) {
+          const dur = target.end - target.start; target.start = t; target.end = t + dur;
+          renderCal(); calBubble('dos confirm', `Moved "${target.name}" to ${fmtTime(t)}.`); return;
+        }
+      }
+      if (t !== null) {
+        let name = text.replace(/(add|schedule|put|book)\s*(a|an)?/i, '').replace(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i, '').replace(/\b(at|on|for)\b/gi,'').trim();
+        name = name.charAt(0).toUpperCase() + name.slice(1) || 'New thing';
+        list.push({ start: t, end: t + 0.5, name });
+        renderCal(); calBubble('dos confirm', `Added "${name}" at ${fmtTime(t)}.`); return;
+      }
+      if (lower.includes('clear') || lower.includes('nothing today')) {
+        events[dkey(selectedDay)] = []; renderCal();
+        calBubble('dos', `Cleared. No guilt about it — the day's yours.`); return;
+      }
+      calBubble('dos', `Got it. Tell me a time and I'll put it on the day — like "3pm call with Sam" — or say "start my day" and I'll walk you in.`);
+    }, 420);
+  }
+  document.getElementById('calInput').addEventListener('keydown', e => { if (e.key === 'Enter') calSend(); });
+  renderCal();
+
+  renderRoomList();
+</script>
+
+</body>
+</html>
