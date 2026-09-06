@@ -30,20 +30,17 @@
   html, body { margin: 0; padding: 0; height: 100%; }
   body {
     font-family: var(--font-body);
-    background: #050604;
+    background: var(--sanctuary);
     color: var(--ink);
-    display: flex; align-items: center; justify-content: center;
     min-height: 100vh;
   }
 
+  /* Full-bleed app shell: fills the whole browser window instead of a fixed 1180x760 frame */
   .app {
-    width: 1180px; height: 760px;
+    width: 100%; height: 100vh; height: 100dvh;
     background: var(--sanctuary);
-    border-radius: 20px;
-    box-shadow: 0 30px 90px rgba(0,0,0,0.6);
     overflow: hidden;
     display: flex;
-    border: 1px solid var(--line2);
   }
 
   /* ---------- sidebar ---------- */
@@ -128,6 +125,9 @@
   .evt { position: absolute; left: 0; right: 0; background: var(--sage-fill); border-left: 2px solid var(--sage); border-radius: 8px; padding: 6px 10px; overflow: hidden; cursor: pointer; }
   .evt .et { font-family: var(--font-mono); font-size: 9.5px; color: var(--sage-text); }
   .evt .en { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .evt.short { display: flex; align-items: center; gap: 8px; padding: 0 10px; }
+  .evt.short .en { margin-top: 0; min-width: 0; }
+  .evt.short .et { flex-shrink: 0; }
   .evt.buffer { background: transparent; border-left: 2px dashed var(--line2); }
   .evt.buffer .en { color: var(--faint); font-weight: 500; }
   .now-line { position: absolute; left: 46px; right: 0; height: 1px; background: var(--sage); z-index: 5; pointer-events: none; }
@@ -694,7 +694,7 @@
   const today = new Date();
   let selectedDay = new Date(today);
   const events = {}; // key: yyyy-mm-dd -> [{start, end, name, buffer}]
-  function dkey(d) { return d.toISOString().slice(0,10); }
+  function dkey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   (function seed() {
     const t = dkey(today);
     events[t] = [
@@ -741,7 +741,7 @@
       const top = (e.start - Math.floor(e.start)) * HOUR_PX;
       const height = Math.max(22, (e.end - e.start) * HOUR_PX - 4);
       const el = document.createElement('div');
-      el.className = 'evt' + (e.buffer ? ' buffer' : '');
+      el.className = 'evt' + (e.buffer ? ' buffer' : '') + (height < 40 ? ' short' : '');
       el.style.top = top + 'px'; el.style.height = height + 'px';
       el.innerHTML = e.buffer ? `<div class="en">${e.name}</div>` : `<div class="et">${fmtTime(e.start)} – ${fmtTime(e.end)}</div><div class="en">${e.name}</div>`;
       hbs[idx].appendChild(el);
