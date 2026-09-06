@@ -5,6 +5,7 @@
   "type": "module",
   "description": "NENEMI — a memory app for ADHD brains. Static prototype + one Vercel function for sync.",
   "dependencies": {
+    "@clerk/backend": "^2.33.6",
     "@neondatabase/serverless": "^0.10.4"
   }
 }

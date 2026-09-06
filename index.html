@@ -197,6 +197,12 @@
   .sync-badge.on { color: var(--sage-text); }
   .sync-badge.on::before { background: var(--sage); }
   .sync-badge:hover { text-decoration: underline; }
+  .account-slot { position: absolute; top: 14px; right: 18px; z-index: 30; display: flex; align-items: center; gap: 10px; }
+  .account-slot .signin-btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line2); background: var(--surface); color: var(--muted); cursor: pointer; }
+  .account-slot .signin-btn:hover { color: var(--sage-text); border-color: var(--sage); }
+  .account-slot .signed-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
+  .new-room-card.limit { border-style: solid; color: var(--muted); cursor: default; }
+  .new-room-card.limit b { color: var(--sage-text); font-weight: 600; }
 
   .brief-card { background: var(--surface); border: 1px solid var(--line2); border-radius: 18px; padding: 20px; margin-bottom: 22px; }
   .brief-label { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--sage-text); letter-spacing: 0.04em; margin-bottom: 10px; }
@@ -275,6 +281,7 @@
 
   <!-- ============ MAIN ============ -->
   <div class="main">
+    <div class="account-slot" id="accountSlot"></div>
 
     <!-- HOME -->
     <div class="pane active" id="pane-home">
@@ -507,24 +514,10 @@
   function ago(hours) { return Date.now() - hours * 3600e3; }
   const rooms = [
     {
-      id: 'memory', name: 'Memory App', one_liner: 'the memory app — NENEMI itself',
-      brief: "You're deep in v0 — rooms, capture routing, the auto-brief. Latest: a big composer so you can drop files and logos straight in. Still open: lock a logo direction.",
-      loops: [{ text: 'Lock a logo direction', resolved: false }, { text: 'Auto-route silently vs. ask', resolved: false }],
-      log: [{ source: 'voice', ts: ago(2), text: 'Make the composer bigger.' }, { source: 'typed', ts: ago(26), text: 'Pure white background.' }],
-      link: { url: 'https://claude.ai/', label: 'Continue in Claude' },
-    },
-    {
-      id: 'taxes', name: 'Taxes', one_liner: 'taxes — the thing I keep dodging',
-      brief: "Estimated payment is due soon. 1099s are pulled but not reconciled against QuickBooks yet. Nothing urgent today — just don't let this one go quiet again.",
-      loops: [{ text: 'Reconcile 1099s vs QuickBooks', resolved: false }],
-      log: [{ source: 'typed', ts: ago(30), text: 'Pulled all 1099s from the PayPal export.' }],
-      link: null,
-    },
-    {
-      id: 'studycards', name: 'Study Cards', one_liner: 'spaced-repetition app — separate idea',
-      brief: "Resting. FSRS-6 scheduler spec is written but this is a separate product from NENEMI — not merged in, no active loops right now.",
-      loops: [],
-      log: [{ source: 'typed', ts: ago(24 * 5), text: 'Wrote the FSRS-6 scheduler spec.' }],
+      id: 'welcome', demo: true, name: 'How rooms work', one_liner: 'an example room — yours go next to it',
+      brief: "A room holds one thing you're working on. The Brief is where you left off. Open loops are small next moves. Everything you say about it lands in the log below. Say anything on Home and NENEMI files it here or offers you a new room. Come back after a week and the card at the top tells you exactly where to pick up.",
+      loops: [{ text: 'Say one messy thought on Home', resolved: false }, { text: 'Build a day from the Calendar', resolved: false }],
+      log: [{ source: 'voice', ts: ago(1), text: 'This is what a note looks like. Voice notes land here too.' }],
       link: null,
     },
   ];
@@ -546,11 +539,14 @@
         <div class="room-oneliner">${escapeHtml(r.one_liner)}</div>
         ${badge}${quiet}
       </div>`;
-    }).join('') + `
+    }).join('') + (canAddRoom() ? `
       <div class="new-room-card" onclick="go('home')">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
         New room — or just say it on Home
-      </div>`;
+      </div>` : `
+      <div class="new-room-card limit">
+        <div>That's your <b>${auth.roomLimit} free rooms</b>. Unlimited rooms come with a plan — soon.<br>Your calendar stays unlimited either way.</div>
+      </div>`);
   }
 
   let currentRoom = null;
@@ -673,6 +669,10 @@
   let pendingCapture = null;
   function createRoomFromCapture(btn) {
     if (!pendingCapture) return;
+    if (!canAddRoom()) {
+      btn.parentElement.outerHTML = `<div class="bubble dos">That's your ${auth.roomLimit} free rooms. Unlimited rooms come with a plan — soon. Your calendar stays unlimited either way, and this note is still here.</div>`;
+      pendingCapture = null; return;
+    }
     const { text, source } = pendingCapture; pendingCapture = null;
     const words = text.replace(/[.!?]+$/,'').split(/\s+/);
     const name = words.slice(0, 4).join(' ').replace(/^\w/, c => c.toUpperCase());
@@ -946,18 +946,74 @@
   let syncTimer = null, syncOn = false;
   function newSyncCode() { const w = () => SYNC_WORDS[Math.floor(Math.random() * SYNC_WORDS.length)]; return `${w()}-${w()}-${Math.floor(1000 + Math.random() * 9000)}`; }
   function syncCode() { try { let c = localStorage.getItem(SYNC_KEY); if (!c) { c = newSyncCode(); localStorage.setItem(SYNC_KEY, c); } return c; } catch (e) { return 'local-only'; } }
-  function apiUrl() { return `/api/state?device=${encodeURIComponent(syncCode())}`; }
+  // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
+  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, ready: false };
+  function ownRooms() { return rooms.filter(r => !r.demo).length; }
+  function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
+  function apiUrl() { return auth.signedIn ? '/api/state' : `/api/state?device=${encodeURIComponent(syncCode())}`; }
+  async function authHeaders(extra) {
+    const h = Object.assign({}, extra || {});
+    if (auth.signedIn && window.Clerk && Clerk.session) { try { const t = await Clerk.session.getToken(); if (t) h['Authorization'] = 'Bearer ' + t; } catch (e) {} }
+    return h;
+  }
+  function loadScript(src, attrs) {
+    return new Promise((resolve, reject) => { const el = document.createElement('script'); el.src = src; el.async = true; el.crossOrigin = 'anonymous'; Object.entries(attrs || {}).forEach(([k, v]) => el.setAttribute(k, v)); el.onload = resolve; el.onerror = reject; document.head.appendChild(el); });
+  }
+  function clerkHost(pk) { try { return atob(pk.split('_').slice(2).join('_')).replace(/\$$/, ''); } catch (e) { return null; } }
+  async function initAuth() {
+    if (location.protocol === 'file:') return;
+    try {
+      const cfg = await (await fetch('/api/config')).json();
+      if (cfg.freeRooms) auth.roomLimit = cfg.freeRooms;
+      if (!cfg.clerkPublishableKey || !cfg.authEnabled) { renderAccount(); return; }
+      auth.pk = cfg.clerkPublishableKey;
+      const host = clerkHost(auth.pk);
+      await loadScript(`https://${host}/npm/@clerk/clerk-js@5/dist/clerk.browser.js`, { 'data-clerk-publishable-key': auth.pk });
+      if (typeof window.Clerk === 'function') window.Clerk = new window.Clerk(auth.pk);
+      await Clerk.load();
+      auth.ready = true;
+      auth.signedIn = Boolean(Clerk.user);
+      Clerk.addListener(({ user }) => {
+        const now = Boolean(user);
+        if (now === auth.signedIn) return;
+        auth.signedIn = now;
+        if (!now) { try { localStorage.removeItem(STORE_KEY); } catch (e) {} location.reload(); return; }
+        renderAccount(); pullState();
+      });
+    } catch (e) { console.warn('sign-in unavailable', e); }
+    renderAccount();
+  }
+  function renderAccount() {
+    const slot = document.getElementById('accountSlot'); if (!slot) return;
+    if (!auth.pk) { slot.innerHTML = ''; return; }
+    if (auth.signedIn) {
+      slot.innerHTML = `<span class="signed-label">${auth.plan === 'paid' ? 'unlimited rooms' : `${ownRooms()} of ${auth.roomLimit} free rooms`}</span><div id="userButton"></div>`;
+      try { Clerk.mountUserButton(document.getElementById('userButton')); } catch (e) {}
+    } else {
+      slot.innerHTML = `<button class="signin-btn" onclick="Clerk.openSignIn()">Sign in</button>`;
+    }
+  }
   function renderSyncBadge() {
     const el = document.getElementById('syncBadge'); if (!el) return;
     el.classList.toggle('on', syncOn);
+    if (auth.signedIn) { el.textContent = syncOn ? `Signed in · synced everywhere · ${auth.plan === 'paid' ? 'unlimited rooms' : `${ownRooms()} of ${auth.roomLimit} free rooms`}` : 'Signed in · saving on this device until we reconnect'; el.onclick = null; el.title = ''; return; }
+    el.onclick = changeSync; el.title = 'Click to change your sync code';
     el.textContent = syncOn ? `Synced · code ${syncCode()} · use it on your phone` : 'Saved on this device only · click to sync';
+    renderAccount();
+  }
+  function applyPlan(j) {
+    if (!j) return;
+    if (j.plan) auth.plan = j.plan;
+    if ('roomLimit' in j) auth.roomLimit = j.roomLimit;
   }
   async function pushState() {
     if (location.protocol === 'file:') return;
     try {
       const body = localStorage.getItem(STORE_KEY); if (!body) return;
-      const r = await fetch(apiUrl(), { method: 'PUT', headers: { 'content-type': 'application/json' }, body });
+      const r = await fetch(apiUrl(), { method: 'PUT', headers: await authHeaders({ 'content-type': 'application/json' }), body });
       syncOn = r.ok;
+      if (r.ok) applyPlan(await r.json().catch(() => null));
+      else if (r.status === 402) { const j = await r.json().catch(() => ({})); auth.roomLimit = j.limit ?? auth.roomLimit; syncOn = true; }
     } catch (e) { syncOn = false; }
     renderSyncBadge();
   }
@@ -969,9 +1025,9 @@
   async function pullState(force) {
     if (location.protocol === 'file:') { renderSyncBadge(); return; }
     try {
-      const r = await fetch(apiUrl());
+      const r = await fetch(apiUrl(), { headers: await authHeaders() });
       if (!r.ok) { syncOn = false; renderSyncBadge(); return; }
-      const j = await r.json(); syncOn = true;
+      const j = await r.json(); syncOn = true; applyPlan(j);
       let local = null; try { local = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
       if (j.data && (force || !local || (j.data.savedAt || 0) > (local.savedAt || 0))) applyState(j.data);
       else if (local) pushState();
@@ -1014,7 +1070,7 @@
   restore();
   renderCal();
   renderRoomList();
-  pullState();
+  initAuth().then(pullState);
 </script>
 
 </body>
