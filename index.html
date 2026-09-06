@@ -105,62 +105,57 @@
   .back-home:hover { color: var(--sage-text); }
 
 
-  /* ---------- CALENDAR (day view + chat) ---------- */
-  .cal-wrap { flex: 1; display: flex; overflow: hidden; }
-  .cal-left { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--line); }
-  .cal-head { padding: 22px 28px 12px; }
-  .cal-date { font-family: var(--font-display); font-weight: 700; font-size: 22px; }
-  .cal-sub { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
-  .week-strip { display: flex; gap: 6px; padding: 0 28px 12px; }
-  .wday { flex: 1; text-align: center; padding: 8px 0; border-radius: 12px; cursor: pointer; border: 1px solid transparent; }
-  .wday .l { font-family: var(--font-mono); font-size: 9.5px; color: var(--faint); }
-  .wday .n { font-family: var(--font-display); font-weight: 700; font-size: 15px; margin-top: 2px; }
-  .wday:hover { background: var(--surface2); }
-  .wday.active { background: var(--sage-fill); border-color: var(--sage); }
-  .wday.active .l, .wday.active .n { color: var(--sage-text); }
-  .day-grid { flex: 1; overflow-y: auto; padding: 4px 28px 30px; position: relative; }
-  .hour { display: flex; height: 56px; border-top: 1px solid var(--line); position: relative; }
-  .hour .hl { width: 46px; font-family: var(--font-mono); font-size: 10px; color: var(--faint); padding-top: 4px; flex-shrink: 0; }
+  /* ---------- CALENDAR (day view + Smart Cal) ---------- */
+  #pane-calendar { flex-direction: column; overflow: hidden; }
+  .cal-topbar { height: 40px; flex-shrink: 0; border-bottom: 1px solid var(--line); background: var(--surface); display: flex; align-items: center; padding: 0 22px; }
+  .cal-topbar .back-home { margin: 0; }
+  .cal-body { flex: 1; overflow-y: auto; }
+  .cal-inner { max-width: 1180px; margin: 0 auto; padding: 36px 40px 60px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; }
+  @media (max-width: 980px) { .cal-inner { grid-template-columns: 1fr; } }
+
+  .cal-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; }
+  .cal-date { font-family: var(--font-display); font-weight: 700; font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
+  .cal-sub { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
+  .cal-nav { display: flex; align-items: center; gap: 8px; }
+  .cal-nav .nav-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .cal-nav .nav-btn:hover { border-color: var(--sage); color: var(--sage-text); }
+  .cal-nav .nav-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .cal-nav .nav-pill:hover { border-color: var(--sage); color: var(--sage-text); }
+
+  .day-grid { position: relative; }
+  .hour { display: flex; height: 75px; border-top: 1px solid var(--line); position: relative; }
+  .hour .hl { width: 60px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 6px; flex-shrink: 0; }
   .hour .hb { flex: 1; position: relative; }
-  .evt { position: absolute; left: 0; right: 0; background: var(--sage-fill); border-left: 2px solid var(--sage); border-radius: 8px; padding: 6px 10px; overflow: hidden; cursor: pointer; }
-  .evt .et { font-family: var(--font-mono); font-size: 9.5px; color: var(--sage-text); }
-  .evt .en { font-size: 12.5px; font-weight: 600; color: var(--ink); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .evt.short { display: flex; align-items: center; gap: 8px; padding: 0 10px; }
-  .evt.short .en { margin-top: 0; min-width: 0; }
-  .evt.short .et { flex-shrink: 0; }
-  .evt.buffer { background: transparent; border-left: 2px dashed var(--line2); }
-  .evt.buffer .en { color: var(--faint); font-weight: 500; }
-  .now-line { position: absolute; left: 46px; right: 0; height: 1px; background: var(--sage); z-index: 5; pointer-events: none; }
+  .evt { position: absolute; left: 0; right: 8px; background: #13211B; border-left: 3px solid var(--sage); border-radius: 4px; padding: 0 16px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; cursor: pointer; }
+  .evt .en { font-size: 13.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .evt .et { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 5px; white-space: nowrap; }
+  .evt.short { flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; }
+  .evt.short .en { min-width: 0; }
+  .evt.short .et { margin-top: 0; flex-shrink: 0; }
+  .evt.fixed { background: #1A1B19; border-left-color: #6E7A74; }
+  .evt.buffer { background: #12211C; border-left-color: var(--sage); }
+  .now-line { position: absolute; left: 60px; right: 0; height: 1px; background: var(--sage); z-index: 5; pointer-events: none; }
   .now-line::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
 
-
-  /* ---------- rollover (zero-shame) ---------- */
-  .rollover { margin: 0 28px 12px; background: var(--card); border: 1px solid var(--line2); border-radius: 16px; padding: 14px 16px; }
-  .rollover-text { font-size: 13.5px; line-height: 1.55; color: var(--ink); }
-  .rollover-text .names { color: var(--sage-text); font-weight: 600; }
-  .rollover-list { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-  .ro-item { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-  .ro-item .nm { flex: 1; }
-  .ro-btn { font-family: var(--font-mono); font-size: 10.5px; padding: 5px 9px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; white-space: nowrap; }
-  .ro-btn:hover { color: var(--sage-text); border-color: var(--sage); }
-  .ro-btn.done { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
-  #calendar .rollover { margin: 0 20px 10px; }
-
-  .cal-chat { display: flex; flex-direction: column; background: var(--surface); }
-  .cal-chat-head { padding: 22px 22px 8px; }
-  .cal-chat-title { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
-  .cal-chat-sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 22px 6px; }
-  .chip { font-size: 12px; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
-  .chip:hover { color: var(--sage-text); border-color: var(--sage); }
-  .cal-log { flex: 1; overflow-y: auto; padding: 8px 22px; display: flex; flex-direction: column; gap: 10px; }
-  .cal-log .bubble { font-size: 13.5px; }
-  .cal-composer { padding: 12px 16px 18px; border-top: 1px solid var(--line); }
-  .cal-composer .composer-pill { padding: 8px 8px 8px 12px; box-shadow: none; }
-  .cal-composer .send-btn { width: 32px; height: 32px; }
-
-  #pane-calendar { flex-direction: row; }
-  #pane-calendar .cal-chat { width: 340px; flex-shrink: 0; }
+  /* Smart Cal card */
+  .smart-cal { background: var(--card); border: 1px solid var(--line2); border-radius: 16px; padding: 22px 18px 18px; position: sticky; top: 0; }
+  .sc-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-text); }
+  .sc-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; margin-top: 8px; }
+  .sc-desc { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 8px; }
+  .sc-dump { width: 100%; min-height: 150px; margin-top: 14px; background: var(--sanctuary); border: 1px solid var(--line2); border-radius: 8px; padding: 12px 12px; color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; resize: vertical; outline: none; }
+  .sc-dump::placeholder { color: var(--faint); }
+  .sc-dump:focus { border-color: var(--sage); }
+  .sc-divider { height: 1px; background: var(--line); margin: 16px 0 14px; }
+  .sc-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--faint); }
+  .sc-ro-text { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 8px; }
+  .sc-ro-text .names { color: var(--sage-text); font-weight: 600; }
+  .sc-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .sc-chip { font-family: var(--font-mono); font-size: 11px; padding: 7px 11px; border-radius: 6px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
+  .sc-chip:hover { color: var(--sage-text); border-color: var(--sage); }
+  .sc-chip.primary { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
+  .sc-build { width: 100%; margin-top: 18px; padding: 12px; border: none; border-radius: 10px; background: #8BC4B0; color: var(--sanctuary); font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; }
+  .sc-build:hover { background: var(--sage-text); }
+  .sc-note { font-family: var(--font-mono); font-size: 11px; line-height: 1.55; color: var(--sage-text); margin-top: 12px; min-height: 1em; }
 
   /* ROOMS HUB pane */
   .hub-header { padding: 32px 48px 8px; }
@@ -293,35 +288,43 @@
 
     <!-- CALENDAR -->
     <div class="pane" id="pane-calendar">
-    <div class="cal-left">
-      <div class="cal-head">
+      <div class="cal-topbar">
         <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
-        <div class="cal-date" id="calDate">Today</div>
-        <div class="cal-sub" id="calSub">Only what's realistic. Room to breathe is built in.</div>
       </div>
-      <div class="week-strip" id="weekStrip"></div>
-      <div class="rollover" id="rollover"></div>
-      <div class="day-grid" id="dayGrid"></div>
-    </div>
-    <div class="cal-chat">
-      <div class="cal-chat-head">
-        <div class="cal-chat-title">Talk to your day</div>
-        <div class="cal-chat-sub">Say it or type it — add, move, ask, or just start.</div>
-      </div>
-      <div class="chips">
-        <div class="chip" onclick="calQuick('Start my day')">Start my day</div>
-        <div class="chip" onclick="calQuick('What\'s realistic today?')">What's realistic?</div>
-        <div class="chip" onclick="calQuick('Move the walk to 5pm')">Move something</div>
-      </div>
-      <div class="cal-log" id="calLog"></div>
-      <div class="cal-composer">
-        <div class="composer-pill">
-          <input id="calInput" placeholder="Add a 3pm call with Sam…" />
-          <div class="mic-btn" title="Voice"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
-          <div class="send-btn" onclick="calSend()"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="cal-body">
+        <div class="cal-inner">
+          <div class="cal-left">
+            <div class="cal-head">
+              <div>
+                <div class="cal-date" id="calDate">Today</div>
+                <div class="cal-sub" id="calSub">Sunday, September 6</div>
+              </div>
+              <div class="cal-nav">
+                <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="nav-pill" onclick="goToday()" title="Back to today">Day by day</div>
+                <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              </div>
+            </div>
+            <div class="day-grid" id="dayGrid"></div>
+          </div>
+
+          <div class="smart-cal">
+            <div class="sc-kicker">Smart cal</div>
+            <div class="sc-title">Dump the day.</div>
+            <div class="sc-desc">Don't organize it. Tell NENEMI what exists, what is fixed, what you are avoiding, and what needs to happen. NENEMI turns it into one usable day.</div>
+            <textarea class="sc-dump" id="calDump" placeholder="I need to finish the proposal, call Sarah, I have the 2pm meeting, I need lunch..."></textarea>
+            <div class="sc-divider"></div>
+            <div class="sc-label">from yesterday</div>
+            <div class="sc-ro-text" id="roText"></div>
+            <div class="sc-chips" id="roChips">
+              <div class="sc-chip primary" onclick="roMoveAll()">move to today</div>
+              <div class="sc-chip" onclick="roTossAll()">toss 'em</div>
+            </div>
+            <button class="sc-build" onclick="buildDay()">Build this day</button>
+            <div class="sc-note" id="calNote"></div>
+          </div>
         </div>
       </div>
-    </div>
     </div>
 
     <!-- HUMANS HEAL -->
@@ -651,169 +654,153 @@
 
 
 
-  // ---------- zero-shame rollover ----------
-  let carried = [ { name: 'Confirm Q3 estimate amount' }, { name: 'Send invite text to siblings' } ];
-  function renderRollover() {
-    const el = document.getElementById('rollover');
-    const isToday = dkey(selectedDay) === dkey(today);
-    if (!isToday || !carried.length) { el.style.display = 'none'; return; }
-    el.style.display = 'block';
-    const names = carried.map(c => c.name).join(', ');
-    el.innerHTML = `<div class="rollover-text">You had these from yesterday: <span class="names">${escapeHtml(names)}</span>. No stress — we can put them on today, or just knock 'em out.</div>
-      <div class="rollover-list">${carried.map((c, i) => `
-        <div class="ro-item"><div class="nm">${escapeHtml(c.name)}</div>
-          <div class="ro-btn" onclick="roToday(${i})">put on today</div>
-          <div class="ro-btn done" onclick="roDone(${i})">knock it out</div>
-          <div class="ro-btn" onclick="roDrop(${i})">leave it</div>
-        </div>`).join('')}</div>`;
-  }
-  function nextFreeSlot() {
-    const list = events[dkey(selectedDay)] || (events[dkey(selectedDay)] = []);
-    let h = Math.max(DAY_START + 1, Math.ceil(today.getHours() + 1));
-    const taken = t => list.some(e => t < e.end && t + 0.5 > e.start);
-    while (taken(h) && h < DAY_END - 1) h += 0.5;
-    return h;
-  }
-  function roToday(i) {
-    const c = carried.splice(i, 1)[0];
-    const t = nextFreeSlot();
-    (events[dkey(selectedDay)] || (events[dkey(selectedDay)] = [])).push({ start: t, end: t + 0.5, name: c.name });
-    renderCal(); calBubble('dos confirm', `Put "${c.name}" on today at ${fmtTime(t)}.`);
-  }
-  function roDone(i) {
-    const c = carried.splice(i, 1)[0];
-    renderRollover(); calBubble('dos confirm', `"${c.name}" — done. That's a real one.`);
-  }
-  function roDrop(i) {
-    const c = carried.splice(i, 1)[0];
-    renderRollover(); calBubble('dos', `Left "${c.name}" in the past. It wasn't that important — and it's not lost if you want it back.`);
-  }
-
-  // ---------- calendar ----------
-  const DAY_START = 7, DAY_END = 21, HOUR_PX = 56;
+  // ---------- calendar (day view + Smart Cal) ----------
+  const DAY_START = 8, DAY_END = 21, HOUR_PX = 75;
   const today = new Date();
   let selectedDay = new Date(today);
-  const events = {}; // key: yyyy-mm-dd -> [{start, end, name, buffer}]
+  const events = {}; // key: yyyy-mm-dd -> [{start, end, name, kind}]  kind: 'block' | 'fixed' | 'buffer'
+  let carried = [ { name: 'Confirm Q3 estimate amount' }, { name: 'Send invite text to siblings' } ];
   function dkey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+  function dayList(d) { const k = dkey(d); return events[k] || (events[k] = []); }
   (function seed() {
-    const t = dkey(today);
-    events[t] = [
-      { start: 9, end: 9.5, name: 'Coffee + brief' },
-      { start: 10.5, end: 11, name: 'Reply to Sam re: invoice' },
-      { start: 11, end: 11.5, name: 'breathing room', buffer: true },
-      { start: 13, end: 14.5, name: 'Memory app — logo pass' },
-      { start: 16, end: 17, name: 'Walk + call mom' },
+    events[dkey(today)] = [
+      { start: 9, end: 9 + 40/60, name: 'Finish proposal opener', kind: 'block' },
+      { start: 11, end: 11.75, name: 'Team call', kind: 'fixed' },
+      { start: 12.25, end: 13, name: 'Lunch + leave the desk', kind: 'buffer' },
+      { start: 14, end: 15, name: 'Client meeting', kind: 'fixed' },
+      { start: 16, end: 16 + 35/60, name: 'Send follow-ups', kind: 'block' },
     ];
     const tm = new Date(today); tm.setDate(tm.getDate()+1);
-    events[dkey(tm)] = [ { start: 10, end: 11, name: 'Taxes — reconcile 1099s' } ];
+    events[dkey(tm)] = [ { start: 10, end: 11, name: 'Taxes — reconcile 1099s', kind: 'fixed' } ];
   })();
-  function fmtTime(h) {
-    const hr = Math.floor(h), m = Math.round((h - hr) * 60);
-    const ap = hr >= 12 ? 'pm' : 'am'; const h12 = ((hr + 11) % 12) + 1;
-    return m ? `${h12}:${String(m).padStart(2,'0')}${ap}` : `${h12}${ap}`;
+  function fmtClock(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); return `${((hr + 11) % 12) + 1}:${String(m).padStart(2,'0')}`; }
+  function fmtAmPm(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); const ap = hr >= 12 ? 'pm' : 'am'; const h12 = ((hr + 11) % 12) + 1; return m ? `${h12}:${String(m).padStart(2,'0')}${ap}` : `${h12}${ap}`; }
+  function fmtHourLabel(h) { return `${((h + 11) % 12) + 1} ${h >= 12 ? 'PM' : 'AM'}`; }
+  function kindLabel(k) { return k === 'fixed' ? 'Fixed' : k === 'buffer' ? 'Buffer' : 'NENEMI block'; }
+  function dayTitle(d) {
+    const diff = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000);
+    if (diff === 0) return 'Today'; if (diff === 1) return 'Tomorrow'; if (diff === -1) return 'Yesterday';
+    return d.toLocaleDateString(undefined, { weekday: 'long' });
   }
-  function renderWeek() {
-    const strip = document.getElementById('weekStrip');
-    const start = new Date(selectedDay); start.setDate(start.getDate() - start.getDay());
-    let html = '';
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(start); d.setDate(start.getDate() + i);
-      const active = dkey(d) === dkey(selectedDay);
-      html += `<div class="wday ${active ? 'active' : ''}" onclick="pickDay('${dkey(d)}')"><div class="l">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}</div><div class="n">${d.getDate()}</div></div>`;
-    }
-    strip.innerHTML = html;
-  }
-  function pickDay(k) { selectedDay = new Date(k + 'T12:00:00'); renderCal(); }
+  function shiftDay(n) { const d = new Date(selectedDay); d.setDate(d.getDate() + n); selectedDay = d; renderCal(); }
+  function goToday() { selectedDay = new Date(today); renderCal(); }
+
   function renderCal() {
-    renderWeek();
-    renderRollover();
     const isToday = dkey(selectedDay) === dkey(today);
-    document.getElementById('calDate').textContent = isToday ? 'Today' : selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
-    const list = (events[dkey(selectedDay)] || []).slice().sort((a,b)=>a.start-b.start);
+    document.getElementById('calDate').textContent = dayTitle(selectedDay);
+    document.getElementById('calSub').textContent = selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    const list = dayList(selectedDay).slice().sort((a,b)=>a.start-b.start);
     const grid = document.getElementById('dayGrid');
     let html = '';
-    for (let h = DAY_START; h < DAY_END; h++) html += `<div class="hour"><div class="hl">${fmtTime(h)}</div><div class="hb"></div></div>`;
+    for (let h = DAY_START; h < DAY_END; h++) html += `<div class="hour"><div class="hl">${fmtHourLabel(h)}</div><div class="hb"></div></div>`;
     grid.innerHTML = html;
     const hbs = grid.querySelectorAll('.hb');
     list.forEach(e => {
       const idx = Math.floor(e.start) - DAY_START;
       if (idx < 0 || idx >= hbs.length) return;
-      const top = (e.start - Math.floor(e.start)) * HOUR_PX;
-      const height = Math.max(22, (e.end - e.start) * HOUR_PX - 4);
+      const top = (e.start - Math.floor(e.start)) * HOUR_PX + 2;
+      const height = Math.max(26, (e.end - e.start) * HOUR_PX - 6);
       const el = document.createElement('div');
-      el.className = 'evt' + (e.buffer ? ' buffer' : '') + (height < 40 ? ' short' : '');
+      el.className = 'evt ' + (e.kind || 'block') + (height < 34 ? ' short' : '');
       el.style.top = top + 'px'; el.style.height = height + 'px';
-      el.innerHTML = e.buffer ? `<div class="en">${e.name}</div>` : `<div class="et">${fmtTime(e.start)} – ${fmtTime(e.end)}</div><div class="en">${e.name}</div>`;
+      el.innerHTML = `<div class="en">${escapeHtml(e.name)}</div><div class="et">${fmtClock(e.start)}–${fmtClock(e.end)} · ${kindLabel(e.kind)}</div>`;
       hbs[idx].appendChild(el);
     });
     if (isToday) {
       const nowH = today.getHours() + today.getMinutes()/60;
       if (nowH >= DAY_START && nowH < DAY_END) {
         const line = document.createElement('div'); line.className = 'now-line';
-        line.style.top = (4 + (nowH - DAY_START) * HOUR_PX) + 'px';
+        line.style.top = ((nowH - DAY_START) * HOUR_PX) + 'px';
         grid.appendChild(line);
-        grid.scrollTop = Math.max(0, (nowH - DAY_START) * HOUR_PX - 120);
       }
     }
+    renderRollover();
   }
-  function calBubble(cls, text) {
-    const log = document.getElementById('calLog');
-    log.innerHTML += `<div class="bubble ${cls}">${escapeHtml(text)}</div>`;
-    log.scrollTop = log.scrollHeight;
+
+  // ---------- zero-shame rollover ----------
+  function renderRollover() {
+    const txt = document.getElementById('roText'), chips = document.getElementById('roChips');
+    if (!carried.length) { txt.innerHTML = 'Nothing hanging around from yesterday. Clean slate.'; chips.style.display = 'none'; return; }
+    chips.style.display = 'flex';
+    txt.innerHTML = `These are still hanging around. Wanna move them into today or just toss 'em? <span class="names">${escapeHtml(carried.map(c => c.name).join(', '))}</span>`;
   }
-  function calQuick(t) { document.getElementById('calInput').value = t; calSend(); }
+  function calNote(t) { document.getElementById('calNote').textContent = t; }
+  function overlaps(list, s, e) { return list.some(x => s < x.end && e > x.start); }
+  function nextFreeSlot(list, dur, from) {
+    let h = from != null ? from : Math.max(DAY_START, Math.ceil((today.getHours() + today.getMinutes()/60) * 4) / 4 + 0.25);
+    if (dkey(selectedDay) !== dkey(today)) h = from != null ? from : DAY_START + 1;
+    while (overlaps(list, h, h + dur) && h + dur <= DAY_END) h += 0.25;
+    return h + dur <= DAY_END ? h : null;
+  }
+  function roMoveAll() {
+    const list = dayList(today); selectedDay = new Date(today);
+    let placed = 0;
+    carried.forEach(c => { const t = nextFreeSlot(list, 0.5); if (t !== null) { list.push({ start: t, end: t + 0.5, name: c.name, kind: 'block' }); placed++; } });
+    carried = []; renderCal();
+    calNote(`Moved ${placed} into today — 30 minutes each, no pile-up.`);
+  }
+  function roTossAll() { const n = carried.length; carried = []; renderRollover(); calNote(`Tossed ${n}. They weren't that important — and they're not lost if you want them back.`); }
+
+  // ---------- Smart Cal: dump → day ----------
   function parseTime(text) {
-    const m = text.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i);
+    const m = text.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i) || text.match(/\bat\s+(\d{1,2})(?::(\d{2}))?\b/i);
     if (!m) return null;
     let h = parseInt(m[1],10); const min = m[2] ? parseInt(m[2],10) : 0;
-    if (m[3].toLowerCase() === 'pm' && h < 12) h += 12;
-    if (m[3].toLowerCase() === 'am' && h === 12) h = 0;
+    const ap = (m[3] || '').toLowerCase();
+    if (ap === 'pm' && h < 12) h += 12;
+    if (ap === 'am' && h === 12) h = 0;
+    if (!ap && h < 8) h += 12; // "at 2" means 2pm on a work day
     return h + min/60;
   }
-  function calSend() {
-    const input = document.getElementById('calInput');
-    const text = input.value.trim(); if (!text) return;
-    input.value = '';
-    calBubble('user', text);
-    const lower = text.toLowerCase();
-    const list = events[dkey(selectedDay)] || (events[dkey(selectedDay)] = []);
-    setTimeout(() => {
-      if (lower.includes('start my day')) {
-        const real = list.filter(e => !e.buffer);
-        const first = real[0];
-        if (carried.length) calBubble('dos', `You had these from yesterday: ${carried.map(c=>c.name).join(', ')}. No stress — put them on today, or knock 'em out from the card up top.`);
-        calBubble('dos', real.length
-          ? `Morning. ${real.length} things today, nothing before ${fmtTime(first.start)}. First up: ${first.name}. The rest of the day has breathing room on purpose — you don't have to fill it.`
-          : `Nothing on the books today. That's allowed. Want me to hold one small thing, or leave it open?`);
-        return;
-      }
-      if (lower.includes('realistic')) {
-        const busy = list.filter(e=>!e.buffer).reduce((s,e)=>s+(e.end-e.start),0);
-        calBubble('dos', `About ${busy} hours are actually scheduled. That leaves most of the day unplanned — that's the buffer working, not a gap to fill. One more thing at most.`);
-        return;
-      }
-      const t = parseTime(text);
-      if (lower.startsWith('move') && t !== null) {
-        const target = list.find(e => !e.buffer && lower.includes(e.name.toLowerCase().split(' ')[0]));
-        if (target) {
-          const dur = target.end - target.start; target.start = t; target.end = t + dur;
-          renderCal(); calBubble('dos confirm', `Moved "${target.name}" to ${fmtTime(t)}.`); return;
-        }
-      }
-      if (t !== null) {
-        let name = text.replace(/(add|schedule|put|book)\s*(a|an)?/i, '').replace(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i, '').replace(/\b(at|on|for)\b/gi,'').trim();
-        name = name.charAt(0).toUpperCase() + name.slice(1) || 'New thing';
-        list.push({ start: t, end: t + 0.5, name });
-        renderCal(); calBubble('dos confirm', `Added "${name}" at ${fmtTime(t)}.`); return;
-      }
-      if (lower.includes('clear') || lower.includes('nothing today')) {
-        events[dkey(selectedDay)] = []; renderCal();
-        calBubble('dos', `Cleared. No guilt about it — the day's yours.`); return;
-      }
-      calBubble('dos', `Got it. Tell me a time and I'll put it on the day — like "3pm call with Sam" — or say "start my day" and I'll walk you in.`);
-    }, 420);
+  function cleanName(s) {
+    s = s.replace(/^(and|then|also|oh|um)\s+/i, '')
+         .replace(/^(i\s+)?(need|have|got|gotta|want|should|must)\s+(to\s+)?/i, '')
+         .replace(/^(i'?m|i am|i keep|i)?\s*(avoiding|dreading|putting off)\s+/i, '')
+         .replace(/^(i\s+)?(have|got)\s+/i, '')
+         .replace(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i, '').replace(/\bat\s+\d{1,2}(?::\d{2})?\b/i, '')
+         .replace(/\s{2,}/g, ' ').replace(/[.\s]+$/,'').trim()
+         .replace(/^(the|a|an|my|that)\s+/i, '');
+    return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
   }
-  document.getElementById('calInput').addEventListener('keydown', e => { if (e.key === 'Enter') calSend(); });
+  function buildDay() {
+    const box = document.getElementById('calDump');
+    const raw = box.value.trim();
+    if (!raw) { calNote('Say anything — messy is fine. One line is enough to start.'); box.focus(); return; }
+    const list = dayList(selectedDay);
+    const parts = raw.split(/\n|[,;]|\band\b|\bthen\b/i).map(s => s.trim()).filter(Boolean);
+    const items = parts.map(p => {
+      const t = parseTime(p);
+      const avoiding = /avoid|dread|putting off|hate|ugh/i.test(p);
+      const buffer = /\b(lunch|walk|break|nap|rest|gym|breathe|coffee)\b/i.test(p);
+      return { name: cleanName(p) || 'Something', t, avoiding, buffer };
+    }).filter(i => i.name);
+    let fixed = 0, blocks = 0, buffers = 0, skipped = 0, firstAvoid = null;
+    // 1. fixed things go exactly where they are
+    items.filter(i => i.t !== null).forEach(i => { list.push({ start: i.t, end: i.t + 1, name: i.name, kind: 'fixed' }); fixed++; });
+    // 2. the thing you're avoiding goes first, and small
+    items.filter(i => i.t === null && i.avoiding).forEach(i => {
+      const s = nextFreeSlot(list, 0.5); if (s === null) { skipped++; return; }
+      list.push({ start: s, end: s + 0.5, name: i.name, kind: 'block' }); blocks++; if (!firstAvoid) firstAvoid = i.name;
+    });
+    // 3. buffers (lunch around 12:15 if it's free)
+    items.filter(i => i.t === null && !i.avoiding && i.buffer).forEach(i => {
+      const pref = /lunch/i.test(i.name) ? 12.25 : null;
+      const s = (pref !== null && !overlaps(list, pref, pref + 0.75)) ? pref : nextFreeSlot(list, 0.75);
+      if (s === null) { skipped++; return; }
+      list.push({ start: s, end: s + 0.75, name: i.name, kind: 'buffer' }); buffers++;
+    });
+    // 4. everything else as 40-minute blocks, with a 15-minute gap after each
+    items.filter(i => i.t === null && !i.avoiding && !i.buffer).forEach(i => {
+      const s = nextFreeSlot(list, 40/60 + 0.25); if (s === null) { skipped++; return; }
+      list.push({ start: s, end: s + 40/60, name: i.name, kind: 'block' }); blocks++;
+    });
+    box.value = ''; renderCal();
+    let note = `Built. ${fixed} fixed, ${blocks} block${blocks===1?'':'s'}, ${buffers} buffer${buffers===1?'':'s'}.`;
+    if (firstAvoid) note += ` "${firstAvoid}" goes first — 30 minutes, that's all.`;
+    if (skipped) note += ` ${skipped} didn't fit today; that's the buffer working, not a failure.`;
+    calNote(note);
+  }
+  document.getElementById('calDump').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) buildDay(); });
   renderCal();
 
   renderRoomList();
