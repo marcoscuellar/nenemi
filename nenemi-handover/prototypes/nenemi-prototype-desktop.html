@@ -233,6 +233,18 @@
   .friction-leave { background: transparent; color: var(--muted); border: 1px solid var(--line2); }
   .friction-leave:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  /* ---------- voice + misc ---------- */
+  .mic-btn.listening { color: var(--sage-text); animation: micPulse 1s ease-in-out infinite; }
+  .mic-btn.unsupported { opacity: 0.4; }
+  @keyframes micPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.18); opacity: 0.7; } }
+  .quickadd .mic-btn { width: 32px; height: 32px; }
+  .sc-dump-wrap { position: relative; }
+  .sc-dump-wrap .sc-dump { padding-right: 46px; }
+  .sc-dump-wrap .mic-btn { position: absolute; right: 8px; bottom: 12px; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line2); }
+  .sc-dump-wrap .mic-btn:hover { border-color: var(--sage); color: var(--sage-text); }
+  .bubble .mini-btn { display: inline-block; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line2); color: var(--sage-text); cursor: pointer; }
+  .bubble .mini-btn:hover { border-color: var(--sage); }
+
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
 </style>
@@ -272,7 +284,7 @@
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
           </div>
           <input id="composerInput" placeholder="Dump anything here…" />
-          <div class="mic-btn" title="Voice capture">
+          <div class="mic-btn" id="homeMic" title="Say it instead">
             <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
           </div>
           <div class="send-btn" onclick="sendCapture()">
@@ -312,7 +324,10 @@
             <div class="sc-kicker">Smart cal</div>
             <div class="sc-title">Dump the day.</div>
             <div class="sc-desc">Don't organize it. Tell NENEMI what exists, what is fixed, what you are avoiding, and what needs to happen. NENEMI turns it into one usable day.</div>
-            <textarea class="sc-dump" id="calDump" placeholder="I need to finish the proposal, call Sarah, I have the 2pm meeting, I need lunch..."></textarea>
+            <div class="sc-dump-wrap">
+              <textarea class="sc-dump" id="calDump" placeholder="I need to finish the proposal, call Sarah, I have the 2pm meeting, I need lunch..."></textarea>
+              <div class="mic-btn" id="calMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+            </div>
             <div class="sc-divider"></div>
             <div class="sc-label">from yesterday</div>
             <div class="sc-ro-text" id="roText"></div>
@@ -381,6 +396,7 @@
         <div id="rvLog"></div>
         <div class="quickadd">
           <input id="quickAddInput" placeholder="Add a note to this room…" />
+          <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
           <button onclick="quickAdd()">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
@@ -499,7 +515,7 @@
       <div class="room-card" onclick="openRoom('${r.id}')">
         <div class="room-card-top">
           <div class="room-icon">${roomIconSvg}</div>
-          <div class="room-touch">${r.log[0] ? r.log[0].time : ''}</div>
+          <div class="room-touch">${r.log[0] ? when(r.log[0]) : ''}</div>
         </div>
         <div class="room-name">${r.name}</div>
         <div class="room-oneliner">${r.one_liner}</div>
@@ -543,24 +559,25 @@
           ${e.source === 'voice'
             ? '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg> VOICE'
             : '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2.5 3.5h11v9h-11z" stroke-linejoin="round"/><path d="M4.5 6.5h7M4.5 9h5" stroke-linecap="round"/></svg> TYPED'}
-          · ${e.time}
+          · ${when(e)}
         </div>
-        <div class="log-text">${e.text}</div>
+        <div class="log-text">${escapeHtml(e.text)}</div>
       </div>
     `).join('');
   }
 
-  function toggleLoop(i) { currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved; renderRoomView(); }
+  function toggleLoop(i) { currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved; save(); renderRoomView(); }
   function openRoomLink() { if (currentRoom && currentRoom.link) window.open(currentRoom.link.url, '_blank'); }
 
   function quickAdd() {
     const input = document.getElementById('quickAddInput');
     const text = input.value.trim();
     if (!text) return;
-    currentRoom.log.unshift({ source: 'typed', time: 'just now', text });
+    const source = input.dataset.source || 'typed'; delete input.dataset.source;
+    currentRoom.log.unshift({ source, ts: Date.now(), text });
     currentRoom.brief = "Just logged: \u201c" + text + "\u201d — the Brief will re-summarize from here.";
     input.value = '';
-    renderRoomView();
+    save(); renderRoomView();
   }
 
   function sendCapture() {
@@ -570,6 +587,7 @@
     const log = document.getElementById('chatLog');
     log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
     input.value = '';
+    const source = input.dataset.source || 'typed'; delete input.dataset.source;
 
     const stuckWords = ['stuck', "can't start", 'overwhelmed', 'paralyzed', "don't know where", 'too much'];
     if (stuckWords.some(w => text.toLowerCase().includes(w))) { setTimeout(() => go('stuck'), 350); return; }
@@ -577,16 +595,39 @@
     const match = rooms.find(r => text.toLowerCase().includes(r.name.toLowerCase().split(' ')[0]));
     setTimeout(() => {
       if (match) {
-        match.log.unshift({ source: 'typed', time: 'just now', text });
-        log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${match.name}.</div>`;
+        match.log.unshift({ source, ts: Date.now(), text }); save();
+        log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${escapeHtml(match.name)}.</div>`;
       } else {
-        log.innerHTML += `<div class="bubble dos">Noted. Want a new room for this, or keep it loose for now?</div>`;
+        pendingCapture = { text, source };
+        log.innerHTML += `<div class="bubble dos">Noted. Want a new room for this, or keep it loose for now?<br><span class="mini-btn" onclick="createRoomFromCapture(this)">Make a room</span></div>`;
       }
       log.scrollTop = log.scrollHeight;
     }, 450);
   }
 
-  function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  let pendingCapture = null;
+  function createRoomFromCapture(btn) {
+    if (!pendingCapture) return;
+    const { text, source } = pendingCapture; pendingCapture = null;
+    const words = text.replace(/[.!?]+$/,'').split(/\s+/);
+    const name = words.slice(0, 4).join(' ').replace(/^\w/, c => c.toUpperCase());
+    const room = { id: 'r' + Date.now(), name, one_liner: text, brief: `New room. First note: \u201c${text}\u201d — the Brief will grow from here.`,
+      loops: [], log: [{ source, ts: Date.now(), text }], link: null };
+    rooms.unshift(room); save(); renderRoomList();
+    btn.parentElement.outerHTML = `<div class="bubble dos confirm">Made a room: ${escapeHtml(name)}.</div>`;
+    setTimeout(() => openRoom(room.id), 500);
+  }
+
+  function relTime(ts) {
+    const s = Math.round((Date.now() - ts) / 1000);
+    if (s < 60) return 'just now';
+    const m = Math.round(s / 60); if (m < 60) return `${m}m ago`;
+    const h = Math.round(m / 60); if (h < 24) return `${h}h ago`;
+    const d = Math.round(h / 24); return d === 1 ? 'yesterday' : `${d} days ago`;
+  }
+  function when(e) { return e.ts ? relTime(e.ts) : (e.time || ''); }
+
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   document.getElementById('composerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendCapture(); });
   document.getElementById('quickAddInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') quickAdd(); });
@@ -646,7 +687,8 @@
     document.getElementById('frictionOverlay').style.display = 'none';
     if (currentRoom) {
       const mins = Math.round(lockdownSeconds / 60);
-      currentRoom.log.unshift({ source: 'typed', time: 'just now', text: `Stepped out of a focus session on "${document.getElementById('lockdownTask').textContent}" after ${mins} min.` });
+      currentRoom.log.unshift({ source: 'typed', ts: Date.now(), text: `Stepped out of a focus session on "${document.getElementById('lockdownTask').textContent}" after ${mins} min.` });
+      save();
     }
     go(currentRoom ? 'roomview' : 'home');
     if (currentRoom) renderRoomView();
@@ -736,10 +778,10 @@
     const list = dayList(today); selectedDay = new Date(today);
     let placed = 0;
     carried.forEach(c => { const t = nextFreeSlot(list, 0.5); if (t !== null) { list.push({ start: t, end: t + 0.5, name: c.name, kind: 'block' }); placed++; } });
-    carried = []; renderCal();
+    carried = []; save(); renderCal();
     calNote(`Moved ${placed} into today — 30 minutes each, no pile-up.`);
   }
-  function roTossAll() { const n = carried.length; carried = []; renderRollover(); calNote(`Tossed ${n}. They weren't that important — and they're not lost if you want them back.`); }
+  function roTossAll() { const n = carried.length; carried = []; save(); renderRollover(); calNote(`Tossed ${n}. They weren't that important — and they're not lost if you want them back.`); }
 
   // ---------- Smart Cal: dump → day ----------
   function parseTime(text) {
@@ -794,15 +836,57 @@
       const s = nextFreeSlot(list, 40/60 + 0.25); if (s === null) { skipped++; return; }
       list.push({ start: s, end: s + 40/60, name: i.name, kind: 'block' }); blocks++;
     });
-    box.value = ''; renderCal();
+    box.value = ''; save(); renderCal();
     let note = `Built. ${fixed} fixed, ${blocks} block${blocks===1?'':'s'}, ${buffers} buffer${buffers===1?'':'s'}.`;
     if (firstAvoid) note += ` "${firstAvoid}" goes first — 30 minutes, that's all.`;
     if (skipped) note += ` ${skipped} didn't fit today; that's the buffer working, not a failure.`;
     calNote(note);
   }
   document.getElementById('calDump').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) buildDay(); });
-  renderCal();
 
+  // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
+  const STORE_KEY = 'nenemi.v1';
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, savedAt: Date.now() })); } catch (e) {}
+  }
+  function restore() {
+    try {
+      const raw = localStorage.getItem(STORE_KEY); if (!raw) return false;
+      const d = JSON.parse(raw);
+      if (Array.isArray(d.rooms)) rooms.splice(0, rooms.length, ...d.rooms);
+      if (d.events && typeof d.events === 'object') { Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events); }
+      if (Array.isArray(d.carried)) carried = d.carried;
+      return true;
+    } catch (e) { return false; }
+  }
+  function resetDemo() { try { localStorage.removeItem(STORE_KEY); } catch (e) {} location.reload(); }
+
+  // ---------- voice (browser speech-to-text, no key; Chrome / Edge / Safari, needs https) ----------
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let activeRec = null;
+  function voiceNote(inputEl, msg) { const ph = inputEl.placeholder; inputEl.placeholder = msg; setTimeout(() => { inputEl.placeholder = ph; }, 2800); }
+  function attachVoice(micEl, inputEl, onDone) {
+    if (!micEl || !inputEl) return;
+    if (!SR) { micEl.classList.add('unsupported'); micEl.title = 'Voice needs Chrome, Edge or Safari'; micEl.onclick = () => voiceNote(inputEl, 'Voice needs Chrome, Edge or Safari.'); return; }
+    micEl.onclick = () => {
+      if (activeRec) { activeRec.stop(); return; }
+      const rec = new SR();
+      rec.lang = navigator.language || 'en-US'; rec.interimResults = true; rec.continuous = false;
+      const base = inputEl.value.trim() ? inputEl.value.trim() + ' ' : '';
+      let heard = '';
+      rec.onresult = e => { heard = ''; for (const r of e.results) heard += r[0].transcript; inputEl.value = base + heard; };
+      rec.onerror = e => { if (e.error === 'not-allowed') voiceNote(inputEl, 'Mic is blocked — allow it in the address bar.'); else if (e.error !== 'aborted') voiceNote(inputEl, "Didn't catch that. Try again."); };
+      rec.onend = () => { activeRec = null; micEl.classList.remove('listening'); if (heard.trim()) { inputEl.dataset.source = 'voice'; if (onDone) onDone(); } };
+      activeRec = rec; micEl.classList.add('listening'); inputEl.focus();
+      try { rec.start(); } catch (e) { activeRec = null; micEl.classList.remove('listening'); }
+    };
+  }
+  attachVoice(document.getElementById('homeMic'), document.getElementById('composerInput'), sendCapture);
+  attachVoice(document.getElementById('roomMic'), document.getElementById('quickAddInput'), quickAdd);
+  attachVoice(document.getElementById('calMic'), document.getElementById('calDump'), null);
+
+  restore();
+  renderCal();
   renderRoomList();
 </script>
 
