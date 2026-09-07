@@ -2,8 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NENEMI — desktop prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Nenemi</title>
+<meta name="description" content="A memory app for ADHD brains. Rooms hold your context so you never restart from zero." />
+<meta name="theme-color" content="#0C0D0A" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<link rel="icon" href="/icons/icon-192.png" type="image/png" />
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -112,6 +121,34 @@
   .cal-body { flex: 1; overflow-y: auto; }
   .cal-inner { max-width: 1180px; margin: 0 auto; padding: 36px 40px 60px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; }
   @media (max-width: 980px) { .cal-inner { grid-template-columns: 1fr; } }
+  /* ---------- phones ---------- */
+  @media (max-width: 720px) {
+    .app { height: 100vh; height: 100dvh; padding-top: env(safe-area-inset-top); }
+    .greeting-big { font-size: 26px; margin-bottom: 22px; }
+    .home-center { width: 100%; max-width: 94%; }
+    .chat-log { max-height: 34vh; }
+    .account-slot { top: calc(10px + env(safe-area-inset-top)); right: 12px; }
+    .account-slot .signed-label { display: none; }
+    .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
+    .hub-header { padding-top: 56px; }
+    .room-grid { padding: 14px 18px 40px; grid-template-columns: 1fr; }
+    .rv-header { padding: 56px 18px 0; }
+    .rv-body { padding: 16px 18px 40px; }
+    .re-next { flex-direction: column; align-items: stretch; }
+    .re-btn { width: 100%; }
+    .cal-inner { padding: 20px 14px 60px; gap: 20px; }
+    .cal-date { font-size: 28px; }
+    .hour { height: 64px; }
+    .hour .hl { width: 46px; font-size: 9.5px; }
+    .evt { right: 0; padding: 0 10px; }
+    .evt .en { font-size: 13px; }
+    .now-line { left: 46px; }
+    .smart-cal { position: static; }
+    .stuck-nudge { font-size: 22px; }
+    .lockdown-task { font-size: 22px; }
+    .friction-card { width: 92vw; }
+    .voice-hint { bottom: calc(18px + env(safe-area-inset-bottom)); max-width: 92vw; text-align: center; }
+  }
 
   .cal-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; }
   .cal-date { font-family: var(--font-display); font-weight: 700; font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
@@ -1221,6 +1258,11 @@
   renderCal();
   renderRoomList();
   initAuth().then(pullState);
+
+  // installable: register the service worker on real https
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });
+  }
 </script>
 
 </body>

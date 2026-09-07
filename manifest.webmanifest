@@ -1,0 +1,17 @@
+{
+  "name": "Nenemi",
+  "short_name": "Nenemi",
+  "description": "A memory app for ADHD brains. Rooms hold your context so you never restart from zero.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0C0D0A",
+  "theme_color": "#0C0D0A",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
