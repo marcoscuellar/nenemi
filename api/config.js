@@ -9,5 +9,6 @@ export default function handler(req, res) {
     clerkPublishableKey: process.env.CLERK_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || null,
     authEnabled: authEnabled(),
     freeRooms: FREE_ROOMS,
+    smartRouting: Boolean(process.env.ANTHROPIC_API_KEY),
   });
 }

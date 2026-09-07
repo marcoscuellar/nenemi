@@ -686,9 +686,14 @@
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
 
     const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
+    if (auth.smart && location.protocol !== 'file:') { smartCapture(text, source, log); return; }
+    heuristicCapture(text, source, log);
+  }
+
+  // the no-key fallback: first-word matching and a question
+  function heuristicCapture(text, source, log) {
     const stuckWords = ['stuck', "can't start", 'overwhelmed', 'paralyzed', "don't know where", 'too much'];
     if (stuckWords.some(w => text.toLowerCase().includes(w))) { setTimeout(() => go('stuck'), 350); return; }
-
     const match = rooms.find(r => text.toLowerCase().includes(r.name.toLowerCase().split(' ')[0]));
     setTimeout(() => {
       if (match) {
@@ -701,6 +706,62 @@
       log.scrollTop = log.scrollHeight;
     }, 450);
   }
+
+  // the real thing: Claude reads the dump against your rooms and decides
+  async function smartCapture(text, source, log) {
+    const wait = document.createElement('div'); wait.className = 'bubble dos'; wait.textContent = 'Reading that…'; log.appendChild(wait); log.scrollTop = log.scrollHeight;
+    try {
+      const ctx = {
+        text,
+        rooms: rooms.map(r => ({ id: r.id, name: r.name, one_liner: r.one_liner, brief: r.brief, loops: r.loops.filter(l => !l.resolved).map(l => l.text), recent: r.log.slice(0, 4).map(e => e.text) })),
+        loose: loose.map(t => t.text),
+      };
+      const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
+      if (!r.ok) throw new Error('route ' + r.status);
+      const d = await r.json();
+      wait.remove();
+      applyDecision(d, text, source, log);
+    } catch (e) {
+      wait.remove();
+      heuristicCapture(text, source, log);
+    }
+    log.scrollTop = log.scrollHeight;
+  }
+  function applyDecision(d, text, source, log) {
+    const note = (d.note || text).trim();
+    const reply = d.reply ? escapeHtml(d.reply) : '';
+    if (d.action === 'stuck') {
+      log.innerHTML += `<div class="bubble dos">${reply || "Sounds like you're stuck. One small move, coming up."}</div>`;
+      setTimeout(() => go('stuck'), 700); return;
+    }
+    if (d.action === 'file') {
+      const room = rooms.find(r => r.id === d.room_id);
+      if (!room) return heuristicCapture(text, source, log);
+      room.log.unshift({ source, ts: Date.now(), text: note });
+      (d.loops_to_add || []).forEach(t => { if (t && !room.loops.some(l => l.text.toLowerCase() === t.toLowerCase())) room.loops.push({ text: t, resolved: false }); });
+      (d.loops_to_resolve || []).forEach(t => { const l = room.loops.find(l => l.text.toLowerCase() === String(t).toLowerCase()); if (l) l.resolved = true; });
+      if (d.brief) room.brief = d.brief;
+      save(); renderRoomList(); if (currentRoom && currentRoom.id === room.id) renderRoomView();
+      log.innerHTML += `<div class="bubble dos confirm">${reply || 'Filed under ' + escapeHtml(room.name) + '.'}<br><span class="mini-btn" onclick="openRoom('${room.id}')">Open ${escapeHtml(room.name)}</span></div>`;
+      return;
+    }
+    if (d.action === 'new_room') {
+      if (!canAddRoom()) {
+        pendingCapture = { text: note, source };
+        log.innerHTML += `<div class="bubble dos">That's your ${auth.roomLimit} free rooms, so I can't start a new one. I can hold this loose.<br><span class="mini-btn" onclick="keepLoose(this)">Keep it loose</span></div>`;
+        return;
+      }
+      const room = { id: 'r' + Date.now(), name: d.room_name || note.split(/\s+/).slice(0, 4).join(' '), one_liner: d.one_liner || note,
+        brief: d.brief || `New room. First note: \u201c${note}\u201d — the Brief will grow from here.`,
+        loops: (d.loops_to_add || []).filter(Boolean).map(t => ({ text: t, resolved: false })), log: [{ source, ts: Date.now(), text: note }], link: null };
+      rooms.unshift(room); save(); renderRoomList();
+      log.innerHTML += `<div class="bubble dos confirm">${reply || 'Made a room: ' + escapeHtml(room.name) + '.'}<br><span class="mini-btn" onclick="openRoom('${room.id}')">Open ${escapeHtml(room.name)}</span></div>`;
+      return;
+    }
+    loose.unshift({ text: note, source, ts: Date.now() }); save(); renderLoose();
+    log.innerHTML += `<div class="bubble dos">${reply || "Holding it loose. It's on the Rooms page whenever you want it."}<br><span class="mini-btn" onclick="looseToRoomText(${JSON.stringify(note).replace(/"/g, '&quot;')})">Make it a room</span></div>`;
+  }
+  function looseToRoomText(text) { const i = loose.findIndex(t => t.text === text); if (i >= 0) looseToRoom(i); }
 
   let pendingCapture = null;
   function createRoomFromCapture(btn) {
@@ -1000,7 +1061,7 @@
   function newSyncCode() { const w = () => SYNC_WORDS[Math.floor(Math.random() * SYNC_WORDS.length)]; return `${w()}-${w()}-${Math.floor(1000 + Math.random() * 9000)}`; }
   function syncCode() { try { let c = localStorage.getItem(SYNC_KEY); if (!c) { c = newSyncCode(); localStorage.setItem(SYNC_KEY, c); } return c; } catch (e) { return 'local-only'; } }
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
-  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, ready: false };
+  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, ready: false, smart: false };
   function ownRooms() { return rooms.filter(r => !r.demo).length; }
   function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
   function apiUrl() { return auth.signedIn ? '/api/state' : `/api/state?device=${encodeURIComponent(syncCode())}`; }
@@ -1018,6 +1079,7 @@
     try {
       const cfg = await (await fetch('/api/config')).json();
       if (cfg.freeRooms) auth.roomLimit = cfg.freeRooms;
+      auth.smart = Boolean(cfg.smartRouting);
       if (!cfg.clerkPublishableKey || !cfg.authEnabled) { renderAccount(); return; }
       auth.pk = cfg.clerkPublishableKey;
       const host = clerkHost(auth.pk);
