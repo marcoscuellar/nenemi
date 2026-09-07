@@ -259,7 +259,8 @@
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
   .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
   .room-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 17px; line-height: 1; }
-  .room-card[style*="--rc"] { border-left: 3px solid var(--rc); }
+  .room-card[style*="--rc"] { box-shadow: 0 10px 30px -8px color-mix(in srgb, var(--rc) 55%, transparent); border-color: color-mix(in srgb, var(--rc) 35%, var(--line)); }
+  .room-card[style*="--rc"]:hover { box-shadow: 0 14px 36px -8px color-mix(in srgb, var(--rc) 70%, transparent); }
   .room-card[style*="--rc"] .room-icon, .rv-icon[style*="--rc"] { background: color-mix(in srgb, var(--rc) 18%, transparent); color: var(--rc); }
   .rv-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 21px; line-height: 1; cursor: pointer; flex-shrink: 0; position: relative; }
   .rv-icon:hover { filter: brightness(1.08); }
