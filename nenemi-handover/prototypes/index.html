@@ -488,9 +488,11 @@
 
   (function setGreeting() {
     const h = new Date().getHours();
+    // no comments on the hour — the app doesn't get to judge when you show up
     let g = 'Good morning,';
-    if (h >= 12 && h < 18) g = 'Good afternoon,';
-    else if (h >= 18 || h < 4) g = 'Still up,';
+    if (h >= 12 && h < 17) g = 'Good afternoon,';
+    else if (h >= 17 && h < 21) g = 'Good evening,';
+    else if (h >= 21 || h < 5) g = 'Hey there,';
     document.getElementById('greetingText').innerHTML = g + '<br><span class="accent">what\'s on your mind?</span>';
   })();
 
