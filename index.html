@@ -642,7 +642,9 @@
     // every other visit gets a context line when there is one; the rest rotate through the sanctuary lines
     const plain = late ? LINES_LATE : LINES;
     const line = ctx.length && visitN % 2 === 0 ? ctx[Math.floor(visitN / 2) % ctx.length] : plain[visitN % plain.length];
-    return { hello, line };
+    // capitalize like a sentence; the lines are written lowercase so they read casual, but they're still sentences
+    const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+    return { hello: cap(hello), line: cap(line) };
   }
   let greetTimer = null;
   function renderGreetingSoon() { clearTimeout(greetTimer); greetTimer = setTimeout(() => { if (!document.getElementById('greetingText').dataset.named && userFirstName()) { document.getElementById('greetingText').dataset.named = '1'; renderGreeting(); } }, 50); }
