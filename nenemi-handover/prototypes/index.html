@@ -180,20 +180,45 @@
   .cal-nav .nav-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
   .cal-nav .nav-pill:hover { border-color: var(--sage); color: var(--sage-text); }
 
-  .day-grid { position: relative; }
-  .hour { display: flex; height: 75px; border-top: 1px solid var(--line); position: relative; }
-  .hour .hl { width: 60px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 6px; flex-shrink: 0; }
-  .hour .hb { flex: 1; position: relative; }
-  .evt { position: absolute; left: 0; right: 8px; background: var(--evt-block); border-left: 3px solid var(--sage); border-radius: 4px; padding: 0 16px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; cursor: pointer; }
-  .evt .en { font-size: 13.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .evt .et { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-top: 5px; white-space: nowrap; }
-  .evt.short { flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; }
-  .evt.short .en { min-width: 0; }
-  .evt.short .et { margin-top: 0; flex-shrink: 0; }
-  .evt.fixed { background: var(--evt-fixed); border-left-color: var(--evt-fixed-line); }
-  .evt.buffer { background: var(--evt-buffer); border-left-color: var(--sage); }
-  .now-line { position: absolute; left: 60px; right: 0; height: 1px; background: var(--sage); z-index: 5; pointer-events: none; }
-  .now-line::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
+  /* agenda: only the hours that matter, cards you can open */
+  .agenda { border-top: 1px solid var(--line); }
+  .ag-row { display: flex; gap: 14px; border-bottom: 1px solid var(--line); padding: 10px 0; min-height: 44px; }
+  .ag-row.empty { min-height: 30px; padding: 6px 0; }
+  .ag-row .hl { width: 64px; flex-shrink: 0; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 6px; }
+  .ag-row.now .hl { color: var(--sage-text); }
+  .ag-row .hb { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .ag-card { background: var(--evt-block); border-left: 3px solid var(--sage); border-radius: 6px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
+  .ag-card:hover { transform: translateX(2px); }
+  .ag-card.fixed { background: var(--evt-fixed); border-left-color: var(--evt-fixed-line); }
+  .ag-card.buffer { background: var(--evt-buffer); border-left-color: #C89C4A; }
+  .ag-card.past { opacity: 0.55; }
+  .ag-title { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .ag-meta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--muted); margin-top: 4px; }
+  .ag-now { height: 1px; background: var(--sage); position: relative; margin: 2px 0; }
+  .ag-now::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
+  .ag-empty { color: var(--faint); font-size: 13px; padding: 22px 0; text-align: center; }
+  .agenda-actions { display: flex; gap: 10px; padding: 16px 0 0; }
+  .ag-btn { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .ag-btn:hover { border-color: var(--sage); color: var(--sage-text); }
+  /* editor sheet */
+  .sheet-back { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 80; padding: 16px; }
+  .sheet { width: 100%; max-width: 460px; background: var(--card); border: 1px solid var(--line2); border-radius: 20px; padding: 22px; box-shadow: 0 24px 70px var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+  .sheet-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-text); }
+  .sheet-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; background: transparent; border: none; border-bottom: 1px solid var(--line2); color: var(--ink); padding: 6px 0; outline: none; width: 100%; }
+  .sheet-title:focus { border-bottom-color: var(--sage); }
+  .sheet-row { display: flex; gap: 12px; }
+  .sheet-row label, .sheet-label { display: flex; flex-direction: column; gap: 6px; flex: 1; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+  .sheet input[type=time], .sheet input[type=number], .sheet select { font-family: var(--font-body); font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 9px 10px; outline: none; color-scheme: dark; }
+  html[data-theme="light"] .sheet input, html[data-theme="light"] .sheet select { color-scheme: light; }
+  .sheet-kinds { display: flex; gap: 8px; }
+  .kind-chip { font-family: var(--font-mono); font-size: 11px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
+  .kind-chip.on { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
+  .sheet-notes { min-height: 84px; font-family: var(--font-body); font-size: 14px; line-height: 1.5; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; resize: vertical; outline: none; }
+  .sheet-notes:focus { border-color: var(--sage); }
+  .sheet-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+  .sheet-btn { font-family: var(--font-body); font-weight: 600; font-size: 13.5px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
+  .sheet-btn.primary { background: var(--btn); color: var(--btn-ink); border-color: transparent; }
+  .sheet-btn.ghost:hover { color: var(--sage-text); border-color: var(--sage); }
 
   /* Smart Cal card */
   .smart-cal { background: var(--card); border: 1px solid var(--line2); border-radius: 16px; padding: 22px 18px 18px; position: sticky; top: 0; }
@@ -417,11 +442,9 @@
     .sc-dump { min-height: 96px; font-size: 14px; }
     .cal-head { flex-wrap: wrap; gap: 10px; }
     .cal-date { font-size: 26px; }
-    .hour { height: 64px; }
-    .hour .hl { width: 46px; font-size: 9.5px; }
-    .evt { right: 0; padding: 0 10px; }
-    .evt .en { font-size: 13px; }
-    .now-line { left: 46px; }
+    .ag-row .hl { width: 50px; font-size: 9.5px; }
+    .ag-row { gap: 10px; }
+    .sheet { padding: 18px; }
     /* stuck: doors and the move */
     .stuck-close { top: calc(10px + env(safe-area-inset-top)); right: 12px; }
     .doors { padding: 56px 16px 24px; }
@@ -451,6 +474,29 @@
 
   <!-- ============ MAIN ============ -->
   <div class="main">
+    <div class="sheet-back" id="evtSheet" hidden onclick="if (event.target === this) closeEvent()">
+      <div class="sheet">
+        <div class="sheet-kicker" id="evKicker">Block</div>
+        <input class="sheet-title" id="evName" placeholder="What is it?" />
+        <div class="sheet-row">
+          <label>Starts<input type="time" id="evStart" /></label>
+          <label>Minutes<input type="number" id="evMins" min="5" step="5" /></label>
+        </div>
+        <div class="sheet-kinds" id="evKinds">
+          <span class="kind-chip" data-k="block" onclick="pickKind('block')">Focus</span>
+          <span class="kind-chip" data-k="fixed" onclick="pickKind('fixed')">Fixed</span>
+          <span class="kind-chip" data-k="buffer" onclick="pickKind('buffer')">Buffer</span>
+        </div>
+        <label class="sheet-label">Room<select id="evRoom"></select></label>
+        <textarea class="sheet-notes" id="evNotes" placeholder="Notes, links, what done looks like…"></textarea>
+        <div class="sheet-actions">
+          <button class="sheet-btn ghost" id="evDelete" onclick="deleteEvent()">Delete</button>
+          <div style="flex:1"></div>
+          <button class="sheet-btn ghost" onclick="closeEvent()">Cancel</button>
+          <button class="sheet-btn primary" onclick="saveEvent()">Save</button>
+        </div>
+      </div>
+    </div>
     <div class="account-wrap"><div class="account-slot" id="accountSlot"></div><div class="acct-menu" id="acctMenu"></div></div>
     <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done, or just go quiet for a bit</div>
 
@@ -516,7 +562,10 @@
                 <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               </div>
             </div>
-            <div class="day-grid" id="dayGrid"></div>
+            <div class="agenda" id="agenda"></div>
+            <div class="agenda-actions">
+              <button class="ag-btn" onclick="editEvent(null)">+ Add block</button>
+            </div>
           </div>
 
           <div class="smart-cal">
@@ -707,7 +756,7 @@
     'where do we start?', 'one thing at a time.', "how's it looking?", "what's good?",
     'what are we getting into?', "what's bouncing around today?", 'brain busy?', 'we can figure it out.',
   ];
-  const LINES_LATE = ["what's still looping?", 'drop it here, then sleep.', 'being here is enough for now.', 'say it so you can put it down.', "no rush, what's up?"];
+  const LINES_LATE = ["what's still looping?", 'being here is enough for now.', "no rush, what's up?", "what's taking up space?", 'there you are.'];
   function greetingLines() {
     const h = new Date().getHours();
     const name = userFirstName();
@@ -1194,19 +1243,13 @@
   function fmtClock(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); return `${((hr + 11) % 12) + 1}:${String(m).padStart(2,'0')}`; }
   function fmtAmPm(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); const ap = hr >= 12 ? 'pm' : 'am'; const h12 = ((hr + 11) % 12) + 1; return m ? `${h12}:${String(m).padStart(2,'0')}${ap}` : `${h12}${ap}`; }
   function fmtHourLabel(h) { return `${((h + 11) % 12) + 1} ${h >= 12 ? 'PM' : 'AM'}`; }
-  function kindLabel(k) { return k === 'fixed' ? 'Fixed' : k === 'buffer' ? 'Buffer' : 'NENEMI block'; }
+  function kindLabel(k) { return k === 'fixed' ? 'Fixed' : k === 'buffer' ? 'Buffer' : 'Focus'; }
   function dayTitle(d) {
     const diff = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000);
     if (diff === 0) return 'Today'; if (diff === 1) return 'Tomorrow'; if (diff === -1) return 'Yesterday';
     return d.toLocaleDateString(undefined, { weekday: 'long' });
   }
-  function scrollCalToNow() {
-    const body = document.querySelector('.cal-body'); const grid = document.getElementById('dayGrid'); if (!body || !grid) return;
-    if (window.innerWidth <= 720) { body.scrollTop = 0; return; } // phones: the dump box is on top, don't scroll past it
-    const isToday = dkey(selectedDay) === dkey(today);
-    const h = isToday ? today.getHours() + today.getMinutes() / 60 : 7;
-    body.scrollTop = Math.max(0, grid.offsetTop + (h - DAY_START) * HOUR_PX - 180);
-  }
+  function scrollCalToNow() { const body = document.querySelector('.cal-body'); if (body) body.scrollTop = 0; }
   function shiftDay(n) { const d = new Date(selectedDay); d.setDate(d.getDate() + n); selectedDay = d; renderCal(); scrollCalToNow(); }
   function goToday() { selectedDay = new Date(today); renderCal(); }
 
@@ -1214,33 +1257,83 @@
     const isToday = dkey(selectedDay) === dkey(today);
     document.getElementById('calDate').textContent = dayTitle(selectedDay);
     document.getElementById('calSub').textContent = selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-    const list = dayList(selectedDay).slice().sort((a,b)=>a.start-b.start);
-    const grid = document.getElementById('dayGrid');
-    let html = '';
-    for (let h = DAY_START; h < DAY_END; h++) html += `<div class="hour"><div class="hl">${fmtHourLabel(h)}</div><div class="hb"></div></div>`;
-    grid.innerHTML = html;
-    const hbs = grid.querySelectorAll('.hb');
-    list.forEach(e => {
-      const idx = Math.floor(e.start) - DAY_START;
-      if (idx < 0 || idx >= hbs.length) return;
-      const top = (e.start - Math.floor(e.start)) * HOUR_PX + 2;
-      const height = Math.max(26, (e.end - e.start) * HOUR_PX - 6);
-      const el = document.createElement('div');
-      el.className = 'evt ' + (e.kind || 'block') + (height < 34 ? ' short' : '');
-      el.style.top = top + 'px'; el.style.height = height + 'px';
-      el.innerHTML = `<div class="en">${escapeHtml(e.name)}</div><div class="et">${fmtClock(e.start)}–${fmtClock(e.end)} · ${kindLabel(e.kind)}</div>`;
-      hbs[idx].appendChild(el);
-    });
-    if (isToday) {
-      const nowH = today.getHours() + today.getMinutes()/60;
-      if (nowH >= DAY_START && nowH < DAY_END) {
-        const line = document.createElement('div'); line.className = 'now-line';
-        line.style.top = ((nowH - DAY_START) * HOUR_PX) + 'px';
-        grid.appendChild(line);
-      }
+    const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
+    const nowH = today.getHours() + today.getMinutes() / 60;
+    const el = document.getElementById('agenda');
+    if (!list.length) {
+      el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the right, or add one block.' : 'Nothing here yet.'}</div>`;
+      renderRollover(); return;
     }
+    // only the hours that matter: from the first thing (or now) to the last thing, plus a little air
+    let from = Math.floor(list[0].start), to = Math.ceil(list[list.length - 1].end);
+    // "now" gets at most one row of air on either side; it never opens up a pile of empty hours
+    if (isToday && nowH < list[0].start) from = Math.max(from - 1, Math.floor(nowH));
+    if (isToday && nowH > list[list.length - 1].end) to = Math.min(to + 1, Math.floor(nowH) + 1);
+    from = Math.max(0, from); to = Math.min(24, Math.max(to, from + 1));
+    let html = '';
+    if (isToday && nowH < from) html += `<div class="ag-row empty now"><div class="hl">now</div><div class="hb"><div class="ag-now"></div></div></div>`;
+    for (let h = from; h < to; h++) {
+      const here = list.filter(e => Math.floor(e.start) === h);
+      const isNowRow = isToday && Math.floor(nowH) === h;
+      const cards = here.map(e => {
+        const i = dayList(selectedDay).indexOf(e);
+        const mins = Math.round((e.end - e.start) * 60);
+        const room = e.room ? rooms.find(r => r.id === e.room) : null;
+        const past = isToday && e.end <= nowH;
+        return `<div class="ag-card ${e.kind || 'block'}${past ? ' past' : ''}" onclick="editEvent(${i})">
+          <div class="ag-title">${escapeHtml(e.name)}</div>
+          <div class="ag-meta">${fmtClock(e.start)} · ${kindLabel(e.kind)} · ${mins} min${room ? ' · ' + escapeHtml(room.name) : ''}${e.notes ? ' · notes' : ''}</div>
+        </div>`;
+      }).join('');
+      html += `<div class="ag-row${here.length ? '' : ' empty'}${isNowRow ? ' now' : ''}"><div class="hl">${fmtHourLabel(h)}</div><div class="hb">${isNowRow && !here.length ? '<div class="ag-now"></div>' : ''}${cards}</div></div>`;
+    }
+    if (isToday && nowH >= to) html += `<div class="ag-row empty now"><div class="hl">now</div><div class="hb"><div class="ag-now"></div></div></div>`;
+    el.innerHTML = html;
     renderRollover();
   }
+
+  // ---------- open a block, change anything, or delete it ----------
+  let editing = null; // index into today's list, or null for a new one
+  function kindLabelShort(k) { return k === 'fixed' ? 'Fixed' : k === 'buffer' ? 'Buffer' : 'Focus'; }
+  function pickKind(k) { document.querySelectorAll('#evKinds .kind-chip').forEach(c => c.classList.toggle('on', c.dataset.k === k)); }
+  function toTimeValue(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); return `${String(hr).padStart(2, '0')}:${String(m).padStart(2, '0')}`; }
+  function editEvent(i) {
+    const list = dayList(selectedDay);
+    const e = i === null ? null : list[i];
+    editing = i;
+    document.getElementById('evKicker').textContent = e ? kindLabelShort(e.kind) : 'New block';
+    document.getElementById('evName').value = e ? e.name : '';
+    const start = e ? e.start : (nextFreeSlot(list, 0.5) ?? Math.min(23, Math.max(0, today.getHours() + 1)));
+    document.getElementById('evStart').value = toTimeValue(start);
+    document.getElementById('evMins').value = e ? Math.round((e.end - e.start) * 60) : 30;
+    pickKind(e ? (e.kind || 'block') : 'block');
+    const sel = document.getElementById('evRoom');
+    sel.innerHTML = `<option value="">No room</option>` + rooms.map(r => `<option value="${r.id}"${e && e.room === r.id ? ' selected' : ''}>${escapeHtml(r.name)}</option>`).join('');
+    document.getElementById('evNotes').value = e && e.notes ? e.notes : '';
+    document.getElementById('evDelete').hidden = !e;
+    document.getElementById('evtSheet').hidden = false;
+    setTimeout(() => document.getElementById('evName').focus(), 50);
+  }
+  function closeEvent() { document.getElementById('evtSheet').hidden = true; editing = null; }
+  function saveEvent() {
+    const list = dayList(selectedDay);
+    const name = document.getElementById('evName').value.trim() || 'Untitled';
+    const [hh, mm] = (document.getElementById('evStart').value || '09:00').split(':').map(Number);
+    const start = Math.max(0, Math.min(23.9, hh + (mm || 0) / 60));
+    const mins = Math.max(5, parseInt(document.getElementById('evMins').value, 10) || 30);
+    const kind = (document.querySelector('#evKinds .kind-chip.on') || {}).dataset?.k || 'block';
+    const room = document.getElementById('evRoom').value || null;
+    const notes = document.getElementById('evNotes').value.trim();
+    const patch = { name, start, end: Math.min(24, start + mins / 60), kind, room, notes };
+    if (editing === null) list.push(patch); else Object.assign(list[editing], patch);
+    save(); renderCal(); closeEvent();
+    if (room) { const r = rooms.find(x => x.id === room); if (r && editing === null) { r.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `On the day: ${name}, ${fmtAmPm(start)}.` }); save(); } }
+  }
+  function deleteEvent() {
+    if (editing === null) return closeEvent();
+    dayList(selectedDay).splice(editing, 1); save(); renderCal(); closeEvent();
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('evtSheet').hidden) closeEvent(); });
 
   // ---------- zero-shame rollover ----------
   function renderRollover() {
