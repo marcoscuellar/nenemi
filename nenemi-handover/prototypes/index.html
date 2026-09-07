@@ -1737,7 +1737,7 @@
     ];
     if (!auth.signedIn) items.push(`<div class="mi" onclick="changeSync(); toggleAcctMenu()">Sync code<span class="k">${escapeHtml(syncCode())}</span></div>`);
     if (auth.pk && !auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`);
-    items.push(`<div class="mi" onclick="location.href='mailto:marcosmcuellar@gmail.com?subject=Nenemi'; toggleAcctMenu()">Reach out to us<span class="k">email</span></div>`);
+    items.push(`<div class="mi" onclick="location.href='mailto:marcos@ollinos.com?subject=Nenemi'; toggleAcctMenu()">Reach out to us<span class="k">email</span></div>`);
     if (auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="try { Clerk.openUserProfile(); } catch (e) {} toggleAcctMenu()">Manage account</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`);
     m.innerHTML = items.join('');
   }
