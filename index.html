@@ -32,6 +32,7 @@
     --on-sage: #0C0D0A;
 
     --glow: #14241d;
+    --glow-stop: 62%;
     --glow2: #16241f;
     --evt-block: #13211B;
     --evt-fixed: #1A1B19;
@@ -61,7 +62,8 @@
     --sage-text: #1E3B30;
     --sage-fill: #DCEBE4;
     --on-sage: #FFFFFF;
-    --glow: #DDEFE5;
+    --glow: #B9D6C8;
+    --glow-stop: 38%;
     --glow2: #E4EFE9;
     --evt-block: #E8F1EC;
     --evt-fixed: #F1F2F0;
@@ -119,7 +121,7 @@
   /* HOME pane (minimal, centered) */
   #pane-home {
     align-items: center; justify-content: center;
-    background: radial-gradient(circle at 50% 42%, var(--glow) 0%, var(--sanctuary) 62%);
+    background: radial-gradient(circle at 50% 42%, var(--glow) 0%, var(--sanctuary) var(--glow-stop));
   }
   .home-center { display: flex; flex-direction: column; align-items: center; width: 560px; max-width: 90%; }
   .greeting-big { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1.35; text-align: center; margin-bottom: 30px; }
