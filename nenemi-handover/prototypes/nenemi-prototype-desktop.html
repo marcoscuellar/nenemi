@@ -971,13 +971,13 @@
       await loadScript(`https://${host}/npm/@clerk/clerk-js@5/dist/clerk.browser.js`, { 'data-clerk-publishable-key': auth.pk });
       if (typeof window.Clerk === 'function') window.Clerk = new window.Clerk(auth.pk);
       await Clerk.load();
-      auth.ready = true;
+      auth.ready = true; auth.loadedAt = Date.now();
       auth.signedIn = Boolean(Clerk.user);
       Clerk.addListener(({ user }) => {
         const now = Boolean(user);
         if (now === auth.signedIn) return;
         auth.signedIn = now;
-        if (!now) { try { localStorage.removeItem(STORE_KEY); } catch (e) {} location.reload(); return; }
+        if (!now) { if (Date.now() - auth.loadedAt > 3000) { try { localStorage.removeItem(STORE_KEY); } catch (e) {} location.reload(); } return; }
         renderAccount(); pullState();
       });
     } catch (e) { console.warn('sign-in unavailable', e); }
@@ -996,7 +996,7 @@
   function renderSyncBadge() {
     const el = document.getElementById('syncBadge'); if (!el) return;
     el.classList.toggle('on', syncOn);
-    if (auth.signedIn) { el.textContent = syncOn ? `Signed in · synced everywhere · ${auth.plan === 'paid' ? 'unlimited rooms' : `${ownRooms()} of ${auth.roomLimit} free rooms`}` : 'Signed in · saving on this device until we reconnect'; el.onclick = null; el.title = ''; return; }
+    if (auth.signedIn) { el.textContent = syncOn ? `Signed in · synced everywhere · ${auth.plan === 'paid' ? 'unlimited rooms' : `${ownRooms()} of ${auth.roomLimit} free rooms`}` : 'Signed in · saving on this device until we reconnect'; el.onclick = null; el.title = ''; renderAccount(); return; }
     el.onclick = changeSync; el.title = 'Click to change your sync code';
     el.textContent = syncOn ? `Synced · code ${syncCode()} · use it on your phone` : 'Saved on this device only · click to sync';
     renderAccount();
@@ -1029,6 +1029,11 @@
       if (!r.ok) { syncOn = false; renderSyncBadge(); return; }
       const j = await r.json(); syncOn = true; applyPlan(j);
       let local = null; try { local = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
+      if (auth.signedIn && !j.data) {
+        // nothing under this account yet: bring over whatever this device's sync code holds
+        let code = null; try { code = localStorage.getItem(SYNC_KEY); } catch (e) {}
+        if (code) { try { const r2 = await fetch(`/api/state?device=${encodeURIComponent(code)}`); const j2 = r2.ok ? await r2.json() : null; if (j2 && j2.data && (!local || (j2.data.savedAt || 0) >= (local.savedAt || 0))) { applyState(j2.data); local = j2.data; } } catch (e) {} }
+      }
       if (j.data && (force || !local || (j.data.savedAt || 0) > (local.savedAt || 0))) applyState(j.data);
       else if (local) pushState();
     } catch (e) { syncOn = false; }
