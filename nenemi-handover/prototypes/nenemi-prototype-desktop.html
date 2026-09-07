@@ -337,7 +337,8 @@
   .brief-text { font-size: 15px; line-height: 1.65; }
   .room-link-row { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 11px 16px; background: var(--sage-fill); border-radius: 12px; color: var(--sage-text); font-size: 13.5px; cursor: pointer; width: fit-content; }
   .section-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.04em; margin: 4px 0 12px; }
-  .loop-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .loop-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background 600ms ease, box-shadow 600ms ease; }
+  .loop-row.lit { background: var(--sage-fill); box-shadow: 0 0 0 10px var(--sage-fill); }
   .loop-check { width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid var(--line2); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .loop-row.resolved .loop-check { background: var(--sage); border-color: var(--sage); }
   .loop-check svg { display: none; width: 11px; height: 11px; stroke: var(--sanctuary); }
@@ -758,18 +759,7 @@
         <div class="lockdown-timer" id="lockdownTimer">0:00</div>
         <div class="lockdown-hint">Everything else is put away. This is the only thing here.</div>
       </div>
-      <button class="lockdown-exit" onclick="requestExit()">[ step away ]</button>
-      <div class="friction-overlay" id="frictionOverlay" style="display:none">
-        <div class="friction-card">
-          <div class="friction-label">[ QUICK PAUSE ]</div>
-          <div class="friction-prompt">What's pulling you away, in one breath?</div>
-          <div class="friction-sub">No judgment either way. Just naming it sometimes changes the pull.</div>
-          <div class="friction-actions">
-            <button class="friction-btn friction-stay" onclick="cancelExit()">Actually, I'll stay</button>
-            <button class="friction-btn friction-leave" id="leaveBtn" onclick="confirmExit()" disabled>Leave in 10s</button>
-          </div>
-        </div>
-      </div>
+      <button class="lockdown-exit" onclick="confirmExit()">[ step away ]</button>
     </div>
 
   </div>
@@ -964,7 +954,7 @@
       <div class="loop-row ${l.resolved ? 'resolved' : ''}">
         <div class="loop-check" onclick="toggleLoop(${i})"><svg viewBox="0 0 16 16" fill="none" stroke-width="2"><path d="M3 8l3.5 3.5L13 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="loop-text">${l.text}</div>
-        ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop('${l.text.replace(/'/g, "\\'")}')">Focus on this <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
+        ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop('${l.text.replace(/'/g, "\\'")}')">Sit with me <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
       </div>
     `).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
 
@@ -975,6 +965,8 @@
             ? '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg> VOICE'
             : e.source === 'auto-routed'
             ? '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 7h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg> ON THE DAY'
+            : e.source === 'focus'
+            ? '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5" stroke-linecap="round"/></svg> FOCUS'
             : '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2.5 3.5h11v9h-11z" stroke-linejoin="round"/><path d="M4.5 6.5h7M4.5 9h5" stroke-linecap="round"/></svg> TYPED'}
           · ${when(e)}
         </div>
@@ -1005,14 +997,22 @@
     return `It's been ${d} days. Nothing's lost — it's all still here.`;
   }
   let pickUpTask = '';
-  function pickUp() { if (pickUpTask) focusOnLoop(pickUpTask); }
+  // pick up = go to the work. calendar loops open the calendar; anything else lights the loop right here
+  function pickUp() {
+    if (!currentRoom) return;
+    if (/\b(calendar|build (a|the|my) day|smart cal|the day)\b/i.test(pickUpTask)) { go('calendar'); return; }
+    const i = currentRoom.loops.findIndex(l => !l.resolved);
+    if (i < 0) { const q = document.getElementById('quickAddInput'); if (q) q.focus(); return; }
+    const row = document.querySelectorAll('#rvLoops .loop-row')[i];
+    if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('lit'); setTimeout(() => row.classList.remove('lit'), 2400); }
+  }
   function renderReentry(r) {
-    const last = r.log.find(e => e.source !== 'auto-routed') || r.log[0];
+    const last = r.log.find(e => e.source === 'voice' || e.source === 'typed') || r.log[0];
     const next = r.loops.find(l => !l.resolved);
     pickUpTask = next ? next.text : `Open up ${r.name} — just look around`;
     document.getElementById('rvReentry').innerHTML = `
       <div class="re-top"><div class="re-kicker">Where you left off</div><div class="re-away">${escapeHtml(awayLine(r))}</div></div>
-      ${last ? `<div class="re-last"><span class="re-q">${last.source === 'auto-routed' ? 'Last touch:' : 'You said:'}</span> \u201c${escapeHtml(last.text)}\u201d <span class="re-when">· ${when(last)}</span></div>` : ''}
+      ${last ? `<div class="re-last"><span class="re-q">${last.source === 'voice' || last.source === 'typed' ? 'You said:' : 'Last touch:'}</span> \u201c${escapeHtml(last.text)}\u201d <span class="re-when">· ${when(last)}</span></div>` : ''}
       <div class="re-next">
         <div>
           <div class="re-next-label">${next ? 'Next small move' : 'Nothing open'}</div>
@@ -1269,26 +1269,12 @@
     go('lockdown');
   }
 
-  let frictionInterval = null;
-  function requestExit() {
-    document.getElementById('frictionOverlay').style.display = 'flex';
-    let secondsLeft = 10;
-    const btn = document.getElementById('leaveBtn');
-    btn.disabled = true; btn.textContent = `Leave in ${secondsLeft}s`;
-    clearInterval(frictionInterval);
-    frictionInterval = setInterval(() => {
-      secondsLeft--;
-      if (secondsLeft <= 0) { clearInterval(frictionInterval); btn.disabled = false; btn.textContent = "Leave — that's okay"; }
-      else { btn.textContent = `Leave in ${secondsLeft}s`; }
-    }, 1000);
-  }
-  function cancelExit() { clearInterval(frictionInterval); document.getElementById('frictionOverlay').style.display = 'none'; }
+  // leaving is one tap. the log line is the app's, neutral, never a score
   function confirmExit() {
-    clearInterval(frictionInterval); clearInterval(lockdownInterval);
-    document.getElementById('frictionOverlay').style.display = 'none';
-    if (currentRoom) {
+    clearInterval(lockdownInterval);
+    if (currentRoom && lockdownSeconds >= 120) {
       const mins = Math.round(lockdownSeconds / 60);
-      currentRoom.log.unshift({ source: 'typed', ts: Date.now(), text: `Stepped out of a focus session on "${document.getElementById('lockdownTask').textContent}" after ${mins} min.` });
+      currentRoom.log.unshift({ source: 'focus', ts: Date.now(), text: `Sat with "${document.getElementById('lockdownTask').textContent}" for ${mins} minutes.` });
       save();
     }
     go(currentRoom ? 'roomview' : 'home');
@@ -1738,6 +1724,7 @@
     if (!auth.signedIn) items.push(`<div class="mi" onclick="changeSync(); toggleAcctMenu()">Sync code<span class="k">${escapeHtml(syncCode())}</span></div>`);
     if (auth.pk && !auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`);
     items.push(`<div class="mi" onclick="location.href='mailto:marcos@ollinos.com?subject=Nenemi'; toggleAcctMenu()">Reach out to us<span class="k">email</span></div>`);
+    items.push(`<div class="mi" onclick="window.open('/privacy.html', '_blank'); toggleAcctMenu()">Privacy and terms</div>`);
     if (auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="try { Clerk.openUserProfile(); } catch (e) {} toggleAcctMenu()">Manage account</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`);
     m.innerHTML = items.join('');
   }

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nenemi · Privacy and terms</title>
+<link rel="icon" href="/icons/n-192.png" type="image/png" />
+<style>
+  :root { --bg: #0C0D0A; --ink: #F4F2EC; --muted: #A7ACA4; --sage: #7FB69A; --line: #23261F; }
+  @media (prefers-color-scheme: light) { :root { --bg: #FFFFFF; --ink: #14201A; --muted: #5B665F; --sage: #2F6B4E; --line: #E4E8E3; } }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Inter, -apple-system, system-ui, sans-serif; }
+  main { max-width: 680px; margin: 0 auto; padding: 56px 22px 80px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  h2 { font-size: 20px; margin: 44px 0 10px; }
+  h3 { font-size: 16px; margin: 26px 0 6px; }
+  p, li { color: var(--ink); }
+  .muted { color: var(--muted); font-size: 14px; }
+  a { color: var(--sage); }
+  hr { border: none; border-top: 1px solid var(--line); margin: 40px 0; }
+  ul { padding-left: 20px; }
+  .back { display: inline-block; margin-bottom: 28px; font-size: 14px; color: var(--muted); text-decoration: none; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="/">← Back to Nenemi</a>
+  <h1>Privacy and terms</h1>
+  <p class="muted">Effective September 7, 2026. Nenemi is made by Marcos Cuellar. Questions go to <a href="mailto:marcos@ollinos.com">marcos@ollinos.com</a>.</p>
+
+  <h2 id="privacy">Privacy</h2>
+  <p>Nenemi is a memory app. Its whole job is to hold what you tell it. Here is what that means for your data, in plain words.</p>
+
+  <h3>What Nenemi stores</h3>
+  <ul>
+    <li>Rooms, notes, open loops, Briefs, and calendar blocks you create.</li>
+    <li>Loose thoughts you have not filed yet.</li>
+    <li>The text of what you say when you use the microphone. Audio is not stored. Speech is turned into text by your browser or phone, using Apple or Google speech services, before it reaches Nenemi.</li>
+    <li>If you sign in: your name, email, and profile picture from your sign-in provider, held by Clerk.</li>
+    <li>If you do not sign in: a random sync code stored on your device, so your data can follow you to another device.</li>
+  </ul>
+
+  <h3>Where it lives</h3>
+  <ul>
+    <li>On your device first, in your browser's local storage. Nenemi works offline.</li>
+    <li>Then in a database hosted by Neon, in the United States, so it syncs across your devices.</li>
+    <li>The site and its functions run on Vercel.</li>
+  </ul>
+
+  <h3>How Claude is used</h3>
+  <p>When you dump a thought or build a day, the text you entered, plus a trimmed view of your room names and calendar, is sent to Anthropic's Claude to decide where it belongs. Anthropic processes this under its API terms and does not use it to train models. Nothing is sent when Claude is unavailable; Nenemi falls back to simple matching on your device.</p>
+
+  <h3>What Nenemi does not do</h3>
+  <ul>
+    <li>No selling of your data. No ads. No trackers.</li>
+    <li>No reading your data by a person, unless you email us and ask for help with your account.</li>
+    <li>No medical records, and Nenemi is not a medical service. See the terms below.</li>
+  </ul>
+
+  <h3>Your control</h3>
+  <ul>
+    <li>Export everything as a file from the account menu, any time.</li>
+    <li>Delete your account and all data by emailing <a href="mailto:marcos@ollinos.com">marcos@ollinos.com</a>. It is gone within 30 days.</li>
+    <li>Signed-out data lives under your sync code. Clear your browser storage and it is gone from that device.</li>
+  </ul>
+
+  <h3>Children</h3>
+  <p>Nenemi is for people 13 and older.</p>
+
+  <h3>Changes</h3>
+  <p>If this page changes in a way that matters, the date at the top changes and the app will say so once, quietly.</p>
+
+  <hr />
+
+  <h2 id="terms">Terms</h2>
+
+  <h3>What Nenemi is</h3>
+  <p>A place to put things down so you do not have to hold them in your head. Rooms, a calendar, and a way back in when you are stuck.</p>
+
+  <h3>What Nenemi is not</h3>
+  <p>Nenemi is not therapy, coaching, or medical care, and nothing in it is medical advice. It is the nudge, not the treatment. If you are struggling, real people help. In the United States you can call or text 988 any time.</p>
+
+  <h3>Your account</h3>
+  <ul>
+    <li>Free accounts hold two rooms plus the example room. The calendar is always free. Rooms you already made are never taken away.</li>
+    <li>Paid plans, when they exist, are described in the app before you pay. No surprise charges.</li>
+    <li>You are responsible for what you put in Nenemi. Keep other people's private information out unless they are okay with it.</li>
+  </ul>
+
+  <h3>Your content is yours</h3>
+  <p>Everything you write or say in Nenemi belongs to you. Nenemi only uses it to run the app for you.</p>
+
+  <h3>Availability</h3>
+  <p>Nenemi is offered as is. It is built to keep your data safe, and it saves to your device first, but no service is perfect. Export a copy now and then.</p>
+
+  <h3>Ending things</h3>
+  <p>You can leave any time by deleting your account. Nenemi may close accounts that abuse the service or other people.</p>
+
+  <h3>Law</h3>
+  <p>These terms follow the laws of the State of Texas, United States.</p>
+
+  <p class="muted" style="margin-top: 48px;">Nenemi is Nahuatl for "to walk, to wander."</p>
+</main>
+</body>
+</html>
