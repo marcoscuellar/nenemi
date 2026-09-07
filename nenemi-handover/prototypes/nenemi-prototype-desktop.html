@@ -249,7 +249,22 @@
   .room-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
   .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-  .room-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); }
+  .room-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 17px; line-height: 1; }
+  .room-card[style*="--rc"] { border-left: 3px solid var(--rc); }
+  .room-card[style*="--rc"] .room-icon, .rv-icon[style*="--rc"] { background: color-mix(in srgb, var(--rc) 18%, transparent); color: var(--rc); }
+  .rv-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 21px; line-height: 1; cursor: pointer; flex-shrink: 0; position: relative; }
+  .rv-icon:hover { filter: brightness(1.08); }
+  .room-style { position: absolute; top: 46px; left: 0; z-index: 20; background: var(--card); border: 1px solid var(--line2); border-radius: 14px; padding: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.28); width: 236px; cursor: default; }
+  .room-style .rs-dots { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .room-style .rs-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-sizing: border-box; }
+  .room-style .rs-dot.on { border-color: var(--ink); }
+  .room-style .rs-dot.none { background: var(--surface2); border: 1.5px dashed var(--line2); }
+  .room-style .rs-dot.none.on { border: 2px solid var(--ink); }
+  .room-style input { width: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line2); border-radius: 9px; padding: 8px 10px; color: var(--ink); font-family: var(--font-body); font-size: 14px; outline: none; }
+  .room-style input:focus { border-color: var(--sage); }
+  .room-style .rs-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .room-style .rs-clear { font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+  .room-style .rs-clear:hover { color: var(--ink); }
   .room-touch { font-family: var(--font-mono); font-size: 10px; color: var(--faint); white-space: nowrap; margin-top: 4px; }
   .room-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin-bottom: 4px; }
   .room-oneliner { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
@@ -624,6 +639,7 @@
         <div class="icon-btn" onclick="go('rooms')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
+        <div class="rv-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
         <div class="rv-title-wrap">
           <div class="rv-name" id="rvName">Memory App</div>
           <div class="rv-oneliner" id="rvOneliner">the memory app — NENEMI itself</div>
@@ -847,9 +863,9 @@
       const quietDays = daysQuiet(r);
       const quiet = openCount > 0 && quietDays >= 3 ? `<div class="room-quiet">Quiet for ${quietDays} days. Easy re-entry — it's all still here.</div>` : '';
       return `
-      <div class="room-card" onclick="openRoom('${r.id}')">
+      <div class="room-card" onclick="openRoom('${r.id}')"${roomStyleAttr(r)}>
         <div class="room-card-top">
-          <div class="room-icon">${roomIconSvg}</div>
+          <div class="room-icon">${roomIconHtml(r)}</div>
           <div class="room-touch">${r.log[0] ? when(r.log[0]) : ''}</div>
         </div>
         <div class="room-name">${escapeHtml(r.name)}</div>
@@ -866,6 +882,32 @@
       </div>`);
   }
 
+  // a room can wear a color and an icon. optional, one tap, never asked for.
+  const ROOM_COLORS = { sage: '#7FB69A', amber: '#D9A441', rose: '#D97A8C', sky: '#6FA8DC', violet: '#A48BE0', coral: '#E08A5E', mint: '#5FC3A8', slate: '#8A9BB0' };
+  function roomStyleAttr(r) { return ROOM_COLORS[r.color] ? ` style="--rc:${ROOM_COLORS[r.color]}"` : ''; }
+  function roomIconHtml(r) { return r.icon ? escapeHtml(r.icon) : roomIconSvg; }
+  function firstGlyph(s) { s = String(s || '').trim(); if (!s) return ''; try { const it = new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(s)[Symbol.iterator](); const g = it.next(); return g.done ? '' : g.value.segment; } catch (e) { return Array.from(s)[0] || ''; } }
+  function toggleRoomStyle(ev) {
+    if (ev) ev.stopPropagation();
+    const host = document.getElementById('rvIcon');
+    const open = host.querySelector('.room-style');
+    if (open) { open.remove(); return; }
+    const r = currentRoom; if (!r) return;
+    const box = document.createElement('div'); box.className = 'room-style'; box.onclick = e => e.stopPropagation();
+    box.innerHTML = `<div class="rs-dots"><div class="rs-dot none ${r.color ? '' : 'on'}" title="No color" onclick="setRoomColor(null)"></div>${Object.entries(ROOM_COLORS).map(([k, v]) => `<div class="rs-dot ${r.color === k ? 'on' : ''}" style="background:${v}" title="${k}" onclick="setRoomColor('${k}')"></div>`).join('')}</div>
+      <div class="rs-row"><input id="rsIcon" placeholder="Any emoji, or a letter" maxlength="8" value="${escapeHtml(r.icon || '')}" oninput="setRoomIcon(this.value)"><span class="rs-clear" onclick="setRoomIcon('')">Clear</span></div>`;
+    host.appendChild(box);
+    setTimeout(() => document.addEventListener('click', function off() { const b = host.querySelector('.room-style'); if (b) b.remove(); document.removeEventListener('click', off); }), 0);
+  }
+  function setRoomColor(k) { if (!currentRoom) return; if (k) currentRoom.color = k; else delete currentRoom.color; save(); renderRoomView(); toggleRoomStyle(); }
+  function setRoomIcon(v) {
+    if (!currentRoom) return;
+    const g = firstGlyph(v); if (g) currentRoom.icon = g; else delete currentRoom.icon; save();
+    const rvIcon = document.getElementById('rvIcon'); const box = rvIcon.querySelector('.room-style');
+    rvIcon.childNodes.forEach(n => { if (n !== box) n.remove(); }); rvIcon.insertAdjacentHTML('afterbegin', roomIconHtml(currentRoom));
+    const inp = document.getElementById('rsIcon'); if (inp && inp.value !== (currentRoom.icon || '') && !v.trim()) inp.value = '';
+  }
+
   let currentRoom = null;
   function openRoom(id) {
     currentRoom = rooms.find(r => r.id === id);
@@ -877,6 +919,8 @@
     const r = currentRoom;
     document.getElementById('rvName').textContent = r.name;
     document.getElementById('rvOneliner').textContent = r.one_liner;
+    const rvIcon = document.getElementById('rvIcon');
+    rvIcon.innerHTML = roomIconHtml(r); rvIcon.style.cssText = ROOM_COLORS[r.color] ? `--rc:${ROOM_COLORS[r.color]}` : '';
     document.getElementById('rvBrief').textContent = r.brief;
     renderReentry(r);
 
