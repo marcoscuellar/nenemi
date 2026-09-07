@@ -251,10 +251,10 @@
   .sc-note { font-family: var(--font-mono); font-size: 11px; line-height: 1.55; color: var(--sage-text); margin-top: 12px; min-height: 1em; }
 
   /* ROOMS HUB pane */
-  .hub-header { padding: 64px 48px 8px; width: 100%; max-width: 1180px; margin: 0 auto; }
+  .hub-header { padding: 64px 48px 8px; width: 100%; max-width: 900px; margin: 0 auto; }
   .hub-title { font-family: var(--font-display); font-weight: 700; font-size: 26px; }
   .hub-sub { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
-  .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-content: start; }
+  .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; align-content: start; }
   .room-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
   .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
@@ -419,7 +419,7 @@
   .bubble .mini-btn { display: inline-block; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line2); color: var(--sage-text); cursor: pointer; }
   .bubble .mini-btn:hover { border-color: var(--sage); }
   .bubble .mini-btn + .mini-btn { margin-left: 8px; }
-  .loose-shelf { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+  .loose-shelf { width: 100%; max-width: 900px; margin: 0 auto; padding: 0 48px; }
   .loose-shelf:empty { display: none; }
   .loose-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--faint); margin: 14px 0 8px; }
   .loose-row { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -452,7 +452,13 @@
     .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
     .hub-header { padding-top: 64px; }
     .hub-title { font-size: 24px; }
-    .room-grid { padding: 14px 18px 40px; grid-template-columns: 1fr; gap: 12px; }
+    .room-grid { padding: 14px 14px 40px; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .room-card, .new-room-card { padding: 14px; border-radius: 16px; }
+    .room-card-top { margin-bottom: 8px; }
+    .room-icon { width: 28px; height: 28px; font-size: 15px; }
+    .room-name { font-size: 15px; line-height: 1.25; }
+    .room-oneliner { font-size: 12.5px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .new-room-card { font-size: 12.5px; min-height: 110px; }
     .rv-header { padding: 64px 18px 0; }
     .rv-name { font-size: 20px; }
     .rv-body { padding: 16px 18px 40px; }
@@ -900,7 +906,7 @@
         New room — or just say it on Home
       </div>` : `
       <div class="new-room-card limit">
-        <div>That's your <b>${auth.roomLimit} free rooms</b>. Unlimited rooms come with a plan — soon.<br>Your calendar stays unlimited either way.</div>
+        <div>That's your <b>${auth.roomLimit} free rooms</b>. Full access opens more, soon.<br>The calendar is always free.</div>
       </div>`);
   }
 
@@ -1115,7 +1121,7 @@
   function createRoomFromCapture(btn) {
     if (!pendingCapture) return;
     if (!canAddRoom()) {
-      if (btn) btn.parentElement.outerHTML = `<div class="bubble dos">That's your ${auth.roomLimit} free rooms. Unlimited rooms come with a plan — soon. Your calendar stays unlimited either way, and this note is still here.</div>`;
+      if (btn) btn.parentElement.outerHTML = `<div class="bubble dos">That's your ${auth.roomLimit} free rooms. Full access opens more, soon. The calendar is always free, and this note is still here.</div>`;
       pendingCapture = null; return;
     }
     const { text, source } = pendingCapture; pendingCapture = null;
