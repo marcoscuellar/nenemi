@@ -335,6 +335,11 @@
   .stuck-inner { display: flex; flex-direction: column; align-items: center; }
   .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(127,169,156,0.35); }
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
+  .regroup { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 22px; }
+  .rg-chip { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.03em; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
+  .rg-chip:hover { color: var(--sage-text); border-color: var(--sage); }
+  .rg-chip.on { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
+  .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
   .stuck-eyebrow { font-family: var(--font-mono); font-size: 11.5px; color: var(--sage-text); letter-spacing: 0.06em; margin-top: 26px; }
   .stuck-nudge { font-family: var(--font-display); font-weight: 700; font-size: 27px; text-align: center; max-width: 420px; line-height: 1.3; margin: 16px auto 0; }
   .stuck-sub { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 12px; max-width: 340px; }
@@ -560,8 +565,15 @@
       </div>
       <div class="stuck-inner">
         <div class="stuck-mark"></div>
+        <div class="regroup" id="regroup">
+          <div class="rg-chip" data-state="start" onclick="setRegroup('start')">Can't start</div>
+          <div class="rg-chip" data-state="much" onclick="setRegroup('much')">Too much</div>
+          <div class="rg-chip" data-state="broke" onclick="setRegroup('broke')">It broke</div>
+          <div class="rg-chip" data-state="tired" onclick="setRegroup('tired')">Just tired</div>
+        </div>
         <div class="stuck-eyebrow">[ ONE SMALL MOVE ]</div>
         <div class="stuck-nudge" id="nudgeText">Stand up. Shake it out for 15 seconds. That's the whole task.</div>
+        <div class="stuck-tag" id="nudgeTag">movement · body &amp; energy</div>
         <div class="stuck-sub">No pressure to do anything after. Just this.</div>
         <div class="stuck-actions">
           <button class="stuck-btn primary" onclick="stuckDone()">Did it</button>
@@ -606,6 +618,7 @@
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown');
+    if (id === 'stuck') { regroupState = null; document.querySelectorAll('.rg-chip').forEach(c => c.classList.remove('on')); nudgeOrder = shuffled(NUDGES); nudgePos = 0; showNudge(); }
     stopVoice();
   }
 
@@ -946,25 +959,69 @@
   document.getElementById('composerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') sendCapture(); });
   document.getElementById('quickAddInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') quickAdd(); });
 
-  const nudges = [
-    "Stand up. Shake it out for 15 seconds. That's the whole task.",
-    "Open the file. Just open it — nothing else required.",
-    "Set a 2-minute timer. You're allowed to quit at 2:01.",
-    "Write one silly, wrong sentence to start the draft.",
-    "Say the first tiny step out loud, right now.",
-    "Drink some water before anything else.",
-    "Put on one song. Just one.",
-    "Move to a different spot — even the next room over.",
-    "I'll sit here with you while you start.",
-    "Ask future-you: what's the one easier thing?",
+  // ---------- stuck: every nudge maps to an external motor (docs/nenemi-external-motors.md) ----------
+  // states: start (can't start) · much (too much) · broke (it broke) · tired (just tired)
+  const NUDGES = [
+    { t: "Open the file. Just open it. Nothing else required.", m: 'micro-steps', g: 'starting', s: ['start'] },
+    { t: "Type one bad sentence. The opener is the whole task.", m: 'micro-steps', g: 'starting', s: ['start'] },
+    { t: "Say the first tiny step out loud, right now.", m: 'micro-steps', g: 'starting', s: ['start'] },
+    { t: "Two minutes. You're allowed to quit at 2:01.", m: '2-minute rule', g: 'starting', s: ['start'] },
+    { t: "Put on one song. Start when it starts.", m: 'temptation bundling', g: 'starting', s: ['start', 'tired'] },
+    { t: "Grab the good coffee first. Then we look at it.", m: 'temptation bundling', g: 'starting', s: ['start'] },
+    { t: "Stand up. Count down from five. Sit back down and begin.", m: 'launch ritual', g: 'starting', s: ['start'] },
+    { t: "I'll sit here with you while you start.", m: 'body doubling', g: 'starting', s: ['start', 'much'] },
+    { t: "Pick one thing. The rest waits, visibly, and nothing expires.", m: 'single-tasking', g: 'focus & friction', s: ['much'] },
+    { t: "Today needs one must. Everything else is optional.", m: 'single-tasking', g: 'focus & friction', s: ['much'] },
+    { t: "Close every tab but one.", m: 'friction design', g: 'focus & friction', s: ['much', 'broke'] },
+    { t: "Dump the whole pile on Home. Then look at it from outside your head.", m: 'offload the open loops', g: 'externalizing memory', s: ['much'] },
+    { t: "Open the last thing you touched. Read the last line. That's re-entry.", m: 'context reinstatement', g: 'focus & friction', s: ['broke'] },
+    { t: "Name what pulled you off. Just name it.", m: 'name the feeling', g: 'shame & emotion', s: ['broke'] },
+    { t: "That was a system glitch, not a character flaw. Debug it later.", m: 'externalize the inner critic', g: 'shame & emotion', s: ['broke'] },
+    { t: "Nothing expires. Put it down. It's all here tomorrow.", m: 'rest as a valid plan', g: 'body & energy', s: ['tired'] },
+    { t: "Drink a full glass of water first. Then we look at it.", m: 'basic needs first', g: 'body & energy', s: ['tired', 'start'] },
+    { t: "Have you eaten today? Check the body before the task.", m: 'basic needs first', g: 'body & energy', s: ['tired'] },
+    { t: "Dim the lights. One song. No task for three minutes.", m: 'sensory regulation', g: 'body & energy', s: ['tired'] },
+    { t: "Stand up. Shake it out for 15 seconds. That's the whole task.", m: 'movement', g: 'body & energy', s: ['start', 'tired', 'broke'] },
+    { t: "Change your spot, even the next room over.", m: 'friction design', g: 'focus & friction', s: ['start', 'broke'] },
+    { t: "You showed up. That's the hard part. Nothing's broken.", m: 'self-compassion', g: 'shame & emotion', s: ['start', 'much', 'broke', 'tired'] },
   ];
-  let nudgeIdx = 0;
-  function nextNudge() { nudgeIdx = (nudgeIdx + 1) % nudges.length; document.getElementById('nudgeText').textContent = nudges[nudgeIdx]; }
+  let regroupState = null, nudgeOrder = [], nudgePos = 0;
+  function contextNudges(state) {
+    // nudges built from what you were actually doing
+    const out = [];
+    const recent = rooms.filter(r => !r.demo && lastTouch(r)).sort((a, b) => lastTouch(b) - lastTouch(a))[0];
+    if (state === 'broke' && recent) {
+      const last = recent.log.find(e => e.source !== 'auto-routed') || recent.log[0];
+      if (last) out.push({ t: `Pick up exactly where you were: \u201c${last.text}\u201d in ${recent.name}.`, m: 'context reinstatement', g: 'focus & friction', s: ['broke'], room: recent.id });
+    }
+    if (state === 'much') {
+      const withLoop = rooms.filter(r => r.loops.some(l => !l.resolved)).sort((a, b) => (lastTouch(b) || 0) - (lastTouch(a) || 0))[0];
+      if (withLoop) { const l = withLoop.loops.find(x => !x.resolved); out.push({ t: `Just one thing today: ${l.text}. The rest waits.`, m: 'single-tasking', g: 'focus & friction', s: ['much'], room: withLoop.id, loop: l.text }); }
+    }
+    return out;
+  }
+  function shuffled(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  function setRegroup(state) {
+    regroupState = regroupState === state ? null : state;
+    document.querySelectorAll('.rg-chip').forEach(c => c.classList.toggle('on', c.dataset.state === regroupState));
+    const pool = regroupState ? NUDGES.filter(n => n.s.includes(regroupState)) : NUDGES;
+    nudgeOrder = [...contextNudges(regroupState), ...shuffled(pool)]; nudgePos = 0;
+    showNudge();
+  }
+  function showNudge() {
+    const n = nudgeOrder[nudgePos % nudgeOrder.length];
+    document.getElementById('nudgeText').textContent = n.t;
+    document.getElementById('nudgeTag').textContent = `${n.m} · ${n.g}`;
+    document.querySelector('.stuck-sub').textContent = 'No pressure to do anything after. Just this.';
+  }
+  function nextNudge() { if (!nudgeOrder.length) setRegroup(null); else { nudgePos++; showNudge(); } }
   function stuckDone() {
     document.getElementById('nudgeText').textContent = "That's a real start. Proud of you.";
+    document.getElementById('nudgeTag').textContent = 'celebrate the start · novelty & momentum';
     document.querySelector('.stuck-sub').textContent = '';
     setTimeout(() => go('home'), 1400);
   }
+  setRegroup(null);
 
   let lockdownSeconds = 0;
   let lockdownInterval = null;
