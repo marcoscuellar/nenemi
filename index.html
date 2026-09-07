@@ -134,7 +134,9 @@
   }
   .home-center { display: flex; flex-direction: column; align-items: center; width: 560px; max-width: 90%; }
   @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
-  .wordmark { font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 15px; letter-spacing: 0.06em; color: var(--ink); transform: scaleX(1.12); text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent), 0 0 28px color-mix(in srgb, var(--ink) 25%, transparent); margin-bottom: 34px; user-select: none; }
+  .topnav .wordmark { font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 11px; letter-spacing: 0.05em; text-transform: none; color: var(--ink); text-shadow: 0 0 8px color-mix(in srgb, var(--ink) 45%, transparent), 0 0 20px color-mix(in srgb, var(--ink) 20%, transparent); padding: 7px 13px; user-select: none; }
+  .topnav .wordmark:hover { color: var(--ink); }
+  .topnav .wordmark.active { color: var(--ink); background: var(--sage-fill); }
   .greeting-big { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1.35; text-align: center; margin-bottom: 30px; }
   .greeting-big .accent { color: var(--ink); }
 
@@ -439,7 +441,7 @@
     .app { height: 100vh; height: 100dvh; padding-top: env(safe-area-inset-top); }
     /* home */
     .greeting-big { font-size: 26px; margin-bottom: 22px; }
-    .wordmark { font-size: 13px; margin-bottom: 26px; }
+    .topnav .wordmark { font-size: 10px; padding: 7px 10px; }
     .home-center { width: 100%; max-width: 94%; }
     .chat-log { max-height: 34vh; }
     .intro { font-size: 12px; margin-top: 20px; }
@@ -537,7 +539,7 @@
       </div>
     </div>
     <div class="topnav" id="topnav">
-      <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
+      <div class="tn active wordmark" id="tn-home" onclick="go('home')" aria-label="Home">NENEMI</div>
       <div class="tn" id="tn-rooms" onclick="go('rooms')">Rooms</div>
       <div class="tn" id="tn-calendar" onclick="go('calendar')">Calendar</div>
       <div class="tn" id="tn-humans" onclick="go('humans')">Humans</div>
@@ -548,7 +550,6 @@
     <!-- HOME -->
     <div class="pane active" id="pane-home">
       <div class="home-center">
-        <div class="wordmark" aria-label="Nenemi">NENEMI</div>
         <div class="greeting-big" id="greetingText">Hey there,<br><span class="accent">what's on your mind?</span></div>
 
         <div class="composer-pill">
