@@ -105,6 +105,14 @@
   .brand-mark .bracket { color: var(--faint); }
   .brand-mark .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--sage); display: inline-block; margin-left: 6px; }
 
+  /* top nav: one quiet pill, always there, centered */
+  .topnav { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; gap: 2px; padding: 4px; border-radius: 999px; background: color-mix(in srgb, var(--surface) 82%, transparent); border: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .topnav .tn { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); padding: 7px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+  .topnav .tn:hover { color: var(--muted); }
+  .topnav .tn.active { color: var(--sage-text); background: var(--sage-fill); }
+  .app.quiet .topnav { display: none; }
+  .back-home { display: none !important; }
+
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--muted); font-size: 13.5px; cursor: pointer; margin-bottom: 2px; }
   .nav-item svg { stroke: currentColor; flex-shrink: 0; }
   .nav-item:hover { background: var(--surface2); }
@@ -165,7 +173,7 @@
 
   /* ---------- CALENDAR (day view + Smart Cal) ---------- */
   #pane-calendar { flex-direction: column; overflow: hidden; }
-  .cal-topbar { height: 40px; flex-shrink: 0; border-bottom: 1px solid var(--line); background: var(--surface); display: flex; align-items: center; padding: 0 22px; }
+  .cal-topbar { height: 60px; flex-shrink: 0; }
   .cal-topbar .back-home { margin: 0; }
   .cal-body { flex: 1; overflow-y: auto; }
   .cal-inner { max-width: 1180px; margin: 0 auto; padding: 36px 40px 60px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; }
@@ -243,7 +251,7 @@
   .sc-note { font-family: var(--font-mono); font-size: 11px; line-height: 1.55; color: var(--sage-text); margin-top: 12px; min-height: 1em; }
 
   /* ROOMS HUB pane */
-  .hub-header { padding: 36px 48px 8px; width: 100%; max-width: 1180px; margin: 0 auto; }
+  .hub-header { padding: 64px 48px 8px; width: 100%; max-width: 1180px; margin: 0 auto; }
   .hub-title { font-family: var(--font-display); font-weight: 700; font-size: 26px; }
   .hub-sub { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
   .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-content: start; }
@@ -273,7 +281,7 @@
   .new-room-card { border: 1.5px dashed var(--line2); border-radius: 18px; padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 118px; }
 
   /* ROOM VIEW pane */
-  .rv-header { padding: 36px 48px 0; width: 100%; max-width: 780px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+  .rv-header { padding: 64px 48px 0; width: 100%; max-width: 780px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
   .rv-title-wrap { flex: 1; }
   .rv-name { font-family: var(--font-display); font-weight: 700; font-size: 22px; }
   .rv-oneliner { color: var(--muted); font-size: 13px; margin-top: 2px; }
@@ -433,6 +441,8 @@
     .intro { font-size: 12px; margin-top: 20px; }
     /* account */
     .account-slot { top: calc(8px + env(safe-area-inset-top)); right: 10px; }
+    .topnav { top: calc(8px + env(safe-area-inset-top)); padding: 3px; }
+    .topnav .tn { font-size: 10px; padding: 7px 9px; letter-spacing: 0.08em; }
     .account-slot .signed-label { display: none; }
     .account-slot .who { font-size: 12px; }
     .account-slot .me { padding-left: 8px; }
@@ -515,6 +525,12 @@
           <button class="sheet-btn primary" onclick="saveEvent()">Save</button>
         </div>
       </div>
+    </div>
+    <div class="topnav" id="topnav">
+      <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
+      <div class="tn" id="tn-rooms" onclick="go('rooms')">Rooms</div>
+      <div class="tn" id="tn-calendar" onclick="go('calendar')">Calendar</div>
+      <div class="tn" id="tn-humans" onclick="go('humans')">Humans</div>
     </div>
     <div class="account-wrap"><div class="account-slot" id="accountSlot"></div><div class="acct-menu" id="acctMenu"></div></div>
     <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done, or just go quiet for a bit</div>
@@ -755,6 +771,8 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const nav = document.getElementById('nav-' + id);
     if (nav) nav.classList.add('active');
+    const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id);
+    document.querySelectorAll('.topnav .tn').forEach(n => n.classList.toggle('active', n.id === tnId));
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown');
