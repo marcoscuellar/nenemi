@@ -4,7 +4,7 @@
 //   headers: Authorization: Bearer <clerk token>   (or ?device=<sync code> while signed out)
 //   body:    { text, day: 'YYYY-MM-DD', weekday, is_today, now: 'HH:MM',
 //              existing: [{ start:'HH:MM', end:'HH:MM', name, kind }], rooms: [{ id, name }] }
-//   returns: { items: [{ name, kind, start, minutes, avoiding, room_id }], day_start, heard_but_left_out, reply }
+//   returns: { items: [{ name, kind, start, minutes, avoiding, priority, due, room_id }], day_start, heard_but_left_out, reply }
 //
 // Claude reads the rambling voice dump (ums, asides, apologies, questions)
 // and returns only the real things that belong on the day. The page places
@@ -34,6 +34,8 @@ const Plan = z.object({
     start: z.string().nullable(),
     minutes: z.number(),
     avoiding: z.boolean(),
+    priority: z.boolean(),
+    due: z.string().nullable(),
     room_id: z.string().nullable(),
   })),
   day_start: z.string().nullable(),
@@ -63,13 +65,19 @@ Kinds:
 
 avoiding: true when they say they are dreading, avoiding, putting off, hate, or "ugh" about it. The app puts that one first and small.
 
+priority: true only when they ask for it in so many words: "prioritize this", "this is the most important", "this has to happen today", "must be done by", "top of the list". The app schedules that one before everything else, at its full length, so it finishes on time. At most two per day. Do not guess priority from tone; if they didn't ask, false.
+
+due: "HH:MM" 24-hour when they name a time it must be finished by ("by 3", "before the call", "before noon"), else null. A due time is not a start time.
+
+Never overschedule. A half-full day they can actually follow beats a perfect day they can't. If there is more than fits comfortably, keep what they asked to prioritize, what has a time, and what they sounded most serious about, and put the rest in heard_but_left_out.
+
 room_id: the id of one of their rooms when the item clearly belongs to that project, else null.
 
 day_start: "HH:MM" when they say when they want the day to begin ("start my day at 7", "I'm up at 6", "nothing before 10"), else null.
 
 Order items the way the day should go: fixed things stay where they are, the avoided thing early, buffers where a person needs them, the rest in a sane order. Keep it to at most ${MAX_ITEMS} items; if they said more than that, keep the ones with times and the ones they sounded most serious about, and list the rest in heard_but_left_out.
 
-reply: one short line back in NENEMI's voice. Calm, specific, no exclamation marks, no imperatives at the person. Say what the day now holds in plain words, e.g. "Built around the 2pm. Taxes goes first, 30 minutes, then lunch has air around it." If you left real things out, say so in one clause.
+reply: one short line back in NENEMI's voice. Calm, specific, no exclamation marks, no imperatives at the person. Say what the day now holds in plain words, e.g. "Built around the 2pm. Taxes goes first, 30 minutes, then lunch has air around it." If they asked to prioritize something, say it went first. If you left real things out, say so in one clause.
 
 Never invent items that aren't in what they said.`;
 
@@ -125,9 +133,12 @@ export default async function handler(req, res) {
       start: hhmm(it.start),
       minutes: Math.min(240, Math.max(10, Math.round(Number(it.minutes) || 40))),
       avoiding: Boolean(it.avoiding),
+      priority: Boolean(it.priority),
+      due: hhmm(it.due),
       room_id: rooms.some(r => r.id === it.room_id) ? it.room_id : null,
     })).filter(it => it.name);
     items.forEach(it => { if (it.kind === 'fixed' && !it.start) it.kind = 'block'; });
+    let prio = 0; items.forEach(it => { if (it.priority && ++prio > 2) it.priority = false; });
 
     return res.status(200).json({
       items,

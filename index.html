@@ -1379,6 +1379,7 @@
          .replace(/^(i\s+)?(have|got)\s+/i, '')
          .replace(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i, '').replace(/\bat\s+\d{1,2}(?::\d{2})?\b/i, '')
          .replace(/\b(which|that)\s+i\s+(keep\s+)?(putting off|avoiding|dreading|dread|hate)\b.*$/i, '')
+         .replace(/\b(please\s+)?priorit(ize|ise|y)\s+(this|that|it|the|my)?\s*/i, '').replace(/\bplease\b/i, '').replace(/^(it|this|that)\s+(has|needs)\s+to\s+(be\s+)?(done|happen|finished)\b.*$/i, '').replace(/\b(this|that|it)('s| is)\s+(the\s+)?most important\b.*$/i, '').replace(/\b(by|before|due)\s+\d{1,2}(:\d{2})?\s*(am|pm)?\b/i, '').replace(/\b(this|that)\s+(one\s+)?please\b/i, '')
          .replace(/\bat some point\b/i, '').replace(/\b(i\s+)?(want|need|would like)\s+to\s+(have|get|do)\s+/i, '')
          .replace(/\s{2,}/g, ' ').replace(/[.\s]+$/,'').trim()
          .replace(/^(the|a|an|my|that)\s+/i, '');
@@ -1397,17 +1398,21 @@
     return h + min / 60;
   }
   function heuristicItems(raw) {
-    const parts = raw.split(/\n|[,;]|\band\b|\bthen\b/i).map(s => s.trim()).filter(Boolean);
+    const parts = raw.split(/\n|[,;.!?]|\band\b|\bthen\b/i).map(s => s.trim()).filter(Boolean);
     return parts.map(p => {
       if (/\?\s*$/.test(p) || /^(can|could|would|will|should|are|is|do|does|did)\s+(we|you|it|i)\b/i.test(p)) return null;   // questions aimed at the box
       if (/\b(start|begin|starting)\s+(my|the)?\s*day\b/i.test(p)) return null;                                              // handled by dayStartFrom
       if (realWords(p).length < 2) return null;                                                                              // "yeah", "which is Monday"
-      if (/^(so\s+)?(today|tomorrow|tonight|it|this)('s|\s+is|\s+was)\b/i.test(p)) return null;                                     // "today is Labor Day"
-      const t = parseTime(p);
+      const lead = p.replace(/^((um+|uh+|oh+|ah+|so|that|i'm|im|sorry|yeah|yep|okay|ok|well|like|just|and|but|anyway)\s+)+/i, '');
+      if (/^(today|tomorrow|tonight|it|this|that)('s|\s+is|\s+was)\b/i.test(lead)) return null;                                      // "so that I'm sorry today's Labor Day"
+      const priority = /\bpriorit|most important|has to happen|must (get )?(done|happen)|top of the list|no matter what\b/i.test(p);
+      const dueM = p.match(/\b(?:by|before|due)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
+      const due = dueM ? (() => { let h = +dueM[1]; const min = dueM[2] ? +dueM[2] : 0; const ap = (dueM[3] || '').toLowerCase(); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; if (!ap && h < 8) h += 12; return h + min / 60; })() : null;
+      const t = dueM ? null : parseTime(p);
       const avoiding = /avoid|dread|putting off|hate|ugh/i.test(p);
       const buffer = /\b(lunch|dinner|breakfast|walk|break|nap|rest|gym|breathe|coffee|shower)\b/i.test(p);
       const name = cleanName(p); if (!name) return null;
-      return { name, kind: t !== null ? 'fixed' : buffer ? 'buffer' : 'block', start: t, minutes: t !== null ? 60 : avoiding ? 30 : buffer ? 45 : 40, avoiding, room_id: null };
+      return { name, kind: t !== null ? 'fixed' : buffer ? 'buffer' : 'block', start: t, minutes: t !== null ? 60 : priority ? 60 : avoiding ? 30 : buffer ? 45 : 40, avoiding, priority, due, room_id: null };
     }).filter(Boolean);
   }
   async function smartPlan(text) {
@@ -1440,14 +1445,21 @@
     const dupe = it => list.some(x => x.name.toLowerCase() === it.name.toLowerCase());
     // 1. anything with a clock time goes exactly there
     items.filter(i => i.start !== null).forEach(i => { if (dupe(i)) return; const dur = i.minutes / 60; if (i.start + dur > DAY_END) { spill(i, dur); return; } put(i, i.start, dur); });
-    // 2. the thing being avoided goes first, and small
-    items.filter(i => i.start === null && i.avoiding).forEach(i => {
+    // 2. what they asked to prioritize goes before everything else, full length, so it finishes on time
+    items.filter(i => i.start === null && i.priority).forEach(i => {
+      if (dupe(i)) return; const dur = i.minutes / 60;
+      const s = nextFreeSlot(list, dur + 0.25, from); if (s === null) { spill(i, dur); return; }
+      put(i, s, dur); out.firstPriority = out.firstPriority || i.name;
+      if (i.due != null && s + dur > i.due) out.lateFor = out.lateFor || i.name;
+    });
+    // 3. the thing being avoided goes next, and small
+    items.filter(i => i.start === null && !i.priority && i.avoiding).forEach(i => {
       if (dupe(i)) return; const dur = Math.min(i.minutes, 30) / 60;
       const s = nextFreeSlot(list, dur + 0.25, from); if (s === null) { spill(i, dur); return; }
       put(i, s, dur); if (!out.firstAvoid) out.firstAvoid = i.name;
     });
-    // 3. everything else in the order it came, with 15 minutes of air after each (lunch lands around 12:15 when that's free)
-    items.filter(i => i.start === null && !i.avoiding).forEach(i => {
+    // 4. everything else in the order it came, with 15 minutes of air after each (lunch lands around 12:15 when that's free)
+    items.filter(i => i.start === null && !i.priority && !i.avoiding).forEach(i => {
       if (dupe(i)) return; const dur = i.minutes / 60;
       const meal = i.kind === 'buffer' ? (/lunch/i.test(i.name) ? { pref: 12.25, notBefore: 11.5 } : /dinner/i.test(i.name) ? { pref: 18, notBefore: 17.5 } : /breakfast/i.test(i.name) ? { pref: 8, notBefore: 6.5 } : null) : null;
       const pref = meal && from <= meal.pref ? meal.pref : null;
@@ -1481,7 +1493,7 @@
       try { plan = await smartPlan(raw); } catch (e) { plan = null; }
       building = false; btn.disabled = false; btn.textContent = 'Build this day';
     }
-    const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), room_id: it.room_id || null })) : heuristicItems(raw);
+    const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), priority: Boolean(it.priority), due: hourOf(it.due), room_id: it.room_id || null })) : heuristicItems(raw);
     const dayStart = plan ? hourOf(plan.day_start) : dayStartFrom(raw);
     if (!items.length) {
       if (builtTomorrow) { selectedDay = new Date(today); }
@@ -1494,7 +1506,9 @@
     let note = builtTomorrow ? "It's late, so this is tomorrow's day. " : '';
     if (plan && plan.reply && n) note += plan.reply + ' ';
     else note += `Built. ${r.fixed} fixed, ${r.blocks} block${r.blocks === 1 ? '' : 's'}, ${r.buffers} buffer${r.buffers === 1 ? '' : 's'}.`;
-    if (!plan && r.firstAvoid) note += ` "${r.firstAvoid}" goes first, 30 minutes, that's all.`;
+    if (!plan && r.firstPriority) note += ` "${r.firstPriority}" goes first, like you asked.`;
+    if (!plan && r.firstAvoid && !r.firstPriority) note += ` "${r.firstAvoid}" goes first, 30 minutes, that's all.`;
+    if (r.lateFor) note += ` "${r.lateFor}" couldn't land before its time with what's already there; it's in the first open space instead.`;
     if (r.tomorrowCount) note += ` ${r.tomorrowCount} didn't fit today, so ${r.tomorrowCount === 1 ? "it's" : "they're"} first thing tomorrow. Tap → to see.`;
     if (r.skipped) note += ` ${r.skipped} didn't fit anywhere; say ${r.skipped === 1 ? 'it' : 'them'} again another day.`;
     if (r.touched) note += ` Logged ${r.touched} to ${r.touched === 1 ? 'its room' : 'their rooms'}.`;
