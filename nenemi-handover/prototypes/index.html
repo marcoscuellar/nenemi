@@ -262,6 +262,9 @@
   /* ---------- voice + misc ---------- */
   .mic-btn.listening { color: var(--sage-text); animation: micPulse 1s ease-in-out infinite; }
   .mic-btn.unsupported { opacity: 0.4; }
+  .voice-hint { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); display: none; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--sage); color: var(--sage-text); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; z-index: 60; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  .voice-hint.on { display: flex; }
+  .voice-hint::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); animation: micPulse 1s ease-in-out infinite; }
   @keyframes micPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.18); opacity: 0.7; } }
   .quickadd .mic-btn { width: 32px; height: 32px; }
   .sc-dump-wrap { position: relative; }
@@ -282,6 +285,7 @@
   <!-- ============ MAIN ============ -->
   <div class="main">
     <div class="account-slot" id="accountSlot"></div>
+    <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done</div>
 
     <!-- HOME -->
     <div class="pane active" id="pane-home">
@@ -1067,20 +1071,37 @@
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   let activeRec = null;
   function voiceNote(inputEl, msg) { const ph = inputEl.placeholder; inputEl.placeholder = msg; setTimeout(() => { inputEl.placeholder = ph; }, 2800); }
+  function showVoiceHint(on) { const el = document.getElementById('voiceHint'); if (el) el.classList.toggle('on', on); }
   function attachVoice(micEl, inputEl, onDone) {
     if (!micEl || !inputEl) return;
     if (!SR) { micEl.classList.add('unsupported'); micEl.title = 'Voice needs Chrome, Edge or Safari'; micEl.onclick = () => voiceNote(inputEl, 'Voice needs Chrome, Edge or Safari.'); return; }
     micEl.onclick = () => {
-      if (activeRec) { activeRec.stop(); return; }
+      // tap to start, talk with all the pauses you want, tap again to finish
+      if (activeRec) { activeRec.want = false; try { activeRec.stop(); } catch (e) {} return; }
       const rec = new SR();
-      rec.lang = navigator.language || 'en-US'; rec.interimResults = true; rec.continuous = false;
+      rec.lang = navigator.language || 'en-US'; rec.interimResults = true; rec.continuous = true;
+      rec.want = true; rec.startedAt = Date.now();
       const base = inputEl.value.trim() ? inputEl.value.trim() + ' ' : '';
-      let heard = '';
-      rec.onresult = e => { heard = ''; for (const r of e.results) heard += r[0].transcript; inputEl.value = base + heard; };
-      rec.onerror = e => { if (e.error === 'not-allowed') voiceNote(inputEl, 'Mic is blocked — allow it in the address bar.'); else if (e.error !== 'aborted') voiceNote(inputEl, "Didn't catch that. Try again."); };
-      rec.onend = () => { activeRec = null; micEl.classList.remove('listening'); if (heard.trim()) { inputEl.dataset.source = 'voice'; if (onDone) onDone(); } };
-      activeRec = rec; micEl.classList.add('listening'); inputEl.focus();
-      try { rec.start(); } catch (e) { activeRec = null; micEl.classList.remove('listening'); }
+      let finals = '';
+      rec.onresult = e => {
+        let interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) finals += r[0].transcript + ' '; else interim += r[0].transcript; }
+        inputEl.value = (base + finals + interim).replace(/\s+/g, ' ').trimStart();
+      };
+      rec.onerror = e => {
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { rec.want = false; voiceNote(inputEl, 'Mic is blocked — allow it in the address bar.'); }
+        else if (e.error === 'no-speech' || e.error === 'aborted' || e.error === 'network') { /* browser hiccup — keep listening */ }
+        else voiceNote(inputEl, "Didn't catch that. Try again.");
+      };
+      rec.onend = () => {
+        // Chrome ends a session after silence or ~60s; keep going until you tap the mic (3 min cap)
+        if (rec.want && Date.now() - rec.startedAt < 180000) { try { rec.start(); return; } catch (e) {} }
+        activeRec = null; micEl.classList.remove('listening'); showVoiceHint(false);
+        inputEl.value = (base + finals).replace(/\s+/g, ' ').trim();
+        if (finals.trim()) { inputEl.dataset.source = 'voice'; if (onDone) onDone(); }
+      };
+      activeRec = rec; micEl.classList.add('listening'); showVoiceHint(true); inputEl.focus();
+      try { rec.start(); } catch (e) { activeRec = null; micEl.classList.remove('listening'); showVoiceHint(false); }
     };
   }
   attachVoice(document.getElementById('homeMic'), document.getElementById('composerInput'), sendCapture);
