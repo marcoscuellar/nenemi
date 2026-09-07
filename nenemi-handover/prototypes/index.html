@@ -170,36 +170,6 @@
   .cal-body { flex: 1; overflow-y: auto; }
   .cal-inner { max-width: 1180px; margin: 0 auto; padding: 36px 40px 60px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; }
   @media (max-width: 980px) { .cal-inner { grid-template-columns: 1fr; } }
-  /* ---------- phones ---------- */
-  @media (max-width: 720px) {
-    .app { height: 100vh; height: 100dvh; padding-top: env(safe-area-inset-top); }
-    .greeting-big { font-size: 26px; margin-bottom: 22px; }
-    .home-center { width: 100%; max-width: 94%; }
-    .chat-log { max-height: 34vh; }
-    .account-slot { top: calc(10px + env(safe-area-inset-top)); right: 12px; }
-    .account-slot .signed-label { display: none; }
-    .account-slot .who { font-size: 12px; }
-    .account-slot .me { padding-left: 8px; }
-    .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
-    .hub-header { padding-top: 56px; }
-    .room-grid { padding: 14px 18px 40px; grid-template-columns: 1fr; }
-    .rv-header { padding: 56px 18px 0; }
-    .rv-body { padding: 16px 18px 40px; }
-    .re-next { flex-direction: column; align-items: stretch; }
-    .re-btn { width: 100%; }
-    .cal-inner { padding: 20px 14px 60px; gap: 20px; }
-    .cal-date { font-size: 28px; }
-    .hour { height: 64px; }
-    .hour .hl { width: 46px; font-size: 9.5px; }
-    .evt { right: 0; padding: 0 10px; }
-    .evt .en { font-size: 13px; }
-    .now-line { left: 46px; }
-    .smart-cal { position: static; }
-    .stuck-nudge { font-size: 22px; }
-    .lockdown-task { font-size: 22px; }
-    .friction-card { width: 92vw; }
-    .voice-hint { bottom: calc(18px + env(safe-area-inset-bottom)); max-width: 92vw; text-align: center; }
-  }
 
   .cal-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; }
   .cal-date { font-family: var(--font-display); font-weight: 700; font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
@@ -410,6 +380,69 @@
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
+
+  /* ---------- phones (last on purpose: these must win over everything above) ---------- */
+  @media (max-width: 720px) {
+    .app { height: 100vh; height: 100dvh; padding-top: env(safe-area-inset-top); }
+    /* home */
+    .greeting-big { font-size: 26px; margin-bottom: 22px; }
+    .home-center { width: 100%; max-width: 94%; }
+    .chat-log { max-height: 34vh; }
+    .intro { font-size: 12px; margin-top: 20px; }
+    /* account */
+    .account-slot { top: calc(8px + env(safe-area-inset-top)); right: 10px; }
+    .account-slot .signed-label { display: none; }
+    .account-slot .who { font-size: 12px; }
+    .account-slot .me { padding-left: 8px; }
+    .acct-menu { right: 4px; min-width: 220px; }
+    /* hubs + room */
+    .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
+    .hub-header { padding-top: 64px; }
+    .hub-title { font-size: 24px; }
+    .room-grid { padding: 14px 18px 40px; grid-template-columns: 1fr; gap: 12px; }
+    .rv-header { padding: 64px 18px 0; }
+    .rv-name { font-size: 20px; }
+    .rv-body { padding: 16px 18px 40px; }
+    .reentry { padding: 16px; }
+    .re-next { flex-direction: column; align-items: stretch; }
+    .re-btn { width: 100%; }
+    .brief-card { padding: 16px; }
+    .brief-text { font-size: 14.5px; }
+    /* calendar: the dump box comes first, then the day */
+    .cal-topbar { padding-right: 120px; }
+    .cal-inner { display: flex; flex-direction: column; padding: 16px 14px 60px; gap: 18px; }
+    .smart-cal { order: -1; position: static; padding: 16px 14px 14px; }
+    .sc-title { font-size: 19px; }
+    .sc-desc { font-size: 12.5px; }
+    .sc-dump { min-height: 96px; font-size: 14px; }
+    .cal-head { flex-wrap: wrap; gap: 10px; }
+    .cal-date { font-size: 26px; }
+    .hour { height: 64px; }
+    .hour .hl { width: 46px; font-size: 9.5px; }
+    .evt { right: 0; padding: 0 10px; }
+    .evt .en { font-size: 13px; }
+    .now-line { left: 46px; }
+    /* stuck: doors and the move */
+    .stuck-close { top: calc(10px + env(safe-area-inset-top)); right: 12px; }
+    .doors { padding: 56px 16px 24px; }
+    .doors-mark { display: none; }
+    .doors-title { font-size: 24px; }
+    .doors-sub { font-size: 13px; }
+    .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
+    .door { padding: 16px 16px 14px; border-radius: 18px; }
+    .door-label { font-size: 18px; }
+    .stuck-inner { width: 100%; padding: 48px 16px 24px; }
+    .stuck-mark { width: 56px; height: 56px; }
+    .stuck-nudge { font-size: 22px; max-width: 100%; }
+    .stuck-sub { font-size: 13px; }
+    .stuck-actions { flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 24px; width: 100%; }
+    .stuck-btn { padding: 12px 16px; font-size: 13.5px; flex: 1 1 auto; white-space: nowrap; }
+    .stuck-note { font-size: 10.5px; max-width: 100%; }
+    /* focus + friction */
+    .lockdown-task { font-size: 22px; padding: 0 16px; }
+    .friction-card { width: 92vw; }
+    .voice-hint { bottom: calc(18px + env(safe-area-inset-bottom)); max-width: 92vw; text-align: center; }
+  }
 </style>
 </head>
 <body>
@@ -1169,6 +1202,7 @@
   }
   function scrollCalToNow() {
     const body = document.querySelector('.cal-body'); const grid = document.getElementById('dayGrid'); if (!body || !grid) return;
+    if (window.innerWidth <= 720) { body.scrollTop = 0; return; } // phones: the dump box is on top, don't scroll past it
     const isToday = dkey(selectedDay) === dkey(today);
     const h = isToday ? today.getHours() + today.getMinutes() / 60 : 7;
     body.scrollTop = Math.max(0, grid.offsetTop + (h - DAY_START) * HOUR_PX - 180);
