@@ -273,6 +273,16 @@
   .sc-dump-wrap .mic-btn:hover { border-color: var(--sage); color: var(--sage-text); }
   .bubble .mini-btn { display: inline-block; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line2); color: var(--sage-text); cursor: pointer; }
   .bubble .mini-btn:hover { border-color: var(--sage); }
+  .bubble .mini-btn + .mini-btn { margin-left: 8px; }
+  .loose-shelf { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 48px; }
+  .loose-shelf:empty { display: none; }
+  .loose-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--faint); margin: 14px 0 8px; }
+  .loose-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .loose-chip { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; background: var(--card); border: 1px solid var(--line2); border-radius: 12px; padding: 8px 8px 8px 12px; font-size: 13px; }
+  .loose-chip .lt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 420px; }
+  .loose-chip .lb { font-family: var(--font-mono); font-size: 10.5px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line2); color: var(--sage-text); cursor: pointer; white-space: nowrap; }
+  .loose-chip .lb:hover { border-color: var(--sage); }
+  .loose-chip .lb.quiet { color: var(--faint); }
 
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
@@ -396,6 +406,7 @@
         <div class="hub-sub">The ones that have gone quiet float up. No red badges here.</div>
         <div class="sync-badge" id="syncBadge" onclick="changeSync()" title="Click to change your sync code">Saved on this device</div>
       </div>
+      <div class="loose-shelf" id="looseShelf"></div>
       <div class="room-grid" id="roomList"></div>
     </div>
 
@@ -529,7 +540,24 @@
     },
   ];
 
+  function renderLoose() {
+    const el = document.getElementById('looseShelf'); if (!el) return;
+    if (!loose.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div class="loose-label">Loose thoughts — ${loose.length} held, no room yet</div><div class="loose-row">${loose.map((t, i) => `
+      <div class="loose-chip"><span class="lt" title="${escapeHtml(t.text)}">${escapeHtml(t.text)}</span>
+        ${canAddRoom() ? `<span class="lb" onclick="looseToRoom(${i})">make it a room</span>` : ''}
+        <span class="lb quiet" onclick="looseDrop(${i})">let it go</span></div>`).join('')}</div>`;
+  }
+  function looseToRoom(i) { const t = loose.splice(i, 1)[0]; if (!t) return; pendingCapture = { text: t.text, source: t.source || 'typed' }; save(); createRoomFromCapture(null); }
+  function looseDrop(i) { loose.splice(i, 1); save(); renderLoose(); }
+  function keepLoose(btn) {
+    if (!pendingCapture) return;
+    const { text, source } = pendingCapture; pendingCapture = null;
+    loose.unshift({ text, source, ts: Date.now() }); save(); renderLoose();
+    btn.parentElement.outerHTML = `<div class="bubble dos confirm">Holding it loose. It's on the Rooms page whenever you want it.</div>`;
+  }
   function renderRoomList() {
+    renderLoose();
     const el = document.getElementById('roomList');
     el.innerHTML = rooms.slice().sort(roomOrder).map(r => {
       const openCount = r.loops.filter(l => !l.resolved).length;
@@ -657,6 +685,7 @@
     input.value = '';
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
 
+    const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
     const stuckWords = ['stuck', "can't start", 'overwhelmed', 'paralyzed', "don't know where", 'too much'];
     if (stuckWords.some(w => text.toLowerCase().includes(w))) { setTimeout(() => go('stuck'), 350); return; }
 
@@ -667,7 +696,7 @@
         log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${escapeHtml(match.name)}.</div>`;
       } else {
         pendingCapture = { text, source };
-        log.innerHTML += `<div class="bubble dos">Noted. Want a new room for this, or keep it loose for now?<br><span class="mini-btn" onclick="createRoomFromCapture(this)">Make a room</span></div>`;
+        log.innerHTML += `<div class="bubble dos">Noted. Want a new room for this, or keep it loose for now?<br><span class="mini-btn" onclick="createRoomFromCapture(this)">Make a room</span><span class="mini-btn" onclick="keepLoose(this)">Keep it loose</span></div>`;
       }
       log.scrollTop = log.scrollHeight;
     }, 450);
@@ -677,17 +706,21 @@
   function createRoomFromCapture(btn) {
     if (!pendingCapture) return;
     if (!canAddRoom()) {
-      btn.parentElement.outerHTML = `<div class="bubble dos">That's your ${auth.roomLimit} free rooms. Unlimited rooms come with a plan — soon. Your calendar stays unlimited either way, and this note is still here.</div>`;
+      if (btn) btn.parentElement.outerHTML = `<div class="bubble dos">That's your ${auth.roomLimit} free rooms. Unlimited rooms come with a plan — soon. Your calendar stays unlimited either way, and this note is still here.</div>`;
       pendingCapture = null; return;
     }
     const { text, source } = pendingCapture; pendingCapture = null;
-    const words = text.replace(/[.!?]+$/,'').split(/\s+/);
-    const name = words.slice(0, 4).join(' ').replace(/^\w/, c => c.toUpperCase());
+    // room name from the real words, not the "um oh yeah so" a voice dump starts with
+    const FILLER = /^(um+|uh+|oh+|ah+|yeah|yes|no|okay|ok|so|like|well|sorry|just|basically|actually|right|hmm+|erm|i|i'm|was|saying|this|is|for|the|a|an|and|it|that|to|of|we|were|talking|about)$/i;
+    const raw = text.replace(/[.!?,]+/g, ' ').split(/\s+/).filter(Boolean);
+    let words = raw.filter(w => !FILLER.test(w));
+    if (words.length < 2) words = raw;
+    const name = words.slice(0, 5).join(' ').replace(/^\w/, c => c.toUpperCase());
     const room = { id: 'r' + Date.now(), name, one_liner: text, brief: `New room. First note: \u201c${text}\u201d — the Brief will grow from here.`,
       loops: [], log: [{ source, ts: Date.now(), text }], link: null };
     rooms.unshift(room); save(); renderRoomList();
-    btn.parentElement.outerHTML = `<div class="bubble dos confirm">Made a room: ${escapeHtml(name)}.</div>`;
-    setTimeout(() => openRoom(room.id), 500);
+    if (btn) { btn.parentElement.outerHTML = `<div class="bubble dos confirm">Made a room: ${escapeHtml(name)}.</div>`; setTimeout(() => openRoom(room.id), 500); }
+    else openRoom(room.id);
   }
 
   function relTime(ts) {
@@ -774,6 +807,7 @@
   let selectedDay = new Date(today);
   const events = {}; // key: yyyy-mm-dd -> [{start, end, name, kind}]  kind: 'block' | 'fixed' | 'buffer'
   let carried = [ { name: 'Confirm Q3 estimate amount' }, { name: 'Send invite text to siblings' } ];
+  let loose = []; // thoughts you chose not to put in a room yet
   function dkey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   function dayList(d) { const k = dkey(d); return events[k] || (events[k] = []); }
   (function seed() {
@@ -942,7 +976,7 @@
   // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
   const STORE_KEY = 'nenemi.v1';
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, savedAt: Date.now() })); } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, savedAt: Date.now() })); } catch (e) {}
     clearTimeout(syncTimer); syncTimer = setTimeout(pushState, 800);
   }
   function restore() {
@@ -952,6 +986,7 @@
       if (Array.isArray(d.rooms)) rooms.splice(0, rooms.length, ...d.rooms);
       if (d.events && typeof d.events === 'object') { Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events); }
       if (Array.isArray(d.carried)) carried = d.carried;
+      loose = Array.isArray(d.loose) ? d.loose : [];
       return true;
     } catch (e) { return false; }
   }
