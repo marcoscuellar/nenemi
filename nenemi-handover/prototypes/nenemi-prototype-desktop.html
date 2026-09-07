@@ -48,9 +48,9 @@
   }
   /* light: the brand doc's paper + deep green. Dark stays the default. */
   html[data-theme="light"] {
-    --sanctuary: #F3F1EB;
-    --surface: #FAF8F2;
-    --surface2: #ECE9E0;
+    --sanctuary: #FFFFFF;
+    --surface: #FAFAFA;
+    --surface2: #F1F2F0;
     --card: #FFFFFF;
     --ink: #1E3B30;
     --muted: #4A5E56;
@@ -60,16 +60,16 @@
     --sage: #2A4F40;
     --sage-text: #1E3B30;
     --sage-fill: #DCEBE4;
-    --on-sage: #F3F1EB;
-    --glow: #E4EFE9;
-    --glow2: #DCEBE4;
-    --evt-block: #E4EFE9;
-    --evt-fixed: #ECEAE3;
+    --on-sage: #FFFFFF;
+    --glow: #DDEFE5;
+    --glow2: #E4EFE9;
+    --evt-block: #E8F1EC;
+    --evt-fixed: #F1F2F0;
     --evt-fixed-line: #9AA59F;
     --evt-buffer: #EAF2EC;
     --btn: #2A4F40;
-    --btn-ink: #F3F1EB;
-    --pill-bg: rgba(250,248,242,0.85);
+    --btn-ink: #FFFFFF;
+    --pill-bg: rgba(255,255,255,0.9);
     --shadow: rgba(30,59,48,0.12);
   }
   /* the sanctuary screens stay dark in both themes — calm, no glare when you're stuck */
@@ -1152,7 +1152,7 @@
   function currentTheme() { try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; } catch (e) { return 'dark'; } }
   function applyTheme(t) {
     if (t === 'light') document.documentElement.setAttribute('data-theme', 'light'); else document.documentElement.removeAttribute('data-theme');
-    const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'light' ? '#F3F1EB' : '#0C0D0A');
+    const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'light' ? '#FFFFFF' : '#0C0D0A');
   }
   function themeIcon() {
     return currentTheme() === 'light'
