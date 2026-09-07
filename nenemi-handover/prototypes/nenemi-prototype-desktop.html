@@ -643,7 +643,7 @@
     const plain = late ? LINES_LATE : LINES;
     const line = ctx.length && visitN % 2 === 0 ? ctx[Math.floor(visitN / 2) % ctx.length] : plain[visitN % plain.length];
     // capitalize like a sentence; the lines are written lowercase so they read casual, but they're still sentences
-    const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+    const cap = t => t.replace(/(^|[.!?]\s+)([a-z])/g, (m, a, c) => a + c.toUpperCase());
     return { hello: cap(hello), line: cap(line) };
   }
   let greetTimer = null;
