@@ -155,6 +155,8 @@
 
   .stuck-link { text-align: center; color: var(--muted); font-size: 13.5px; margin-top: 20px; cursor: pointer; }
   .stuck-link span { color: var(--sage-text); font-weight: 600; }
+  .intro { text-align: center; color: var(--faint); font-size: 12.5px; line-height: 1.6; margin-top: 26px; max-width: 420px; }
+  .intro span { color: var(--sage-text); cursor: pointer; font-weight: 600; }
 
   .back-home { display:inline-flex; align-items:center; gap:6px; color: var(--muted); font-size: 12.5px; cursor:pointer; margin-bottom: 14px; }
   .back-home:hover { color: var(--sage-text); }
@@ -431,6 +433,7 @@
         </div>
 
         <div class="stuck-link" onclick="go('stuck')">Feeling stuck? <span>we got you →</span></div>
+        <div class="intro" id="intro" hidden>New here? Nenemi holds what you're working on in rooms, so you never restart from zero. Say anything to try it. <span onclick="if (window.Clerk) Clerk.openSignIn()">Sign in</span> to keep it.</div>
 
         <div class="chat-log" id="chatLog"></div>
       </div>
@@ -644,6 +647,7 @@
   let greetTimer = null;
   function renderGreetingSoon() { clearTimeout(greetTimer); greetTimer = setTimeout(() => { if (!document.getElementById('greetingText').dataset.named && userFirstName()) { document.getElementById('greetingText').dataset.named = '1'; renderGreeting(); } }, 50); }
   function renderGreeting() {
+    const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
     const g = greetingLines();
     el.innerHTML = `${escapeHtml(g.hello)}<br><span class="accent">${escapeHtml(g.line)}</span>`;
