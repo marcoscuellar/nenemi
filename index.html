@@ -178,6 +178,7 @@
     .account-slot { top: calc(10px + env(safe-area-inset-top)); right: 12px; }
     .account-slot .signed-label { display: none; }
     .account-slot .who { font-size: 12px; }
+    .account-slot .me { padding-left: 8px; }
     .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
     .hub-header { padding-top: 56px; }
     .room-grid { padding: 14px 18px 40px; grid-template-columns: 1fr; }
@@ -288,6 +289,10 @@
   .account-slot .signin-btn:hover { color: var(--sage-text); border-color: var(--sage); }
   .account-slot .signed-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
   .account-slot .who { font-size: 13px; font-weight: 600; color: var(--ink); }
+  .account-slot .me { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 3px 3px 3px 12px; border-radius: 999px; }
+  .account-slot .me:hover { background: var(--surface2); }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line2); display: block; }
+  .avatar-fallback { display: flex; align-items: center; justify-content: center; background: var(--sage-fill); color: var(--sage-text); font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: 0.02em; }
   .theme-btn { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line2); background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .theme-btn:hover { color: var(--sage-text); border-color: var(--sage); }
   .account-wrap { position: relative; }
@@ -1256,23 +1261,30 @@
     } catch (e) { console.warn('sign-in unavailable', e); }
     renderAccount();
   }
+  function initialsOf(u) {
+    const f = (u.firstName || '').trim(), l = (u.lastName || '').trim();
+    if (f && l) return (f[0] + l[0]).toUpperCase();
+    const base = f || u.username || (u.primaryEmailAddress && u.primaryEmailAddress.emailAddress) || '?';
+    return base.slice(0, 2).toUpperCase();
+  }
   function renderAccount() {
     const slot = document.getElementById('accountSlot'); if (!slot) return;
-    const toggle = `<div class="theme-btn" onclick="toggleTheme()" title="Light / dark">${themeIcon()}</div><div class="theme-btn" onclick="toggleAcctMenu(event)" title="More">⋯</div>`;
+    const more = `<div class="theme-btn" onclick="toggleAcctMenu(event)" title="More">⋯</div>`;
     renderAcctMenu();
-    if (!auth.pk) { slot.innerHTML = toggle; return; }
+    if (!auth.pk) { slot.innerHTML = more; return; }
     if (auth.signedIn) {
-      const u = window.Clerk && Clerk.user; const name = u ? (u.firstName || u.username || (u.primaryEmailAddress && u.primaryEmailAddress.emailAddress) || '') : '';
+      const u = window.Clerk && Clerk.user; const name = u ? (u.firstName || u.username || '') : '';
       renderGreetingSoon();
-      slot.innerHTML = `${toggle}<span class="signed-label">${auth.plan === 'paid' ? 'unlimited rooms' : `${ownRooms()} of ${auth.roomLimit} free rooms`}</span>${name ? `<span class="who">${escapeHtml(name)}</span>` : ''}<div id="userButton"></div>`;
-      try { Clerk.mountUserButton(document.getElementById('userButton')); } catch (e) {}
+      // your face (or initials) is the menu — one control, everything under it
+      const face = u && u.hasImage && u.imageUrl ? `<img class="avatar" src="${u.imageUrl}" alt="" />` : `<div class="avatar avatar-fallback">${escapeHtml(u ? initialsOf(u) : '?')}</div>`;
+      slot.innerHTML = `<div class="me" onclick="toggleAcctMenu(event)" title="Account">${name ? `<span class="who">${escapeHtml(name)}</span>` : ''}${face}</div>`;
     } else {
-      slot.innerHTML = `${toggle}<button class="signin-btn" onclick="Clerk.openSignIn()">Sign in</button>`;
+      slot.innerHTML = `${more}<button class="signin-btn" onclick="Clerk.openSignIn()">Sign in</button>`;
     }
   }
   function renderAcctMenu() {
     const m = document.getElementById('acctMenu'); if (!m) return;
-    const plan = auth.signedIn ? (auth.plan === 'paid' ? 'Unlimited rooms' : `${ownRooms()} of ${auth.roomLimit} free rooms · plans coming soon`) : 'Not signed in · saving with a sync code';
+    const plan = auth.signedIn ? (auth.plan === 'paid' ? 'Full access' : `Free · ${ownRooms()} of ${auth.roomLimit} rooms`) : 'Not signed in · saving with a sync code';
     const items = [
       `<div class="mi static">${escapeHtml(plan)}</div>`,
       `<div class="sep"></div>`,
@@ -1282,6 +1294,7 @@
     ];
     if (!auth.signedIn) items.push(`<div class="mi" onclick="changeSync(); toggleAcctMenu()">Sync code<span class="k">${escapeHtml(syncCode())}</span></div>`);
     if (auth.pk && !auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`);
+    items.push(`<div class="mi" onclick="location.href='mailto:marcosmcuellar@gmail.com?subject=Nenemi'; toggleAcctMenu()">Reach out to us<span class="k">email</span></div>`);
     if (auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="try { Clerk.openUserProfile(); } catch (e) {} toggleAcctMenu()">Manage account</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`);
     m.innerHTML = items.join('');
   }
@@ -1299,7 +1312,7 @@
   function renderSyncBadge() {
     const el = document.getElementById('syncBadge'); if (!el) return;
     el.classList.toggle('on', syncOn);
-    if (auth.signedIn) { el.textContent = syncOn ? `Signed in · synced everywhere · ${auth.plan === 'paid' ? 'unlimited rooms' : `${ownRooms()} of ${auth.roomLimit} free rooms`}` : 'Signed in · saving on this device until we reconnect'; el.onclick = null; el.title = ''; renderAccount(); return; }
+    if (auth.signedIn) { el.textContent = syncOn ? `Signed in · synced everywhere` : 'Signed in · saving on this device until we reconnect'; el.onclick = null; el.title = ''; renderAccount(); return; }
     el.onclick = changeSync; el.title = 'Click to change your sync code';
     el.textContent = syncOn ? `Synced · code ${syncCode()} · use it on your phone` : 'Saved on this device only · click to sync';
     renderAccount();
