@@ -333,28 +333,6 @@
   #pane-stuck { background: radial-gradient(circle at 50% 38%, var(--glow2) 0%, var(--sanctuary) 60%); align-items: center; justify-content: center; }
   .stuck-close { position: absolute; top: 24px; right: 32px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .stuck-inner { display: flex; flex-direction: column; align-items: center; }
-  .doors { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; padding: 0 20px; }
-  .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(127,169,156,0.5); margin-bottom: 28px; }
-  .doors-title { font-family: var(--font-display); font-weight: 700; font-size: 30px; text-align: center; letter-spacing: -0.01em; }
-  .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
-  .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
-  .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; border: 1px solid rgba(241,241,234,0.08); transition: transform 140ms ease, border-color 140ms ease; }
-  .door:hover { transform: translateY(-2px); border-color: rgba(241,241,234,0.2); }
-  .door.d1 { background: linear-gradient(160deg, #17302A 0%, #121A17 100%); }
-  .door.d2 { background: linear-gradient(160deg, #1B2836 0%, #12171C 100%); }
-  .door.d3 { background: linear-gradient(160deg, #332A18 0%, #1B1712 100%); }
-  .door.d4 { background: linear-gradient(160deg, #2E2130 0%, #1A151B 100%); }
-  .door-label { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
-  .door-sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
-  .door-why { margin-top: 12px; font-size: 12px; }
-  .door-why .q { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--faint); cursor: pointer; }
-  .door-why .a { display: none; color: var(--muted); line-height: 1.5; margin-top: 6px; }
-  .door-why.open .q { display: none; }
-  .door-why.open .a { display: block; }
-  .stuck-note { font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); margin-top: 18px; text-align: center; max-width: 420px; line-height: 1.6; }
-  .doors-back { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 22px; cursor: pointer; }
-  .doors-back:hover { color: var(--sage-text); }
-  @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(127,169,156,0.35); }
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
   .regroup { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 22px; }
@@ -585,34 +563,7 @@
       <div class="stuck-close" onclick="go('home')">
         <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
       </div>
-      <div class="doors" id="doors">
-        <div class="doors-mark"></div>
-        <div class="doors-title">Where are you right now?</div>
-        <div class="doors-sub">You don't need a new plan. You just need a way back in.</div>
-        <div class="doors-grid">
-          <div class="door d1" onclick="openDoor('start')">
-            <div class="door-label">I can't start.</div>
-            <div class="door-sub">We'll find the smallest possible first step.</div>
-            <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Starting is the hardest part. We trick the brain by making the task tiny.</span></div>
-          </div>
-          <div class="door d2" onclick="openDoor('full')">
-            <div class="door-label">My head is too full.</div>
-            <div class="door-sub">Put it down. I've got it.</div>
-            <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Working memory is limited. Offload the noise so you can focus.</span></div>
-          </div>
-          <div class="door d3" onclick="openDoor('tired')">
-            <div class="door-label">I have no energy.</div>
-            <div class="door-sub">Let's shrink the day to match you.</div>
-            <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Low dopamine means high resistance. We lower the bar to create momentum.</span></div>
-          </div>
-          <div class="door d4" onclick="openDoor('broke')">
-            <div class="door-label">I fell off.</div>
-            <div class="door-sub">You didn't fail. You paused.</div>
-            <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Shame is a productivity killer. We pick up exactly where you left off.</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="stuck-inner" id="stuckMove" hidden>
+      <div class="stuck-inner">
         <div class="stuck-mark"></div>
         <div class="regroup" id="regroup">
           <div class="rg-chip" data-state="start" onclick="setRegroup('start')">Can't start</div>
@@ -629,8 +580,6 @@
           <button class="stuck-btn ghost" onclick="nextNudge()">Give me another</button>
           <button class="stuck-btn ghost" onclick="go('home')">Just breathe with me</button>
         </div>
-        <div class="stuck-note" id="stuckNote"></div>
-        <div class="doors-back" onclick="showDoors()">← the doors</div>
       </div>
     </div>
 
@@ -669,7 +618,7 @@
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown');
-    if (id === 'stuck') { regroupState = null; document.querySelectorAll('.rg-chip').forEach(c => c.classList.remove('on')); nudgeOrder = shuffled(NUDGES); nudgePos = 0; showNudge(); showDoors(); }
+    if (id === 'stuck') { regroupState = null; document.querySelectorAll('.rg-chip').forEach(c => c.classList.remove('on')); nudgeOrder = shuffled(NUDGES); nudgePos = 0; showNudge(); }
     stopVoice();
   }
 
@@ -1073,53 +1022,6 @@
     setTimeout(() => go('home'), 1400);
   }
   setRegroup(null);
-
-  // ---------- the Way Back In: four doors (docs/nenemi-way-back-in.md) ----------
-  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckNote').textContent = ''; }
-  function openDoor(state) {
-    if (state === 'full') {
-      // door 2: the composer is the move
-      go('home');
-      const input = document.getElementById('composerInput'); input.placeholder = "Put it down. I've got it."; input.focus();
-      setTimeout(() => { input.placeholder = 'Dump anything here…'; }, 12000);
-      return;
-    }
-    document.getElementById('doors').hidden = true; document.getElementById('stuckMove').hidden = false;
-    setRegroup(state);
-    let note = '';
-    if (state === 'tired') note = lowEnergyDay();
-    if (state === 'broke') note = slideForward();
-    if (state === 'start') note = 'Your brain sees the whole thing as a mountain. We\u2019re looking for the fork.';
-    document.getElementById('stuckNote').textContent = note;
-  }
-  // door 3: keep what's fixed, keep two blocks, everything else goes to tomorrow, 15-minute buffers between what's left
-  function lowEnergyDay() {
-    const list = dayList(today), nowH = today.getHours() + today.getMinutes() / 60;
-    const ahead = list.filter(e => e.end > nowH).sort((a, b) => a.start - b.start);
-    const keep = [], move = []; let blocks = 0;
-    ahead.forEach(e => { if (e.kind === 'fixed') keep.push(e); else if (e.kind === 'buffer') { /* drop old buffers, we re-add them */ } else if (blocks < 2) { keep.push(e); blocks++; } else move.push(e); });
-    if (!ahead.length) return 'Nothing on the day. That\u2019s allowed.';
-    const tm = new Date(today); tm.setDate(tm.getDate() + 1); const tmList = dayList(tm);
-    move.forEach(e => { const dur = e.end - e.start; const st = nextFreeSlot(tmList, dur, 9); if (st !== null) tmList.push({ start: st, end: st + dur, name: e.name, kind: e.kind }); });
-    const past = list.filter(e => e.end <= nowH);
-    const rebuilt = [...past, ...keep];
-    // stretch: 15 minutes of air after each kept thing, if the next one allows it
-    keep.sort((a, b) => a.start - b.start).forEach((e, i) => { const next = keep[i + 1]; const bEnd = e.end + 0.25; if ((!next || next.start >= bEnd) && bEnd <= DAY_END) rebuilt.push({ start: e.end, end: bEnd, name: 'breathing room', kind: 'buffer' }); });
-    events[dkey(today)] = rebuilt; save(); renderCal();
-    return `Day shrunk to match you: ${keep.length} thing${keep.length === 1 ? '' : 's'} kept, ${move.length} moved to tomorrow, breathing room between.`;
-  }
-  // door 4: what didn't happen earlier today slides into the next white space. No red, just math.
-  function slideForward() {
-    const list = dayList(today), nowH = today.getHours() + today.getMinutes() / 60;
-    const missed = list.filter(e => e.kind === 'block' && e.end <= nowH);
-    if (!missed.length) return 'Nothing slipped. Pick up where you were.';
-    missed.forEach(e => { const i = list.indexOf(e); if (i >= 0) list.splice(i, 1); });
-    let placed = 0, tomorrow = 0;
-    const tm = new Date(today); tm.setDate(tm.getDate() + 1); const tmList = dayList(tm);
-    missed.forEach(e => { const dur = e.end - e.start; const st = nextFreeSlot(list, dur); if (st !== null) { list.push({ start: st, end: st + dur, name: e.name, kind: 'block' }); placed++; } else { const s2 = nextFreeSlot(tmList, dur, 9); if (s2 !== null) { tmList.push({ start: s2, end: s2 + dur, name: e.name, kind: 'block' }); tomorrow++; } } });
-    save(); renderCal();
-    return `${missed.length} thing${missed.length === 1 ? '' : 's'} moved forward${tomorrow ? `, ${tomorrow} to tomorrow` : ''}. Nothing is overdue. It just moved.`;
-  }
 
   let lockdownSeconds = 0;
   let lockdownInterval = null;
