@@ -484,6 +484,7 @@
     const nav = document.getElementById('nav-' + id);
     if (nav) nav.classList.add('active');
     if (id === 'rooms') renderRoomList();
+    if (id === 'calendar') scrollCalToNow();
   }
 
   (function setGreeting() {
@@ -764,7 +765,7 @@
 
 
   // ---------- calendar (day view + Smart Cal) ----------
-  const DAY_START = 8, DAY_END = 21, HOUR_PX = 75;
+  const DAY_START = 0, DAY_END = 24, HOUR_PX = 75; // full day: doctors, parents, night owls
   const today = new Date();
   let selectedDay = new Date(today);
   const events = {}; // key: yyyy-mm-dd -> [{start, end, name, kind}]  kind: 'block' | 'fixed' | 'buffer'
@@ -791,7 +792,13 @@
     if (diff === 0) return 'Today'; if (diff === 1) return 'Tomorrow'; if (diff === -1) return 'Yesterday';
     return d.toLocaleDateString(undefined, { weekday: 'long' });
   }
-  function shiftDay(n) { const d = new Date(selectedDay); d.setDate(d.getDate() + n); selectedDay = d; renderCal(); }
+  function scrollCalToNow() {
+    const body = document.querySelector('.cal-body'); const grid = document.getElementById('dayGrid'); if (!body || !grid) return;
+    const isToday = dkey(selectedDay) === dkey(today);
+    const h = isToday ? today.getHours() + today.getMinutes() / 60 : 7;
+    body.scrollTop = Math.max(0, grid.offsetTop + (h - DAY_START) * HOUR_PX - 180);
+  }
+  function shiftDay(n) { const d = new Date(selectedDay); d.setDate(d.getDate() + n); selectedDay = d; renderCal(); scrollCalToNow(); }
   function goToday() { selectedDay = new Date(today); renderCal(); }
 
   function renderCal() {
@@ -837,7 +844,7 @@
   function overlaps(list, s, e) { return list.some(x => s < x.end && e > x.start); }
   function nextFreeSlot(list, dur, from) {
     let h = from != null ? from : Math.max(DAY_START, Math.ceil((today.getHours() + today.getMinutes()/60) * 4) / 4 + 0.25);
-    if (dkey(selectedDay) !== dkey(today)) h = from != null ? from : DAY_START + 1;
+    if (dkey(selectedDay) !== dkey(today)) h = from != null ? from : 8;
     while (overlaps(list, h, h + dur) && h + dur <= DAY_END) h += 0.25;
     return h + dur <= DAY_END ? h : null;
   }
@@ -889,23 +896,27 @@
       return { name: cleanName(p) || 'Something', t, avoiding, buffer };
     }).filter(i => i.name);
     let fixed = 0, blocks = 0, buffers = 0, skipped = 0, firstAvoid = null; const placed = [];
+    // anything that doesn't fit today goes first thing tomorrow instead of vanishing
+    const tmDate = new Date(selectedDay); tmDate.setDate(tmDate.getDate() + 1); const tmList = dayList(tmDate);
+    let tomorrowCount = 0;
+    function spill(name, dur, kind) { const s = nextFreeSlot(tmList, dur, 8); if (s === null) { skipped++; return; } tmList.push({ start: s, end: s + dur, name, kind }); tomorrowCount++; }
     // 1. fixed things go exactly where they are
     items.filter(i => i.t !== null).forEach(i => { list.push({ start: i.t, end: i.t + 1, name: i.name, kind: 'fixed' }); placed.push({ name: i.name, s: i.t, e: i.t + 1 }); fixed++; });
     // 2. the thing you're avoiding goes first, and small
     items.filter(i => i.t === null && i.avoiding).forEach(i => {
-      const s = nextFreeSlot(list, 0.5); if (s === null) { skipped++; return; }
+      const s = nextFreeSlot(list, 0.5); if (s === null) { spill(i.name, 0.5, 'block'); return; }
       list.push({ start: s, end: s + 0.5, name: i.name, kind: 'block' }); placed.push({ name: i.name, s, e: s + 0.5 }); blocks++; if (!firstAvoid) firstAvoid = i.name;
     });
     // 3. buffers (lunch around 12:15 if it's free)
     items.filter(i => i.t === null && !i.avoiding && i.buffer).forEach(i => {
       const pref = /lunch/i.test(i.name) ? 12.25 : null;
       const s = (pref !== null && !overlaps(list, pref, pref + 0.75)) ? pref : nextFreeSlot(list, 0.75);
-      if (s === null) { skipped++; return; }
+      if (s === null) { spill(i.name, 0.75, 'buffer'); return; }
       list.push({ start: s, end: s + 0.75, name: i.name, kind: 'buffer' }); buffers++;
     });
     // 4. everything else as 40-minute blocks, with a 15-minute gap after each
     items.filter(i => i.t === null && !i.avoiding && !i.buffer).forEach(i => {
-      const s = nextFreeSlot(list, 40/60 + 0.25); if (s === null) { skipped++; return; }
+      const s = nextFreeSlot(list, 40/60 + 0.25); if (s === null) { spill(i.name, 40/60, 'block'); return; }
       list.push({ start: s, end: s + 40/60, name: i.name, kind: 'block' }); placed.push({ name: i.name, s, e: s + 40/60 }); blocks++;
     });
     // anything on the day that belongs to a room gets logged there — that's a "touch"
@@ -917,7 +928,8 @@
     box.value = ''; save(); renderCal();
     let note = `${builtTomorrow ? "It's late, so this is tomorrow's day. " : ''}Built. ${fixed} fixed, ${blocks} block${blocks===1?'':'s'}, ${buffers} buffer${buffers===1?'':'s'}.`;
     if (firstAvoid) note += ` "${firstAvoid}" goes first — 30 minutes, that's all.`;
-    if (skipped) note += ` ${skipped} didn't fit today; that's the buffer working, not a failure.`;
+    if (tomorrowCount) note += ` ${tomorrowCount} didn't fit today, so ${tomorrowCount === 1 ? "it's" : "they're"} first thing tomorrow. Tap → to see.`;
+    if (skipped) note += ` ${skipped} didn't fit anywhere; say ${skipped === 1 ? 'it' : 'them'} again another day.`;
     if (touched) note += ` Logged ${touched} to ${touched === 1 ? 'its room' : 'their rooms'}.`;
     calNote(note);
   }
@@ -1031,10 +1043,11 @@
       if (!r.ok) { syncOn = false; renderSyncBadge(); return; }
       const j = await r.json(); syncOn = true; applyPlan(j);
       let local = null; try { local = JSON.parse(localStorage.getItem(STORE_KEY) || 'null'); } catch (e) {}
-      if (auth.signedIn && !j.data) {
-        // nothing under this account yet: bring over whatever this device's sync code holds
+      const accountOwn = j.data && Array.isArray(j.data.rooms) ? j.data.rooms.filter(r => !r.demo).length : 0;
+      if (auth.signedIn && accountOwn === 0) {
+        // nothing of yours under this account yet: bring over whatever this device's sync code holds
         let code = null; try { code = localStorage.getItem(SYNC_KEY); } catch (e) {}
-        if (code) { try { const r2 = await fetch(`/api/state?device=${encodeURIComponent(code)}`); const j2 = r2.ok ? await r2.json() : null; if (j2 && j2.data && (!local || (j2.data.savedAt || 0) >= (local.savedAt || 0))) { applyState(j2.data); local = j2.data; } } catch (e) {} }
+        if (code) { try { const r2 = await fetch(`/api/state?device=${encodeURIComponent(code)}`); const j2 = r2.ok ? await r2.json() : null; const codeOwn = j2 && j2.data && Array.isArray(j2.data.rooms) ? j2.data.rooms.filter(r => !r.demo).length : 0; if (codeOwn > 0) { applyState(j2.data); local = j2.data; pushState(); return; } } catch (e) {} }
       }
       if (j.data && (force || !local || (j.data.savedAt || 0) > (local.savedAt || 0))) applyState(j.data);
       else if (local) pushState();
