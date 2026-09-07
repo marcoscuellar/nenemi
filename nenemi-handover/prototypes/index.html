@@ -295,7 +295,7 @@
   <!-- ============ MAIN ============ -->
   <div class="main">
     <div class="account-slot" id="accountSlot"></div>
-    <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done</div>
+    <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done, or just go quiet for a bit</div>
 
     <!-- HOME -->
     <div class="pane active" id="pane-home">
@@ -500,6 +500,7 @@
     if (nav) nav.classList.add('active');
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
+    stopVoice();
   }
 
   (function setGreeting() {
@@ -1169,6 +1170,10 @@
   let activeRec = null;
   function voiceNote(inputEl, msg) { const ph = inputEl.placeholder; inputEl.placeholder = msg; setTimeout(() => { inputEl.placeholder = ph; }, 2800); }
   function showVoiceHint(on) { const el = document.getElementById('voiceHint'); if (el) el.classList.toggle('on', on); }
+  // finish (and send) whatever was heard — used when you leave the page, switch tabs, or go quiet
+  function stopVoice() { if (activeRec) { activeRec.want = false; try { activeRec.stop(); } catch (e) {} } }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopVoice(); });
+  const VOICE_SILENCE_MS = 15000, VOICE_EMPTY_MS = 25000;
   function attachVoice(micEl, inputEl, onDone) {
     if (!micEl || !inputEl) return;
     if (!SR) { micEl.classList.add('unsupported'); micEl.title = 'Voice needs Chrome, Edge or Safari'; micEl.onclick = () => voiceNote(inputEl, 'Voice needs Chrome, Edge or Safari.'); return; }
@@ -1177,13 +1182,14 @@
       if (activeRec) { activeRec.want = false; try { activeRec.stop(); } catch (e) {} return; }
       const rec = new SR();
       rec.lang = navigator.language || 'en-US'; rec.interimResults = true; rec.continuous = true;
-      rec.want = true; rec.startedAt = Date.now();
+      rec.want = true; rec.startedAt = Date.now(); rec.lastHeard = Date.now();
       const base = inputEl.value.trim() ? inputEl.value.trim() + ' ' : '';
       let finals = '';
       rec.onresult = e => {
         let interim = '';
         for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) finals += r[0].transcript + ' '; else interim += r[0].transcript; }
         inputEl.value = (base + finals + interim).replace(/\s+/g, ' ').trimStart();
+        if (finals || interim) rec.lastHeard = Date.now();
       };
       rec.onerror = e => {
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { rec.want = false; voiceNote(inputEl, 'Mic is blocked — allow it in the address bar.'); }
@@ -1193,10 +1199,16 @@
       rec.onend = () => {
         // Chrome ends a session after silence or ~60s; keep going until you tap the mic (3 min cap)
         if (rec.want && Date.now() - rec.startedAt < 180000) { try { rec.start(); return; } catch (e) {} }
+        clearInterval(rec.watch);
         activeRec = null; micEl.classList.remove('listening'); showVoiceHint(false);
         inputEl.value = (base + finals).replace(/\s+/g, ' ').trim();
         if (finals.trim()) { inputEl.dataset.source = 'voice'; if (onDone) onDone(); }
       };
+      // silence watchdog: 15s quiet after you've said something, or 25s of nothing at all
+      rec.watch = setInterval(() => {
+        const quiet = Date.now() - rec.lastHeard;
+        if ((finals.trim() && quiet > VOICE_SILENCE_MS) || (!finals.trim() && quiet > VOICE_EMPTY_MS)) stopVoice();
+      }, 1000);
       activeRec = rec; micEl.classList.add('listening'); showVoiceHint(true); inputEl.focus();
       try { rec.start(); } catch (e) { activeRec = null; micEl.classList.remove('listening'); showVoiceHint(false); }
     };
