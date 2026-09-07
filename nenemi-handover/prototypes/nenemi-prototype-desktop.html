@@ -238,6 +238,7 @@
   .sc-chip.primary { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
   .sc-build { width: 100%; margin-top: 18px; padding: 12px; border: none; border-radius: 10px; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; }
   .sc-build:hover { background: var(--sage-text); }
+  .sc-build:disabled { opacity: .7; cursor: default; }
   .sc-note { font-family: var(--font-mono); font-size: 11px; line-height: 1.55; color: var(--sage-text); margin-top: 12px; min-height: 1em; }
 
   /* ROOMS HUB pane */
@@ -571,9 +572,9 @@
           <div class="smart-cal">
             <div class="sc-kicker">Smart cal</div>
             <div class="sc-title">Dump the day.</div>
-            <div class="sc-desc">Don't organize it. Tell NENEMI what exists, what is fixed, what you are avoiding, and what needs to happen. NENEMI turns it into one usable day.</div>
+            <div class="sc-desc">No organizing needed. What exists, what is fixed, what you are avoiding, what needs to happen, all in one breath. NENEMI turns it into one usable day.</div>
             <div class="sc-dump-wrap">
-              <textarea class="sc-dump" id="calDump" placeholder="I need to finish the proposal, call Sarah, I have the 2pm meeting, I need lunch..."></textarea>
+              <textarea class="sc-dump" id="calDump" placeholder="The 2pm with Sarah, I keep putting off the taxes, lunch at some point, finish the proposal opener..."></textarea>
               <div class="mic-btn" id="calMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
             </div>
             <div class="sc-divider"></div>
@@ -1345,7 +1346,8 @@
   function calNote(t) { document.getElementById('calNote').textContent = t; }
   function overlaps(list, s, e) { return list.some(x => s < x.end && e > x.start); }
   function nextFreeSlot(list, dur, from) {
-    let h = from != null ? from : Math.max(DAY_START, Math.ceil((today.getHours() + today.getMinutes()/60) * 4) / 4 + 0.25);
+    const now = new Date();
+    let h = from != null ? from : Math.max(DAY_START, Math.ceil((now.getHours() + now.getMinutes()/60) * 4) / 4 + 0.25);
     if (dkey(selectedDay) !== dkey(today)) h = from != null ? from : 8;
     while (overlaps(list, h, h + dur) && h + dur <= DAY_END) h += 0.25;
     return h + dur <= DAY_END ? h : null;
@@ -1376,64 +1378,127 @@
          .replace(/^(i'?m|i am|i keep|i)?\s*(avoiding|dreading|putting off)\s+/i, '')
          .replace(/^(i\s+)?(have|got)\s+/i, '')
          .replace(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i, '').replace(/\bat\s+\d{1,2}(?::\d{2})?\b/i, '')
+         .replace(/\b(which|that)\s+i\s+(keep\s+)?(putting off|avoiding|dreading|dread|hate)\b.*$/i, '')
+         .replace(/\bat some point\b/i, '').replace(/\b(i\s+)?(want|need|would like)\s+to\s+(have|get|do)\s+/i, '')
          .replace(/\s{2,}/g, ' ').replace(/[.\s]+$/,'').trim()
          .replace(/^(the|a|an|my|that)\s+/i, '');
     return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
   }
-  function buildDay() {
-    const box = document.getElementById('calDump');
-    const raw = box.value.trim();
-    if (!raw) { calNote('Say anything — messy is fine. One line is enough to start.'); box.focus(); return; }
-    // late at night, build tomorrow instead of cramming today
-    let builtTomorrow = false;
-    if (dkey(selectedDay) === dkey(today) && today.getHours() + today.getMinutes()/60 >= DAY_END - 1) {
-      const tm = new Date(today); tm.setDate(tm.getDate() + 1); selectedDay = tm; builtTomorrow = true;
-    }
-    const list = dayList(selectedDay);
+  // dump → items. Claude reads the mess when a key is configured; otherwise a plain splitter that at least drops the "yeah"s.
+  const FILLER_WORDS = /^(um+|uh+|oh+|ah+|yeah|yep|yes|no|nope|okay|ok|so|like|well|sorry|just|basically|actually|right|hmm+|erm|i|i'm|im|i've|was|saying|this|is|it's|its|that's|there's|for|the|a|an|and|it|that|to|of|we|were|talking|about|which|today|today's|tomorrow|tonight|really|kind|kinda|sort|mean|know|guess|think|maybe|anyway|also|then|monday|tuesday|wednesday|thursday|friday|saturday|sunday)$/i;
+  function realWords(s) { return s.replace(/[.!?,;:]+/g, ' ').split(/\s+/).filter(w => w && !FILLER_WORDS.test(w)); }
+  function hourOf(hhmm) { const m = /^(\d{1,2}):(\d{2})$/.exec(hhmm || ''); if (!m) return null; const h = +m[1] + (+m[2]) / 60; return h >= 0 && h < 24 ? h : null; }
+  // "start my day at 7", "I'm up at 6", "nothing before 10"
+  function dayStartFrom(raw) {
+    const m = raw.match(/\b(?:start|begin|starting)\s+(?:my|the)?\s*day\s+(?:at|around|by)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i) || raw.match(/\b(?:up|awake)\s+(?:at|around|by)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i) || raw.match(/\bnothing\s+before\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
+    if (!m) return null;
+    let h = +m[1]; const min = m[2] ? +m[2] : 0; const ap = (m[3] || '').toLowerCase();
+    if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0;
+    return h + min / 60;
+  }
+  function heuristicItems(raw) {
     const parts = raw.split(/\n|[,;]|\band\b|\bthen\b/i).map(s => s.trim()).filter(Boolean);
-    const items = parts.map(p => {
+    return parts.map(p => {
+      if (/\?\s*$/.test(p) || /^(can|could|would|will|should|are|is|do|does|did)\s+(we|you|it|i)\b/i.test(p)) return null;   // questions aimed at the box
+      if (/\b(start|begin|starting)\s+(my|the)?\s*day\b/i.test(p)) return null;                                              // handled by dayStartFrom
+      if (realWords(p).length < 2) return null;                                                                              // "yeah", "which is Monday"
+      if (/^(so\s+)?(today|tomorrow|tonight|it|this)('s|\s+is|\s+was)\b/i.test(p)) return null;                                     // "today is Labor Day"
       const t = parseTime(p);
       const avoiding = /avoid|dread|putting off|hate|ugh/i.test(p);
-      const buffer = /\b(lunch|walk|break|nap|rest|gym|breathe|coffee)\b/i.test(p);
-      return { name: cleanName(p) || 'Something', t, avoiding, buffer };
-    }).filter(i => i.name);
-    let fixed = 0, blocks = 0, buffers = 0, skipped = 0, firstAvoid = null; const placed = [];
+      const buffer = /\b(lunch|dinner|breakfast|walk|break|nap|rest|gym|breathe|coffee|shower)\b/i.test(p);
+      const name = cleanName(p); if (!name) return null;
+      return { name, kind: t !== null ? 'fixed' : buffer ? 'buffer' : 'block', start: t, minutes: t !== null ? 60 : avoiding ? 30 : buffer ? 45 : 40, avoiding, room_id: null };
+    }).filter(Boolean);
+  }
+  async function smartPlan(text) {
+    const now = new Date();
+    const ctx = {
+      text, day: dkey(selectedDay), weekday: selectedDay.toLocaleDateString('en-US', { weekday: 'long' }), is_today: dkey(selectedDay) === dkey(today),
+      now: toTimeValue(now.getHours() + now.getMinutes() / 60),
+      existing: dayList(selectedDay).slice().sort((a, b) => a.start - b.start).map(e => ({ start: toTimeValue(e.start), end: toTimeValue(e.end), name: e.name, kind: e.kind })),
+      rooms: rooms.map(r => ({ id: r.id, name: r.name })),
+    };
+    const r = await fetch(apiUrl().replace('/api/state', '/api/plan'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
+    if (!r.ok) throw new Error('plan ' + r.status);
+    return r.json();
+  }
+  // where placing begins: the morning when the day hasn't started yet (or it's another day), otherwise from now
+  function planFrom(dayStart) {
+    const now = new Date(); const nowH = now.getHours() + now.getMinutes() / 60;
+    const morning = dayStart != null ? dayStart : 8;
+    if (dkey(selectedDay) !== dkey(today) || nowH < 5) return morning;
+    return Math.max(morning, Math.ceil(nowH * 4) / 4 + 0.25);
+  }
+  function placeItems(items, dayStart) {
+    const list = dayList(selectedDay);
+    const from = planFrom(dayStart);
+    const out = { fixed: 0, blocks: 0, buffers: 0, skipped: 0, tomorrowCount: 0, firstAvoid: null, placed: [] };
     // anything that doesn't fit today goes first thing tomorrow instead of vanishing
     const tmDate = new Date(selectedDay); tmDate.setDate(tmDate.getDate() + 1); const tmList = dayList(tmDate);
-    let tomorrowCount = 0;
-    function spill(name, dur, kind) { const s = nextFreeSlot(tmList, dur, 8); if (s === null) { skipped++; return; } tmList.push({ start: s, end: s + dur, name, kind }); tomorrowCount++; }
-    // 1. fixed things go exactly where they are
-    items.filter(i => i.t !== null).forEach(i => { list.push({ start: i.t, end: i.t + 1, name: i.name, kind: 'fixed' }); placed.push({ name: i.name, s: i.t, e: i.t + 1 }); fixed++; });
-    // 2. the thing you're avoiding goes first, and small
-    items.filter(i => i.t === null && i.avoiding).forEach(i => {
-      const s = nextFreeSlot(list, 0.5); if (s === null) { spill(i.name, 0.5, 'block'); return; }
-      list.push({ start: s, end: s + 0.5, name: i.name, kind: 'block' }); placed.push({ name: i.name, s, e: s + 0.5 }); blocks++; if (!firstAvoid) firstAvoid = i.name;
+    function spill(it, dur) { const s = nextFreeSlot(tmList, dur, dayStart != null ? dayStart : 8); if (s === null) { out.skipped++; return; } tmList.push({ start: s, end: s + dur, name: it.name, kind: it.kind }); out.tomorrowCount++; }
+    function put(it, s, dur) { list.push({ start: s, end: s + dur, name: it.name, kind: it.kind }); out.placed.push({ it, s, e: s + dur }); if (it.kind === 'fixed') out.fixed++; else if (it.kind === 'buffer') out.buffers++; else out.blocks++; }
+    const dupe = it => list.some(x => x.name.toLowerCase() === it.name.toLowerCase());
+    // 1. anything with a clock time goes exactly there
+    items.filter(i => i.start !== null).forEach(i => { if (dupe(i)) return; const dur = i.minutes / 60; if (i.start + dur > DAY_END) { spill(i, dur); return; } put(i, i.start, dur); });
+    // 2. the thing being avoided goes first, and small
+    items.filter(i => i.start === null && i.avoiding).forEach(i => {
+      if (dupe(i)) return; const dur = Math.min(i.minutes, 30) / 60;
+      const s = nextFreeSlot(list, dur + 0.25, from); if (s === null) { spill(i, dur); return; }
+      put(i, s, dur); if (!out.firstAvoid) out.firstAvoid = i.name;
     });
-    // 3. buffers (lunch around 12:15 if it's free)
-    items.filter(i => i.t === null && !i.avoiding && i.buffer).forEach(i => {
-      const pref = /lunch/i.test(i.name) ? 12.25 : null;
-      const s = (pref !== null && !overlaps(list, pref, pref + 0.75)) ? pref : nextFreeSlot(list, 0.75);
-      if (s === null) { spill(i.name, 0.75, 'buffer'); return; }
-      list.push({ start: s, end: s + 0.75, name: i.name, kind: 'buffer' }); buffers++;
+    // 3. everything else in the order it came, with 15 minutes of air after each (lunch lands around 12:15 when that's free)
+    items.filter(i => i.start === null && !i.avoiding).forEach(i => {
+      if (dupe(i)) return; const dur = i.minutes / 60;
+      const meal = i.kind === 'buffer' ? (/lunch/i.test(i.name) ? { pref: 12.25, notBefore: 11.5 } : /dinner/i.test(i.name) ? { pref: 18, notBefore: 17.5 } : /breakfast/i.test(i.name) ? { pref: 8, notBefore: 6.5 } : null) : null;
+      const pref = meal && from <= meal.pref ? meal.pref : null;
+      const s = (pref !== null && !overlaps(list, pref, pref + dur)) ? pref : nextFreeSlot(list, dur + 0.25, meal ? Math.max(from, meal.notBefore) : from);
+      if (s === null) { spill(i, dur); return; }
+      put(i, s, dur);
     });
-    // 4. everything else as 40-minute blocks, with a 15-minute gap after each
-    items.filter(i => i.t === null && !i.avoiding && !i.buffer).forEach(i => {
-      const s = nextFreeSlot(list, 40/60 + 0.25); if (s === null) { spill(i.name, 40/60, 'block'); return; }
-      list.push({ start: s, end: s + 40/60, name: i.name, kind: 'block' }); placed.push({ name: i.name, s, e: s + 40/60 }); blocks++;
+    // anything on the day that belongs to a room gets logged there: that's a "touch"
+    out.touched = 0;
+    out.placed.forEach(pl => {
+      const room = rooms.find(r => r.id === pl.it.room_id) || rooms.find(r => { const w = r.name.toLowerCase().split(' ')[0]; return w.length >= 4 && pl.it.name.toLowerCase().includes(w); });
+      if (room) { room.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `On the day: ${pl.it.name}, ${fmtAmPm(pl.s)}–${fmtAmPm(pl.e)}.` }); out.touched++; }
     });
-    // anything on the day that belongs to a room gets logged there — that's a "touch"
-    let touched = 0;
-    placed.forEach(pl => {
-      const room = rooms.find(r => { const w = r.name.toLowerCase().split(' ')[0]; return w.length >= 4 && pl.name.toLowerCase().includes(w); });
-      if (room) { room.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `On the day: ${pl.name}, ${fmtAmPm(pl.s)}–${fmtAmPm(pl.e)}.` }); touched++; }
-    });
+    return out;
+  }
+  let building = false;
+  async function buildDay() {
+    if (building) return;
+    const box = document.getElementById('calDump');
+    const raw = box.value.trim();
+    if (!raw) { calNote('Say anything, messy is fine. One line is enough to start.'); box.focus(); return; }
+    // late at night, build tomorrow instead of cramming today
+    let builtTomorrow = false;
+    if (dkey(selectedDay) === dkey(today) && new Date().getHours() >= DAY_END - 1) {
+      const tm = new Date(today); tm.setDate(tm.getDate() + 1); selectedDay = tm; builtTomorrow = true;
+    }
+    const btn = document.querySelector('.sc-build');
+    let plan = null;
+    if (auth.smart && location.protocol !== 'file:') {
+      building = true; btn.disabled = true; btn.textContent = 'Reading the day…'; calNote('');
+      try { plan = await smartPlan(raw); } catch (e) { plan = null; }
+      building = false; btn.disabled = false; btn.textContent = 'Build this day';
+    }
+    const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), room_id: it.room_id || null })) : heuristicItems(raw);
+    const dayStart = plan ? hourOf(plan.day_start) : dayStartFrom(raw);
+    if (!items.length) {
+      if (builtTomorrow) { selectedDay = new Date(today); }
+      calNote((plan && plan.reply) || "Didn't catch anything to put on the day yet. Say it any way you like, times or no times.");
+      return;   // their words stay in the box
+    }
+    const r = placeItems(items, dayStart);
     box.value = ''; save(); renderCal();
-    let note = `${builtTomorrow ? "It's late, so this is tomorrow's day. " : ''}Built. ${fixed} fixed, ${blocks} block${blocks===1?'':'s'}, ${buffers} buffer${buffers===1?'':'s'}.`;
-    if (firstAvoid) note += ` "${firstAvoid}" goes first — 30 minutes, that's all.`;
-    if (tomorrowCount) note += ` ${tomorrowCount} didn't fit today, so ${tomorrowCount === 1 ? "it's" : "they're"} first thing tomorrow. Tap → to see.`;
-    if (skipped) note += ` ${skipped} didn't fit anywhere; say ${skipped === 1 ? 'it' : 'them'} again another day.`;
-    if (touched) note += ` Logged ${touched} to ${touched === 1 ? 'its room' : 'their rooms'}.`;
-    calNote(note);
+    const n = r.fixed + r.blocks + r.buffers;
+    let note = builtTomorrow ? "It's late, so this is tomorrow's day. " : '';
+    if (plan && plan.reply && n) note += plan.reply + ' ';
+    else note += `Built. ${r.fixed} fixed, ${r.blocks} block${r.blocks === 1 ? '' : 's'}, ${r.buffers} buffer${r.buffers === 1 ? '' : 's'}.`;
+    if (!plan && r.firstAvoid) note += ` "${r.firstAvoid}" goes first, 30 minutes, that's all.`;
+    if (r.tomorrowCount) note += ` ${r.tomorrowCount} didn't fit today, so ${r.tomorrowCount === 1 ? "it's" : "they're"} first thing tomorrow. Tap → to see.`;
+    if (r.skipped) note += ` ${r.skipped} didn't fit anywhere; say ${r.skipped === 1 ? 'it' : 'them'} again another day.`;
+    if (r.touched) note += ` Logged ${r.touched} to ${r.touched === 1 ? 'its room' : 'their rooms'}.`;
+    calNote(note.replace(/\s{2,}/g, ' ').trim());
   }
   document.getElementById('calDump').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) buildDay(); });
 
