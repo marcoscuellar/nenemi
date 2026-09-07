@@ -14,6 +14,16 @@ This is why people with ADHD lean so hard on external scaffolding: timers, body 
 
 Companion line, from the DOS era: *your brain isn't broken. It's high-spec hardware running in the wrong environment.*
 
+## The plain-English version
+
+Somewhere to put a thought without having to organize it first, because that can be the very thing keeping you from saving it.
+
+Throw it in a room. The app sorts it, keeps the context attached, and helps you find it later: what it was, why it mattered, and where you left off.
+
+The rooms give "it's okay, the app has it" an actual place. You can leave something unfinished without starting from zero when you come back.
+
+*This is the landing-page copy. Don't polish it into marketing.*
+
 ---
 
 ## What "being the box" means in the product
