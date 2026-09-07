@@ -187,10 +187,10 @@
   .ag-row .hl { width: 64px; flex-shrink: 0; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 6px; }
   .ag-row.now .hl { color: var(--sage-text); }
   .ag-row .hb { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-  .ag-card { background: var(--evt-block); border-left: 3px solid var(--sage); border-radius: 6px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
+  .ag-card { background: var(--evt-block); border-radius: 10px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
   .ag-card:hover { transform: translateX(2px); }
-  .ag-card.fixed { background: var(--evt-fixed); border-left-color: var(--evt-fixed-line); }
-  .ag-card.buffer { background: var(--evt-buffer); border-left-color: #C89C4A; }
+  .ag-card.fixed { background: var(--evt-fixed); }
+  .ag-card.buffer { background: var(--evt-buffer); }
   .ag-card.past { opacity: 0.55; }
   .ag-title { font-size: 14px; font-weight: 600; color: var(--ink); }
   .ag-meta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--muted); margin-top: 4px; }
@@ -215,7 +215,8 @@
   .kind-chip.on { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
   .sheet-notes { min-height: 84px; font-family: var(--font-body); font-size: 14px; line-height: 1.5; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; resize: vertical; outline: none; }
   .sheet-notes:focus { border-color: var(--sage); }
-  .sheet-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+  .sheet-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+  .sheet-actions .spacer { flex: 1; }
   .sheet-btn { font-family: var(--font-body); font-weight: 600; font-size: 13.5px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
   .sheet-btn.primary { background: var(--btn); color: var(--btn-ink); border-color: transparent; }
   .sheet-btn.ghost:hover { color: var(--sage-text); border-color: var(--sage); }
@@ -506,8 +507,10 @@
         <label class="sheet-label">Room<select id="evRoom"></select></label>
         <textarea class="sheet-notes" id="evNotes" placeholder="Notes, links, what done looks like…"></textarea>
         <div class="sheet-actions">
+          <button class="sheet-btn ghost" id="evTomorrow" onclick="punt('tomorrow')">Tomorrow</button>
+          <button class="sheet-btn ghost" id="evBack" onclick="punt('back')">Back to room</button>
           <button class="sheet-btn ghost" id="evDelete" onclick="deleteEvent()">Delete</button>
-          <div style="flex:1"></div>
+          <div class="spacer"></div>
           <button class="sheet-btn ghost" onclick="closeEvent()">Cancel</button>
           <button class="sheet-btn primary" onclick="saveEvent()">Save</button>
         </div>
@@ -1356,6 +1359,8 @@
     sel.innerHTML = `<option value="">No room</option>` + rooms.map(r => `<option value="${r.id}"${e && e.room === r.id ? ' selected' : ''}>${escapeHtml(r.name)}</option>`).join('');
     document.getElementById('evNotes').value = e && e.notes ? e.notes : '';
     document.getElementById('evDelete').hidden = !e;
+    document.getElementById('evTomorrow').hidden = !e;
+    const back = document.getElementById('evBack'); back.hidden = !e; back.textContent = e && e.room && rooms.some(r => r.id === e.room) ? 'Back to room' : 'Off the day';
     document.getElementById('evtSheet').hidden = false;
     setTimeout(() => document.getElementById('evName').focus(), 50);
   }
@@ -1373,6 +1378,31 @@
     if (editing === null) list.push(patch); else Object.assign(list[editing], patch);
     save(); renderCal(); closeEvent();
     if (room) { const r = rooms.find(x => x.id === room); if (r && editing === null) { r.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `On the day: ${name}, ${fmtAmPm(start)}.` }); save(); } }
+  }
+  // not today: one tap, nothing overdue, nothing lost
+  function punt(where) {
+    if (editing === null) return closeEvent();
+    const list = dayList(selectedDay); const e = list[editing]; if (!e) return closeEvent();
+    list.splice(editing, 1);
+    const dur = Math.max(0.25, e.end - e.start);
+    if (where === 'tomorrow') {
+      const tm = new Date(selectedDay); tm.setDate(tm.getDate() + 1); const tl = dayList(tm);
+      let s = !overlaps(tl, e.start, e.start + dur) ? e.start : nextFreeSlot(tl, dur, e.start);
+      if (s === null) s = nextFreeSlot(tl, dur, 8); if (s === null) s = e.start;
+      tl.push(Object.assign({}, e, { start: s, end: Math.min(24, s + dur) }));
+      calNote(`${e.name} is on tomorrow at ${fmtAmPm(s)}. Nothing's overdue.`);
+    } else {
+      const r = rooms.find(x => x.id === e.room);
+      if (r) {
+        if (!r.loops.some(l => !l.resolved && l.text.toLowerCase() === e.name.toLowerCase())) r.loops.push({ text: e.name, resolved: false });
+        r.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `Back in the room from the day: ${e.name}.` });
+        calNote(`${e.name} is back in ${r.name}, waiting. Not lost.`);
+      } else {
+        loose.unshift({ text: e.name, source: 'calendar', ts: Date.now() });
+        calNote(`${e.name} is off the day, held loose on Rooms.`);
+      }
+    }
+    save(); renderCal(); closeEvent();
   }
   function deleteEvent() {
     if (editing === null) return closeEvent();
@@ -1456,7 +1486,8 @@
       const avoiding = /avoid|dread|putting off|hate|ugh/i.test(p);
       const buffer = /\b(lunch|dinner|breakfast|walk|break|nap|rest|gym|breathe|coffee|shower)\b/i.test(p);
       const name = cleanName(p); if (!name) return null;
-      return { name, kind: t !== null ? 'fixed' : buffer ? 'buffer' : 'block', start: t, minutes: t !== null ? 60 : priority ? 60 : avoiding ? 30 : buffer ? 45 : 40, avoiding, priority, due, room_id: null };
+      const energy = /\b(email|emails|inbox|invoice|invoices|bill|bills|form|forms|paperwork|admin|errand|errands|groceries|laundry|dishes|tidy|clean|call back|schedule|book|order|return|pay|renew|file|receipts)\b/i.test(p) ? 'low' : 'high';
+      return { name, kind: t !== null ? 'fixed' : buffer ? 'buffer' : 'block', start: t, minutes: t !== null ? 60 : priority ? 60 : avoiding ? 30 : buffer ? 45 : 40, avoiding, priority, due, energy, room_id: null };
     }).filter(Boolean);
   }
   async function smartPlan(text) {
@@ -1484,8 +1515,9 @@
     const out = { fixed: 0, blocks: 0, buffers: 0, skipped: 0, tomorrowCount: 0, firstAvoid: null, placed: [] };
     // anything that doesn't fit today goes first thing tomorrow instead of vanishing
     const tmDate = new Date(selectedDay); tmDate.setDate(tmDate.getDate() + 1); const tmList = dayList(tmDate);
-    function spill(it, dur) { const s = nextFreeSlot(tmList, dur, dayStart != null ? dayStart : 8); if (s === null) { out.skipped++; return; } tmList.push({ start: s, end: s + dur, name: it.name, kind: it.kind }); out.tomorrowCount++; }
-    function put(it, s, dur) { list.push({ start: s, end: s + dur, name: it.name, kind: it.kind }); out.placed.push({ it, s, e: s + dur }); if (it.kind === 'fixed') out.fixed++; else if (it.kind === 'buffer') out.buffers++; else out.blocks++; }
+    const roomFor = it => rooms.find(r => r.id === it.room_id) || rooms.find(r => { const w = r.name.toLowerCase().split(' ')[0]; return w.length >= 4 && it.name.toLowerCase().includes(w); }) || null;
+    function spill(it, dur) { const s = nextFreeSlot(tmList, dur, dayStart != null ? dayStart : 8); if (s === null) { out.skipped++; return; } const room = roomFor(it); tmList.push({ start: s, end: s + dur, name: it.name, kind: it.kind, room: room ? room.id : null }); out.tomorrowCount++; }
+    function put(it, s, dur) { const room = roomFor(it); list.push({ start: s, end: s + dur, name: it.name, kind: it.kind, room: room ? room.id : null }); out.placed.push({ it, s, e: s + dur, room }); if (it.kind === 'fixed') out.fixed++; else if (it.kind === 'buffer') out.buffers++; else out.blocks++; }
     const dupe = it => list.some(x => x.name.toLowerCase() === it.name.toLowerCase());
     // 1. anything with a clock time goes exactly there
     items.filter(i => i.start !== null).forEach(i => { if (dupe(i)) return; const dur = i.minutes / 60; if (i.start + dur > DAY_END) { spill(i, dur); return; } put(i, i.start, dur); });
@@ -1503,18 +1535,22 @@
       put(i, s, dur); if (!out.firstAvoid) out.firstAvoid = i.name;
     });
     // 4. everything else in the order it came, with 15 minutes of air after each (lunch lands around 12:15 when that's free)
+    //    high-energy work takes the earliest hours; low-energy admin floats toward the afternoon slump when there's room
+    const SLUMP = 13.5;
     items.filter(i => i.start === null && !i.priority && !i.avoiding).forEach(i => {
       if (dupe(i)) return; const dur = i.minutes / 60;
       const meal = i.kind === 'buffer' ? (/lunch/i.test(i.name) ? { pref: 12.25, notBefore: 11.5 } : /dinner/i.test(i.name) ? { pref: 18, notBefore: 17.5 } : /breakfast/i.test(i.name) ? { pref: 8, notBefore: 6.5 } : null) : null;
       const pref = meal && from <= meal.pref ? meal.pref : null;
-      const s = (pref !== null && !overlaps(list, pref, pref + dur)) ? pref : nextFreeSlot(list, dur + 0.25, meal ? Math.max(from, meal.notBefore) : from);
+      const lowFrom = i.kind === 'block' && i.energy === 'low' && from < SLUMP ? SLUMP : from;
+      let s = (pref !== null && !overlaps(list, pref, pref + dur)) ? pref : nextFreeSlot(list, dur + 0.25, meal ? Math.max(from, meal.notBefore) : lowFrom);
+      if (s === null && lowFrom !== from) s = nextFreeSlot(list, dur + 0.25, from);
       if (s === null) { spill(i, dur); return; }
       put(i, s, dur);
     });
     // anything on the day that belongs to a room gets logged there: that's a "touch"
     out.touched = 0;
     out.placed.forEach(pl => {
-      const room = rooms.find(r => r.id === pl.it.room_id) || rooms.find(r => { const w = r.name.toLowerCase().split(' ')[0]; return w.length >= 4 && pl.it.name.toLowerCase().includes(w); });
+      const room = pl.room;
       if (room) { room.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `On the day: ${pl.it.name}, ${fmtAmPm(pl.s)}–${fmtAmPm(pl.e)}.` }); out.touched++; }
     });
     return out;
@@ -1537,7 +1573,7 @@
       try { plan = await smartPlan(raw); } catch (e) { plan = null; }
       building = false; btn.disabled = false; btn.textContent = 'Build this day';
     }
-    const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), priority: Boolean(it.priority), due: hourOf(it.due), room_id: it.room_id || null })) : heuristicItems(raw);
+    const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), priority: Boolean(it.priority), due: hourOf(it.due), energy: it.energy === 'low' ? 'low' : 'high', room_id: it.room_id || null })) : heuristicItems(raw);
     const dayStart = plan ? hourOf(plan.day_start) : dayStartFrom(raw);
     if (!items.length) {
       if (builtTomorrow) { selectedDay = new Date(today); }

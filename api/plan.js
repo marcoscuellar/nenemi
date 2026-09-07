@@ -4,7 +4,7 @@
 //   headers: Authorization: Bearer <clerk token>   (or ?device=<sync code> while signed out)
 //   body:    { text, day: 'YYYY-MM-DD', weekday, is_today, now: 'HH:MM',
 //              existing: [{ start:'HH:MM', end:'HH:MM', name, kind }], rooms: [{ id, name }] }
-//   returns: { items: [{ name, kind, start, minutes, avoiding, priority, due, room_id }], day_start, heard_but_left_out, reply }
+//   returns: { items: [{ name, kind, start, minutes, avoiding, priority, due, energy, room_id }], day_start, heard_but_left_out, reply }
 //
 // Claude reads the rambling voice dump (ums, asides, apologies, questions)
 // and returns only the real things that belong on the day. The page places
@@ -36,6 +36,7 @@ const Plan = z.object({
     avoiding: z.boolean(),
     priority: z.boolean(),
     due: z.string().nullable(),
+    energy: z.enum(['high', 'low']),
     room_id: z.string().nullable(),
   })),
   day_start: z.string().nullable(),
@@ -68,6 +69,8 @@ avoiding: true when they say they are dreading, avoiding, putting off, hate, or 
 priority: true only when they ask for it in so many words: "prioritize this", "this is the most important", "this has to happen today", "must be done by", "top of the list". The app schedules that one before everything else, at its full length, so it finishes on time. At most two per day. Do not guess priority from tone; if they didn't ask, false.
 
 due: "HH:MM" 24-hour when they name a time it must be finished by ("by 3", "before the call", "before noon"), else null. A due time is not a start time.
+
+energy: "high" for deep focus, creating, writing, hard thinking, anything that needs the person's best hours. "low" for admin, email, forms, errands, calls back, tidying, anything they can do half-awake. The app keeps high-energy work early and floats low-energy work toward the afternoon slump. Meals and rest are "low".
 
 Never overschedule. A half-full day they can actually follow beats a perfect day they can't. If there is more than fits comfortably, keep what they asked to prioritize, what has a time, and what they sounded most serious about, and put the rest in heard_but_left_out.
 
@@ -135,6 +138,7 @@ export default async function handler(req, res) {
       avoiding: Boolean(it.avoiding),
       priority: Boolean(it.priority),
       due: hhmm(it.due),
+      energy: it.energy === 'low' ? 'low' : 'high',
       room_id: rooms.some(r => r.id === it.room_id) ? it.room_id : null,
     })).filter(it => it.name);
     items.forEach(it => { if (it.kind === 'fixed' && !it.start) it.kind = 'block'; });
