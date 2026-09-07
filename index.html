@@ -254,10 +254,7 @@
   .hub-header { padding: 64px 48px 8px; width: 100%; max-width: 1180px; margin: 0 auto; }
   .hub-title { font-family: var(--font-display); font-weight: 700; font-size: 26px; }
   .hub-sub { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
-  .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-content: start; }
-  /* bento, as they come: every fifth card is wide, so the shape never depends on a choice */
-  #roomList > :nth-child(5n+1) { grid-column: span 2; }
-  #roomList > :nth-child(5n+1) .room-name { font-size: 18px; }
+  .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-content: start; }
   .room-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
   .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
@@ -456,8 +453,6 @@
     .hub-header { padding-top: 64px; }
     .hub-title { font-size: 24px; }
     .room-grid { padding: 14px 14px 40px; grid-template-columns: 1fr 1fr; gap: 10px; }
-    #roomList > :nth-child(5n+1) { grid-column: auto; }
-    #roomList > :nth-child(5n+1) .room-name { font-size: 15px; }
     .room-card, .new-room-card { padding: 14px; border-radius: 16px; }
     .room-card-top { margin-bottom: 8px; }
     .room-icon { width: 28px; height: 28px; font-size: 15px; }
