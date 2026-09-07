@@ -2,8 +2,8 @@
 // available offline. Network-first for the page so updates flow through;
 // the API is never cached (sync handles offline on its own via localStorage).
 
-const VERSION = 'nenemi-shell-v1';
-const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png'];
+const VERSION = 'nenemi-shell-v2';
+const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png', '/icons/nenemi-mark.woff2'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
