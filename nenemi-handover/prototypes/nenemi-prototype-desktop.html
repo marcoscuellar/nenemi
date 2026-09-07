@@ -613,12 +613,12 @@
   const HELLOS_MORNING = ['morning', 'hey hey', 'there you are', 'oh hey', 'morning, you'];
   const HELLOS_LATE = ['hey', 'there you are', 'oh hey', 'hey hey'];
   const LINES = [
-    "what's taking up space?", "what's yelling the loudest?", 'drop it here.', "no rush. what's up?", "okay brain, what've we got?",
-    'too many tabs open?', "what's floating around up there?", 'come in, drop your stuff.', "you're here. that's enough for now.",
-    'where do we start?', 'one thing at a time.', 'what do we need to get out of your head?', "how's it looking?", "what's good?",
+    "what's taking up space?", "what's yelling the loudest?", 'drop it here.', "no rush, what's up?", "okay brain, what've we got?",
+    'too many tabs open?', "what's floating around up there?", 'come in, drop your stuff.', "being here is enough for now.",
+    'where do we start?', 'one thing at a time.', "how's it looking?", "what's good?",
     'what are we getting into?', "what's bouncing around today?", 'brain busy?', 'we can figure it out.',
   ];
-  const LINES_LATE = ["what's still looping?", 'drop it here, then sleep.', "you're here. that's enough for now.", 'say it so you can put it down.', 'no rush. what\'s up?'];
+  const LINES_LATE = ["what's still looping?", 'drop it here, then sleep.', 'being here is enough for now.', 'say it so you can put it down.', "no rush, what's up?"];
   function greetingLines() {
     const h = new Date().getHours();
     const name = userFirstName();
@@ -630,14 +630,14 @@
     // lines that know what's going on
     const ctx = [];
     const quiet = rooms.filter(r => !r.demo && r.loops.some(l => !l.resolved) && daysQuiet(r) >= 3).sort((a, b) => daysQuiet(b) - daysQuiet(a))[0];
-    if (quiet) ctx.push(`${quiet.name} has been quiet ${daysQuiet(quiet)} days. it's all still there.`);
+    if (quiet) ctx.push(`${quiet.name} has been quiet ${daysQuiet(quiet)} days, still all there.`);
     const nowH = h + new Date().getMinutes() / 60;
     const next = dayList(today).filter(e => e.kind !== 'buffer' && e.start > nowH).sort((a, b) => a.start - b.start)[0];
-    if (next) ctx.push(`${next.name} at ${fmtAmPm(next.start)}. nothing you have to do before it.`);
-    if (carried.length) ctx.push(`${carried.length === 1 ? 'one thing' : carried.length + ' things'} rolled over from yesterday. no rush.`);
+    if (next) ctx.push(`${next.name} at ${fmtAmPm(next.start)}, nothing before it.`);
+    if (carried.length) ctx.push(`${carried.length === 1 ? 'one thing' : carried.length + ' things'} rolled over from yesterday, no rush.`);
     if (loose.length) ctx.push(`${loose.length === 1 ? 'one loose thought' : loose.length + ' loose thoughts'} waiting on the rooms page.`);
     const last = rooms.filter(r => !r.demo && lastTouch(r)).sort((a, b) => lastTouch(b) - lastTouch(a))[0];
-    if (last && daysQuiet(last) < 3) ctx.push(`last you were in ${last.name}. pick up there, or drop something new.`);
+    if (last && daysQuiet(last) < 3) ctx.push(`last you were in ${last.name}.`);
 
     // every other visit gets a context line when there is one; the rest rotate through the sanctuary lines
     const plain = late ? LINES_LATE : LINES;
