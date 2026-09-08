@@ -372,7 +372,7 @@
   .doors-title { font-family: var(--font-display); font-weight: 700; font-size: 30px; text-align: center; letter-spacing: -0.01em; }
   .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
-  .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #16261F 0%, #121815 100%); border: 1px solid rgba(241,241,234,0.08); transition: transform 140ms ease, border-color 140ms ease; }
+  .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #1C1C1C 0%, #121212 100%); border: 1px solid rgba(244,242,236,0.08); transition: transform 140ms ease, border-color 140ms ease; }
   .door:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); }
   .door-label { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
   .door-sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
@@ -383,6 +383,9 @@
   .door-why.open .a { display: block; }
   .stuck-note { font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); margin-top: 18px; text-align: center; max-width: 440px; line-height: 1.6; }
   .doors-back { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 22px; cursor: pointer; }
+  .doors-people { margin-top: 30px; color: var(--muted); font-size: 13px; text-align: center; cursor: pointer; max-width: 460px; line-height: 1.5; }
+  .doors-people span { color: var(--sage-text); font-weight: 600; }
+  .doors-people:hover span { text-decoration: underline; }
   .doors-back:hover { color: var(--sage-text); }
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
@@ -561,9 +564,8 @@
     <div class="wordmark" aria-label="Nenemi" onclick="go('home')">NENEMI</div>
     <div class="topnav" id="topnav">
       <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
+      <div class="tn" id="tn-calendar" onclick="go('calendar')">My day</div>
       <div class="tn" id="tn-rooms" onclick="go('rooms')">Rooms</div>
-      <div class="tn" id="tn-calendar" onclick="go('calendar')">Calendar</div>
-      <div class="tn" id="tn-humans" onclick="go('humans')">Humans</div>
     </div>
     <div class="account-wrap"><div class="account-slot" id="accountSlot"></div><div class="acct-menu" id="acctMenu"></div></div>
     <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done, or just go quiet for a bit</div>
@@ -575,21 +577,21 @@
 
         <div class="composer-pill">
           <div class="plus-menu" id="plusMenu">
+            <div class="menu-item" onclick="closeMenuAnd('calendar')">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
+              My day
+            </div>
             <div class="menu-item" onclick="closeMenuAnd('rooms')">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2"/></svg>
               Rooms
             </div>
-            <div class="menu-item" onclick="closeMenuAnd('calendar')">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
-              Calendar
+            <div class="menu-item" onclick="startRecap()">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M2 12.5c2-1 3.5-1 5 0s3.5 1 5 0M2 8.5c2-1 3.5-1 5 0s3.5 1 5 0M8 2v3" stroke-linecap="round"/></svg>
+              Recap the day
             </div>
             <div class="menu-item" onclick="closeMenuAnd('stuck')">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
               I'm stuck
-            </div>
-            <div class="menu-item" onclick="closeMenuAnd('humans')">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="5.5" cy="5" r="2.2"/><circle cx="11" cy="5.5" r="1.8"/><path d="M1.5 14c0-2.5 1.8-4.3 4-4.3s4 1.8 4 4.3M9.8 9.9c1.8.1 3.2 1.6 3.2 3.7" stroke-linecap="round"/></svg>
-              Humans heal
             </div>
           </div>
           <textarea id="composerInput" rows="2" placeholder="Hi, I'm Nenemi. Drop it all here. We'll help you sort it out."></textarea>
@@ -758,6 +760,7 @@
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Shame is a productivity killer. We pick up exactly where you left off.</span></div>
           </div>
         </div>
+        <div class="doors-people" onclick="go('humans')">Stuck for longer than a day? Real people help. <span>ADHD coaches, therapists, psychiatrists →</span></div>
       </div>
       <div class="stuck-inner" id="stuckMove" hidden>
         <div class="stuck-mark"></div>
@@ -856,6 +859,14 @@
     document.getElementById('plusBtn').classList.remove('open');
   }
   function closeMenuAnd(id) { closeMenu(); go(id); }
+  // recap the day: the same box, told it's the end of the day. hold what matters, let the rest go.
+  let recapMode = false;
+  function startRecap() {
+    closeMenu(); go('home'); recapMode = true;
+    const input = document.getElementById('composerInput');
+    input.placeholder = "How did today go? What happened, what's still open, what can just go. I'll hold what matters.";
+    input.focus();
+  }
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('plusMenu');
     const btn = document.getElementById('plusBtn');
@@ -1055,7 +1066,8 @@
     if (!text) return;
     input.value = ''; growComposer();
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
-    captureText(text, source, document.getElementById('chatLog'));
+    captureText(text, source, document.getElementById('chatLog'), recapMode ? 'end_of_day_recap' : null);
+    if (recapMode) { recapMode = false; input.placeholder = "Hi, I'm Nenemi. Drop it all here. We'll help you sort it out."; }
   }
   // door 2: the same capture, inside the sanctuary, so nobody gets kicked back out to Home
   function stuckSend() {
@@ -1066,12 +1078,12 @@
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
     captureText(text, source, document.getElementById('stuckLog'));
   }
-  function captureText(text, source, log) {
+  function captureText(text, source, log, mode) {
     log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
     log.scrollTop = log.scrollHeight;
 
     const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
-    if (auth.smart && location.protocol !== 'file:') { smartCapture(text, source, log); return; }
+    if (auth.smart && location.protocol !== 'file:') { smartCapture(text, source, log, mode); return; }
     heuristicCapture(text, source, log);
   }
 
@@ -1093,13 +1105,14 @@
   }
 
   // the real thing: Claude reads the dump against your rooms and decides
-  async function smartCapture(text, source, log) {
+  async function smartCapture(text, source, log, mode) {
     const wait = document.createElement('div'); wait.className = 'bubble dos'; wait.textContent = 'Reading that…'; log.appendChild(wait); log.scrollTop = log.scrollHeight;
     try {
       const ctx = {
         text,
         rooms: rooms.map(r => ({ id: r.id, name: r.name, one_liner: r.one_liner, brief: r.brief, loops: r.loops.filter(l => !l.resolved).map(l => l.text), recent: r.log.slice(0, 4).map(e => e.text) })),
         loose: loose.map(t => t.text),
+        mode: mode || null,
       };
       const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
       if (!r.ok) throw new Error('route ' + r.status);

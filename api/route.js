@@ -52,6 +52,8 @@ Also:
 - "brief": when filing into a room or creating one, rewrite that room's Brief to include this new information. Two or three sentences, under 70 words, second person, present tense, warm, no guilt, no "you should". Say where they left off and what the next small move is. Null for loose and stuck.
 - "reply": one short line back to them in NENEMI's voice. Calm, specific, shame-free, no exclamation marks. Say what you did with it, e.g. "Filed under Memory App. The Brief now mentions the blah method."
 
+When mode is "end_of_day_recap": they are emptying their head at the end of the day so they don't carry it to bed. Sort what they said: things still open become loops_to_add on the right room (or a new room if it's clearly a project); worries and half-thoughts with nowhere to go are "loose"; anything they say is done, doesn't matter, or they want to drop is let go and not stored anywhere. If most of it is done or venting, action is "loose" with a short note of only what's worth keeping. The reply says, in one line, what's held and what was let go, e.g. "Held the two things for Ollin. The rest can go. Nothing to carry."
+
 Never invent facts that aren't in what they said or in the room data. When unsure between filing and a new room, file.`;
 
 function trim(s, n) { return typeof s === 'string' ? (s.length > n ? s.slice(0, n) + '…' : s) : ''; }
@@ -82,6 +84,7 @@ export default async function handler(req, res) {
 
   const rooms = roomsForPrompt(body.rooms);
   const loose = (Array.isArray(body.loose) ? body.loose : []).slice(0, 10).map(t => trim(typeof t === 'string' ? t : t?.text, 160));
+  const mode = body.mode === 'end_of_day_recap' ? 'end_of_day_recap' : null;
 
   const client = new Anthropic({ apiKey: API_KEY });
   try {
@@ -96,6 +99,7 @@ export default async function handler(req, res) {
         content: JSON.stringify({
           rooms,
           loose_thoughts: loose,
+          mode,
           they_said: text,
         }),
       }],
