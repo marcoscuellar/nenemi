@@ -1794,7 +1794,7 @@
   // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
   const STORE_KEY = 'nenemi.v1';
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, savedAt: Date.now() })); } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, savedAt: Date.now() })); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     clearTimeout(syncTimer); syncTimer = setTimeout(pushState, 800);
   }
   function restore() {
@@ -2034,6 +2034,16 @@
   document.getElementById('stuckInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); stuckSend(); } });
   document.getElementById('stuckInput').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.max(84, Math.min(this.scrollHeight, window.innerHeight * 0.4)) + 'px'; });
 
+  // first-time visitors on the open web see the landing page. anyone with anything saved, an installed app, or a sign-in goes straight in.
+  (function landing() {
+    if (location.protocol === 'file:' || location.pathname !== '/') return;
+    const q = new URLSearchParams(location.search);
+    let seen = null; try { seen = localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY); } catch (e) {}
+    const standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    if (q.has('open')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); return; }
+    if (seen || standalone || /__clerk|clerk_/.test(location.search + location.hash)) return;
+    location.replace('/welcome.html');
+  })();
   restore();
   renderCal();
   renderRoomList();

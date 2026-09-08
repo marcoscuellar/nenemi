@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Nenemi · The box</title>
+<meta name="description" content="A memory app for ADHD brains. Somewhere to put a thought without having to organize it first." />
+<meta name="theme-color" content="#0A0A0A" />
+<link rel="icon" href="/icons/n-192.png" type="image/png" />
+<link rel="apple-touch-icon" href="/icons/n-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
+  :root { --bg: #0A0A0A; --card: #161616; --ink: #F4F2EC; --muted: #9C9C96; --faint: #6A6A65; --line: rgba(244,242,236,0.12); --hg1: rgba(28,170,178,0.55); --hg2: rgba(12,84,96,0.32); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.65 Inter, -apple-system, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .glow { position: fixed; inset: -20%; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 44% 34% at 50% 34%, var(--hg1) 0%, var(--hg2) 40%, transparent 74%); filter: blur(28px); animation: drift 90s ease-in-out infinite alternate; }
+  @keyframes drift { from { filter: blur(28px) hue-rotate(0deg); } to { filter: blur(28px) hue-rotate(55deg); } }
+  @media (prefers-reduced-motion: reduce) { .glow { animation: none; } }
+  main { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 28px 24px 90px; }
+  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 120px; }
+  .mark { font-family: 'Nenemi Mark', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px rgba(244,242,236,0.55), 0 0 28px rgba(244,242,236,0.25); text-decoration: none; }
+  .open { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; }
+  .open:hover { color: var(--ink); border-color: var(--ink); }
+  .kicker { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding-bottom: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
+  h1 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 56px; line-height: 1.04; letter-spacing: -0.012em; margin: 0 0 26px; }
+  h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 34px; line-height: 1.08; letter-spacing: -0.01em; margin: 0 0 18px; }
+  p { margin: 0 0 16px; font-size: 17px; color: var(--ink); }
+  p.quiet { color: var(--muted); font-size: 15px; }
+  .cta { display: inline-block; margin-top: 10px; padding: 14px 22px; border-radius: 12px; background: var(--ink); color: var(--bg); font-weight: 600; text-decoration: none; font-size: 15px; }
+  .cta:hover { opacity: .92; }
+  section { margin-top: 110px; }
+  .four { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+  .four div { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .four b { display: block; font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 22px; margin-bottom: 6px; }
+  .four span { color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .never li { margin: 0 0 10px; color: var(--muted); }
+  .never li b { color: var(--ink); font-weight: 600; }
+  ul { padding-left: 18px; margin: 0; }
+  footer { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 0 24px 60px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--faint); display: flex; gap: 18px; flex-wrap: wrap; }
+  footer a { color: var(--faint); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  @media (max-width: 720px) { .top { margin-bottom: 84px; } h1 { font-size: 40px; } h2 { font-size: 28px; } .four { grid-template-columns: 1fr; } section { margin-top: 80px; } }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<main>
+  <div class="top">
+    <a class="mark" href="/welcome.html" aria-label="Nenemi">NENEMI</a>
+    <a class="open" href="/?open=1">Open Nenemi</a>
+  </div>
+
+  <span class="kicker">A memory app for ADHD brains</span>
+  <h1>Somewhere to put a thought without having to organize it first.</h1>
+  <p>Because that can be the very thing keeping you from saving it.</p>
+  <p>Throw it in a room. The app sorts it, keeps the context attached, and helps you find it later: what it was, why it mattered, and where you left off.</p>
+  <p>The rooms give "it's okay, the app has it" an actual place. You can leave something unfinished without starting from zero when you come back.</p>
+  <a class="cta" href="/?open=1">Open Nenemi →</a>
+  <p class="quiet" style="margin-top:14px;">Free. Two rooms, the calendar, voice, everything. No card.</p>
+
+  <section>
+    <span class="kicker">Why it exists</span>
+    <h2>Every crayon. No box.</h2>
+    <p>Executive function is the cardboard box. In a neurotypical brain, that box holds working memory, task initiation, and emotional regulation in a neat little row, so they can reach in and pull out exactly the one they need, right when they need it.</p>
+    <p>When you have executive dysfunction, you still have the exact same crayons: the intelligence, the intentions, the raw cognitive ability. You aren't missing any colors. You are just missing the box.</p>
+    <p>So when you try to do something simple, like pay a bill, clean a room, or reply to an email, the crayons are rolling off the desk, hiding under the couch, snapping in half. You end up spending 90% of your energy rounding them up, and you're exhausted before you've started to draw.</p>
+    <p><b>Nenemi exists to be the box.</b> Not a better to-do list. Not a coach. The cardboard. So the 90% goes back to the drawing.</p>
+  </section>
+
+  <section>
+    <span class="kicker">What's inside</span>
+    <div class="four">
+      <div><b>Say it anywhere.</b><span>Type it or talk it, messy is fine. Nenemi files it in the right room, starts a new one, or holds it loose. You never decide where it goes.</span></div>
+      <div><b>Rooms.</b><span>One thing per room, always visible, never lost. Each one opens with where you left off and one small next move.</span></div>
+      <div><b>My day.</b><span>Dump the whole day in one breath and get a usable day back, with air between things. Or write about it. A page a day, yours only.</span></div>
+      <div><b>A way back in.</b><span>When everything is everywhere: four doors, then one small move. Never a list. Never a lecture.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="kicker">What it never does</span>
+    <ul class="never">
+      <li><b>Tells you what to do.</b> It offers, asks, or holds.</li>
+      <li><b>Keeps score.</b> No streaks, no red, no overdue, no "still up?"</li>
+      <li><b>Makes you organize before you can dump.</b></li>
+      <li><b>Pretends to be a person.</b> Nenemi is the nudge, not the treatment. Real people heal, and the app points to them.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="kicker">The name</span>
+    <p class="quiet">Nenemi is Nahuatl for "to walk, to wander." Your brain isn't broken. It's high-spec hardware running in the wrong environment.</p>
+    <a class="cta" href="/?open=1">Open Nenemi →</a>
+  </section>
+</main>
+<footer>
+  <a href="/privacy.html">Privacy</a>
+  <a href="/terms.html">Terms</a>
+  <a href="/support.html">Support</a>
+  <span>© 2026 Nenemi</span>
+</footer>
+</body>
+</html>
