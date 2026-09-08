@@ -34,6 +34,8 @@
 
     --glow: #1B1B1B;
     --glow-stop: 62%;
+    --hg1: rgba(64, 112, 255, 0.58);
+    --hg2: rgba(30, 52, 160, 0.30);
     --glow2: #171717;
     --evt-block: #1E1E1E;
     --evt-fixed: #151515;
@@ -65,6 +67,8 @@
     --on-sage: #FFFFFF;
     --glow: #EDEDEB;
     --glow-stop: 62%;
+    --hg1: rgba(136, 190, 255, 0.95);
+    --hg2: rgba(190, 220, 255, 0.6);
     --glow2: #F3F3F1;
     --evt-block: #EFEFED;
     --evt-fixed: #F7F7F6;
@@ -129,10 +133,14 @@
   .pane.active { display: flex; }
 
   /* HOME pane (minimal, centered) */
-  #pane-home {
-    align-items: center; justify-content: center;
-    background: radial-gradient(circle at 50% 42%, var(--glow) 0%, var(--sanctuary) var(--glow-stop));
-  }
+  #pane-home { align-items: center; justify-content: center; background: var(--sanctuary); }
+  /* the one place with color: a big soft glow behind the box, drifting slowly from blue toward violet and back */
+  #pane-home::before { content: ''; position: absolute; inset: -20%; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 44% 40% at 50% 55%, var(--hg1) 0%, var(--hg2) 40%, transparent 74%);
+    filter: blur(28px); animation: glowDrift 90s ease-in-out infinite alternate; }
+  @keyframes glowDrift { from { filter: blur(28px) hue-rotate(0deg); } to { filter: blur(28px) hue-rotate(55deg); } }
+  @media (prefers-reduced-motion: reduce) { #pane-home::before { animation: none; } }
+  #pane-home > * { position: relative; z-index: 1; }
   .home-center { display: flex; flex-direction: column; align-items: center; width: 560px; max-width: 90%; }
   @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
   .wordmark { position: absolute; top: 22px; left: 26px; z-index: 30; font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; color: var(--ink); transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent), 0 0 28px color-mix(in srgb, var(--ink) 25%, transparent); user-select: none; cursor: pointer; }
