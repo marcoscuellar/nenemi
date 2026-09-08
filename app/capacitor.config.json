@@ -1,0 +1,16 @@
+{
+  "appId": "com.ollinos.nenemi",
+  "appName": "Nenemi",
+  "webDir": "www",
+  "server": {
+    "url": "https://www.mynenemi.com/?open=1",
+    "allowNavigation": ["www.mynenemi.com", "mynenemi.com", "*.clerk.accounts.dev", "*.clerk.com", "accounts.google.com", "appleid.apple.com"]
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#0A0A0A",
+    "preferredContentMode": "mobile",
+    "scheme": "Nenemi"
+  },
+  "backgroundColor": "#0A0A0A"
+}

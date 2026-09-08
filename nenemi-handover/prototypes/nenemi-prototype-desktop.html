@@ -2009,6 +2009,8 @@
 
   // ---------- voice (browser speech-to-text, no key; Chrome / Edge / Safari, needs https) ----------
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  // inside the iPhone app there is no browser speech API; the native shell hands us Apple's instead
+  const NATIVE_SR = (() => { try { const C = window.Capacitor; return C && C.isNativePlatform && C.isNativePlatform() && C.Plugins && C.Plugins.SpeechRecognition ? C.Plugins.SpeechRecognition : null; } catch (e) { return null; } })();
   let activeRec = null;
   function voiceNote(inputEl, msg) { const ph = inputEl.placeholder; inputEl.placeholder = msg; setTimeout(() => { inputEl.placeholder = ph; }, 2800); }
   function showVoiceHint(on) { const el = document.getElementById('voiceHint'); if (el) el.classList.toggle('on', on); }
@@ -2016,8 +2018,35 @@
   function stopVoice() { if (activeRec) { activeRec.want = false; try { activeRec.stop(); } catch (e) {} } }
   document.addEventListener('visibilitychange', () => { if (document.hidden) stopVoice(); });
   const VOICE_SILENCE_MS = 15000, VOICE_EMPTY_MS = 25000;
+  // the same tap-to-talk, tap-to-finish, through the phone's own recognizer. Partial results carry the whole transcript so far.
+  function nativeVoice(micEl, inputEl, onDone) {
+    micEl.onclick = async () => {
+      if (activeRec) { activeRec.want = false; try { await NATIVE_SR.stop(); } catch (e) {} return; }
+      try { const p = await NATIVE_SR.requestPermissions(); if (p.speechRecognition !== 'granted') { voiceNote(inputEl, 'Mic is off. Allow it in Settings, Nenemi.'); return; } } catch (e) {}
+      const base = inputEl.value.trim() ? inputEl.value.trim() + ' ' : '';
+      const rec = { want: true, startedAt: Date.now(), lastHeard: Date.now(), heard: '', stop() { NATIVE_SR.stop().catch(() => {}); } };
+      let done = false;
+      const partial = await NATIVE_SR.addListener('partialResults', d => { const t = (d && d.matches && d.matches[0]) || ''; if (t) { rec.heard = t; rec.lastHeard = Date.now(); inputEl.value = (base + t).replace(/\s+/g, ' '); } });
+      const state = await NATIVE_SR.addListener('listeningState', d => { if (d && d.status === 'stopped') finish(); });
+      function finish() {
+        if (done) return; done = true;
+        partial.remove(); state.remove(); clearInterval(rec.watch);
+        activeRec = null; micEl.classList.remove('listening'); showVoiceHint(false);
+        inputEl.value = (base + rec.heard).replace(/\s+/g, ' ').trim();
+        if (rec.heard.trim()) { inputEl.dataset.source = 'voice'; if (onDone) onDone(); }
+      }
+      rec.watch = setInterval(() => {
+        const quiet = Date.now() - rec.lastHeard;
+        if ((rec.heard.trim() && quiet > VOICE_SILENCE_MS) || (!rec.heard.trim() && quiet > VOICE_EMPTY_MS) || Date.now() - rec.startedAt > 180000) stopVoice();
+      }, 1000);
+      activeRec = rec; micEl.classList.add('listening'); showVoiceHint(true); inputEl.focus();
+      try { await NATIVE_SR.start({ language: navigator.language || 'en-US', partialResults: true, popup: false }); }
+      catch (e) { finish(); voiceNote(inputEl, "Didn't catch that. Try again."); }
+    };
+  }
   function attachVoice(micEl, inputEl, onDone) {
     if (!micEl || !inputEl) return;
+    if (NATIVE_SR) return nativeVoice(micEl, inputEl, onDone);
     if (!SR) { micEl.classList.add('unsupported'); micEl.title = 'Voice needs Chrome, Edge or Safari'; micEl.onclick = () => voiceNote(inputEl, 'Voice needs Chrome, Edge or Safari.'); return; }
     micEl.onclick = () => {
       // tap to start, talk with all the pauses you want, tap again to finish
