@@ -116,6 +116,13 @@
   .topnav .tn:hover { color: var(--muted); }
   .topnav .tn.active { color: var(--sage-text); background: var(--sage-fill); }
   .app.quiet .topnav { display: none; }
+  .topnav .tn-has-menu { display: inline-flex; align-items: center; gap: 5px; }
+  .topnav .tn-has-menu svg { opacity: .6; }
+  .tn-menu { position: absolute; top: 58px; left: 50%; transform: translateX(-50%); z-index: 31; min-width: 240px; background: var(--card); border: 1px solid var(--line2); border-radius: 14px; padding: 6px; box-shadow: 0 16px 44px var(--shadow); }
+  .tn-menu .tn-mi { padding: 10px 12px; border-radius: 9px; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+  .tn-menu .tn-mi span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .tn-menu .tn-mi:hover { background: var(--surface2); }
+  .app.quiet .tn-menu { display: none; }
   .back-home { display: none !important; }
 
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--muted); font-size: 13.5px; cursor: pointer; margin-bottom: 2px; }
@@ -269,6 +276,22 @@
 
   /* ROOMS HUB pane */
   .hub-header { padding: 64px 48px 8px; width: 100%; max-width: 1180px; margin: 0 auto; }
+  .notes-body { flex: 1; overflow-y: auto; padding: 8px 48px 60px; width: 100%; max-width: 1180px; margin: 0 auto; }
+  .notes-wrap { max-width: 760px; }
+  .notes-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .notes-date { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .notes-saved { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
+  .notes-box { display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 22px; padding: 20px 18px 12px; }
+  .notes-box textarea { width: 100%; box-sizing: border-box; min-height: 220px; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 16px; line-height: 1.7; color: var(--ink); padding: 0; margin: 0; }
+  .notes-box textarea::placeholder { color: var(--faint); }
+  .notes-hold { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
+  .notes-hold:hover { color: var(--ink); border-color: var(--ink); }
+  .notes-log { margin-top: 14px; } .notes-log:empty { display: none; }
+  .notes-earlier .ne { display: flex; gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .notes-earlier .ne:hover .ne-text { color: var(--ink); }
+  .notes-earlier .ne-date { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .notes-earlier .ne-text { color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .notes-earlier .ne-empty { color: var(--faint); font-size: 13.5px; padding: 8px 0; }
   .kicker { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line2); }
   .hub-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
   .hub-sub { color: var(--muted); font-size: 13.5px; margin-top: 8px; }
@@ -484,6 +507,7 @@
     .greeting-big .hello { font-size: 10px; padding-bottom: 10px; margin-bottom: 14px; }
     .wordmark { top: calc(15px + env(safe-area-inset-top)); left: 12px; font-size: 9.5px; }
     .topnav { left: auto; right: 56px; transform: none; }
+    .tn-menu { left: auto; right: 12px; transform: none; top: calc(50px + env(safe-area-inset-top)); }
     .composer-pill { padding: 16px 14px 10px; border-radius: 20px; }
     .home-center { width: 100%; max-width: 94%; }
     .chat-log { max-height: 34vh; }
@@ -511,6 +535,9 @@
     .rv-header { padding: 64px 18px 0; }
     .rv-name { font-size: 26px; }
     .rv-body { padding: 16px 18px 40px; }
+    .notes-body { padding: 8px 18px 60px; }
+    .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
+    .notes-box textarea { min-height: 180px; font-size: 15.5px; }
     .reentry { padding: 16px; }
     .re-next { flex-direction: column; align-items: stretch; }
     .re-btn { width: 100%; }
@@ -592,8 +619,12 @@
     <div class="wordmark" aria-label="Nenemi" onclick="go('home')">NENEMI</div>
     <div class="topnav" id="topnav">
       <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
-      <div class="tn" id="tn-calendar" onclick="go('calendar')">My day</div>
+      <div class="tn tn-has-menu" id="tn-calendar" onclick="toggleDayMenu(event)">My day <svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="tn" id="tn-rooms" onclick="go('rooms')">Rooms</div>
+    </div>
+    <div class="tn-menu" id="dayMenu" hidden>
+      <div class="tn-mi" onclick="closeDayMenu(); go('calendar')">Build my day<span>Dump it, get a day back</span></div>
+      <div class="tn-mi" onclick="closeDayMenu(); go('notes')">Write about it<span>A page for today, yours only</span></div>
     </div>
     <div class="account-wrap"><div class="account-slot" id="accountSlot"></div><div class="acct-menu" id="acctMenu"></div></div>
     <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done, or just go quiet for a bit</div>
@@ -608,6 +639,10 @@
             <div class="menu-item" onclick="closeMenuAnd('calendar')">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
               My day
+            </div>
+            <div class="menu-item" onclick="closeMenuAnd('notes')">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 2.5h10v11H3z" stroke-linejoin="round"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke-linecap="round"/></svg>
+              Write about it
             </div>
             <div class="menu-item" onclick="closeMenuAnd('rooms')">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2"/></svg>
@@ -687,6 +722,31 @@
             <button class="sc-build" onclick="buildDay()">Build this day</button>
             <div class="sc-note" id="calNote"></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRITE ABOUT IT: one page per day, yours only -->
+    <div class="pane" id="pane-notes">
+      <div class="hub-header">
+        <span class="kicker">My day · Write about it</span>
+        <div class="hub-title">Write about it.</div>
+        <div class="hub-sub">Nobody reads this but you. The day, the feelings, the stuff with nowhere else to go.</div>
+      </div>
+      <div class="notes-body">
+        <div class="notes-wrap">
+          <div class="notes-top"><div class="notes-date" id="notesDate">Monday · September 7</div><div class="notes-saved" id="notesSaved"></div></div>
+          <div class="notes-box">
+            <textarea id="notesInput" placeholder="Today…"></textarea>
+            <div class="composer-row">
+              <div class="spacer"></div>
+              <div class="mic-btn" id="notesMic" title="Say it instead"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+              <button class="notes-hold" onclick="holdNotes()">Hold what matters →</button>
+            </div>
+          </div>
+          <div class="chat-log notes-log" id="notesLog"></div>
+          <div class="section-label" style="margin-top:34px;">Earlier</div>
+          <div class="notes-earlier" id="notesEarlier"></div>
         </div>
       </div>
     </div>
@@ -858,7 +918,9 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const nav = document.getElementById('nav-' + id);
     if (nav) nav.classList.add('active');
-    const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id);
+    closeDayMenu();
+    const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id === 'notes' ? 'calendar' : id);
+    if (id === 'notes') renderNotes();
     document.querySelectorAll('.topnav .tn').forEach(n => n.classList.toggle('active', n.id === tnId));
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
@@ -901,6 +963,8 @@
     document.getElementById('plusBtn').classList.remove('open');
   }
   function closeMenuAnd(id) { closeMenu(); go(id); }
+  function toggleDayMenu(ev) { ev.stopPropagation(); const m = document.getElementById('dayMenu'); m.hidden = !m.hidden; if (!m.hidden) setTimeout(() => document.addEventListener('click', closeDayMenu, { once: true }), 0); }
+  function closeDayMenu() { const m = document.getElementById('dayMenu'); if (m) m.hidden = true; }
   // recap the day: the same box, told it's the end of the day. hold what matters, let the rest go.
   let recapMode = false;
   function startRecap() {
@@ -1044,6 +1108,31 @@
     `).join('');
   }
 
+  // ---------- write about it: one page per day ----------
+  let notesDay = null, notesTimer = null;
+  function notesLabel(k) { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).replace(', ', ' · '); }
+  function renderNotes(day) {
+    notesDay = day || notesDay || dkey(today);
+    document.getElementById('notesDate').textContent = notesLabel(notesDay) + (notesDay === dkey(today) ? ' · today' : '');
+    document.getElementById('notesInput').value = notes[notesDay] || '';
+    document.getElementById('notesSaved').textContent = '';
+    const keys = Object.keys(notes).filter(k => k !== notesDay && (notes[k] || '').trim()).sort().reverse().slice(0, 30);
+    document.getElementById('notesEarlier').innerHTML = keys.length ? keys.map(k => `<div class="ne" onclick="renderNotes('${k}')"><div class="ne-date">${escapeHtml(notesLabel(k))}</div><div class="ne-text">${escapeHtml((notes[k] || '').trim().split('\n')[0])}</div></div>`).join('') : `<div class="ne-empty">Nothing yet. Whatever gets written today lands here tomorrow.</div>`;
+    document.getElementById('notesLog').innerHTML = '';
+  }
+  function saveNotes() {
+    const v = document.getElementById('notesInput').value;
+    if ((v || '').trim()) notes[notesDay] = v; else delete notes[notesDay];
+    save(); document.getElementById('notesSaved').textContent = 'Saved';
+    clearTimeout(notesTimer); notesTimer = setTimeout(() => { document.getElementById('notesSaved').textContent = ''; }, 1800);
+  }
+  // hold what matters: the same end-of-day capture. the page itself stays as written.
+  function holdNotes() {
+    const text = (document.getElementById('notesInput').value || '').trim();
+    if (!text) return;
+    const log = document.getElementById('notesLog'); log.innerHTML = '';
+    captureText(text.slice(0, 2000), 'typed', log, 'end_of_day_recap');
+  }
   function toggleLoop(i) { currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved; save(); renderRoomView(); }
   let showAllLogFor = null;
   function showAllLog() { showAllLogFor = currentRoom && currentRoom.id; renderRoomView(); }
@@ -1380,6 +1469,7 @@
   const events = {}; // key: yyyy-mm-dd -> [{start, end, name, kind}]  kind: 'block' | 'fixed' | 'buffer'
   let carried = [ { name: 'Confirm Q3 estimate amount' }, { name: 'Send invite text to siblings' } ];
   let loose = []; // thoughts you chose not to put in a room yet
+  let notes = {}; // yyyy-mm-dd -> what they wrote about that day. theirs only.
   function dkey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   function dayList(d) { const k = dkey(d); return events[k] || (events[k] = []); }
   (function seed() {
@@ -1704,7 +1794,7 @@
   // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
   const STORE_KEY = 'nenemi.v1';
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, savedAt: Date.now() })); } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, savedAt: Date.now() })); } catch (e) {}
     clearTimeout(syncTimer); syncTimer = setTimeout(pushState, 800);
   }
   function restore() {
@@ -1716,6 +1806,7 @@
       if (d.events && typeof d.events === 'object') { Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events); }
       if (Array.isArray(d.carried)) carried = d.carried;
       loose = Array.isArray(d.loose) ? d.loose : [];
+      notes = d.notes && typeof d.notes === 'object' ? d.notes : {};
       return true;
     } catch (e) { return false; }
   }
@@ -1826,7 +1917,7 @@
   }
   function exportRooms() {
     try {
-      const data = JSON.stringify({ exported: new Date().toISOString(), rooms, loose, events, carried }, null, 2);
+      const data = JSON.stringify({ exported: new Date().toISOString(), rooms, loose, events, carried, notes }, null, 2);
       const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' })); a.download = `nenemi-${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); a.remove();
     } catch (e) { alert('Could not export right now.'); }
   }
@@ -1938,6 +2029,8 @@
   attachVoice(document.getElementById('roomMic'), document.getElementById('quickAddInput'), quickAdd);
   attachVoice(document.getElementById('calMic'), document.getElementById('calDump'), null);
   attachVoice(document.getElementById('stuckMic'), document.getElementById('stuckInput'), stuckSend);
+  attachVoice(document.getElementById('notesMic'), document.getElementById('notesInput'), saveNotes);
+  document.getElementById('notesInput').addEventListener('input', () => { clearTimeout(notesTimer); notesTimer = setTimeout(saveNotes, 500); });
   document.getElementById('stuckInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); stuckSend(); } });
   document.getElementById('stuckInput').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.max(84, Math.min(this.scrollHeight, window.innerHeight * 0.4)) + 'px'; });
 
