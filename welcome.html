@@ -153,6 +153,7 @@ h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 
 .founder-link { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-decoration: none; border-bottom: 1px solid rgba(63,191,198,.4); padding-bottom: 1px; }
 .founder-link:hover { color: var(--teal); border-color: var(--teal); }
 .sn-photo { position: relative; min-height: 440px; border-radius: 22px; overflow: hidden; background: var(--card) url('/photos/safety.jpg') 50% 30% / cover no-repeat; box-shadow: var(--glow); }
+.hero-b .sn-photo { background-image: url('/photos/safety-b.jpg'); background-position: center; }
 .sn-photo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.6) 0%, rgba(10,10,10,.15) 60%, transparent 100%); }
 .sn-photo-tag { position: absolute; bottom: 20px; left: 20px; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--ink); background: rgba(10,10,10,.75); padding: 7px 12px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,191,198,.22); }
 
@@ -221,7 +222,15 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
 
 <!-- 1. HERO -->
 <section class="hero" id="top">
-  <div class="hero-img"></div>
+  <div class="hero-img" id="heroImg"></div>
+  <script>
+  /* two heroes, alternating per visit: the floor, then the kitchen table. The Safety Net photo takes whichever one the hero isn't using. */
+  (function(){
+    var n = 0;
+    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % 2; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
+    if (n === 1) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-b.jpg')"; document.documentElement.classList.add('hero-b'); }
+  })();
+  </script>
   <div class="hero-glow"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
