@@ -3,107 +3,317 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Nenemi · The box</title>
-<meta name="description" content="A memory app for ADHD brains. Somewhere to put a thought without having to organize it first." />
+<meta name="description" content="Nenemi is a memory app for ADHD brains. Somewhere to put a thought without having to organize it first. Made for your brain. Not for their expectations." />
+<title>Nenemi · Made for your brain</title>
 <meta name="theme-color" content="#0A0A0A" />
 <link rel="icon" href="/icons/n-192.png" type="image/png" />
 <link rel="apple-touch-icon" href="/icons/n-180.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
-  :root { --bg: #0A0A0A; --card: #161616; --ink: #F4F2EC; --muted: #9C9C96; --faint: #6A6A65; --line: rgba(244,242,236,0.12); --hg1: rgba(28,170,178,0.55); --hg2: rgba(12,84,96,0.32); }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Inter, -apple-system, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  a { color: inherit; }
-  .glow { position: fixed; inset: -20%; pointer-events: none; z-index: 0; background: radial-gradient(ellipse 44% 34% at 62% 40%, var(--hg1) 0%, var(--hg2) 40%, transparent 74%); filter: blur(28px); animation: drift 90s ease-in-out infinite alternate; }
-  @keyframes drift { from { filter: blur(28px) hue-rotate(0deg); } to { filter: blur(28px) hue-rotate(55deg); } }
-  @media (prefers-reduced-motion: reduce) { .glow { animation: none; } }
-  .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 26px 28px 70px; }
-  .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 70px; }
-  .mark { font-family: 'Nenemi Mark', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px rgba(244,242,236,0.55), 0 0 28px rgba(244,242,236,0.25); text-decoration: none; }
-  .open { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; }
-  .open:hover { color: var(--ink); border-color: var(--ink); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
+:root {
+  --bg: #0A0A0A; --bg2: #111111; --card: #161616; --paper: #F4F2EC;
+  --ink: #F4F2EC; --muted: #9C9C96; --faint: #6A6A65;
+  --line: rgba(244,242,236,.10); --teal: #3FBFC6; --teal-dim: rgba(63,191,198,.14);
+  --serif: 'DM Serif Display', Georgia, serif; --sans: 'Inter', -apple-system, system-ui, sans-serif; --mono: 'JetBrains Mono', monospace;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
+.tag.t { color: var(--teal); }
+.serif { font-family: var(--serif); font-weight: 400; letter-spacing: -.015em; }
 
-  /* hero: one human, three lines, one button */
-  .hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
-  .kicker { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding-bottom: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
-  h1 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 54px; line-height: 1.02; letter-spacing: -0.012em; margin: 0 0 22px; }
-  .lead { font-size: 18px; color: var(--muted); margin: 0 0 28px; max-width: 420px; }
-  .cta { display: inline-block; padding: 15px 24px; border-radius: 12px; background: var(--ink); color: var(--bg); font-weight: 600; text-decoration: none; font-size: 15px; }
-  .cta:hover { opacity: .92; }
-  .fine { margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
-  .photo { position: relative; aspect-ratio: 4 / 5; border-radius: 26px; overflow: hidden; background: var(--card); border: 1px solid var(--line); }
-  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(100%) contrast(1.05); }
-  .photo .cap { position: absolute; left: 18px; bottom: 16px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); text-shadow: 0 1px 12px rgba(0,0,0,.7); }
-  .photo.empty { display: flex; align-items: center; justify-content: center; color: var(--faint); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+/* NAV */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; transition: background .3s; }
+nav.scrolled { background: rgba(10,10,10,.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--line); }
+.mark { font-family: 'Nenemi Mark', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: .06em; transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px rgba(244,242,236,.55), 0 0 28px rgba(244,242,236,.25); text-decoration: none; }
+.nav-links { display: flex; gap: 26px; align-items: center; }
+.nav-link { font-family: var(--mono); font-size: 9.5px; letter-spacing: .16em; color: var(--muted); text-decoration: none; }
+.nav-link:hover { color: var(--ink); }
+.nav-cta { padding: 9px 18px; background: var(--paper); color: var(--bg); border-radius: 999px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-decoration: none; }
 
-  /* three humans, three lines */
-  .people { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 110px; }
-  .person { position: relative; aspect-ratio: 4 / 5; border-radius: 22px; overflow: hidden; background: var(--card); border: 1px solid var(--line); }
-  .person img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(100%); }
-  .person .say { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 18px 18px; background: linear-gradient(180deg, transparent, rgba(10,10,10,.92)); font-family: 'DM Serif Display', Georgia, serif; font-size: 22px; line-height: 1.15; }
-  .person .who { display: block; margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-  .person.empty { display: flex; align-items: center; justify-content: center; color: var(--faint); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+/* HERO */
+.hero { position: relative; height: 100vh; min-height: 680px; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 84px 64px; overflow: hidden; background: var(--bg2); }
+.hero-img { position: absolute; inset: 0; background: url('/photos/hero.jpg') center/cover no-repeat; filter: grayscale(100%) contrast(1.05); }
+.hero-glow { position: absolute; inset: -20%; background: radial-gradient(ellipse 40% 34% at 70% 40%, rgba(28,170,178,.42) 0%, rgba(12,84,96,.22) 40%, transparent 72%); filter: blur(30px); animation: drift 90s ease-in-out infinite alternate; }
+@keyframes drift { from { filter: blur(30px) hue-rotate(0deg); } to { filter: blur(30px) hue-rotate(50deg); } }
+@media (prefers-reduced-motion: reduce) { .hero-glow { animation: none; } }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.96) 0%, rgba(10,10,10,.55) 45%, rgba(10,10,10,.1) 100%); }
+.hero-content { position: relative; z-index: 2; max-width: 820px; }
+.hero-kicker { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); padding-bottom: 12px; margin-bottom: 22px; border-bottom: 1px solid var(--line); max-width: 420px; }
+h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(44px, 6.4vw, 84px); line-height: 1.02; letter-spacing: -.018em; margin-bottom: 22px; }
+.hero-sub { font-size: 17px; font-weight: 300; color: var(--muted); max-width: 480px; line-height: 1.65; margin-bottom: 34px; }
+.actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.btn { display: inline-block; padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 600; text-decoration: none; letter-spacing: .01em; }
+.btn.solid { background: var(--paper); color: var(--bg); }
+.btn.solid:hover { opacity: .92; }
+.btn.ghost { background: rgba(244,242,236,.06); color: var(--muted); border: 1px solid rgba(244,242,236,.2); font-weight: 500; }
+.btn.ghost:hover { color: var(--ink); border-color: rgba(244,242,236,.5); }
+.hero-note { position: absolute; bottom: 30px; right: 48px; z-index: 2; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
 
-  .bottom { margin-top: 110px; text-align: center; }
-  .bottom h2 { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 40px; line-height: 1.06; margin: 0 0 22px; }
-  footer { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 28px 50px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: var(--faint); display: flex; gap: 18px; flex-wrap: wrap; }
-  footer a { color: var(--faint); text-decoration: none; }
-  footer a:hover { color: var(--ink); }
-  @media (max-width: 820px) {
-    .top { margin-bottom: 36px; }
-    .hero { grid-template-columns: 1fr; gap: 28px; }
-    .hero .photo { order: -1; aspect-ratio: 4 / 4.4; }
-    h1 { font-size: 40px; }
-    .people { grid-template-columns: 1fr; gap: 12px; margin-top: 70px; }
-    .person { aspect-ratio: 4 / 3; }
-    .bottom { margin-top: 70px; } .bottom h2 { font-size: 30px; }
-  }
+/* SPLIT (philosophy, architect) */
+.split { display: grid; grid-template-columns: 1fr 1fr; min-height: 600px; background: var(--bg2); }
+.split-img { position: relative; overflow: hidden; min-height: 500px; background: var(--card); }
+.split-img .img { position: absolute; inset: 0; background-size: cover; background-position: 50% 30%; filter: grayscale(100%); }
+.split-cap { position: absolute; bottom: 20px; left: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: rgba(10,10,10,.7); padding: 6px 10px; border-radius: 4px; }
+.split-text { padding: 84px 64px; display: flex; flex-direction: column; justify-content: center; }
+.split-text .tag { margin-bottom: 28px; }
+.quote { font-family: var(--serif); font-size: clamp(24px, 2.7vw, 36px); line-height: 1.3; margin-bottom: 24px; }
+.quote span { color: var(--teal); }
+.rule { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.75; border-top: 1px solid var(--line); padding-top: 22px; }
+
+/* SECTION frame */
+section.block { padding: 110px 64px; }
+.inner { max-width: 1060px; margin: 0 auto; }
+.section-tag { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+.section-tag::after { content: ''; width: 40px; height: 1px; background: var(--line); }
+h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4vw, 52px); line-height: 1.1; letter-spacing: -.018em; max-width: 640px; margin-bottom: 16px; }
+.sub { font-size: 15px; font-weight: 300; color: var(--muted); max-width: 480px; line-height: 1.65; margin-bottom: 52px; }
+
+/* THE MOMENT */
+.moment-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-top: 44px; }
+.m { padding: 32px 28px; background: var(--card); }
+.m.dark { background: #0E0E0E; }
+.m.light { background: var(--paper); color: var(--bg); }
+.m .time { font-family: var(--mono); font-size: 20px; color: var(--teal); margin-bottom: 12px; }
+.m.light .time { color: #0F7B82; }
+.m .lab { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.m.light .lab { color: #6A6A65; }
+.m .ttl { font-family: var(--serif); font-size: 22px; line-height: 1.15; margin-bottom: 10px; }
+.m .body { font-size: 13.5px; font-weight: 300; line-height: 1.65; color: var(--muted); }
+.m.light .body { color: #4A4A46; }
+.m .say { margin-top: 16px; padding: 10px 12px; background: var(--teal-dim); border-left: 2px solid var(--teal); border-radius: 5px; font-family: var(--mono); font-size: 10px; color: var(--teal); letter-spacing: .04em; line-height: 1.5; }
+.m.light .say { background: rgba(15,123,130,.08); color: #0F7B82; border-color: #0F7B82; }
+
+/* ROOMS · PEOPLE */
+.people { background: #0E0E0E; }
+.p-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 310px 310px; gap: 2px; }
+.p { position: relative; overflow: hidden; background: var(--card); }
+.p.tall { grid-row: span 2; }
+.p .img { position: absolute; inset: 0; background-size: cover; background-position: center; filter: grayscale(100%); transition: transform .5s ease; }
+.p:hover .img { transform: scale(1.04); }
+.p .grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.95) 0%, transparent 55%); }
+.p .c { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; }
+.p .num { font-family: var(--mono); font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: rgba(63,191,198,.7); margin-bottom: 5px; }
+.p .name { font-family: var(--serif); font-size: 21px; margin-bottom: 5px; }
+.p .cap { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.45; }
+.p .n { margin-top: 8px; font-family: var(--mono); font-size: 9.5px; color: var(--teal); letter-spacing: .04em; line-height: 1.4; }
+
+/* THE BOX (system) */
+.s-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; }
+.s { padding: 30px 26px; background: var(--card); }
+.s.dark { background: #0E0E0E; }
+.s.light { background: var(--paper); color: var(--bg); }
+.s .lab { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
+.s .name { font-family: var(--serif); font-size: 22px; margin-bottom: 8px; line-height: 1.15; }
+.s .desc { font-size: 13px; font-weight: 300; line-height: 1.65; color: var(--muted); }
+.s.light .desc { color: #4A4A46; } .s.light .lab { color: #6A6A65; }
+.s .pill { display: inline-block; margin-top: 14px; padding: 4px 10px; border-radius: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; background: var(--teal-dim); color: var(--teal); }
+.s.light .pill { background: rgba(15,123,130,.08); color: #0F7B82; }
+
+/* ARCHITECT */
+.arch .split-img .img { background-position: 50% 20%; }
+.arch-tag { position: absolute; bottom: 20px; right: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); background: rgba(10,10,10,.7); padding: 7px 12px; border-radius: 4px; border: 1px solid rgba(63,191,198,.25); }
+.arch h2 { font-size: clamp(28px, 3.2vw, 42px); }
+.arch h2 span { color: var(--teal); }
+.arch .body { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.75; margin-bottom: 26px; }
+.creds { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+.cred { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.cred::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+.promise { padding: 20px 22px; background: rgba(244,242,236,.04); border-radius: 8px; border-left: 2px solid var(--teal); font-family: var(--serif); font-size: 17px; color: var(--muted); line-height: 1.55; }
+
+/* OPEN */
+.open-sec { padding: 120px 64px; text-align: center; position: relative; overflow: hidden; }
+.open-sec .glow { position: absolute; inset: -20%; pointer-events: none; background: radial-gradient(ellipse 36% 40% at 50% 50%, rgba(28,170,178,.42) 0%, rgba(12,84,96,.2) 40%, transparent 72%); filter: blur(30px); }
+.open-sec .inner { position: relative; max-width: 620px; }
+.open-sec h2 { max-width: none; margin-bottom: 16px; }
+.open-sec .sub { margin: 0 auto 40px; }
+.big { display: inline-block; padding: 18px 44px; border-radius: 12px; background: var(--paper); color: var(--bg); font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+.big:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(63,191,198,.25); }
+.open-note { margin-top: 18px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+
+/* FOOTER */
+footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; border-top: 1px solid var(--line); }
+.foot-quote { font-family: var(--serif); font-size: 15px; color: var(--muted); }
+.foot-links { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); display: flex; gap: 18px; }
+.foot-links a { text-decoration: none; }
+.foot-links a:hover { color: var(--ink); }
+
+@media (max-width: 900px) {
+  nav { padding: 0 22px; }
+  .nav-links { display: none; }
+  .hero { padding: 0 0 56px 24px; min-height: 620px; }
+  .hero-note { display: none; }
+  .split { grid-template-columns: 1fr; }
+  .split-img { min-height: 340px; }
+  .split-text { padding: 56px 24px; }
+  section.block { padding: 72px 24px; }
+  .moment-grid, .s-grid { grid-template-columns: 1fr; }
+  .p-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .p.tall { grid-row: span 1; min-height: 320px; }
+  .p { min-height: 250px; }
+  .open-sec { padding: 80px 24px; }
+  footer { padding: 36px 22px; flex-direction: column; align-items: flex-start; gap: 14px; }
+}
 </style>
 </head>
 <body>
-<div class="glow"></div>
-<div class="wrap">
-  <div class="top">
-    <a class="mark" href="/welcome.html" aria-label="Nenemi">NENEMI</a>
-    <a class="open" href="/?open=1">Open Nenemi</a>
+
+<nav id="nav">
+  <a href="/welcome.html" class="mark" aria-label="Nenemi">NENEMI</a>
+  <div class="nav-links">
+    <a href="#box" class="nav-link">[ THE BOX ]</a>
+    <a href="#marcos" class="nav-link">[ MARCOS ]</a>
+    <a href="/about.html" class="nav-link">[ THE LONG VERSION ]</a>
   </div>
+  <a href="/?open=1" class="nav-cta">OPEN NENEMI</a>
+</nav>
 
-  <section class="hero">
-    <div>
-      <span class="kicker">Nenemi · for ADHD brains</span>
-      <h1>Made for your brain. Not for their expectations.</h1>
-      <p class="lead">Somewhere to put a thought without having to organize it first. Every crayon, finally a box.</p>
-      <a class="cta" href="/?open=1">Open Nenemi →</a>
-      <div class="fine">Free · no card · works on your phone</div>
+<section class="hero">
+  <div class="hero-img"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="hero-kicker">A memory app for ADHD brains</span>
+    <h1>Made for your brain.<br>Not for their expectations.</h1>
+    <p class="hero-sub">Somewhere to put a thought without having to organize it first. Every crayon, finally a box.</p>
+    <div class="actions">
+      <a href="/?open=1" class="btn solid">Open Nenemi →</a>
+      <a href="#box" class="btn ghost">See how it works</a>
     </div>
-    <div class="photo empty" id="hero-photo">
-      <!-- drop a real photo here: <img src="/photos/hero.jpg" alt="" /><div class="cap">Marcos · Austin</div> -->
-      photo goes here
-    </div>
-  </section>
+  </div>
+  <div class="hero-note">Free · no card · no streaks</div>
+</section>
 
-  <section class="people">
-    <div class="person empty">
-      <!-- <img src="/photos/1.jpg" alt="" /><div class="say">"I said it once. It was there a week later."<span class="who">First name · what they do</span></div> -->
-      photo · one line
-    </div>
-    <div class="person empty">photo · one line</div>
-    <div class="person empty">photo · one line</div>
-  </section>
+<section class="split">
+  <div class="split-img">
+    <div class="img" style="background-image:url('/photos/philosophy.jpg');"></div>
+    <div class="split-cap">[ Real room · real day ]</div>
+  </div>
+  <div class="split-text">
+    <span class="tag">[ The foundation · never changes ]</span>
+    <div class="quote">You're not behind. You're mid-process. <span>There's a difference.</span></div>
+    <div class="rule">Executive function is the box that holds the crayons. You have every crayon: the intelligence, the intention, the ability. What's missing is the box. Nenemi is the box. No guilt built in. No streaks to break. No punishment for being human.</div>
+  </div>
+</section>
 
-  <section class="bottom">
+<section class="block">
+  <div class="inner">
+    <div class="section-tag"><span class="tag">[ The moment Nenemi was built for ]</span></div>
+    <h2>It's 1:07 PM. You had a plan. Here's what happens next.</h2>
+    <div class="moment-grid">
+      <div class="m light">
+        <div class="time">1:07 PM</div>
+        <div class="lab">[ The wall ]</div>
+        <div class="ttl">You know what needs to happen. You just can't start.</div>
+        <div class="body">The plan made sense this morning. Now the screen is just a screen and nothing moves. That gap between knowing and starting is not a character flaw. It's 1 PM.</div>
+      </div>
+      <div class="m">
+        <div class="time">1:07 PM</div>
+        <div class="lab">[ The doors ]</div>
+        <div class="ttl">One tap. Four doors. No list.</div>
+        <div class="body">Feeling stuck opens a dark, quiet screen and asks one thing: where are you right now? I can't start. My head is too full. I have no energy. I fell off.</div>
+        <div class="say">[ FEELING STUCK ] Where are you right now?</div>
+      </div>
+      <div class="m dark">
+        <div class="time">1:08 PM</div>
+        <div class="lab">[ One small move ]</div>
+        <div class="ttl">Everything else is put away. One move surfaces.</div>
+        <div class="body">Not the task. The fork. Open the doc. Stand up for fifteen seconds. Pick up exactly where you were. Did it, give me another, or just breathe.</div>
+        <div class="say">[ ONE SMALL MOVE ] Open the doc. That's the whole task.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block people">
+  <div class="inner">
+    <span class="tag" style="display:block;margin-bottom:16px;">[ Radical realism · the rooms Nenemi lives in ]</span>
+    <h2>Real rooms. Real people.<br>Real mid-process moments.</h2>
+    <p class="sub">Nenemi doesn't live in productivity magazines. Recognition is the hook, not aspiration.</p>
+    <div class="p-grid">
+      <div class="p tall">
+        <div class="img" style="background-image:url('/photos/autonomous.jpg'); background-position:center top;"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ 03 ]</div><div class="name">The autonomous worker</div><div class="cap">Multiple coffees. Papers everywhere. Her environment is calibrated for her brain, not for a magazine. It doesn't look perfect. It works.</div><div class="n">Nenemi: Your setup isn't wrong. It just needed a box.</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/midprocess.jpg');"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ 04 ]</div><div class="name">Mid-process. Full stop.</div><div class="cap">Mid-task and paused. Not in distress. Just stopped, somewhere in the middle of a real day.</div><div class="n">Nenemi: Held. One thing, whenever.</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/floor.jpg'); background-position:center top;"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ 05 ]</div><div class="name">The floor worker</div><div class="cap">Desk not working today. Moved to the floor. Coffee, M&amp;Ms. The work is getting done anyway.</div><div class="n">Nenemi: Your workspace is wherever your brain works.</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/blackout.jpg');"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ 06 ]</div><div class="name">The hyperfocus blackout</div><div class="cap">The pan is burning. He didn't forget. He was running a different process at full capacity.</div><div class="n">Nenemi: You didn't forget the stove. You were hyperfocused. A feature without a governor.</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/wall.jpg'); background-position:center top;"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ 02 ]</div><div class="name">The 1 PM wall</div><div class="cap">Full suit. Chair reclined. Eyes closed. Laptop open. Proof of real work, then the crash.</div><div class="n">Nenemi: Still here. One small move, whenever.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="box">
+  <div class="inner">
+    <div class="section-tag"><span class="tag">[ The box · how it works ]</span></div>
+    <h2>Six things.<br>One quiet box.</h2>
+    <p class="sub">Each one built for a specific moment. No streaks. No shame. No punishment for being human.</p>
+    <div class="s-grid">
+      <div class="s light"><div class="lab">[ 01 · The lid ]</div><div class="name">Say it anywhere</div><div class="desc">Type it or talk it, messy is fine. Claude files it in the right room, starts a new one, or holds it loose. You never decide where it goes.</div><span class="pill">Get it out of your head</span></div>
+      <div class="s"><div class="lab">[ 02 · The compartments ]</div><div class="name">Rooms</div><div class="desc">One thing per room, always visible, never lost. Each one opens with where you left off and one small next move. Object permanence, outsourced.</div><span class="pill">Never restart from zero</span></div>
+      <div class="s dark"><div class="lab">[ 03 · The row ]</div><div class="name">Build my day</div><div class="desc">Dump the whole day in one breath. Claude hands back a day you can actually follow, with air between things. Priorities first. Nothing overdue, ever.</div><span class="pill">A half-full day you can follow</span></div>
+      <div class="s"><div class="lab">[ 04 · The page ]</div><div class="name">Write about it</div><div class="desc">A page a day, yours only. The day, the feelings, the stuff with nowhere else to go. Hold what matters, let the rest go.</div><span class="pill">Nothing to carry to bed</span></div>
+      <div class="s dark"><div class="lab">[ 05 · The way back in ]</div><div class="name">Feeling stuck</div><div class="desc">Four doors, then one small move. A dark, quiet screen when everything is everywhere. Never a list. Never a lecture.</div><span class="pill">Starting beats planning</span></div>
+      <div class="s light"><div class="lab">[ 06 · Humans heal ]</div><div class="name">Real people</div><div class="desc">Nenemi is the nudge, not the treatment. ADHD coaches, therapists, psychiatrists, and 988, one tap from the stuck screen.</div><span class="pill">The box holds. People heal.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="split arch" id="marcos">
+  <div class="split-img">
+    <div class="img" style="background-image:url('/photos/marcos.jpg');"></div>
+    <div class="arch-tag">[ Marcos Cuellar · built it ]</div>
+  </div>
+  <div class="split-text">
+    <span class="tag">[ For this brain · from this brain ]</span>
+    <h2>He's been in this for <span>hours.</span><br>The environment is the system.</h2>
+    <p class="body">Nenemi was built out of personal frustration with tools that assumed a brain I didn't have. Not from a whiteboard. From thirty years of lived experience, hundreds of real conversations, and a long look at why most productivity apps lose people like us before the first task is even opened.</p>
+    <div class="creds">
+      <div class="cred">Thirty years of lived experience in the build</div>
+      <div class="cred">Grounded in what ADHD coaches and clinicians actually use</div>
+      <div class="cred">Built on Claude, from the ground up</div>
+      <div class="cred">Every crayon. Finally a box.</div>
+    </div>
+    <div class="promise">"We will never make anyone feel like they should have their life more together. The world already does that. Nenemi is the first thing in the day that doesn't."</div>
+  </div>
+</section>
+
+<section class="open-sec">
+  <div class="glow"></div>
+  <div class="inner">
+    <span class="tag t" style="display:block;margin-bottom:22px;">[ It's live right now ]</span>
     <h2>Say it. It's held.</h2>
-    <a class="cta" href="/?open=1">Open Nenemi →</a>
-  </section>
-</div>
+    <p class="sub">Not a waitlist. Not a demo. Nenemi is running today, on your phone and your laptop, on Claude. Open it. Say one messy thing. See where it lands.</p>
+    <a href="/?open=1" class="big">Open Nenemi →</a>
+    <div class="open-note">Free · two rooms, the calendar, voice · no card</div>
+  </div>
+</section>
+
 <footer>
-  <a href="/privacy.html">Privacy</a>
-  <a href="/terms.html">Terms</a>
-  <a href="/support.html">Support</a>
-  <a href="/about.html">The long version</a>
-  <span>© 2026 Nenemi</span>
+  <a href="/welcome.html" class="mark" aria-label="Nenemi">NENEMI</a>
+  <div class="foot-quote">"You're mid-process. There's a difference."</div>
+  <div class="foot-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/support.html">Support</a><span>© 2026</span></div>
 </footer>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.85); }, { passive: true });
+</script>
 </body>
 </html>
