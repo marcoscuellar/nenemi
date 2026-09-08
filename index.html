@@ -197,8 +197,8 @@
   @media (max-width: 980px) { .cal-inner { grid-template-columns: 1fr; } }
 
   .cal-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; }
-  .cal-date { font-family: var(--font-display); font-weight: 700; font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
-  .cal-sub { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
+  .cal-date { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
+  .cal-sub { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line2); }
   .cal-nav { display: flex; align-items: center; gap: 8px; }
   .cal-nav .nav-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .cal-nav .nav-btn:hover { border-color: var(--sage); color: var(--sage-text); }
@@ -249,7 +249,7 @@
   /* Smart Cal card */
   .smart-cal { background: var(--card); border: 1px solid var(--line2); border-radius: 16px; padding: 22px 18px 18px; position: sticky; top: 0; }
   .sc-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-text); }
-  .sc-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; margin-top: 8px; }
+  .sc-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 28px; line-height: 1.08; margin-top: 10px; }
   .sc-desc { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 8px; }
   .sc-dump { width: 100%; min-height: 150px; margin-top: 14px; background: var(--sanctuary); border: 1px solid var(--line2); border-radius: 8px; padding: 12px 12px; color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; resize: vertical; outline: none; }
   .sc-dump::placeholder { color: var(--faint); }
@@ -269,8 +269,9 @@
 
   /* ROOMS HUB pane */
   .hub-header { padding: 64px 48px 8px; width: 100%; max-width: 1180px; margin: 0 auto; }
-  .hub-title { font-family: var(--font-display); font-weight: 700; font-size: 26px; }
-  .hub-sub { color: var(--muted); font-size: 13.5px; margin-top: 6px; }
+  .kicker { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line2); }
+  .hub-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
+  .hub-sub { color: var(--muted); font-size: 13.5px; margin-top: 8px; }
   .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-content: start; }
   .room-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
@@ -301,7 +302,7 @@
   /* ROOM VIEW pane */
   .rv-header { padding: 64px 48px 0; width: 100%; max-width: 780px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
   .rv-title-wrap { flex: 1; }
-  .rv-name { font-family: var(--font-display); font-weight: 700; font-size: 22px; }
+  .rv-name { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
   .rv-oneliner { color: var(--muted); font-size: 13px; margin-top: 2px; }
   .rv-body { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 780px; margin: 0 auto; }
   /* re-entry card: pays the restart tax in ten seconds */
@@ -378,7 +379,7 @@
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
   .doors { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; padding: 0 20px; }
   .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(255,255,255,0.4); margin-bottom: 28px; }
-  .doors-title { font-family: var(--font-display); font-weight: 700; font-size: 30px; text-align: center; letter-spacing: -0.01em; }
+  .doors-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 36px; text-align: center; letter-spacing: -0.01em; line-height: 1.08; }
   .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
   .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #1C1C1C 0%, #121212 100%); border: 1px solid rgba(244,242,236,0.08); transition: transform 140ms ease, border-color 140ms ease; }
@@ -493,7 +494,8 @@
     /* hubs + room */
     .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
     .hub-header { padding-top: 64px; }
-    .hub-title { font-size: 24px; }
+    .hub-title { font-size: 32px; }
+    .kicker, .cal-sub { font-size: 10px; padding-bottom: 8px; margin-bottom: 10px; }
     .room-grid { padding: 14px 14px 40px; grid-template-columns: 1fr 1fr; gap: 10px; }
     .room-card, .new-room-card { padding: 14px; border-radius: 16px; }
     .room-card-top { margin-bottom: 8px; }
@@ -502,7 +504,7 @@
     .room-oneliner { font-size: 12.5px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12.5px; min-height: 110px; }
     .rv-header { padding: 64px 18px 0; }
-    .rv-name { font-size: 20px; }
+    .rv-name { font-size: 26px; }
     .rv-body { padding: 16px 18px 40px; }
     .reentry { padding: 16px; }
     .re-next { flex-direction: column; align-items: stretch; }
@@ -513,11 +515,11 @@
     .cal-topbar { padding-right: 120px; }
     .cal-inner { display: flex; flex-direction: column; padding: 16px 14px 60px; gap: 18px; }
     .smart-cal { order: -1; position: static; padding: 16px 14px 14px; }
-    .sc-title { font-size: 19px; }
+    .sc-title { font-size: 24px; }
     .sc-desc { font-size: 12.5px; }
     .sc-dump { min-height: 96px; font-size: 14px; }
     .cal-head { flex-wrap: wrap; gap: 10px; }
-    .cal-date { font-size: 26px; }
+    .cal-date { font-size: 32px; }
     .ag-row .hl { width: 50px; font-size: 9.5px; }
     .ag-row { gap: 10px; }
     .sheet { padding: 18px; }
@@ -525,7 +527,7 @@
     .stuck-close { top: calc(10px + env(safe-area-inset-top)); right: 12px; }
     .doors { padding: 56px 16px 24px; }
     .doors-mark { display: none; }
-    .doors-title { font-size: 24px; }
+    .doors-title { font-size: 30px; }
     .doors-sub { font-size: 13px; }
     .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
     .people { margin-top: 22px; }
@@ -645,8 +647,8 @@
           <div class="cal-left">
             <div class="cal-head">
               <div>
-                <div class="cal-date" id="calDate">Today</div>
                 <div class="cal-sub" id="calSub">Sunday, September 6</div>
+                <div class="cal-date" id="calDate">Today</div>
               </div>
               <div class="cal-nav">
                 <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -686,6 +688,7 @@
     <div class="pane" id="pane-humans">
       <div class="hub-header">
         <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
+        <span class="kicker">Real people</span>
         <div class="hub-title">Humans heal</div>
         <div class="hub-sub">NENEMI is the nudge, not the treatment.</div>
       </div>
@@ -701,6 +704,7 @@
     <div class="pane" id="pane-rooms">
       <div class="hub-header">
         <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
+        <span class="kicker">Rooms</span>
         <div class="hub-title">Your rooms</div>
         <div class="hub-sub">The ones that have gone quiet float up. No red badges here.</div>
         <div class="sync-badge" id="syncBadge" onclick="changeSync()" title="Click to change your sync code">Saved on this device</div>
@@ -1395,7 +1399,7 @@
   function renderCal() {
     const isToday = dkey(selectedDay) === dkey(today);
     document.getElementById('calDate').textContent = dayTitle(selectedDay);
-    document.getElementById('calSub').textContent = selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    document.getElementById('calSub').textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'long' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}`;
     const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
     const nowH = today.getHours() + today.getMinutes() / 60;
     const el = document.getElementById('agenda');
