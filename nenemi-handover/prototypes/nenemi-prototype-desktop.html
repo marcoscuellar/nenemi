@@ -34,8 +34,8 @@
 
     --glow: #1B1B1B;
     --glow-stop: 62%;
-    --hg1: rgba(64, 112, 255, 0.58);
-    --hg2: rgba(30, 52, 160, 0.30);
+    --hg1: rgba(56, 196, 132, 0.52);
+    --hg2: rgba(22, 104, 68, 0.30);
     --glow2: #171717;
     --evt-block: #1E1E1E;
     --evt-fixed: #151515;
@@ -67,8 +67,8 @@
     --on-sage: #FFFFFF;
     --glow: #EDEDEB;
     --glow-stop: 62%;
-    --hg1: rgba(136, 190, 255, 0.95);
-    --hg2: rgba(190, 220, 255, 0.6);
+    --hg1: rgba(146, 232, 190, 0.95);
+    --hg2: rgba(200, 242, 220, 0.6);
     --glow2: #F3F3F1;
     --evt-block: #EFEFED;
     --evt-fixed: #F7F7F6;
@@ -370,7 +370,8 @@
   .quickadd button { width: 32px; height: 32px; border-radius: 50%; background: var(--sage); border: none; color: var(--on-sage); cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
   /* STUCK pane */
-  #pane-stuck { background: radial-gradient(circle at 50% 38%, var(--glow2) 0%, var(--sanctuary) 60%); align-items: center; justify-content: center; }
+  #pane-stuck { background: radial-gradient(circle at 50% 38%, var(--glow2) 0%, var(--sanctuary) 60%); align-items: center; justify-content: center; overflow-y: auto; }
+  #pane-stuck .doors, #pane-stuck .stuck-inner { margin: auto; padding-top: 48px; padding-bottom: 40px; }
   .stuck-close { position: absolute; top: 24px; right: 32px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .stuck-inner { display: flex; flex-direction: column; align-items: center; }
   .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(255,255,255,0.22); }
@@ -391,9 +392,16 @@
   .door-why.open .a { display: block; }
   .stuck-note { font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); margin-top: 18px; text-align: center; max-width: 440px; line-height: 1.6; }
   .doors-back { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 22px; cursor: pointer; }
-  .doors-people { margin-top: 30px; color: var(--muted); font-size: 13px; text-align: center; cursor: pointer; max-width: 460px; line-height: 1.5; }
-  .doors-people span { color: var(--sage-text); font-weight: 600; }
-  .doors-people:hover span { text-decoration: underline; }
+  .people { width: 100%; margin-top: 28px; }
+  .people-head { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
+  .people-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.45; }
+  .people-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); font-weight: 500; padding: 0 10px 8px 0; border-bottom: 1px solid var(--line2); }
+  .people-table td { vertical-align: top; padding: 11px 10px 11px 0; border-bottom: 1px solid var(--line); color: var(--muted); }
+  .people-table td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .people-table td:last-child { white-space: nowrap; padding-right: 0; }
+  .people-table a { display: block; color: var(--sage-text); text-decoration: none; }
+  .people-table a + a { margin-top: 4px; }
+  .people-table a:hover { text-decoration: underline; }
   .doors-back:hover { color: var(--sage-text); }
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
@@ -520,6 +528,9 @@
     .doors-title { font-size: 24px; }
     .doors-sub { font-size: 13px; }
     .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
+    .people { margin-top: 22px; }
+    .people-table { font-size: 12.5px; }
+    .people-table th:nth-child(2), .people-table td:nth-child(2) { display: none; }
     .door { padding: 16px 16px 14px; border-radius: 18px; }
     .door-label { font-size: 18px; }
     .stuck-inner { width: 100%; padding: 48px 16px 24px; }
@@ -768,7 +779,18 @@
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Shame is a productivity killer. We pick up exactly where you left off.</span></div>
           </div>
         </div>
-        <div class="doors-people" onclick="go('humans')">Stuck for longer than a day? Real people help. <span>ADHD coaches, therapists, psychiatrists →</span></div>
+        <div class="people">
+          <div class="people-head">Real people help. Stuck for longer than a day? This is who.</div>
+          <table class="people-table">
+            <thead><tr><th>Who</th><th>For</th><th>Where</th></tr></thead>
+            <tbody>
+              <tr><td>ADHD coach</td><td>Weekly accountability and strategy. The strongest external motor there is.</td><td><a href="https://add.org/professional-directory/" target="_blank" rel="noopener">ADDA directory</a><a href="https://chadd.org/professional-directory/" target="_blank" rel="noopener">CHADD directory</a></td></tr>
+              <tr><td>Therapist</td><td>The feelings underneath. Shame, burnout, the spiral.</td><td><a href="https://www.psychologytoday.com/us/therapists/adhd" target="_blank" rel="noopener">Psychology Today</a></td></tr>
+              <tr><td>Psychiatrist</td><td>Medication. A real, valid option. They help you decide.</td><td><a href="https://www.psychologytoday.com/us/psychiatrists/adhd" target="_blank" rel="noopener">Psychology Today</a></td></tr>
+              <tr><td>Right now</td><td>Heavy right now. Free, 24/7, a human answers.</td><td><a href="tel:988">Call 988</a><a href="sms:988">Text 988</a></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div class="stuck-inner" id="stuckMove" hidden>
         <div class="stuck-mark"></div>
