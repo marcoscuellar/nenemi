@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --sanctuary: #0C0D0A;
@@ -138,8 +138,7 @@
   .app.quiet .wordmark { display: none; }
   .greeting-big { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1.35; text-align: left; width: 100%; padding-left: 4px; box-sizing: border-box; margin-bottom: 36px; }
   /* editorial: one serif headline, one mono kicker over a hairline, one italic word, air */
-  .greeting-big .accent { display: block; color: var(--ink); font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; font-weight: 400; font-size: 52px; line-height: 1.04; letter-spacing: -0.012em; }
-  .greeting-big .accent em { font-style: italic; color: var(--ink); }
+  .greeting-big .accent { display: block; color: var(--ink); font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif; font-weight: 400; font-size: 46px; line-height: 1.06; letter-spacing: -0.01em; }
   .greeting-big .hello { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--line2); }
 
   .chat-log { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; width: 100%; max-height: 260px; overflow-y: auto; }
@@ -448,7 +447,7 @@
     /* home */
     .greeting-big { font-size: 26px; margin-bottom: 22px; }
     .greeting-big { margin-bottom: 26px; }
-    .greeting-big .accent { font-size: 40px; }
+    .greeting-big .accent { font-size: 36px; }
     .greeting-big .hello { font-size: 10px; padding-bottom: 10px; margin-bottom: 14px; }
     .wordmark { top: calc(15px + env(safe-area-inset-top)); left: 12px; font-size: 9.5px; }
     .topnav { left: auto; right: 56px; transform: none; }
@@ -818,7 +817,7 @@
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
     const g = greetingLines();
-    el.innerHTML = `<span class="hello">${escapeHtml(g.hello)}</span><span class="accent">${escapeHtml(g.line).replace(/\*([^*]+)\*/g, '<em>$1</em>')}</span>`;
+    el.innerHTML = `<span class="hello">${escapeHtml(g.hello)}</span><span class="accent">${escapeHtml(g.line).replace(/\*/g, '')}</span>`;
   }
 
   function toggleMenu() {
