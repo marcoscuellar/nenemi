@@ -386,8 +386,15 @@
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
   .stuck-eyebrow { font-family: var(--font-mono); font-size: 11.5px; color: var(--sage-text); letter-spacing: 0.06em; margin-top: 26px; }
-  .stuck-nudge { font-family: var(--font-display); font-weight: 700; font-size: 27px; text-align: center; max-width: 420px; line-height: 1.3; margin: 16px auto 0; }
+  .stuck-nudge { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 34px; text-align: center; max-width: 520px; line-height: 1.12; letter-spacing: -0.01em; margin: 18px auto 0; }
+  .stuck-quote { max-width: 440px; margin: 18px auto 0; padding: 2px 0 2px 16px; border-left: 1px solid var(--line2); color: var(--muted); font-size: 14px; line-height: 1.55; text-align: left; }
+  .stuck-quote .where { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .stuck-sub { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 12px; max-width: 340px; }
+  .stuck-box { width: 560px; max-width: 92vw; margin-top: 26px; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 22px; padding: 18px 16px 12px; box-shadow: 0 0 60px rgba(127,169,156,0.10); }
+  .stuck-box textarea { width: 100%; box-sizing: border-box; min-height: 84px; max-height: 40vh; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0; }
+  .stuck-box textarea::placeholder { color: var(--faint); }
+  .stuck-log { width: 560px; max-width: 92vw; margin-top: 16px; }
+  .stuck-log:empty { display: none; }
   .stuck-actions { display: flex; gap: 10px; margin-top: 34px; }
   .stuck-btn { padding: 13px 22px; border-radius: 14px; border: none; font-family: var(--font-body); font-weight: 600; font-size: 14px; cursor: pointer; }
   .stuck-btn.primary { background: var(--sage-fill); color: var(--sage-text); }
@@ -507,6 +514,8 @@
     .stuck-mark { width: 56px; height: 56px; }
     .stuck-nudge { font-size: 22px; max-width: 100%; }
     .stuck-sub { font-size: 13px; }
+    .stuck-nudge { font-size: 27px; padding: 0 12px; }
+    .stuck-quote { margin-left: 18px; margin-right: 18px; font-size: 13.5px; }
     .stuck-actions { flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 24px; width: 100%; }
     .stuck-btn { padding: 12px 16px; font-size: 13.5px; flex: 1 1 auto; white-space: nowrap; }
     .stuck-note { font-size: 10.5px; max-width: 100%; }
@@ -753,6 +762,7 @@
         <div class="stuck-mark"></div>
         <div class="stuck-eyebrow">[ ONE SMALL MOVE ]</div>
         <div class="stuck-nudge" id="nudgeText">Stand up. Shake it out for 15 seconds. That's the whole task.</div>
+        <div class="stuck-quote" id="nudgeQuote" hidden></div>
         <div class="stuck-tag" id="nudgeTag">movement · body &amp; energy</div>
         <div class="stuck-sub">No pressure to do anything after. Just this.</div>
         <div class="stuck-actions">
@@ -761,6 +771,22 @@
           <button class="stuck-btn ghost" onclick="go('home')">Just breathe with me</button>
         </div>
         <div class="stuck-note" id="stuckNote"></div>
+        <div class="doors-back" onclick="showDoors()">← the doors</div>
+      </div>
+      <div class="stuck-inner stuck-dump" id="stuckDump" hidden>
+        <div class="stuck-mark"></div>
+        <div class="stuck-eyebrow">[ PUT IT DOWN ]</div>
+        <div class="stuck-nudge">Put it down. I've got it.</div>
+        <div class="stuck-sub">All of it, in any order. It gets held, and you get your head back.</div>
+        <div class="stuck-box">
+          <textarea id="stuckInput" rows="3" placeholder="Everything that's in there…"></textarea>
+          <div class="composer-row">
+            <div class="spacer"></div>
+            <div class="mic-btn" id="stuckMic" title="Say it instead"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+            <div class="send-btn" onclick="stuckSend()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
+        </div>
+        <div class="chat-log stuck-log" id="stuckLog"></div>
         <div class="doors-back" onclick="showDoors()">← the doors</div>
       </div>
     </div>
@@ -1026,10 +1052,22 @@
     const input = document.getElementById('composerInput');
     const text = input.value.trim();
     if (!text) return;
-    const log = document.getElementById('chatLog');
-    log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
     input.value = ''; growComposer();
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
+    captureText(text, source, document.getElementById('chatLog'));
+  }
+  // door 2: the same capture, inside the sanctuary, so nobody gets kicked back out to Home
+  function stuckSend() {
+    const input = document.getElementById('stuckInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = ''; input.style.height = '';
+    const source = input.dataset.source || 'typed'; delete input.dataset.source;
+    captureText(text, source, document.getElementById('stuckLog'));
+  }
+  function captureText(text, source, log) {
+    log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
+    log.scrollTop = log.scrollHeight;
 
     const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
     if (auth.smart && location.protocol !== 'file:') { smartCapture(text, source, log); return; }
@@ -1169,11 +1207,11 @@
     const recent = rooms.filter(r => !r.demo && lastTouch(r)).sort((a, b) => lastTouch(b) - lastTouch(a))[0];
     if (state === 'broke' && recent) {
       const last = recent.log.find(e => e.source !== 'auto-routed') || recent.log[0];
-      if (last) out.push({ t: `Pick up exactly where you were: \u201c${last.text}\u201d in ${recent.name}.`, m: 'context reinstatement', g: 'focus & friction', s: ['broke'] });
+      if (last) out.push({ t: 'Pick up exactly where you were.', q: last.text, where: recent.name, m: 'context reinstatement', g: 'focus & friction', s: ['broke'] });
     }
     if (state === 'tired') {
       const withLoop = rooms.filter(r => r.loops.some(l => !l.resolved)).sort((a, b) => (lastTouch(b) || 0) - (lastTouch(a) || 0))[0];
-      if (withLoop) { const l = withLoop.loops.find(x => !x.resolved); out.push({ t: `If anything today, just this: ${l.text}. Or nothing. Both are fine.`, m: 'single-tasking', g: 'focus & friction', s: ['tired'] }); }
+      if (withLoop) { const l = withLoop.loops.find(x => !x.resolved); out.push({ t: 'If anything today, just this. Or nothing. Both are fine.', q: l.text, where: withLoop.name, m: 'single-tasking', g: 'focus & friction', s: ['tired'] }); }
     }
     return out;
   }
@@ -1188,27 +1226,31 @@
     const n = nudgeOrder[nudgePos % nudgeOrder.length];
     document.getElementById('nudgeText').textContent = n.t;
     document.getElementById('nudgeTag').textContent = `${n.m} · ${n.g}`;
+    const q = document.getElementById('nudgeQuote');
+    if (n.q) { const t = n.q.length > 150 ? n.q.slice(0, 150).replace(/\s+\S*$/, '') + '…' : n.q; q.innerHTML = `\u201c${escapeHtml(t)}\u201d<span class="where">in ${escapeHtml(n.where || '')}</span>`; q.hidden = false; }
+    else { q.hidden = true; q.innerHTML = ''; }
     document.querySelector('.stuck-sub').textContent = 'No pressure to do anything after. Just this.';
   }
   function nextNudge() { if (!nudgeOrder.length) setRegroup(regroupState); else { nudgePos++; showNudge(); } }
   function stuckDone() {
     document.getElementById('nudgeText').textContent = "That's a real start. Proud of you.";
+    document.getElementById('nudgeQuote').hidden = true;
     document.getElementById('nudgeTag').textContent = 'celebrate the start · novelty & momentum';
     document.querySelector('.stuck-sub').textContent = '';
     setTimeout(() => go('home'), 1400);
   }
 
   // ---------- the Way Back In: four doors (docs/nenemi-way-back-in.md) ----------
-  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckNote').textContent = ''; }
+  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = true; document.getElementById('stuckNote').textContent = ''; }
   function openDoor(state) {
+    document.getElementById('doors').hidden = true;
     if (state === 'full') {
-      // door 2: the composer is the move
-      go('home');
-      const input = document.getElementById('composerInput'); input.placeholder = "Put it down. I've got it."; input.focus();
-      setTimeout(() => { input.placeholder = 'Dump anything here…'; }, 12000);
+      // door 2: putting it down is the move, and it happens right here in the dark
+      document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = false;
+      setTimeout(() => document.getElementById('stuckInput').focus(), 60);
       return;
     }
-    document.getElementById('doors').hidden = true; document.getElementById('stuckMove').hidden = false;
+    document.getElementById('stuckDump').hidden = true; document.getElementById('stuckMove').hidden = false;
     setRegroup(state);
     let note = '';
     if (state === 'tired') note = lowEnergyDay();
@@ -1836,6 +1878,9 @@
   attachVoice(document.getElementById('homeMic'), document.getElementById('composerInput'), sendCapture);
   attachVoice(document.getElementById('roomMic'), document.getElementById('quickAddInput'), quickAdd);
   attachVoice(document.getElementById('calMic'), document.getElementById('calDump'), null);
+  attachVoice(document.getElementById('stuckMic'), document.getElementById('stuckInput'), stuckSend);
+  document.getElementById('stuckInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); stuckSend(); } });
+  document.getElementById('stuckInput').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.max(84, Math.min(this.scrollHeight, window.innerHeight * 0.4)) + 'px'; });
 
   restore();
   renderCal();
