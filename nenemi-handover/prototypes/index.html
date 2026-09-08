@@ -138,6 +138,7 @@
   .app.quiet .wordmark { display: none; }
   .greeting-big { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1.35; text-align: left; width: 100%; padding-left: 4px; box-sizing: border-box; margin-bottom: 22px; }
   .greeting-big .accent { color: var(--ink); }
+  .greeting-big .hello { display: block; font-size: 17px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
 
   .chat-log { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; width: 100%; max-height: 260px; overflow-y: auto; }
   .bubble { max-width: 78%; padding: 11px 15px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
@@ -795,42 +796,16 @@
   function userFirstName() { try { const u = window.Clerk && Clerk.user; return u ? (u.firstName || u.username || '') : ''; } catch (e) { return ''; } }
   // one step per page load, not per render
   let visitN = 0; try { visitN = (parseInt(localStorage.getItem('nenemi.visit') || '0', 10) + 1) % 100000; localStorage.setItem('nenemi.visit', String(visitN)); } catch (e) {}
-  const HELLOS = ['hey hey', 'there you are', "what's up", 'oh hey', 'welcome back', 'hey, you made it', 'hiya', 'hey you'];
-  const HELLOS_MORNING = ['morning', 'hey hey', 'there you are', 'oh hey', 'morning, you'];
-  const HELLOS_LATE = ['hey', 'there you are', 'oh hey', 'hey hey'];
-  const LINES = [
-    "what's taking up space?", "what's yelling the loudest?", 'drop it here.', "no rush, what's up?", "okay brain, what've we got?",
-    'too many tabs open?', "what's floating around up there?", 'come in, drop your stuff.', "being here is enough for now.",
-    'where do we start?', 'one thing at a time.', "how's it looking?", "what's good?",
-    'what are we getting into?', "what's bouncing around today?", 'brain busy?', 'we can figure it out.',
-  ];
-  const LINES_LATE = ["what's still looping?", 'being here is enough for now.', "no rush, what's up?", "what's taking up space?", 'there you are.'];
+  // the greeting is steady: the time of day and their name, then one small question. never their projects, never their day.
+  const LINES = ["what's up?", "what's taking up space?", "what's yelling the loudest?", "okay brain, what've we got?", "no rush, what's up?", "what's good?", "how's it looking?", 'brain busy?'];
   function greetingLines() {
     const h = new Date().getHours();
     const name = userFirstName();
-    const late = h >= 22 || h < 5, morning = h >= 5 && h < 12;
-    const pool = late ? HELLOS_LATE : morning ? HELLOS_MORNING : HELLOS;
-    let hello = pool[visitN % pool.length];
-    hello = name ? `${hello}, ${name}.` : `${hello}.`;
-
-    // lines that know what's going on
-    const ctx = [];
-    const quiet = rooms.filter(r => !r.demo && r.loops.some(l => !l.resolved) && daysQuiet(r) >= 3).sort((a, b) => daysQuiet(b) - daysQuiet(a))[0];
-    if (quiet) ctx.push(`${quiet.name} has been quiet ${daysQuiet(quiet)} days, still all there.`);
-    const nowH = h + new Date().getMinutes() / 60;
-    const next = dayList(today).filter(e => e.kind !== 'buffer' && e.start > nowH).sort((a, b) => a.start - b.start)[0];
-    if (next) ctx.push(`${next.name} at ${fmtAmPm(next.start)}, nothing before it.`);
-    if (carried.length) ctx.push(`${carried.length === 1 ? 'one thing' : carried.length + ' things'} rolled over from yesterday, no rush.`);
-    if (loose.length) ctx.push(`${loose.length === 1 ? 'one loose thought' : loose.length + ' loose thoughts'} waiting on the rooms page.`);
-    const last = rooms.filter(r => !r.demo && lastTouch(r)).sort((a, b) => lastTouch(b) - lastTouch(a))[0];
-    if (last && daysQuiet(last) < 3) ctx.push(`last you were in ${last.name}.`);
-
-    // every other visit gets a context line when there is one; the rest rotate through the sanctuary lines
-    const plain = late ? LINES_LATE : LINES;
-    const line = ctx.length && visitN % 2 === 0 ? ctx[Math.floor(visitN / 2) % ctx.length] : plain[visitN % plain.length];
-    // capitalize like a sentence; the lines are written lowercase so they read casual, but they're still sentences
+    const word = h >= 5 && h < 12 ? 'Morning' : h >= 12 && h < 17 ? 'Afternoon' : h >= 17 && h < 22 ? 'Evening' : 'Hey';
+    const hello = name ? `${word}, ${name}.` : `${word}.`;
+    const line = LINES[visitN % LINES.length];
     const cap = t => t.replace(/(^|[.!?]\s+)([a-z])/g, (m, a, c) => a + c.toUpperCase());
-    return { hello: cap(hello), line: cap(line) };
+    return { hello, line: cap(line) };
   }
   let greetTimer = null;
   function renderGreetingSoon() { clearTimeout(greetTimer); greetTimer = setTimeout(() => { if (!document.getElementById('greetingText').dataset.named && userFirstName()) { document.getElementById('greetingText').dataset.named = '1'; renderGreeting(); } }, 50); }
@@ -838,7 +813,7 @@
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
     const g = greetingLines();
-    el.innerHTML = `${escapeHtml(g.hello)}<br><span class="accent">${escapeHtml(g.line)}</span>`;
+    el.innerHTML = `<span class="hello">${escapeHtml(g.hello)}</span><br><span class="accent">${escapeHtml(g.line)}</span>`;
   }
 
   function toggleMenu() {
