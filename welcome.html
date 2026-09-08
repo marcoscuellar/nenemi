@@ -114,16 +114,12 @@ h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4vw, 52
 .s .pill { display: inline-block; margin-top: 14px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; background: rgba(63,191,198,.06); color: var(--teal); box-shadow: 0 0 16px rgba(63,191,198,.28), 0 0 40px rgba(63,191,198,.10); }
 .s.light .pill { background: rgba(15,123,130,.06); color: #0F7B82; box-shadow: 0 0 16px rgba(15,123,130,.22), 0 0 40px rgba(15,123,130,.08); }
 
-/* ARCHITECT */
-.arch .split-img .img { background-position: 50% 6%; }
-.arch-tag { position: absolute; bottom: 20px; right: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); background: rgba(10,10,10,.75); padding: 7px 12px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,191,198,.35), 0 0 50px rgba(63,191,198,.12); }
-.arch h2 { font-size: clamp(28px, 3.2vw, 42px); }
-.arch h2 span { color: var(--teal); }
-.arch .body { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.75; margin-bottom: 26px; }
-.creds { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
-.cred { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
-.cred::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 10px rgba(63,191,198,.8); flex-shrink: 0; }
-.promise { padding: 22px 24px; background: rgba(63,191,198,.04); border-radius: 12px; box-shadow: 0 0 30px rgba(63,191,198,.22), 0 0 90px rgba(63,191,198,.10); font-family: var(--serif); font-size: 17px; color: var(--muted); line-height: 1.55; }
+/* MAKER */
+.maker { display: flex; align-items: center; gap: 26px; max-width: 760px; margin: 0 auto; padding: 56px 24px 72px; }
+.maker-photo { width: 88px; height: 88px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: 50% 22%; box-shadow: 0 0 24px rgba(63,191,198,.28), 0 0 70px rgba(63,191,198,.10); }
+.maker-text .tag { display: block; margin-bottom: 12px; }
+.maker-text p { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.7; }
+.maker-line { margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); }
 
 /* OPEN */
 .open-sec { padding: 120px 64px; text-align: center; position: relative; overflow: hidden; }
@@ -149,6 +145,7 @@ footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: ce
   .nav-links { display: none; }
   .hero { padding: 0 0 56px 24px; min-height: 620px; }
   .hero-img { background-position: 68% 30%; }
+  .maker { flex-direction: column; align-items: flex-start; gap: 18px; padding: 40px 24px 56px; }
   .hero-note { display: none; }
   .split { grid-template-columns: 1fr; }
   .split-img { min-height: 340px; }
@@ -278,24 +275,6 @@ footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: ce
   </div>
 </section>
 
-<section class="split arch" id="architect">
-  <div class="split-img">
-    <div class="img" style="background-image:url('/photos/marcos.jpg');"></div>
-    <div class="arch-tag">[ ARCHITECT_ID: MARCOS_CUELLAR ]</div>
-  </div>
-  <div class="split-text">
-    <span class="tag">[ ARCHITECT_ID: MARCOS_CUELLAR ]</span>
-    <h2>He's been in this for <span>hours.</span><br>The environment is the system.</h2>
-    <p class="body">Nenemi was built out of personal frustration with tools that assumed a brain I didn't have. Not from a whiteboard. From 30 years of lived experience, hundreds of real conversations, and a deep dive into why most productivity apps fail people like us before the first task is even opened.</p>
-    <div class="creds">
-      <div class="cred">30+ years of lived experience in the build</div>
-      <div class="cred">Clinically grounded. Psychiatrist and psychologist recommendable.</div>
-      <div class="cred">Built on Claude API. Research-backed from the ground up.</div>
-      <div class="cred">FOR THIS BRAIN. FROM THIS BRAIN.</div>
-    </div>
-    <div class="promise">"We will never make anyone feel like they should have their life more together. Nenemi exists because the world already does that. We are the first thing in their day that doesn't."</div>
-  </div>
-</section>
 
 <section class="open-sec" id="access">
   <div class="glow"></div>
@@ -305,6 +284,15 @@ footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: ce
     <p class="sub">If that's yours, you already know. Not a mockup. Not a demo. A working version of Nenemi running on the Claude API. Open it. Use it. See what today feels like with the right system.</p>
     <a href="/?open=1" class="big">[ OPEN NENEMI ] →</a>
     <div class="open-note">No account required · Built on Claude API · No spam. No streak notifications. Just the build.</div>
+  </div>
+</section>
+
+<section class="maker" id="architect">
+  <div class="maker-photo" style="background-image:url('/photos/marcos.jpg');"></div>
+  <div class="maker-text">
+    <span class="tag">[ ARCHITECT_ID: MARCOS_CUELLAR ]</span>
+    <p>Nenemi was built out of personal frustration with tools that assumed a brain I didn't have. Not from a whiteboard. From 30 years of lived experience and hundreds of real conversations.</p>
+    <p class="maker-line">For this brain. From this brain.</p>
   </div>
 </section>
 
