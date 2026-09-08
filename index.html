@@ -300,22 +300,26 @@
   .new-room-card { border: 1.5px dashed var(--line2); border-radius: 18px; padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 118px; }
 
   /* ROOM VIEW pane */
-  .rv-header { padding: 64px 48px 0; width: 100%; max-width: 780px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+  .rv-header { padding: 64px 48px 0; width: 100%; max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
   .rv-title-wrap { flex: 1; }
   .rv-name { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
   .rv-oneliner { color: var(--muted); font-size: 13px; margin-top: 2px; }
-  .rv-body { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 780px; margin: 0 auto; }
+  .rv-body { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 900px; margin: 0 auto; }
+  .rv-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 28px; }
+  .log-more { font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; padding: 12px 0 0; }
+  .log-more:hover { color: var(--ink); }
   /* re-entry card: pays the restart tax in ten seconds */
   .reentry { background: linear-gradient(180deg, var(--glow) 0%, var(--surface) 100%); border: 1px solid var(--sage-fill); border-radius: 18px; padding: 20px; margin-bottom: 16px; }
   .re-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
   .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sage-text); }
   .re-away { font-size: 12.5px; color: var(--muted); }
+  .re-brief { font-size: 15px; line-height: 1.65; color: var(--ink); margin-bottom: 16px; }
   .re-last { font-size: 14px; line-height: 1.55; color: var(--ink); margin-bottom: 14px; }
   .re-last .re-q { color: var(--muted); }
   .re-last .re-when { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
-  .re-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .re-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .re-next-text { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 24px; line-height: 1.15; }
   .re-next-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--faint); margin-bottom: 4px; }
-  .re-next-text { font-family: var(--font-display); font-weight: 700; font-size: 17px; line-height: 1.3; }
   .re-btn { flex-shrink: 0; padding: 11px 16px; border-radius: 10px; border: none; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
   .re-btn:hover { background: var(--sage-text); }
   .room-quiet { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
@@ -361,7 +365,8 @@
   .loop-row.resolved .loop-check svg { display: block; }
   .loop-row.resolved .loop-text { text-decoration: line-through; color: var(--faint); }
   .loop-text { flex: 1; font-size: 14.5px; }
-  .loop-focus { display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); cursor: pointer; white-space: nowrap; }
+  .loop-row:hover .loop-focus { opacity: 1; }
+  .loop-focus { opacity: 0; transition: opacity 120ms ease; display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; white-space: nowrap; }
   .log-entry { padding: 13px 0; border-bottom: 1px solid var(--line); }
   .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); margin-bottom: 5px; }
   .log-text { font-size: 14px; line-height: 1.55; }
@@ -509,7 +514,9 @@
     .reentry { padding: 16px; }
     .re-next { flex-direction: column; align-items: stretch; }
     .re-btn { width: 100%; }
-    .brief-card { padding: 16px; }
+    .rv-cols { grid-template-columns: 1fr; gap: 26px; margin-top: 22px; }
+    .loop-focus { opacity: 1; }
+    .re-next-text { font-size: 21px; }
     .brief-text { font-size: 14.5px; }
     /* calendar: the dump box comes first, then the day */
     .cal-topbar { padding-right: 120px; }
@@ -727,21 +734,22 @@
       </div>
       <div class="rv-body">
         <div class="reentry" id="rvReentry"></div>
-        <div class="brief-card">
-          <div class="brief-label">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5" stroke-linecap="round"/></svg>
-            BRIEF
-          </div>
-          <div class="brief-text" id="rvBrief">Loading…</div>
-        </div>
+        <div class="brief-text" id="rvBrief" hidden></div>
         <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6.5 9.5L9.5 6.5M7 5L8.2 3.8a2.3 2.3 0 0 1 3.3 3.3L10 8.5M9 11l-1.2 1.2a2.3 2.3 0 0 1-3.3-3.3L6 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span id="rvLinkLabel">Continue in Claude</span>
         </div>
-        <div class="section-label">Still open</div>
-        <div id="rvLoops"></div>
-        <div class="section-label" style="margin-top:22px;">Recent</div>
-        <div id="rvLog"></div>
+        <div class="rv-cols">
+          <div class="rv-col">
+            <div class="section-label">Still open</div>
+            <div id="rvLoops"></div>
+          </div>
+          <div class="rv-col">
+            <div class="section-label">Recent</div>
+            <div id="rvLog"></div>
+            <div class="log-more" id="rvLogMore" hidden onclick="showAllLog()">All of it</div>
+          </div>
+        </div>
         <div class="quickadd">
           <input id="quickAddInput" placeholder="Add a note to this room…" />
           <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
@@ -1003,7 +1011,6 @@
     document.getElementById('rvOneliner').textContent = r.one_liner;
     const rvIcon = document.getElementById('rvIcon');
     rvIcon.innerHTML = roomIconHtml(r); rvIcon.style.cssText = ROOM_COLORS[r.color] ? `--rc:${ROOM_COLORS[r.color]}` : '';
-    document.getElementById('rvBrief').textContent = r.brief;
     renderReentry(r);
 
     const linkRow = document.getElementById('rvLinkRow');
@@ -1018,7 +1025,9 @@
       </div>
     `).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
 
-    document.getElementById('rvLog').innerHTML = r.log.map(e => `
+    const shown = showAllLogFor === r.id ? r.log : r.log.slice(0, 3);
+    const more = document.getElementById('rvLogMore'); more.hidden = r.log.length <= 3 || showAllLogFor === r.id; more.textContent = `All ${r.log.length} →`;
+    document.getElementById('rvLog').innerHTML = shown.map(e => `
       <div class="log-entry">
         <div class="log-time">
           ${e.source === 'voice'
@@ -1036,6 +1045,8 @@
   }
 
   function toggleLoop(i) { currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved; save(); renderRoomView(); }
+  let showAllLogFor = null;
+  function showAllLog() { showAllLogFor = currentRoom && currentRoom.id; renderRoomView(); }
 
   // ---------- re-entry: pay the restart tax in ten seconds ----------
   function lastTouch(r) { const e = r.log.find(x => x.ts); return e ? e.ts : null; }
@@ -1047,14 +1058,13 @@
   }
   function awayLine(r) {
     const ts = lastTouch(r);
-    if (!ts) { const e = r.log[0]; return e && e.time ? `Last touched ${e.time}. It's all still here.` : 'Fresh room. Nothing to catch up on.'; }
+    if (!ts) return 'Fresh room';
     const h = (Date.now() - ts) / 3600e3;
-    if (h < 1) return 'You were just here. Keep going.';
-    if (h < 24) return 'You were here earlier today. Easy re-entry.';
+    if (h < 1) return 'Just now';
+    if (h < 24) return 'Earlier today';
     const d = Math.round(h / 24);
-    if (d === 1) return 'Yesterday. Easy re-entry.';
-    if (d < 7) return `It's been ${d} days. That's fine.`;
-    return `It's been ${d} days. Nothing's lost — it's all still here.`;
+    if (d === 1) return 'Yesterday';
+    return `${d} days ago · all still here`;
   }
   let pickUpTask = '';
   // pick up = go to the work. calendar loops open the calendar; anything else lights the loop right here
@@ -1071,8 +1081,8 @@
     const next = r.loops.find(l => !l.resolved);
     pickUpTask = next ? next.text : `Open up ${r.name} — just look around`;
     document.getElementById('rvReentry').innerHTML = `
-      <div class="re-top"><div class="re-kicker">Where you left off</div><div class="re-away">${escapeHtml(awayLine(r))}</div></div>
-      ${last ? `<div class="re-last"><span class="re-q">${last.source === 'voice' || last.source === 'typed' ? 'You said:' : 'Last touch:'}</span> \u201c${escapeHtml(last.text)}\u201d <span class="re-when">· ${when(last)}</span></div>` : ''}
+      <div class="re-top"><div class="re-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div></div>
+      <div class="re-brief">${escapeHtml(r.brief || '')}</div>
       <div class="re-next">
         <div>
           <div class="re-next-label">${next ? 'Next small move' : 'Nothing open'}</div>
@@ -1702,6 +1712,7 @@
       const raw = localStorage.getItem(STORE_KEY); if (!raw) return false;
       const d = JSON.parse(raw);
       if (Array.isArray(d.rooms)) rooms.splice(0, rooms.length, ...d.rooms);
+      rooms.forEach(r => { if (Array.isArray(r.log)) r.log = r.log.filter(e => !/^Stepped out of a focus session/.test(e.text || '')); });
       if (d.events && typeof d.events === 'object') { Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events); }
       if (Array.isArray(d.carried)) carried = d.carried;
       loose = Array.isArray(d.loose) ? d.loose : [];
