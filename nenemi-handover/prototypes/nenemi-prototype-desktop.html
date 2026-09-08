@@ -1216,8 +1216,31 @@
     log.scrollTop = log.scrollHeight;
 
     const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
+    // a day dumped into the box is a day, not a project: it goes on the calendar, never into a new room
+    if (!mode && looksLikeDay(text)) { dayCapture(text, source, log, /\btomorrow\b/i.test(text) ? 'tomorrow' : 'today'); return; }
     if (auth.smart && location.protocol !== 'file:') { smartCapture(text, source, log, mode); return; }
     heuristicCapture(text, source, log);
+  }
+  // "I need to get the laptop by 5, pick up my meds, call the barber": times or deadlines, to-do verbs, two or more things
+  function looksLikeDay(text) {
+    const timed = /\b(by|before|after|at|around|until|till)\s+(like\s+)?\d{1,2}(:\d{2})?\s*(am|pm|o'?clock)?\b|\b\d{1,2}(:\d{2})?\s*(am|pm)\b|\bnoon\b|\btonight\b|\bthis (morning|afternoon|evening)\b|\b(today|tomorrow)\b.*\b(by|at|before)\s+\d/i.test(text);
+    const doing = /\b(need to|have to|gotta|got to|got a|have a|should|must|go get|pick up|drop off|appointment|errand|call|book|schedule|meeting|workout|gym)\b/i.test(text);
+    return timed && doing && heuristicItems(text).length >= 2;
+  }
+  // the Home box version of Build my day: same planner, same placement, reply lands in the chat
+  async function dayCapture(text, source, log, which) {
+    const wait = document.createElement('div'); wait.className = 'bubble dos'; wait.textContent = 'Reading the day…'; log.appendChild(wait); log.scrollTop = log.scrollHeight;
+    const d = new Date(today); if (which === 'tomorrow') d.setDate(d.getDate() + 1); selectedDay = d;
+    let out = null;
+    try { out = await planDay(text); } catch (e) { out = null; }
+    wait.remove();
+    if (!out || !out.placed) {
+      // nothing landed on the day, so the words go where they always go
+      if (auth.smart && location.protocol !== 'file:') smartCapture(text, source, log, null); else heuristicCapture(text, source, log);
+      return;
+    }
+    log.innerHTML += `<div class="bubble dos confirm">${escapeHtml(out.note)}<br><span class="mini-btn" onclick="go('calendar')">Open my day</span></div>`;
+    log.scrollTop = log.scrollHeight;
   }
 
   // the no-key fallback: first-word matching and a question
@@ -1265,6 +1288,7 @@
       log.innerHTML += `<div class="bubble dos">${reply || "Sounds like you're stuck. One small move, coming up."}</div>`;
       setTimeout(() => go('stuck'), 700); return;
     }
+    if (d.action === 'day') { dayCapture(text, source, log, d.day === 'tomorrow' ? 'tomorrow' : 'today'); return; }
     if (d.action === 'file') {
       const room = rooms.find(r => r.id === d.room_id);
       if (!room) return heuristicCapture(text, source, log);
@@ -1646,7 +1670,9 @@
          .replace(/^(i\s+)?(need|have|got|gotta|want|should|must)\s+(to\s+)?/i, '')
          .replace(/^(i'?m|i am|i keep|i)?\s*(avoiding|dreading|putting off)\s+/i, '')
          .replace(/^(i\s+)?(have|got)\s+/i, '')
-         .replace(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i, '').replace(/\bat\s+\d{1,2}(?::\d{2})?\b/i, '')
+         .replace(/^(make sure|remember|don't forget)\s+(that\s+)?(i\s+)?(try\s+to\s+|need\s+to\s+|have\s+to\s+)?/i, '')
+         .replace(/\b(?:by|before|due)\s+(?:like\s+|around\s+)?\d{1,2}(?::\d{2})?\s*(am|pm)?\b/i, '').replace(/\b(at|around)\s+\d{1,2}(?::\d{2})?\s*(am|pm)?\b/i, '').replace(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i, '')
+         .replace(/\s*,?\s*(which|that)\s+(that\s+)?(should|would|is|was)\s+.*$/i, '').replace(/\bso\s+(that\s+)?(i\s+)?(need|have)\s+to\s+do\s+that\b.*$/i, '').replace(/\bso\s+that\s*$/i, '')
          .replace(/\b(which|that)\s+i\s+(keep\s+)?(putting off|avoiding|dreading|dread|hate)\b.*$/i, '')
          .replace(/\b(please\s+)?priorit(ize|ise|y)\s+(this|that|it|the|my)?\s*/i, '').replace(/\bplease\b/i, '').replace(/^(it|this|that)\s+(has|needs)\s+to\s+(be\s+)?(done|happen|finished)\b.*$/i, '').replace(/\b(this|that|it)('s| is)\s+(the\s+)?most important\b.*$/i, '').replace(/\b(by|before|due)\s+\d{1,2}(:\d{2})?\s*(am|pm)?\b/i, '').replace(/\b(this|that)\s+(one\s+)?please\b/i, '')
          .replace(/\bat some point\b/i, '').replace(/\b(i\s+)?(want|need|would like)\s+to\s+(have|get|do)\s+/i, '')
@@ -1675,7 +1701,7 @@
       const lead = p.replace(/^((um+|uh+|oh+|ah+|so|that|i'm|im|sorry|yeah|yep|okay|ok|well|like|just|and|but|anyway)\s+)+/i, '');
       if (/^(today|tomorrow|tonight|it|this|that)('s|\s+is|\s+was)\b/i.test(lead)) return null;                                      // "so that I'm sorry today's Labor Day"
       const priority = /\bpriorit|most important|has to happen|must (get )?(done|happen)|top of the list|no matter what\b/i.test(p);
-      const dueM = p.match(/\b(?:by|before|due)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
+      const dueM = p.match(/\b(?:by|before|due)\s+(?:like\s+|around\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\b/i);
       const due = dueM ? (() => { let h = +dueM[1]; const min = dueM[2] ? +dueM[2] : 0; const ap = (dueM[3] || '').toLowerCase(); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; if (!ap && h < 8) h += 12; return h + min / 60; })() : null;
       const t = dueM ? null : parseTime(p);
       const avoiding = /avoid|dread|putting off|hate|ugh/i.test(p);
@@ -1751,32 +1777,24 @@
     return out;
   }
   let building = false;
-  async function buildDay() {
-    if (building) return;
-    const box = document.getElementById('calDump');
-    const raw = box.value.trim();
-    if (!raw) { calNote('Say anything, messy is fine. One line is enough to start.'); box.focus(); return; }
+  // the planner itself: reads the words, places them on selectedDay, saves, and hands back one line about what happened.
+  // Shared by Build my day and by the Home box when a dump is day-shaped.
+  async function planDay(raw) {
     // late at night, build tomorrow instead of cramming today
     let builtTomorrow = false;
     if (dkey(selectedDay) === dkey(today) && new Date().getHours() >= DAY_END - 1) {
       const tm = new Date(today); tm.setDate(tm.getDate() + 1); selectedDay = tm; builtTomorrow = true;
     }
-    const btn = document.querySelector('.sc-build');
     let plan = null;
-    if (auth.smart && location.protocol !== 'file:') {
-      building = true; btn.disabled = true; btn.textContent = 'Reading the day…'; calNote('');
-      try { plan = await smartPlan(raw); } catch (e) { plan = null; }
-      building = false; btn.disabled = false; btn.textContent = 'Build this day';
-    }
+    if (auth.smart && location.protocol !== 'file:') { try { plan = await smartPlan(raw); } catch (e) { plan = null; } }
     const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), priority: Boolean(it.priority), due: hourOf(it.due), energy: it.energy === 'low' ? 'low' : 'high', room_id: it.room_id || null })) : heuristicItems(raw);
     const dayStart = plan ? hourOf(plan.day_start) : dayStartFrom(raw);
     if (!items.length) {
-      if (builtTomorrow) { selectedDay = new Date(today); }
-      calNote((plan && plan.reply) || "Didn't catch anything to put on the day yet. Say it any way you like, times or no times.");
-      return;   // their words stay in the box
+      if (builtTomorrow) selectedDay = new Date(today);
+      return { placed: 0, note: (plan && plan.reply) || "Didn't catch anything to put on the day yet. Say it any way you like, times or no times.", builtTomorrow };
     }
     const r = placeItems(items, dayStart);
-    box.value = ''; save(); renderCal();
+    save(); renderCal();
     const n = r.fixed + r.blocks + r.buffers;
     let note = builtTomorrow ? "It's late, so this is tomorrow's day. " : '';
     if (plan && plan.reply && n) note += plan.reply + ' ';
@@ -1784,10 +1802,22 @@
     if (!plan && r.firstPriority) note += ` "${r.firstPriority}" goes first, like you asked.`;
     if (!plan && r.firstAvoid && !r.firstPriority) note += ` "${r.firstAvoid}" goes first, 30 minutes, that's all.`;
     if (r.lateFor) note += ` "${r.lateFor}" couldn't land before its time with what's already there; it's in the first open space instead.`;
-    if (r.tomorrowCount) note += ` ${r.tomorrowCount} didn't fit today, so ${r.tomorrowCount === 1 ? "it's" : "they're"} first thing tomorrow. Tap → to see.`;
+    if (r.tomorrowCount) note += ` ${r.tomorrowCount} didn't fit today, so ${r.tomorrowCount === 1 ? "it's" : "they're"} first thing tomorrow.`;
     if (r.skipped) note += ` ${r.skipped} didn't fit anywhere; say ${r.skipped === 1 ? 'it' : 'them'} again another day.`;
     if (r.touched) note += ` Logged ${r.touched} to ${r.touched === 1 ? 'its room' : 'their rooms'}.`;
-    calNote(note.replace(/\s{2,}/g, ' ').trim());
+    return { placed: n + r.tomorrowCount, note: note.replace(/\s{2,}/g, ' ').trim(), builtTomorrow, plan };
+  }
+  async function buildDay() {
+    if (building) return;
+    const box = document.getElementById('calDump');
+    const raw = box.value.trim();
+    if (!raw) { calNote('Say anything, messy is fine. One line is enough to start.'); box.focus(); return; }
+    const btn = document.querySelector('.sc-build');
+    building = true; btn.disabled = true; btn.textContent = 'Reading the day…'; calNote('');
+    let out;
+    try { out = await planDay(raw); } finally { building = false; btn.disabled = false; btn.textContent = 'Build this day'; }
+    if (out.placed) box.value = '';   // otherwise their words stay in the box
+    calNote(out.note);
   }
   document.getElementById('calDump').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) buildDay(); });
 

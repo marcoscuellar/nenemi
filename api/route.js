@@ -22,7 +22,8 @@ const MAX_TEXT = 2000;
 const MAX_ROOMS = 30;
 
 const Decision = z.object({
-  action: z.enum(['file', 'new_room', 'loose', 'stuck']),
+  action: z.enum(['file', 'new_room', 'loose', 'stuck', 'day']),
+  day: z.enum(['today', 'tomorrow']).nullable(),
   room_id: z.string().nullable(),
   room_name: z.string().nullable(),
   one_liner: z.string().nullable(),
@@ -44,9 +45,11 @@ Decide one action:
 - "new_room": this is clearly a new project or area they don't have a room for yet. Give it a short room_name (2 to 4 words, no filler) and a one_liner in their words.
 - "loose": a stray thought that doesn't fit anywhere yet and isn't a project. Hold it.
 - "stuck": they're saying they can't start, feel frozen, overwhelmed, or paralyzed. Don't file anything; the app will offer one small move.
+- "day": they are laying out their day, not a project: two or more things to do or go to, with clock times, deadlines ("by 5"), or day words ("today", "tonight", "this afternoon", "tomorrow"). Errands, appointments, calls, pickups, a workout, "I need to X and then Y by 3". The app builds it on the calendar; do not make a room for it and do not file it. Set "day" to "tomorrow" when they say tomorrow, else "today". A single timed thing that clearly belongs to a room ("the Ollin call moved to 3") is still "file". Never "day" in end_of_day_recap mode.
 
 Also:
-- "note": the thing worth remembering, in their own words, with the ums, ohs, sorrys and false starts removed. Keep their meaning and their phrasing. One to three sentences.
+- "day": "today" or "tomorrow" when action is "day", else null.
+- "note": the thing worth remembering, in their own words, with the ums, ohs, sorrys and false starts removed. Keep their meaning and their phrasing. One to three sentences. For "day", keep every item they mentioned, with its time or deadline, so the planner can read it.
 - "loops_to_add": concrete next moves they mentioned, as short imperative phrases. Empty if none.
 - "loops_to_resolve": existing open loops of the target room they said are done, quoted exactly. Empty if none.
 - "brief": when filing into a room or creating one, rewrite that room's Brief to include this new information. Two or three sentences, under 70 words, second person, present tense, warm, no guilt, no "you should". Say where they left off and what the next small move is. Null for loose and stuck.
@@ -105,7 +108,7 @@ export default async function handler(req, res) {
       }],
     });
 
-    if (response.stop_reason === 'refusal') return res.status(200).json({ action: 'loose', room_id: null, room_name: null, one_liner: null, note: text, loops_to_add: [], loops_to_resolve: [], brief: null, reply: "Holding that one loose for now." });
+    if (response.stop_reason === 'refusal') return res.status(200).json({ action: 'loose', day: null, room_id: null, room_name: null, one_liner: null, note: text, loops_to_add: [], loops_to_resolve: [], brief: null, reply: "Holding that one loose for now." });
 
     const d = response.parsed_output;
     if (!d) return res.status(502).json({ error: 'could not read the model reply' });
@@ -113,6 +116,8 @@ export default async function handler(req, res) {
     // never trust a room id that isn't the user's
     if (d.action === 'file' && !rooms.some(r => r.id === d.room_id)) d.action = rooms.length ? 'loose' : 'new_room';
     if (d.action === 'new_room' && !d.room_name) d.room_name = trim(d.note.split(/\s+/).slice(0, 4).join(' '), 60);
+    if (d.action === 'day' && mode === 'end_of_day_recap') d.action = 'loose';
+    if (d.action !== 'day') d.day = null; else if (d.day !== 'tomorrow') d.day = 'today';
 
     return res.status(200).json({ ...d, usage: { input: response.usage.input_tokens, output: response.usage.output_tokens, cached: response.usage.cache_read_input_tokens || 0 } });
   } catch (err) {
