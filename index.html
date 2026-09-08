@@ -813,7 +813,7 @@
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
     const g = greetingLines();
-    el.innerHTML = `<span class="hello">${escapeHtml(g.hello)}</span><br><span class="accent">${escapeHtml(g.line)}</span>`;
+    el.innerHTML = `<span class="hello">${escapeHtml(g.hello)}</span><span class="accent">${escapeHtml(g.line)}</span>`;
   }
 
   function toggleMenu() {
