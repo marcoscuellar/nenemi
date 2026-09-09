@@ -221,6 +221,7 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 .founder-link { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-decoration: none; border-bottom: 1px solid rgba(63,191,198,.4); padding-bottom: 1px; }
 .founder-link:hover { color: var(--teal); border-color: var(--teal); }
 .sn-photo { position: relative; min-height: 440px; border-radius: 22px; overflow: hidden; background: var(--card) url('/photos/safety.jpg') 50% 30% / cover no-repeat; box-shadow: var(--glow); }
+.hero-b .sn-photo { background-image: url('/photos/safety-b.jpg'); background-position: center; }
 .sn-photo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.6) 0%, rgba(10,10,10,.15) 60%, transparent 100%); }
 .sn-photo-tag { position: absolute; bottom: 20px; left: 20px; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--ink); background: rgba(10,10,10,.75); padding: 7px 12px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,191,198,.22); }
 
@@ -247,7 +248,18 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 </nav>
 
 <section class="hero">
-  <div class="hero-img"></div>
+  <div class="hero-img" id="heroImg"></div>
+  <script>
+  /* five heroes, one per visit, in order: the floor, the kitchen table, the desk, the phone at the desk, running late.
+     Remembered on the device. When the kitchen shot is the hero, the Safety Net photo swaps so it isn't on the page twice. */
+  (function(){
+    var pics = [null, ['/photos/hero-b.jpg', '72% 40%'], ['/photos/hero-c.jpg', '72% 40%'], ['/photos/hero-d.jpg', '50% 50%'], ['/photos/hero-e.jpg', '50% 30%']];
+    var n = 0;
+    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % pics.length; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
+    if (pics[n]) { var el = document.getElementById('heroImg'); el.style.backgroundImage = "url('" + pics[n][0] + "')"; el.style.backgroundPosition = pics[n][1]; }
+    if (n === 1) document.documentElement.classList.add('hero-b');
+  })();
+  </script>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <span class="hero-kicker">Nenemi · a memory app for ADHD brains</span>
