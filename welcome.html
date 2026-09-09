@@ -38,7 +38,7 @@ nav.scrolled { background: rgba(10,10,10,.85); backdrop-filter: blur(16px); -web
 /* HERO */
 .hero { position: relative; height: 100vh; min-height: 680px; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 84px 64px; overflow: hidden; background: var(--bg2); }
 .hero-img { position: absolute; inset: 0; background: url('/photos/hero.jpg') 72% 40% / cover no-repeat; }
-@media (prefers-reduced-motion: reduce) { .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.94) 0%, rgba(10,10,10,.62) 34%, rgba(10,10,10,.22) 62%, rgba(10,10,10,0) 100%), linear-gradient(to right, rgba(10,10,10,.5) 0%, rgba(10,10,10,.18) 40%, transparent 62%); }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.94) 0%, rgba(10,10,10,.62) 34%, rgba(10,10,10,.22) 62%, rgba(10,10,10,0) 100%), linear-gradient(to right, rgba(10,10,10,.5) 0%, rgba(10,10,10,.18) 40%, transparent 62%); }
 .hero-content { position: relative; z-index: 2; max-width: 900px; }
 .hero-kicker { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); padding-bottom: 12px; margin-bottom: 22px; border-bottom: 1px solid var(--line); max-width: 420px; }
 h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 66px); line-height: 1.02; letter-spacing: -.018em; margin-bottom: 22px; text-shadow: 0 2px 28px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.5); }
