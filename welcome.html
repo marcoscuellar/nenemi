@@ -156,6 +156,15 @@ footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: ce
   footer { padding: 36px 22px; flex-direction: column; align-items: flex-start; gap: 14px; }
 }
 
+/* EVER HAVE THOSE DAYS */
+.days { background: var(--bg); padding: 110px 64px; border-top: 1px solid var(--line); }
+.days .inner { max-width: 1060px; margin: 0 auto; }
+.days .tag { display: block; margin-bottom: 18px; }
+.days h2 { max-width: 760px; }
+.days-yeah { font-family: var(--serif); font-size: clamp(40px, 4.5vw, 60px); color: var(--teal); line-height: 1.05; letter-spacing: -.02em; margin: 28px 0 18px; }
+.days-blurb { font-size: 15px; font-weight: 300; color: var(--muted); line-height: 1.7; max-width: 520px; }
+@media (max-width: 720px) { .days { padding: 72px 24px; } }
+
 /* shared bits for the two kept sections */
 :root { --card2: #1C1C1C; --glow: 0 0 28px rgba(63,191,198,.22), 0 0 80px rgba(63,191,198,.10); }
 section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
@@ -282,6 +291,15 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
     <span class="tag">[ THE FOUNDATION // NEVER CHANGES ]</span>
     <div class="quote">You're not behind. You're mid-process. <span>There's a difference.</span></div>
     <div class="rule">"Just do it, you know what to do."<br><br>Nenemi is a different kind of tool — built around how your brain actually works. Grounded in research, shaped by science, and built from hundreds of hours talking to professionals and people living it every day. No guilt built in. No streaks to break. No punishment for being human.</div>
+  </div>
+</section>
+
+<section class="days" id="days">
+  <div class="inner">
+    <span class="tag">[ SYSTEM OVERVIEW ]</span>
+    <h2>Ever lose your to-do list by 10:10 AM, hit a wall by 1 PM, and feel exhausted and burnt out by 5 PM?</h2>
+    <p class="days-yeah">Yeah. Same.</p>
+    <p class="days-blurb">Most tools help you plan your day. Nenemi helps you get back into it. When things fall apart, you don't need a better plan — you need a way back in.</p>
   </div>
 </section>
 

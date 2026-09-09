@@ -10,5 +10,9 @@ export default function handler(req, res) {
     authEnabled: authEnabled(),
     freeRooms: FREE_ROOMS,
     smartRouting: Boolean(process.env.ANTHROPIC_API_KEY),
+    // Full access: on when Stripe is wired up. Price shown in the app comes from here so it lives in one place.
+    billing: Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_PRICE_MONTHLY),
+    price: { monthly: Number(process.env.NENEMI_PRICE_MONTHLY || 10), currency: 'usd' },
+    revenuecatIosKey: process.env.REVENUECAT_IOS_KEY || null,
   });
 }
