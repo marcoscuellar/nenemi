@@ -242,6 +242,12 @@
   .sheet-row label, .sheet-label { display: flex; flex-direction: column; gap: 6px; flex: 1; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .sheet input[type=time], .sheet input[type=number], .sheet select { font-family: var(--font-body); font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 9px 10px; outline: none; color-scheme: dark; }
   html[data-theme="light"] .sheet input, html[data-theme="light"] .sheet select { color-scheme: light; }
+  .sheet-h { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
+  .sheet-p { font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .sheet-p.small { font-size: 12.5px; }
+  .sheet-link { font-family: var(--font-mono); font-size: 12px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; }
+  .sheet-mini { font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); border-bottom: 1px solid var(--line2); cursor: pointer; }
+  .sheet-actions a.sheet-btn { text-decoration: none; text-align: center; }
   .sheet-kinds { display: flex; gap: 8px; }
   .kind-chip { font-family: var(--font-mono); font-size: 11px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
   .kind-chip.on { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
@@ -616,6 +622,21 @@
         </div>
       </div>
     </div>
+    <div class="sheet-back" id="syncSheet" hidden onclick="if (event.target === this) closeSyncSheet()">
+      <div class="sheet">
+        <div class="sheet-kicker">My day · in your calendar app</div>
+        <div class="sheet-h">Sync my calendar</div>
+        <p class="sheet-p">Subscribe once. Every day Nenemi builds shows up in your calendar and stays in step when things move.</p>
+        <input class="sheet-link" id="syncLink" readonly value="Making your link…" onclick="this.select()" />
+        <div class="sheet-actions">
+          <button class="sheet-btn ghost" onclick="copySyncLink()">Copy link</button>
+          <a class="sheet-btn primary" id="syncApple" href="#">Open in Apple Calendar</a>
+        </div>
+        <p class="sheet-p small">Google Calendar: Settings, Add calendar, From URL, paste the link.</p>
+        <p class="sheet-p small">Anyone with this link can see your days. Treat it like a password. <span class="sheet-mini" onclick="rotateSyncLink()">Make a new link</span></p>
+        <div class="sheet-actions"><div class="spacer"></div><button class="sheet-btn ghost" onclick="closeSyncSheet()">Done</button></div>
+      </div>
+    </div>
     <div class="wordmark" aria-label="Nenemi" onclick="go('home')">NENEMI</div>
     <div class="topnav" id="topnav">
       <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
@@ -625,6 +646,7 @@
     <div class="tn-menu" id="dayMenu" hidden>
       <div class="tn-mi" onclick="closeDayMenu(); go('calendar')">Build my day<span>Dump it, get a day back</span></div>
       <div class="tn-mi" onclick="closeDayMenu(); go('notes')">Write about it<span>A page for today, yours only</span></div>
+      <div class="tn-mi" onclick="closeDayMenu(); showCalendarSync()">Sync my calendar<span>Every day, in your calendar app</span></div>
     </div>
     <div class="account-wrap"><div class="account-slot" id="accountSlot"></div><div class="acct-menu" id="acctMenu"></div></div>
     <div class="voice-hint" id="voiceHint">Listening — tap the mic when you're done, or just go quiet for a bit</div>
@@ -701,6 +723,7 @@
             <div class="agenda" id="agenda"></div>
             <div class="agenda-actions">
               <button class="ag-btn" onclick="editEvent(null)">+ Add block</button>
+              <button class="ag-btn" onclick="addDayToCalendar()">Add to my calendar</button>
             </div>
           </div>
 
@@ -1627,7 +1650,7 @@
     if (editing === null) return closeEvent();
     dayList(selectedDay).splice(editing, 1); save(); renderCal(); closeEvent();
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('evtSheet').hidden) closeEvent(); });
+  document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!document.getElementById('evtSheet').hidden) closeEvent(); if (!document.getElementById('syncSheet').hidden) closeSyncSheet(); });
 
   // ---------- zero-shame rollover ----------
   function renderRollover() {
@@ -1932,6 +1955,7 @@
       `<div class="mi" onclick="toggleTheme(); toggleAcctMenu()">${currentTheme() === 'light' ? 'Dark mode' : 'Light mode'}<span class="k">theme</span></div>`,
       `<div class="mi" onclick="showPhoneSetup(); toggleAcctMenu()">Put Nenemi on your phone<span class="k">install</span></div>`,
       `<div class="mi" onclick="exportRooms(); toggleAcctMenu()">Export my rooms<span class="k">json</span></div>`,
+      `<div class="mi" onclick="showCalendarSync(); toggleAcctMenu()">Sync my calendar<span class="k">subscribe</span></div>`,
     ];
     if (!auth.signedIn) items.push(`<div class="mi" onclick="changeSync(); toggleAcctMenu()">Sync code<span class="k">${escapeHtml(syncCode())}</span></div>`);
     if (auth.pk && !auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`);
@@ -1945,6 +1969,66 @@
   function showPhoneSetup() {
     alert("iPhone: open www.mynenemi.com in Safari, tap Share, then \u201cAdd to Home Screen.\u201d\n\nAndroid: open it in Chrome, tap the three dots, then \u201cInstall app.\u201d\n\nIt gets its own icon and opens full-screen. Same account, same rooms.");
   }
+  // ---------- your day, in your calendar app ----------
+  // Same file format the feed uses (lib/ics.js). Times go out "floating": 9:30 means 9:30 wherever you are.
+  function icsEsc(v) { return String(v == null ? '' : v).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+  function icsStamp(dk, h) {
+    let [y, m, d] = dk.split('-').map(Number); let hr = Math.floor(h), min = Math.round((h - hr) * 60);
+    if (min === 60) { hr += 1; min = 0; }
+    if (hr >= 24) { const t = new Date(y, m - 1, d + Math.floor(hr / 24)); y = t.getFullYear(); m = t.getMonth() + 1; d = t.getDate(); hr = hr % 24; }
+    const p = n => String(n).padStart(2, '0'); return `${y}${p(m)}${p(d)}T${p(hr)}${p(min)}00`;
+  }
+  function icsFold(line) { const out = []; let t = line; while (t.length > 74) { out.push(t.slice(0, 74)); t = ' ' + t.slice(74); } out.push(t); return out.join('\r\n'); }
+  function dayToIcs(d) {
+    const dk = dkey(d); const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Nenemi//Calendar//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Nenemi'];
+    dayList(d).slice().sort((a, b) => a.start - b.start).forEach(e => {
+      if (!(e.end > e.start)) return;
+      const room = e.room ? rooms.find(r => r.id === e.room) : null;
+      const desc = [e.notes, room ? `Room: ${room.name}` : ''].filter(Boolean).join('\n');
+      const slug = String(e.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'block';
+      lines.push('BEGIN:VEVENT', `UID:${dk}-${Math.round(e.start * 60)}-${slug}@mynenemi.com`, `DTSTAMP:${now}`, `DTSTART:${icsStamp(dk, e.start)}`, `DTEND:${icsStamp(dk, e.end)}`, `SUMMARY:${icsEsc(e.name || 'Block')}`);
+      if (desc) lines.push(`DESCRIPTION:${icsEsc(desc)}`);
+      lines.push(`CATEGORIES:${e.kind === 'fixed' ? 'Fixed' : e.kind === 'buffer' ? 'Buffer' : 'Focus'}`, 'END:VEVENT');
+    });
+    lines.push('END:VCALENDAR');
+    return lines.map(icsFold).join('\r\n') + '\r\n';
+  }
+  function addDayToCalendar() {
+    if (!dayList(selectedDay).length) { calNote('Nothing on this day yet.'); return; }
+    try {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([dayToIcs(selectedDay)], { type: 'text/calendar' })); a.download = `nenemi-${dkey(selectedDay)}.ics`; document.body.appendChild(a); a.click(); a.remove();
+      calNote('Saved. Open the file and your calendar takes it from there.');
+    } catch (e) { calNote('Could not make the file right now.'); }
+  }
+  // the subscription link: one key per person, separate from the sync code
+  async function fetchFeedToken(rotate) {
+    const r = await fetch(apiUrl().replace('/api/state', '/api/calendar') + (rotate ? (auth.signedIn ? '?rotate=1' : '&rotate=1') : ''), { method: 'POST', headers: await authHeaders() });
+    if (!r.ok) throw new Error('calendar ' + r.status);
+    return (await r.json()).token;
+  }
+  function feedUrl(token) { return `${location.origin}/api/calendar?t=${token}`; }
+  function showFeed(token) {
+    lastFeedToken = token; const url = feedUrl(token);
+    document.getElementById('syncLink').value = url;
+    document.getElementById('syncApple').href = url.replace(/^https?:/, 'webcal:');
+  }
+  async function showCalendarSync() {
+    const sh = document.getElementById('syncSheet'); sh.hidden = false;
+    document.getElementById('syncLink').value = 'Making your link…';
+    try { showFeed(await fetchFeedToken(false)); }
+    catch (e) { document.getElementById('syncLink').value = location.protocol === 'file:' || !navigator.onLine ? 'Needs a connection to make the link.' : 'Could not make the link right now.'; }
+  }
+  async function rotateSyncLink() { try { showFeed(await fetchFeedToken(true)); calNote(''); } catch (e) {} }
+  function copySyncLink() {
+    const el = document.getElementById('syncLink'); el.select();
+    const done = () => { el.value = 'Copied.'; setTimeout(() => showFeedFrom(el), 1200); };
+    if (navigator.clipboard && /^https?:/.test(el.value)) navigator.clipboard.writeText(el.value).then(done, () => document.execCommand('copy'));
+    else document.execCommand('copy');
+  }
+  let lastFeedToken = null;
+  function showFeedFrom(el) { if (lastFeedToken) showFeed(lastFeedToken); }
+  function closeSyncSheet() { document.getElementById('syncSheet').hidden = true; }
   function exportRooms() {
     try {
       const data = JSON.stringify({ exported: new Date().toISOString(), rooms, loose, events, carried, notes }, null, 2);
