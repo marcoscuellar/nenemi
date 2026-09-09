@@ -134,8 +134,12 @@ h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 
 .od-slide-header { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--teal); margin-bottom: 28px; }
 .od-slide-title { font-size: 26px; line-height: 1.2; margin-bottom: 36px; max-width: 240px; }
 .od-slide-btn { display: inline-block; padding: 12px 22px; background: var(--paper); color: var(--bg); border-radius: 999px; font-weight: 600; font-size: 13px; }
-.od-num { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--teal); margin-bottom: 14px; }
-.od-name { font-size: clamp(38px, 3.6vw, 52px); line-height: 1.04; margin-bottom: 22px; }
+#overdrive .two { align-items: start; }
+.od-desk-only { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--line); }
+.od-desk-only .tag { display: block; margin-bottom: 18px; }
+.od-phone-only { display: none; }
+.od-num { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--teal); margin-bottom: 12px; }
+.od-name { font-size: clamp(26px, 2.4vw, 32px); line-height: 1.1; margin-bottom: 14px; }
 .od-when { font-size: 17px; font-weight: 300; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
 .od-arrow { font-size: 17px; line-height: 1.6; }
 .od-outro { margin-top: 32px; }
@@ -201,7 +205,9 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
   .side { order: 1; }
   #overdrive .mockup { order: 1; }
   #overdrive .side { order: 2; }
-  .od-name { font-size: 34px; }
+  .od-desk-only { display: none; }
+  .od-phone-only { display: block; margin-bottom: 40px; }
+  .od-name { font-size: 30px; }
   .od-when, .od-arrow { font-size: 15px; }
   .sn-photo { min-height: 280px; order: 2; }
   footer { padding: 56px 24px 28px; }
@@ -224,11 +230,13 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
 <section class="hero" id="top">
   <div class="hero-img" id="heroImg"></div>
   <script>
-  /* two heroes, alternating per visit: the floor, then the kitchen table. The Safety Net photo takes whichever one the hero isn't using. */
+  /* four heroes, rotating per visit: the floor, the kitchen table, the desk, the phone. The Safety Net photo stays off whichever one the hero is using. */
   (function(){
     var n = 0;
-    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % 2; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
+    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % 4; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
     if (n === 1) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-b.jpg')"; document.documentElement.classList.add('hero-b'); }
+    if (n === 2) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-c.jpg')"; }
+    if (n === 3) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-d.jpg')"; document.getElementById('heroImg').style.backgroundPosition = '50% 50%'; }
   })();
   </script>
   <div class="hero-overlay"></div>
@@ -254,7 +262,6 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
       <p class="sw-blurb">Most tools help you plan your day. Nenemi helps you get back into it. When things fall apart, you don't need a better plan — you need a way back in.</p>
     </div>
     <div class="sw-stack">
-      <div class="sw-photo"><div class="sw-photo-overlay"></div><div class="sw-photo-tag">[ 1:10 PM ]</div></div>
       <a href="#smartcal" class="sw-pcard">
         <span class="sw-pcard-num">01 //</span>
         <h3 class="sw-pcard-name">Dump it out</h3>
@@ -364,7 +371,7 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
 
 <!-- 4. OVERDRIVE -->
 <section class="band" id="overdrive">
-  <div class="od-header">
+  <div class="od-header od-phone-only">
     <span class="tag t">[ 02 // HIT THE WALL ]</span>
     <h2 class="headline">Four ways back in.</h2>
     <p class="sub">No streaks. No guilt screens. When the day gets away from you, Nenemi gives you a soft, specific entry point — whichever one fits the moment.</p>
@@ -385,6 +392,11 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
       <p class="phone-cap">START · HOLD · BOOST · RETURN</p>
     </div>
     <div class="side">
+      <div class="od-desk-only">
+        <span class="tag t">[ 02 // HIT THE WALL ]</span>
+        <h2 class="headline">Four ways back in.</h2>
+        <p class="sub">No streaks. No guilt screens. When the day gets away from you, Nenemi gives you a soft, specific entry point — whichever one fits the moment.</p>
+      </div>
       <p class="od-num" id="odNum">01 // HELP ME START</p>
       <h3 class="od-name" id="odName">Help Me Start</h3>
       <p class="od-when" id="odWhen">When the first step feels impossible</p>
