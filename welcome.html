@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="description" content="Nenemi turns mental noise into clear next steps. Made for your brain. Not for their expectations." />
+<meta name="description" content="Nenemi is a memory app for ADHD brains. Somewhere to put a thought without having to organize it first. Made for your brain. Not for their expectations." />
 <title>Nenemi · Made for your brain</title>
 <meta name="theme-color" content="#0A0A0A" />
 <link rel="icon" href="/icons/n-192.png" type="image/png" />
@@ -14,24 +14,17 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
 :root {
-  --bg: #0A0A0A; --bg2: #111111; --card: #161616; --card2: #1C1C1C; --paper: #F4F2EC;
+  --bg: #0A0A0A; --bg2: #111111; --card: #161616; --paper: #F4F2EC;
   --ink: #F4F2EC; --muted: #9C9C96; --faint: #6A6A65;
   --line: rgba(244,242,236,.10); --teal: #3FBFC6; --teal-dim: rgba(63,191,198,.14);
-  --glow: 0 0 28px rgba(63,191,198,.22), 0 0 80px rgba(63,191,198,.10);
   --serif: 'DM Serif Display', Georgia, serif; --sans: 'Inter', -apple-system, system-ui, sans-serif; --mono: 'JetBrains Mono', monospace;
 }
 html { scroll-behavior: smooth; }
 body { background: var(--bg); color: var(--ink); font-family: var(--sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
-.tag { font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--faint); }
+.tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
 .tag.t { color: var(--teal); }
-h2, h3 { font-family: var(--serif); font-weight: 400; letter-spacing: -.015em; }
-.headline { font-size: clamp(32px, 4vw, 52px); line-height: 1.1; max-width: 760px; margin-bottom: 16px; }
-.headline span, .big-line span { color: var(--teal); }
-.sub { font-size: 16px; font-weight: 300; color: var(--muted); max-width: 520px; line-height: 1.7; }
-section.band { padding: 120px 80px; border-top: 1px solid var(--line); }
-.inner { max-width: 1200px; margin: 0 auto; }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.serif { font-family: var(--serif); font-weight: 400; letter-spacing: -.015em; }
 
 /* NAV */
 nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px; height: 64px; display: flex; align-items: center; justify-content: space-between; transition: background .3s; }
@@ -42,10 +35,10 @@ nav.scrolled { background: rgba(10,10,10,.85); backdrop-filter: blur(16px); -web
 .nav-link:hover { color: var(--ink); }
 .nav-cta { padding: 9px 18px; background: var(--paper); color: var(--bg); border-radius: 999px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-decoration: none; }
 
-/* 1. HERO */
+/* HERO */
 .hero { position: relative; height: 100vh; min-height: 680px; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 84px 64px; overflow: hidden; background: var(--bg2); }
 .hero-img { position: absolute; inset: 0; background: url('/photos/hero.jpg') 72% 40% / cover no-repeat; }
-.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.94) 0%, rgba(10,10,10,.62) 34%, rgba(10,10,10,.22) 62%, rgba(10,10,10,0) 100%), linear-gradient(to right, rgba(10,10,10,.5) 0%, rgba(10,10,10,.18) 40%, transparent 62%); }
+@media (prefers-reduced-motion: reduce) { .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.94) 0%, rgba(10,10,10,.62) 34%, rgba(10,10,10,.22) 62%, rgba(10,10,10,0) 100%), linear-gradient(to right, rgba(10,10,10,.5) 0%, rgba(10,10,10,.18) 40%, transparent 62%); }
 .hero-content { position: relative; z-index: 2; max-width: 900px; }
 .hero-kicker { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); padding-bottom: 12px; margin-bottom: 22px; border-bottom: 1px solid var(--line); max-width: 420px; }
 h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 66px); line-height: 1.02; letter-spacing: -.018em; margin-bottom: 22px; text-shadow: 0 2px 28px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.5); }
@@ -58,22 +51,120 @@ h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 
 .btn.ghost:hover { color: var(--ink); border-color: rgba(244,242,236,.5); }
 .hero-note { position: absolute; bottom: 30px; right: 48px; z-index: 2; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
 
-/* 2. SYSTEM OVERVIEW */
-.sw-inner { display: grid; grid-template-columns: 1fr 1.05fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto; }
-.sw-left .tag { display: block; margin-bottom: 18px; }
-.sw-yeah { font-family: var(--serif); font-size: clamp(40px, 4.5vw, 60px); color: var(--teal); line-height: 1.05; letter-spacing: -.02em; margin: 28px 0 18px; }
-.sw-blurb { font-size: 15px; font-weight: 300; color: var(--muted); line-height: 1.7; max-width: 480px; }
-.sw-stack { display: flex; flex-direction: column; gap: 14px; }
-.sw-photo { position: relative; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; background: var(--card) url('/photos/overview.jpg') 50% 40% / cover no-repeat; box-shadow: var(--glow); }
-.sw-photo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.55) 0%, rgba(10,10,10,.1) 50%, transparent 100%); }
-.sw-photo-tag { position: absolute; bottom: 16px; left: 16px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--ink); background: rgba(10,10,10,.75); padding: 6px 11px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,191,198,.22); }
-.sw-pcard { position: relative; display: block; padding: 32px 30px; background: var(--card); border-radius: 16px; text-decoration: none; box-shadow: 0 0 40px rgba(63,191,198,.08); transition: transform .25s ease, box-shadow .25s ease; }
-.sw-pcard:hover { transform: translateX(4px); box-shadow: var(--glow); }
-.sw-pcard-num { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--teal); margin-bottom: 12px; }
-.sw-pcard-name { font-size: clamp(26px, 2.4vw, 34px); line-height: 1.1; margin-bottom: 8px; }
-.sw-pcard-line { font-size: 15px; font-weight: 300; color: var(--muted); line-height: 1.5; }
-.sw-pcard-arrow { position: absolute; top: 30px; right: 30px; font-family: var(--mono); font-size: 18px; color: var(--teal); transition: transform .25s ease; }
-.sw-pcard:hover .sw-pcard-arrow { transform: translateX(4px); }
+/* SPLIT (philosophy, architect) */
+.split { display: grid; grid-template-columns: 1fr 1fr; min-height: 600px; background: var(--bg2); }
+.split-img { position: relative; overflow: hidden; min-height: 500px; background: var(--card); }
+.split-img .img { position: absolute; inset: 0; background-size: cover; background-position: 50% 30%; }
+.split-cap { position: absolute; bottom: 20px; left: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: rgba(10,10,10,.75); padding: 6px 10px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,191,198,.22), 0 0 50px rgba(63,191,198,.08); }
+.split-text { padding: 84px 64px; display: flex; flex-direction: column; justify-content: center; }
+.split-text .tag { margin-bottom: 28px; }
+.quote { font-family: var(--serif); font-size: clamp(24px, 2.7vw, 36px); line-height: 1.3; margin-bottom: 24px; }
+.quote span { color: var(--teal); }
+.rule { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.75; border-top: 1px solid var(--line); padding-top: 22px; }
+
+/* SECTION frame */
+section.block { padding: 110px 64px; }
+.inner { max-width: 1060px; margin: 0 auto; }
+.section-tag { display: flex; align-items: center; gap: 14px; margin-bottom: 44px; }
+.section-tag::after { content: ''; width: 40px; height: 1px; background: var(--line); }
+h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4vw, 52px); line-height: 1.1; letter-spacing: -.018em; max-width: 640px; margin-bottom: 16px; }
+.sub { font-size: 15px; font-weight: 300; color: var(--muted); max-width: 480px; line-height: 1.65; margin-bottom: 52px; }
+
+/* THE MOMENT */
+.moment-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 44px; }
+.m { padding: 32px 28px; background: var(--card); border-radius: 12px; box-shadow: 0 0 40px rgba(63,191,198,.10); }
+.m.dark { background: #0E0E0E; }
+.m.light { background: var(--paper); color: var(--bg); }
+.m .time { font-family: var(--mono); font-size: 20px; color: var(--teal); margin-bottom: 12px; }
+.m.light .time { color: #0F7B82; }
+.m .lab { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+.m.light .lab { color: #6A6A65; }
+.m .ttl { font-family: var(--serif); font-size: 22px; line-height: 1.15; margin-bottom: 10px; }
+.m .body { font-size: 13.5px; font-weight: 300; line-height: 1.65; color: var(--muted); }
+.m.light .body { color: #4A4A46; }
+.m .say { margin-top: 16px; padding: 10px 12px; background: rgba(63,191,198,.06); border-radius: 8px; box-shadow: 0 0 22px rgba(63,191,198,.22), 0 0 60px rgba(63,191,198,.10); font-family: var(--mono); font-size: 10px; color: var(--teal); letter-spacing: .04em; line-height: 1.5; }
+.m.light .say { background: rgba(15,123,130,.06); color: #0F7B82; box-shadow: 0 0 22px rgba(15,123,130,.18), 0 0 60px rgba(15,123,130,.08); }
+
+/* ROOMS · PEOPLE */
+.people { background: #0E0E0E; }
+.p-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 310px 310px; gap: 2px; }
+.p { position: relative; overflow: hidden; background: var(--card); }
+.p.tall { grid-row: span 2; }
+.p .img { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform .5s ease; }
+.p:hover .img { transform: scale(1.04); }
+.p .grad { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.97) 0%, rgba(10,10,10,.82) 38%, rgba(10,10,10,.25) 70%, transparent 100%); }
+.p .c { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; }
+.p .num { font-family: var(--mono); font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: rgba(63,191,198,.7); margin-bottom: 5px; }
+.p .name { font-family: var(--serif); font-size: 21px; margin-bottom: 5px; }
+.p .cap { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.45; }
+.p .n { margin-top: 8px; font-family: var(--mono); font-size: 9.5px; color: var(--teal); letter-spacing: .04em; line-height: 1.4; }
+
+/* THE BOX (system) */
+.s-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.s { padding: 30px 26px; background: var(--card); border-radius: 12px; box-shadow: 0 0 40px rgba(63,191,198,.10); }
+.s.dark { background: #0E0E0E; }
+.s.light { background: var(--paper); color: var(--bg); }
+.s .lab { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
+.s .name { font-family: var(--serif); font-size: 22px; margin-bottom: 8px; line-height: 1.15; }
+.s .desc { font-size: 13px; font-weight: 300; line-height: 1.65; color: var(--muted); }
+.s.light .desc { color: #4A4A46; } .s.light .lab { color: #6A6A65; }
+.s .pill { display: inline-block; margin-top: 14px; padding: 5px 11px; border-radius: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; background: rgba(63,191,198,.06); color: var(--teal); box-shadow: 0 0 16px rgba(63,191,198,.28), 0 0 40px rgba(63,191,198,.10); }
+.s.light .pill { background: rgba(15,123,130,.06); color: #0F7B82; box-shadow: 0 0 16px rgba(15,123,130,.22), 0 0 40px rgba(15,123,130,.08); }
+
+/* MAKER */
+.maker { display: flex; align-items: center; gap: 26px; max-width: 760px; margin: 0 auto; padding: 56px 24px 72px; }
+.maker-photo { width: 88px; height: 88px; border-radius: 50%; flex-shrink: 0; background-size: cover; background-position: 50% 22%; box-shadow: 0 0 24px rgba(63,191,198,.28), 0 0 70px rgba(63,191,198,.10); }
+.maker-text .tag { display: block; margin-bottom: 12px; }
+.maker-text p { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.7; }
+.maker-line { margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); }
+
+/* OPEN */
+.open-sec { padding: 120px 64px; text-align: center; position: relative; overflow: hidden; }
+.open-sec .glow { position: absolute; inset: -20%; pointer-events: none; background: radial-gradient(ellipse 36% 40% at 50% 50%, rgba(28,170,178,.42) 0%, rgba(12,84,96,.2) 40%, transparent 72%); filter: blur(30px); }
+.open-sec .inner { position: relative; max-width: 620px; }
+.open-sec h2 { max-width: none; margin-bottom: 16px; }
+.open-sec .sub { margin: 0 auto 40px; }
+.big { display: inline-block; padding: 18px 44px; border-radius: 12px; background: var(--paper); color: var(--bg); font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+.big:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(63,191,198,.25); }
+.open-note { margin-top: 18px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
+
+/* FOOTER */
+footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; border-top: 1px solid var(--line); }
+.foot-brand { display: flex; align-items: center; gap: 16px; }
+.foot-ollin { font-family: var(--mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+.foot-quote { font-family: var(--serif); font-size: 15px; color: var(--muted); }
+.foot-links { font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); display: flex; gap: 18px; }
+.foot-links a { text-decoration: none; }
+.foot-links a:hover { color: var(--ink); }
+
+@media (max-width: 900px) {
+  nav { padding: 0 22px; }
+  .nav-links { display: none; }
+  .hero { padding: 0 0 56px 24px; min-height: 620px; }
+  .hero-img { background-position: 68% 30%; }
+  .maker { flex-direction: column; align-items: flex-start; gap: 18px; padding: 40px 24px 56px; }
+  .hero-note { display: none; }
+  .split { grid-template-columns: 1fr; }
+  .split-img { min-height: 340px; }
+  .split-text { padding: 56px 24px; }
+  section.block { padding: 72px 24px; }
+  .moment-grid, .s-grid { grid-template-columns: 1fr; }
+  .p-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .p.tall { grid-row: span 1; min-height: 320px; }
+  .p { min-height: 250px; }
+  .open-sec { padding: 80px 24px; }
+  footer { padding: 36px 22px; flex-direction: column; align-items: flex-start; gap: 14px; }
+}
+
+/* shared bits for the two kept sections */
+:root { --card2: #1C1C1C; --glow: 0 0 28px rgba(63,191,198,.22), 0 0 80px rgba(63,191,198,.10); }
+section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.headline { font-family: var(--serif); font-weight: 400; font-size: clamp(32px, 4vw, 52px); line-height: 1.1; letter-spacing: -.018em; max-width: 760px; margin-bottom: 16px; }
+.side { display: flex; flex-direction: column; }
+.side .tag { display: block; margin-bottom: 18px; }
+.body { font-size: 16px; font-weight: 300; color: var(--muted); line-height: 1.8; margin: 18px 0 28px; max-width: 500px; }
+.result { background: var(--card); border-radius: 12px; padding: 1rem 1.2rem; font-size: 14px; line-height: 1.6; max-width: 520px; box-shadow: var(--glow); }
 
 /* 3. SMART CALENDAR · phone */
 .mockup { background: var(--card); border-radius: 28px; padding: 2.25rem 1.75rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 40px rgba(63,191,198,.08); }
@@ -116,33 +207,6 @@ h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 
 .result { background: var(--card); border-radius: 12px; padding: 1rem 1.2rem; font-size: 14px; line-height: 1.6; max-width: 520px; box-shadow: var(--glow); }
 .result strong { display: block; font-weight: 600; margin-bottom: 4px; }
 
-/* 4. CORE LINE */
-.core { background: var(--bg2); padding: 140px 80px; border-top: 1px solid var(--line); position: relative; overflow: hidden; }
-.core .glow { position: absolute; inset: -20%; pointer-events: none; background: radial-gradient(ellipse 30% 40% at 20% 50%, rgba(28,170,178,.30) 0%, rgba(12,84,96,.14) 40%, transparent 72%); filter: blur(30px); }
-.core > div { position: relative; max-width: 1100px; }
-.core .tag { display: block; margin-bottom: 28px; }
-.big-line { font-family: var(--serif); font-size: clamp(40px, 5.4vw, 76px); line-height: 1.1; letter-spacing: -.02em; }
-.core-sub { margin-top: 36px; max-width: 560px; }
-.core-sub p { font-size: clamp(17px, 1.4vw, 20px); font-weight: 300; color: var(--muted); line-height: 1.55; }
-.core-then { margin-top: 28px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--teal); }
-
-/* 4. OVERDRIVE */
-.od-header { margin-bottom: 48px; max-width: 1200px; margin-left: auto; margin-right: auto; }
-.od-header .tag { display: block; margin-bottom: 18px; }
-.od-slide { position: absolute; inset: 0; padding: 50px 24px 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; opacity: 0; transition: opacity .5s ease; pointer-events: none; }
-.od-slide.active { opacity: 1; pointer-events: auto; }
-.od-slide-header { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--teal); margin-bottom: 28px; }
-.od-slide-title { font-size: 26px; line-height: 1.2; margin-bottom: 36px; max-width: 240px; }
-.od-slide-btn { display: inline-block; padding: 12px 22px; background: var(--paper); color: var(--bg); border-radius: 999px; font-weight: 600; font-size: 13px; }
-#overdrive .two { align-items: start; }
-.od-desk-only { margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--line); }
-.od-desk-only .tag { display: block; margin-bottom: 18px; }
-.od-phone-only { display: none; }
-.od-num { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--teal); margin-bottom: 12px; }
-.od-name { font-size: clamp(26px, 2.4vw, 32px); line-height: 1.1; margin-bottom: 14px; }
-.od-when { font-size: 17px; font-weight: 300; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
-.od-arrow { font-size: 17px; line-height: 1.6; }
-.od-outro { margin-top: 32px; }
 
 /* 5. SAFETY NET */
 .sn-links { display: flex; flex-direction: column; gap: 10px; max-width: 420px; margin-bottom: 32px; }
@@ -157,131 +221,55 @@ h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 
 .founder-link { display: inline-block; margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-decoration: none; border-bottom: 1px solid rgba(63,191,198,.4); padding-bottom: 1px; }
 .founder-link:hover { color: var(--teal); border-color: var(--teal); }
 .sn-photo { position: relative; min-height: 440px; border-radius: 22px; overflow: hidden; background: var(--card) url('/photos/safety.jpg') 50% 30% / cover no-repeat; box-shadow: var(--glow); }
-.hero-b .sn-photo { background-image: url('/photos/safety-b.jpg'); background-position: center; }
 .sn-photo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.6) 0%, rgba(10,10,10,.15) 60%, transparent 100%); }
 .sn-photo-tag { position: absolute; bottom: 20px; left: 20px; font-family: var(--mono); font-size: 10px; letter-spacing: .12em; color: var(--ink); background: rgba(10,10,10,.75); padding: 7px 12px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,191,198,.22); }
 
-/* 6. CTA */
-.cta { padding: 120px 80px; border-top: 1px solid var(--line); position: relative; overflow: hidden; }
-.cta .glow { position: absolute; inset: -20%; pointer-events: none; background: radial-gradient(ellipse 36% 40% at 30% 50%, rgba(28,170,178,.42) 0%, rgba(12,84,96,.2) 40%, transparent 72%); filter: blur(30px); }
-.cta .inner { position: relative; }
-.cta .tag { display: block; margin-bottom: 22px; }
-.cta-headline { font-size: clamp(38px, 5vw, 64px); line-height: 1.08; margin-bottom: 14px; max-width: 720px; }
-.cta-sub { font-size: 16px; font-weight: 300; color: var(--muted); line-height: 1.65; margin-bottom: 36px; max-width: 520px; }
-.big { display: inline-block; padding: 18px 44px; border-radius: 12px; background: var(--paper); color: var(--bg); font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
-.big:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(63,191,198,.25); }
-.cta-note { margin-top: 18px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
 
-/* 7. FOOTER */
-footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var(--line); }
-.sf-inner { max-width: 760px; }
-.sf-inner .tag { display: block; margin-bottom: 22px; }
-.sf-blurb { font-family: var(--serif); font-size: clamp(24px, 2.6vw, 34px); line-height: 1.35; letter-spacing: -.01em; margin-bottom: 18px; }
-.sf-blurb span { color: var(--teal); }
-.sf-sign { font-size: 14px; color: var(--muted); }
-.sf-rule { height: 1px; background: var(--line); margin: 48px 0 22px; }
-.sf-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
-.sf-brand { display: flex; align-items: center; gap: 16px; }
-.sf-links { display: flex; gap: 18px; }
-.sf-links a { text-decoration: none; }
-.sf-links a:hover { color: var(--ink); }
-
-/* RESPONSIVE */
-@media (max-width: 1199px) {
-  section.band, .cta { padding: 96px 48px; }
-  .two, .sw-inner { gap: 48px; }
-  .core { padding: 110px 48px; }
-}
 @media (max-width: 720px) {
-  nav { padding: 0 22px; }
-  .nav-links { display: none; }
-  .hero { padding: 0 0 84px 24px; min-height: 620px; }
-  .hero-img { background-position: 68% 30%; }
-  .hero-note { right: 24px; max-width: 200px; text-align: right; }
-  section.band, .cta { padding: 72px 24px; }
-  .core { padding: 88px 24px; }
-  .sw-inner, .two { grid-template-columns: 1fr; gap: 40px; }
+  section.band { padding: 72px 24px; }
+  .two { grid-template-columns: 1fr; gap: 40px; }
   .mockup { padding: 1.25rem; order: 2; }
   .side { order: 1; }
-  #overdrive .mockup { order: 1; }
-  #overdrive .side { order: 2; }
-  .od-desk-only { display: none; }
-  .od-phone-only { display: block; margin-bottom: 40px; }
-  .od-name { font-size: 30px; }
-  .od-when, .od-arrow { font-size: 15px; }
   .sn-photo { min-height: 280px; order: 2; }
-  footer { padding: 56px 24px 28px; }
 }
 </style>
 </head>
 <body>
 
 <nav id="nav">
-  <a href="#top" class="mark" aria-label="Nenemi">NENEMI</a>
+  <a href="/welcome.html" class="mark" aria-label="Nenemi">NENEMI</a>
   <div class="nav-links">
-    <a href="#smartcal" class="nav-link">[ SMART CALENDAR ]</a>
-    <a href="#overdrive" class="nav-link">[ OVERDRIVE ]</a>
+    <a href="#system" class="nav-link">[ SYSTEM ]</a>
     <a href="#safetynet" class="nav-link">[ SAFETY NET ]</a>
+    <a href="#access" class="nav-link">[ ACCESS ]</a>
   </div>
-  <a href="/?open=1" class="nav-cta">Get Started</a>
+  <a href="/?open=1" class="nav-cta">[ OPEN NENEMI ]</a>
 </nav>
 
-<!-- 1. HERO -->
-<section class="hero" id="top">
-  <div class="hero-img" id="heroImg"></div>
-  <script>
-  /* five heroes, rotating per visit: the floor, the kitchen table, the desk, the phone, running late. The Safety Net photo stays off whichever one the hero is using. */
-  (function(){
-    var n = 0;
-    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % 5; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
-    if (n === 1) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-b.jpg')"; document.documentElement.classList.add('hero-b'); }
-    if (n === 2) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-c.jpg')"; }
-    if (n === 3) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-d.jpg')"; document.getElementById('heroImg').style.backgroundPosition = '50% 50%'; }
-    if (n === 4) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-e.jpg')"; document.getElementById('heroImg').style.backgroundPosition = '50% 30%'; }
-  })();
-  </script>
+<section class="hero">
+  <div class="hero-img"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <span class="hero-kicker">Nenemi · A memory app for ADHD brains</span>
+    <span class="hero-kicker">Nenemi · a memory app for ADHD brains</span>
     <h1>Made for your brain.<br>Not for their expectations.</h1>
-    <p class="hero-sub">Planning your day is easy. Staying in it isn't.</p>
+    <p class="hero-sub">Nenemi turns mental clutter into clear next steps.<br>Because no one needs another productivity app.</p>
     <div class="actions">
-      <a href="/?open=1" class="btn solid">Get Started →</a>
-      <a href="#switchboard" class="btn ghost">See how it works</a>
+      <a href="/?open=1" class="btn solid">Open Nenemi</a>
+      <a href="#system" class="btn ghost">See how it works</a>
     </div>
   </div>
-  <div class="hero-note">No spam. Real updates from your neurodivergent friend.</div>
+  <div class="hero-note">No spam. No streaks. Real updates from your neurodivergent friend.</div>
 </section>
 
-<!-- 2. SYSTEM OVERVIEW -->
-<section class="band" id="switchboard">
-  <div class="sw-inner">
-    <div class="sw-left">
-      <span class="tag">[ SYSTEM OVERVIEW ]</span>
-      <h2 class="headline">Ever have those days when you forget your list by 10:07 AM, want to quit by 1:10 PM, and you're spent by 5?</h2>
-      <p class="sw-yeah">Yeah. Same.</p>
-      <p class="sw-blurb">Most tools help you plan your day. Nenemi helps you get back into it. When things fall apart, you don't need a better plan — you need a way back in.</p>
-    </div>
-    <div class="sw-stack">
-      <a href="#smartcal" class="sw-pcard">
-        <span class="sw-pcard-num">01 //</span>
-        <h3 class="sw-pcard-name">Dump it out</h3>
-        <p class="sw-pcard-line">No structure. No pressure. Just get it out of your head.</p>
-        <span class="sw-pcard-arrow">→</span>
-      </a>
-      <a href="#smartcal" class="sw-pcard">
-        <span class="sw-pcard-num">02 //</span>
-        <h3 class="sw-pcard-name">We make it manageable</h3>
-        <p class="sw-pcard-line">A simple plan, sized to the energy you actually have.</p>
-        <span class="sw-pcard-arrow">→</span>
-      </a>
-      <a href="#overdrive" class="sw-pcard">
-        <span class="sw-pcard-num">03 //</span>
-        <h3 class="sw-pcard-name">Come back when it breaks</h3>
-        <p class="sw-pcard-line">And it will. That's when Nenemi steps in.</p>
-        <span class="sw-pcard-arrow">→</span>
-      </a>
-    </div>
+<section class="split">
+  <div class="split-img">
+    <div class="img" style="background-image:url('/photos/philosophy.jpg');"></div>
+    <div class="split-cap">[ ARCHETYPE 01 // THE EXECUTIVE OVERRIDE ]</div>
+  </div>
+  <div class="split-text">
+    <span class="tag">[ THE FOUNDATION // NEVER CHANGES ]</span>
+    <div class="quote">You're not behind. You're mid-process. <span>There's a difference.</span></div>
+    <div class="rule">"Just do it, you know what to do."<br><br>Nenemi is a different kind of tool — built around how your brain actually works. Grounded in research, shaped by science, and built from hundreds of hours talking to professionals and people living it every day. No guilt built in. No streaks to break. No punishment for being human.</div>
   </div>
 </section>
 
@@ -359,59 +347,81 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
   </div>
 </section>
 
-<!-- 4a. THE REAL PRODUCT -->
-<section class="core">
-  <div class="glow"></div>
-  <div>
-    <span class="tag t">[ THE REAL PRODUCT ]</span>
-    <p class="big-line">Planning is the easy part.<br><span>Staying in it is where things fall apart.</span></p>
-    <div class="core-sub"><p>You don't get a dashboard.<br>You don't get overwhelmed.<br>You get one way back in.</p></div>
-    <p class="core-then">THAT'S WHERE NENEMI LIVES →</p>
-  </div>
-</section>
-
-<!-- 4. OVERDRIVE -->
-<section class="band" id="overdrive">
-  <div class="od-header od-phone-only">
-    <span class="tag t">[ 02 // HIT THE WALL ]</span>
-    <h2 class="headline">Four ways back in.</h2>
-    <p class="sub">No streaks. No guilt screens. When the day gets away from you, Nenemi gives you a soft, specific entry point — whichever one fits the moment.</p>
-  </div>
-  <div class="inner two">
-    <div class="mockup">
-      <div class="phone" id="odPhone">
-        <div class="notch"></div>
-        <div class="status"><span>9:41</span><span>NENEMI</span></div>
-        <div class="od-slide active"><p class="od-slide-header">[ HELP ME START ]</p><h3 class="od-slide-title">Just one small move.<br>I'll find it for you.</h3><span class="od-slide-btn">Show me the first step →</span></div>
-        <div class="od-slide"><p class="od-slide-header">[ HOLD THIS FOR ME ]</p><h3 class="od-slide-title">Put it down.<br>I've got it.</h3><span class="od-slide-btn">Park it for now →</span></div>
-        <div class="od-slide"><p class="od-slide-header">[ I NEED A BOOST ]</p><h3 class="od-slide-title">Low tank.<br>Let's shrink it.</h3><span class="od-slide-btn">Give me the smaller version →</span></div>
-        <div class="od-slide"><p class="od-slide-header">[ PICK IT BACK UP ]</p><h3 class="od-slide-title">You paused.<br>You didn't fail.</h3><span class="od-slide-btn">Step back in →</span></div>
+<section class="block">
+  <div class="inner">
+    <div class="section-tag"><span class="tag">[ THE MOMENT NENEMI WAS BUILT FOR ]</span></div>
+    <h2>It's 1:07 PM. You had a plan. Here's what happens next.</h2>
+    <div class="moment-grid">
+      <div class="m light">
+        <div class="time">1:07 PM</div>
+        <div class="lab">[ THE WALL ]</div>
+        <div class="ttl">You know what needs to happen. You just can't start.</div>
+        <div class="body">You had a plan this morning. It made sense. Now you're staring at the screen and nothing is moving. That gap between knowing and starting — that's not a character flaw. That's just what happens at 1 PM.</div>
       </div>
-      <div class="dots" id="odDots">
-        <button class="active" aria-label="Help Me Start"></button><button aria-label="Hold This For Me"></button><button aria-label="I Need a Boost"></button><button aria-label="Pick It Back Up"></button>
+      <div class="m">
+        <div class="time">1:07 PM</div>
+        <div class="lab">[ NENEMI OPENS THE DOORS ]</div>
+        <div class="ttl">One tap. Four doors. No list.</div>
+        <div class="body">Feeling stuck opens a dark, quiet screen and asks one thing: where are you right now? I can't start. My head is too full. I have no energy. I fell off. It doesn't wait for the spiral to start.</div>
+        <div class="say">[ FEELING STUCK ] Where are you right now?</div>
       </div>
-      <p class="phone-cap">START · HOLD · BOOST · RETURN</p>
-    </div>
-    <div class="side">
-      <div class="od-desk-only">
-        <span class="tag t">[ 02 // HIT THE WALL ]</span>
-        <h2 class="headline">Four ways back in.</h2>
-        <p class="sub">No streaks. No guilt screens. When the day gets away from you, Nenemi gives you a soft, specific entry point — whichever one fits the moment.</p>
+      <div class="m dark">
+        <div class="time">1:08 PM</div>
+        <div class="lab">[ NENEMI ACTS ]</div>
+        <div class="ttl">Screen clears. One step surfaces.</div>
+        <div class="body">No choices. No menus. Everything else fades. One step appears. The only thing to do is the simplest possible thing.</div>
+        <div class="say">[ ONE SMALL MOVE ] "Open the doc." That's the whole task.</div>
       </div>
-      <p class="od-num" id="odNum">01 // HELP ME START</p>
-      <h3 class="od-name" id="odName">Help Me Start</h3>
-      <p class="od-when" id="odWhen">When the first step feels impossible</p>
-      <p class="od-arrow" id="odArrow">→ Nenemi hands you something small enough to do</p>
-      <div class="result od-outro"><strong>You won't see all of this at once.</strong>Nenemi only shows you the door that fits the moment — and quietly learns which ones actually help.</div>
     </div>
   </div>
 </section>
 
-<!-- 4b. CORE LINE -->
-<section class="core">
-  <div class="glow"></div>
-  <div><p class="big-line">You didn't fail. <span>You paused.</span></p></div>
+<section class="block people">
+  <div class="inner">
+    <span class="tag" style="display:block;margin-bottom:16px;">[ RADICAL REALISM // THE SCENES NENEMI LIVES IN ]</span>
+    <h2>Real rooms. Real people.<br>Real mid-process moments.</h2>
+    <p class="sub">Nenemi doesn't live in productivity magazines. Recognition is the hook — not aspiration.</p>
+    <div class="p-grid">
+      <div class="p tall">
+        <div class="img" style="background-image:url('/photos/autonomous.jpg'); background-position:center top;"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ ARCHETYPE 03 ]</div><div class="name">The Autonomous Worker</div><div class="cap">Multiple coffees. Papers everywhere. Her environment is calibrated for her brain — not for a productivity magazine. It doesn't look perfect. It works.</div><div class="n">Nenemi: "Your setup isn't wrong. It just needed the right foundation."</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/midprocess.jpg');"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ ARCHETYPE 04 ]</div><div class="name">Mid-Process. Full Stop.</div><div class="cap">Mid-task and paused. Not in distress. Just stopped. Somewhere in the middle of a real day.</div><div class="n">Nenemi: "Buffer cleared. Pick one thing."</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/floor.jpg'); background-position:center bottom;"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ ARCHETYPE 05 ]</div><div class="name">The Floor Worker</div><div class="cap">Desk not working today. Moved to the floor. Coffee, M&amp;Ms. The work is getting done anyway.</div><div class="n">Nenemi: "Your workspace is wherever your brain works."</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/blackout.jpg');"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ ARCHETYPE 06 ]</div><div class="name">The Hyperfocus Blackout</div><div class="cap">The pan is burning. He didn't forget. He was running a different process at full capacity.</div><div class="n">Nenemi: "You didn't forget the stove. You were hyperfocused. A feature without a governor."</div></div>
+      </div>
+      <div class="p">
+        <div class="img" style="background-image:url('/photos/wall.jpg'); background-position:center top;"></div><div class="grad"></div>
+        <div class="c"><div class="num">[ ARCHETYPE 02 ]</div><div class="name">The 1 PM Wall</div><div class="cap">Full suit. Chair reclined. Eyes closed. Laptop open. Papers around. Proof of real work — then the crash.</div><div class="n">Nenemi: "Still here. Let's find the one thing."</div></div>
+      </div>
+    </div>
+  </div>
 </section>
+
+<section class="block" id="system">
+  <div class="inner">
+    <div class="section-tag"><span class="tag">[ SYSTEM LOGIC // HOW IT WORKS ]</span></div>
+    <h2>Six features.<br>One unbroken sequence.</h2>
+    <p class="sub">Six tools, each one built for a specific moment. No streaks. No shame. No punishment for being human.</p>
+    <div class="s-grid">
+      <div class="s light"><div class="lab">[ 01 // INPUT LAYER ]</div><div class="name">Say it anywhere</div><div class="desc">Type it or talk it, messy is fine. Claude files it in the right room, starts a new one, or holds it loose. You never decide where it goes.</div><span class="pill">Get it out of your head</span></div>
+      <div class="s"><div class="lab">[ 02 // OBJECT PERMANENCE ]</div><div class="name">Rooms</div><div class="desc">One thing per room, always visible, never lost. Each one opens with where you left off and one small next move. Object permanence, outsourced.</div><span class="pill">Never restart from zero</span></div>
+      <div class="s dark"><div class="lab">[ 03 // THE DAY ]</div><div class="name">Build my day</div><div class="desc">Dump the whole day in one breath. Claude hands back a day you can actually follow, with air between things. Priorities first. Nothing overdue, ever.</div><span class="pill">A half-full day you can follow</span></div>
+      <div class="s"><div class="lab">[ 04 // THE PAGE ]</div><div class="name">Write about it</div><div class="desc">A page a day, yours only. The day, the feelings, the stuff with nowhere else to go. Hold what matters, let the rest go.</div><span class="pill">Nothing to carry to bed</span></div>
+      <div class="s dark"><div class="lab">[ 05 // INTERVENTION ]</div><div class="name">Feeling stuck</div><div class="desc">Four doors, then one small move. A dark, quiet screen when everything is everywhere. Never a list. Never a lecture.</div><span class="pill">Starting beats planning</span></div>
+      <div class="s light"><div class="lab">[ 06 // HUMANS HEAL ]</div><div class="name">Real people</div><div class="desc">Nenemi is the nudge, not the treatment. ADHD coaches, therapists, psychiatrists, and 988, one tap from the stuck screen.</div><span class="pill">The box holds. People heal.</span></div>
+    </div>
+  </div>
+</section>
+
 
 <!-- 5. SAFETY NET -->
 <section class="band" id="safetynet">
@@ -441,60 +451,27 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
   </div>
 </section>
 
-<!-- 6. CTA -->
-<section class="cta" id="access">
+<section class="open-sec" id="access">
   <div class="glow"></div>
   <div class="inner">
-    <span class="tag t">TRY NENEMI</span>
-    <h2 class="cta-headline">Start your day.<br>Come back when it gets hard.</h2>
-    <p class="cta-sub">No pressure. No spam. Just the build.</p>
-    <a href="/?open=1" class="big">Try Nenemi →</a>
-    <p class="cta-note">No account required · Built on Claude API · No spam. Real updates from your neurodivergent friend.</p>
+    <span class="tag t" style="display:block;margin-bottom:22px;">[ IT'S LIVE RIGHT NOW ]</span>
+    <h2>We're building this for a specific kind of brain.</h2>
+    <p class="sub">If that's yours, you already know. Not a mockup. Not a demo. A working version of Nenemi running on the Claude API. Open it. Use it. See what today feels like with the right system.</p>
+    <a href="/?open=1" class="big">[ OPEN NENEMI ] →</a>
+    <div class="open-note">No account required · Built on Claude API · No spam. No streak notifications. Just the build.</div>
   </div>
 </section>
 
-<!-- 7. FOUNDER FOOTER -->
+
 <footer>
-  <div class="sf-inner">
-    <span class="tag">[ A NOTE FROM THE FOUNDER ]</span>
-    <p class="sf-blurb">Built by someone who needed it. <span>Hope it helps you as much as it does me.</span></p>
-    <p class="sf-sign">— Marcos</p>
-    <div class="sf-rule"></div>
-    <div class="sf-meta">
-      <div class="sf-brand"><a href="#top" class="mark" aria-label="Nenemi">NENEMI</a><span>an OLLIN company</span></div>
-      <span>© 2026 · Nenemi</span>
-      <div class="sf-links"><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/support.html">Support</a></div>
-    </div>
-  </div>
+  <div class="foot-brand"><a href="/welcome.html" class="mark" aria-label="Nenemi">NENEMI</a><span class="foot-ollin">an OLLIN company</span></div>
+  <div class="foot-quote">"You're mid-process. There's a difference."</div>
+  <div class="foot-links"><span>[ FOR NEURODIVERGENT // FROM A NEURODIVERGENT ] · 2026</span><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/support.html">Support</a></div>
 </footer>
 
 <script>
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > window.innerHeight * 0.85); }, { passive: true });
-
-/* Overdrive carousel: phone + the text beside it move together */
-(function(){
-  const phone = document.getElementById('odPhone'); if (!phone) return;
-  const slides = phone.querySelectorAll('.od-slide');
-  const dots = document.querySelectorAll('#odDots button');
-  const numEl = document.getElementById('odNum'), nameEl = document.getElementById('odName'), whenEl = document.getElementById('odWhen'), arrowEl = document.getElementById('odArrow');
-  const states = [
-    { num: '01 // HELP ME START',    name: 'Help Me Start',    when: 'When the first step feels impossible',        arrow: '→ Nenemi hands you something small enough to do' },
-    { num: '02 // HOLD THIS FOR ME', name: 'Hold This For Me', when: 'When your head is too full to carry it',        arrow: '→ Nenemi parks it until you’re ready' },
-    { num: '03 // I NEED A BOOST',   name: 'I Need a Boost',   when: 'When the tank is empty but the day isn’t', arrow: '→ Nenemi shrinks the task to fit' },
-    { num: '04 // PICK IT BACK UP',  name: 'Pick It Back Up',  when: 'When you fell off and want a soft way in',      arrow: '→ Nenemi meets you where you left off' },
-  ];
-  let idx = 0, timer;
-  function go(i){
-    idx = (i + slides.length) % slides.length;
-    slides.forEach((s, k) => s.classList.toggle('active', k === idx));
-    dots.forEach((d, k) => d.classList.toggle('active', k === idx));
-    const s = states[idx]; numEl.textContent = s.num; nameEl.textContent = s.name; whenEl.textContent = s.when; arrowEl.textContent = s.arrow;
-  }
-  function restart(){ clearInterval(timer); timer = setInterval(() => go(idx + 1), 5000); }
-  dots.forEach((d, i) => d.addEventListener('click', () => { go(i); restart(); }));
-  restart();
-})();
 
 /* Smart Calendar carousel: auto-advance, pause on hover, only while on screen */
 (function(){
