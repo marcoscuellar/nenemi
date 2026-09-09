@@ -45,9 +45,6 @@ nav.scrolled { background: rgba(10,10,10,.85); backdrop-filter: blur(16px); -web
 /* 1. HERO */
 .hero { position: relative; height: 100vh; min-height: 680px; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 84px 64px; overflow: hidden; background: var(--bg2); }
 .hero-img { position: absolute; inset: 0; background: url('/photos/hero.jpg') 72% 40% / cover no-repeat; }
-.hero-glow { position: absolute; inset: -20%; background: radial-gradient(ellipse 40% 34% at 70% 40%, rgba(28,170,178,.42) 0%, rgba(12,84,96,.22) 40%, transparent 72%); filter: blur(30px); animation: drift 90s ease-in-out infinite alternate; }
-@keyframes drift { from { filter: blur(30px) hue-rotate(0deg); } to { filter: blur(30px) hue-rotate(50deg); } }
-@media (prefers-reduced-motion: reduce) { .hero-glow { animation: none; } }
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.94) 0%, rgba(10,10,10,.62) 34%, rgba(10,10,10,.22) 62%, rgba(10,10,10,0) 100%), linear-gradient(to right, rgba(10,10,10,.5) 0%, rgba(10,10,10,.18) 40%, transparent 62%); }
 .hero-content { position: relative; z-index: 2; max-width: 900px; }
 .hero-kicker { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); padding-bottom: 12px; margin-bottom: 22px; border-bottom: 1px solid var(--line); max-width: 420px; }
@@ -231,7 +228,6 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
     if (n === 1) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-b.jpg')"; document.documentElement.classList.add('hero-b'); }
   })();
   </script>
-  <div class="hero-glow"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <span class="hero-kicker">Nenemi · A memory app for ADHD brains</span>
