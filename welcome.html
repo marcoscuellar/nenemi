@@ -230,13 +230,14 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
 <section class="hero" id="top">
   <div class="hero-img" id="heroImg"></div>
   <script>
-  /* four heroes, rotating per visit: the floor, the kitchen table, the desk, the phone. The Safety Net photo stays off whichever one the hero is using. */
+  /* five heroes, rotating per visit: the floor, the kitchen table, the desk, the phone, running late. The Safety Net photo stays off whichever one the hero is using. */
   (function(){
     var n = 0;
-    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % 4; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
+    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % 5; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
     if (n === 1) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-b.jpg')"; document.documentElement.classList.add('hero-b'); }
     if (n === 2) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-c.jpg')"; }
     if (n === 3) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-d.jpg')"; document.getElementById('heroImg').style.backgroundPosition = '50% 50%'; }
+    if (n === 4) { document.getElementById('heroImg').style.backgroundImage = "url('/photos/hero-e.jpg')"; document.getElementById('heroImg').style.backgroundPosition = '50% 30%'; }
   })();
   </script>
   <div class="hero-overlay"></div>
