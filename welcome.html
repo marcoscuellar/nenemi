@@ -64,6 +64,9 @@ h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(42px, 4.3vw, 
 .sw-yeah { font-family: var(--serif); font-size: clamp(40px, 4.5vw, 60px); color: var(--teal); line-height: 1.05; letter-spacing: -.02em; margin: 28px 0 18px; }
 .sw-blurb { font-size: 15px; font-weight: 300; color: var(--muted); line-height: 1.7; max-width: 480px; }
 .sw-stack { display: flex; flex-direction: column; gap: 14px; }
+.sw-photo { position: relative; aspect-ratio: 16 / 10; border-radius: 16px; overflow: hidden; background: var(--card) url('/photos/overview.jpg') 50% 40% / cover no-repeat; box-shadow: var(--glow); }
+.sw-photo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.55) 0%, rgba(10,10,10,.1) 50%, transparent 100%); }
+.sw-photo-tag { position: absolute; bottom: 16px; left: 16px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--ink); background: rgba(10,10,10,.75); padding: 6px 11px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,191,198,.22); }
 .sw-pcard { position: relative; display: block; padding: 32px 30px; background: var(--card); border-radius: 16px; text-decoration: none; box-shadow: 0 0 40px rgba(63,191,198,.08); transition: transform .25s ease, box-shadow .25s ease; }
 .sw-pcard:hover { transform: translateX(4px); box-shadow: var(--glow); }
 .sw-pcard-num { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--teal); margin-bottom: 12px; }
@@ -251,6 +254,7 @@ footer { background: #0E0E0E; padding: 80px 80px 40px; border-top: 1px solid var
       <p class="sw-blurb">Most tools help you plan your day. Nenemi helps you get back into it. When things fall apart, you don't need a better plan — you need a way back in.</p>
     </div>
     <div class="sw-stack">
+      <div class="sw-photo"><div class="sw-photo-overlay"></div><div class="sw-photo-tag">[ 1:10 PM ]</div></div>
       <a href="#smartcal" class="sw-pcard">
         <span class="sw-pcard-num">01 //</span>
         <h3 class="sw-pcard-name">Dump it out</h3>
