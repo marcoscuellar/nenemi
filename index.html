@@ -80,7 +80,7 @@
     --shadow: rgba(0,0,0,0.12);
   }
   /* the sanctuary screens stay dark in both themes — calm, no glare when you're stuck */
-  #pane-stuck, #pane-lockdown, .friction-overlay {
+  #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
     --sanctuary: #0A0A0A; --surface: #141414; --surface2: #1C1C1C; --card: #161616; --ink: #F4F2EC; --muted: #9C9C96; --faint: #6A6A65;
     --line: rgba(244,242,236,0.09); --line2: rgba(244,242,236,0.16); --sage: #F4F2EC; --sage-text: #D6D4CE; --sage-fill: rgba(244,242,236,0.10); --on-sage: #0A0A0A; --glow2: #171717; --btn: #F4F2EC; --btn-ink: #0A0A0A;
     color: var(--ink);
@@ -436,6 +436,7 @@
 
   /* STUCK pane */
   #pane-stuck { background: radial-gradient(circle at 50% 38%, var(--glow2) 0%, var(--sanctuary) 60%); align-items: center; justify-content: center; overflow-y: auto; }
+  #pane-humans { background: var(--sanctuary); align-items: center; justify-content: center; overflow-y: auto; }
   #pane-stuck .doors, #pane-stuck .stuck-inner { margin: auto; padding-top: 48px; padding-bottom: 40px; }
   .stuck-close { position: absolute; top: 24px; right: 32px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .stuck-inner { display: flex; flex-direction: column; align-items: center; }
@@ -457,16 +458,15 @@
   .door-why.open .a { display: block; }
   .stuck-note { font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); margin-top: 18px; text-align: center; max-width: 440px; line-height: 1.6; }
   .doors-back { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 22px; cursor: pointer; }
-  .people { width: 100%; margin-top: 28px; }
-  .people-head { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 10px; }
-  .people-table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.45; }
-  .people-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); font-weight: 500; padding: 0 10px 8px 0; border-bottom: 1px solid var(--line2); }
-  .people-table td { vertical-align: top; padding: 11px 10px 11px 0; border-bottom: 1px solid var(--line); color: var(--muted); }
-  .people-table td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
-  .people-table td:last-child { white-space: nowrap; padding-right: 0; }
-  .people-table a { display: block; color: var(--sage-text); text-decoration: none; }
-  .people-table a + a { margin-top: 4px; }
-  .people-table a:hover { text-decoration: underline; }
+  /* HUMAN SUPPORT: its own screen, not a table bolted to the doors */
+  .humans-inner { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 560px; padding: 48px 20px 40px; margin: auto; }
+  .support-list { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 34px; }
+  .support-card { border-radius: 18px; padding: 20px 22px; background: linear-gradient(160deg, #1C1C1C 0%, #121212 100%); border: 1px solid rgba(244,242,236,0.08); }
+  .support-name { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--ink); }
+  .support-for { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
+  .support-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .support-links a { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--muted); text-decoration: none; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--line2); }
+  .support-links a:hover { color: var(--ink); border-color: rgba(255,255,255,0.4); }
   .doors-back:hover { color: var(--sage-text); }
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
@@ -615,15 +615,17 @@
     .sheet { padding: 18px; }
     /* stuck: doors and the move */
     .stuck-close { top: 10px; right: 12px; }
-    #pane-stuck { justify-content: flex-start; }
+    #pane-stuck, #pane-humans { justify-content: flex-start; }
     .doors { padding: 56px 16px 24px; }
     .doors-mark { display: none; }
     .doors-title { font-size: 26px; }
     .doors-sub { font-size: 12.5px; }
     .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
-    .people { margin-top: 22px; }
-    .people-table { font-size: 12px; }
-    .people-table th:nth-child(2), .people-table td:nth-child(2) { display: none; }
+    .humans-inner { padding: 56px 16px 24px; }
+    .support-card { padding: 16px 18px; border-radius: 16px; }
+    .support-name { font-size: 15.5px; }
+    .support-for { font-size: 12.5px; }
+    .support-links a { font-size: 12.5px; padding: 8px 12px; }
     .door { padding: 16px 16px 14px; border-radius: 18px; }
     .door-label { font-size: 16.5px; }
     .stuck-inner { width: 100%; padding: 48px 16px 24px; }
@@ -821,22 +823,6 @@
       </div>
     </div>
 
-    <!-- HUMANS HEAL -->
-    <div class="pane" id="pane-humans">
-      <div class="hub-header">
-        <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
-        <span class="kicker">Real people</span>
-        <div class="hub-title">Humans heal</div>
-        <div class="hub-sub">NENEMI is the nudge, not the treatment.</div>
-      </div>
-      <div class="room-grid">
-        <div class="room-card"><div class="room-name">Find an ADHD coach</div><div class="room-oneliner">ADDA · CHADD</div></div>
-        <div class="room-card"><div class="room-name">Talk to a therapist</div><div class="room-oneliner">Psychology Today finder</div></div>
-        <div class="room-card"><div class="room-name">Ask about medication</div><div class="room-oneliner">A real, valid option — a psychiatrist can help you decide.</div></div>
-        <div class="room-card" style="border-color: var(--sage)"><div class="room-name" style="color: var(--sage-text)">Heavy right now?</div><div class="room-oneliner">Call or text 988 — free, 24/7.</div></div>
-      </div>
-    </div>
-
     <!-- ROOMS HUB -->
     <div class="pane" id="pane-rooms">
       <div class="hub-header">
@@ -921,18 +907,6 @@
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Shame is a productivity killer. We pick up exactly where you left off.</span></div>
           </div>
         </div>
-        <div class="people">
-          <div class="people-head">Real people help. Stuck for longer than a day? This is who.</div>
-          <table class="people-table">
-            <thead><tr><th>Who</th><th>For</th><th>Where</th></tr></thead>
-            <tbody>
-              <tr><td>ADHD coach</td><td>Weekly accountability and strategy. The strongest external motor there is.</td><td><a href="https://add.org/professional-directory/" target="_blank" rel="noopener">ADDA directory</a><a href="https://chadd.org/professional-directory/" target="_blank" rel="noopener">CHADD directory</a></td></tr>
-              <tr><td>Therapist</td><td>The feelings underneath. Shame, burnout, the spiral.</td><td><a href="https://www.psychologytoday.com/us/therapists/adhd" target="_blank" rel="noopener">Psychology Today</a></td></tr>
-              <tr><td>Psychiatrist</td><td>Medication. A real, valid option. They help you decide.</td><td><a href="https://www.psychologytoday.com/us/psychiatrists/adhd" target="_blank" rel="noopener">Psychology Today</a></td></tr>
-              <tr><td>Right now</td><td>Heavy right now. Free, 24/7, a human answers.</td><td><a href="tel:988">Call 988</a><a href="sms:988">Text 988</a></td></tr>
-            </tbody>
-          </table>
-        </div>
       </div>
       <div class="stuck-inner" id="stuckMove" hidden>
         <div class="stuck-mark"></div>
@@ -967,6 +941,43 @@
       </div>
     </div>
 
+    <!-- HUMAN SUPPORT -->
+    <div class="pane" id="pane-humans">
+      <div class="stuck-close" onclick="go('home')">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
+      </div>
+      <div class="humans-inner">
+        <div class="doors-mark"></div>
+        <div class="doors-title">Real people help.</div>
+        <div class="doors-sub">The support that isn't an app.</div>
+        <div class="support-list">
+          <div class="support-card">
+            <div class="support-name">ADHD coach</div>
+            <div class="support-for">Weekly accountability and strategy. The strongest external motor there is.</div>
+            <div class="support-links">
+              <a href="https://add.org/professional-directory/" target="_blank" rel="noopener">ADDA directory</a>
+              <a href="https://chadd.org/professional-directory/" target="_blank" rel="noopener">CHADD directory</a>
+            </div>
+          </div>
+          <div class="support-card">
+            <div class="support-name">Therapist</div>
+            <div class="support-for">The feelings underneath. Shame, burnout, the spiral.</div>
+            <div class="support-links"><a href="https://www.psychologytoday.com/us/therapists/adhd" target="_blank" rel="noopener">Psychology Today</a></div>
+          </div>
+          <div class="support-card">
+            <div class="support-name">Psychiatrist</div>
+            <div class="support-for">Medication. A real, valid option. They help you decide.</div>
+            <div class="support-links"><a href="https://www.psychologytoday.com/us/psychiatrists/adhd" target="_blank" rel="noopener">Psychology Today</a></div>
+          </div>
+          <div class="support-card">
+            <div class="support-name">Right now</div>
+            <div class="support-for">Heavy right now. Free, 24/7, a human answers.</div>
+            <div class="support-links"><a href="tel:988">Call 988</a><a href="sms:988">Text 988</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- LOCKDOWN -->
     <div class="pane" id="pane-lockdown">
       <div class="lockdown-label">[ FOCUS · ONE THING ]</div>
@@ -991,7 +1002,7 @@
     app.classList.toggle('base'); if (app.classList.contains('base')) renderBase();
   }
   function goSanctuary() { document.querySelector('.app').classList.remove('base'); go('home'); }
-  function goHumans() { go('stuck'); setTimeout(() => { const el = document.querySelector('#pane-stuck .people'); if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 60); }
+  function goHumans() { go('humans'); }
   function hourLabel(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); const d = new Date(); d.setHours(hr, m, 0, 0); return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: m ? '2-digit' : undefined }).replace(' ', '').toLowerCase(); }
   function renderBase() {
     const mine = rooms.filter(r => !r.demo);
@@ -1019,7 +1030,7 @@
     document.querySelectorAll('.topnav .tn').forEach(n => n.classList.toggle('active', n.id === tnId));
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
-    document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown');
+    document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
     if (id === 'stuck') showDoors();
     stopVoice();
   }
