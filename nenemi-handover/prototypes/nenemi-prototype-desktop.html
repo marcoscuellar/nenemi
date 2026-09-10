@@ -153,7 +153,7 @@
   .wordmark { position: absolute; top: 22px; left: 26px; z-index: 30; font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; color: var(--ink); transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent), 0 0 28px color-mix(in srgb, var(--ink) 25%, transparent); user-select: none; cursor: pointer; }
   .app.quiet .wordmark { display: none; }
   /* one quiet line, centered, light. the box under it is the whole screen */
-  .greeting-big { font-family: var(--font-body); font-weight: 300; font-size: 34px; line-height: 1.2; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 34px; color: var(--ink); letter-spacing: -0.01em; }
+  .greeting-big { font-family: var(--font-body); font-weight: 300; font-size: 32px; line-height: 1.2; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 34px; color: var(--ink); letter-spacing: -0.01em; }
   .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
   .greeting-big .hello { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--line2); }
 
@@ -513,7 +513,7 @@
     :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
     .app { height: 100vh; height: 100dvh; padding-top: var(--sat); }
     /* home */
-    .greeting-big { font-size: 22px; margin-bottom: 20px; }
+    .greeting-big { font-size: 24px; margin-bottom: 22px; }
     .wordmark { top: 15px; left: 12px; font-size: 9.5px; }
     .topnav { left: auto; right: 56px; transform: none; }
     .tn-menu { left: auto; right: 12px; transform: none; top: 50px; }
@@ -522,12 +522,13 @@
     .plus-btn { width: 32px; height: 32px; }
     .send-btn, .mic-btn { width: 32px; height: 32px; }
     .home-center { width: 100%; max-width: 86%; margin: auto 0; }
+    #pane-home::before { inset: 0; }
     #pane-home { justify-content: flex-start; padding-top: 64px; padding-bottom: calc(16px + var(--sab)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .chat-log { max-height: 40vh; margin-top: 18px; }
     .bubble { font-size: 13px; padding: 10px 13px; max-width: 88%; }
     .bubble.dos { align-self: flex-start; max-width: 92%; }
     /* once the box is talking, the greeting steps back so the reply has the room */
-    .app.talking .greeting-big { font-size: 19px; margin-bottom: 14px; }
+    .app.talking .greeting-big { font-size: 20px; margin-bottom: 14px; }
     .intro { font-size: 12px; margin-top: 20px; }
     /* account */
     .account-slot { top: 8px; right: 10px; }
