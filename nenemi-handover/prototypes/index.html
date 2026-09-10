@@ -150,7 +150,8 @@
   #pane-home > * { position: relative; z-index: 1; }
   /* the same teal light, quieter, under the cards on every other screen. stuck keeps its own sanctuary glow */
   #pane-roomview::before, #pane-rooms::before, #pane-calendar::before, #pane-notes::before { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    background: radial-gradient(ellipse 52% 40% at 50% 30%, var(--hg1) 0%, var(--hg2) 42%, transparent 76%); opacity: 0.75; filter: blur(34px); }
+    /* no blur filter here: on iOS a blurred layer under scrolling text makes the text render soft */
+    background: radial-gradient(ellipse 56% 44% at 50% 30%, var(--hg1) 0%, var(--hg2) 38%, transparent 70%); opacity: 0.6; }
   #pane-roomview > *, #pane-rooms > *, #pane-calendar > *, #pane-notes > * { position: relative; z-index: 1; }
   .home-center { display: flex; flex-direction: column; align-items: center; width: 680px; max-width: 90%; }
   @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
