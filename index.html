@@ -153,6 +153,7 @@
     /* no blur filter here: on iOS a blurred layer under scrolling text makes the text render soft */
     background: radial-gradient(ellipse 56% 44% at 50% 30%, var(--hg1) 0%, var(--hg2) 38%, transparent 70%); opacity: 0.6; }
   #pane-roomview > *, #pane-rooms > *, #pane-calendar > *, #pane-notes > * { position: relative; z-index: 1; }
+  #pane-roomview > .rv-header { z-index: 2; } /* the icon and color picker hangs below the header, over the body */
   .home-center { display: flex; flex-direction: column; align-items: center; width: 680px; max-width: 90%; }
   @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
   .wordmark { position: absolute; top: 22px; left: 26px; z-index: 30; font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; color: var(--ink); transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent), 0 0 28px color-mix(in srgb, var(--ink) 25%, transparent); user-select: none; cursor: pointer; }
@@ -326,6 +327,10 @@
   .room-style .rs-dot.none.on { border: 2px solid var(--ink); }
   .room-style input { width: 100%; box-sizing: border-box; background: var(--surface); border: 1px solid var(--line2); border-radius: 9px; padding: 8px 10px; color: var(--ink); font-family: var(--font-body); font-size: 14px; outline: none; }
   .room-style input:focus { border-color: var(--sage); }
+  .room-style .rs-icons { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 2px 0 6px; }
+  .room-style .rs-ic { height: 32px; border-radius: 8px; border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
+  .room-style .rs-ic:hover { color: var(--ink); }
+  .room-style .rs-ic.on { color: var(--ink); border-color: var(--ink); }
   .room-style .rs-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
   .room-style .rs-clear { font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; }
   .room-style .rs-clear:hover { color: var(--ink); }
@@ -1081,7 +1086,23 @@
   // a room can wear a color and an icon. optional, one tap, never asked for.
   const ROOM_COLORS = { sage: '#7FB69A', amber: '#D9A441', rose: '#D97A8C', sky: '#6FA8DC', violet: '#A48BE0', coral: '#E08A5E', mint: '#5FC3A8', slate: '#8A9BB0' };
   function roomStyleAttr(r) { return ROOM_COLORS[r.color] ? ` style="--rc:${ROOM_COLORS[r.color]}"` : ''; }
-  function roomIconHtml(r) { return r.icon ? escapeHtml(r.icon) : roomIconSvg; }
+  // twelve line icons a room can wear. small on purpose: a mix, not a catalog. saved as icon: 'i:name'
+  const ROOM_ICONS = {
+    house: '<path d="M3 11l9-7 9 7M5.5 9.5V20h13V9.5"/>',
+    bag: '<path d="M5.5 8h13l1 12h-15zM9 8V6.5a3 3 0 0 1 6 0V8"/>',
+    suitcase: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V5h6v3M3 13h18"/>',
+    plane: '<path d="M21 3L3 10.5l7 2.5 2.5 7z"/>',
+    pan: '<circle cx="10" cy="13" r="6"/><path d="M16 13h6"/>',
+    mountain: '<path d="M3 20l7-12 4 6 3-4 4 10z"/>',
+    heart: '<path d="M12 20c-6-4.5-9-7.5-9-11.2A4.3 4.3 0 0 1 12 6.8a4.3 4.3 0 0 1 9 2C21 12.5 18 15.5 12 20z"/>',
+    briefcase: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V4h6v3M3 12h18"/>',
+    book: '<path d="M4 4h12a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2zM4 16h14"/>',
+    car: '<path d="M3 14l2-6h14l2 6v5H3z"/><circle cx="7" cy="17" r="1.2"/><circle cx="17" cy="17" r="1.2"/>',
+    leaf: '<path d="M4 20C4 10 10 4 20 4c0 10-6 16-16 16zM4 20L14 10"/>',
+    dollar: '<path d="M12 3v18M16 7h-6a2.5 2.5 0 0 0 0 5h4a2.5 2.5 0 0 1 0 5H8"/>',
+  };
+  function roomIconSvgFor(name) { const d = ROOM_ICONS[name]; return d ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${d}</svg>` : ''; }
+  function roomIconHtml(r) { if (!r.icon) return roomIconSvg; if (r.icon.startsWith('i:')) return roomIconSvgFor(r.icon.slice(2)) || roomIconSvg; return escapeHtml(r.icon); }
   function firstGlyph(s) { s = String(s || '').trim(); if (!s) return ''; try { const it = new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(s)[Symbol.iterator](); const g = it.next(); return g.done ? '' : g.value.segment; } catch (e) { return Array.from(s)[0] || ''; } }
   function toggleRoomStyle(ev) {
     if (ev) ev.stopPropagation();
@@ -1091,10 +1112,12 @@
     const r = currentRoom; if (!r) return;
     const box = document.createElement('div'); box.className = 'room-style'; box.onclick = e => e.stopPropagation();
     box.innerHTML = `<div class="rs-dots"><div class="rs-dot none ${r.color ? '' : 'on'}" title="No color" onclick="setRoomColor(null)"></div>${Object.entries(ROOM_COLORS).map(([k, v]) => `<div class="rs-dot ${r.color === k ? 'on' : ''}" style="background:${v}" title="${k}" onclick="setRoomColor('${k}')"></div>`).join('')}</div>
-      <div class="rs-row"><input id="rsIcon" placeholder="Any emoji, or a letter" maxlength="8" value="${escapeHtml(r.icon || '')}" oninput="setRoomIcon(this.value)"><span class="rs-clear" onclick="setRoomIcon('')">Clear</span></div>`;
+      <div class="rs-icons">${Object.keys(ROOM_ICONS).map(k => `<div class="rs-ic ${r.icon === 'i:' + k ? 'on' : ''}" title="${k}" onclick="setRoomIconKey('${k}')">${roomIconSvgFor(k)}</div>`).join('')}</div>
+      <div class="rs-row"><input id="rsIcon" placeholder="Or any emoji, or a letter" maxlength="8" value="${escapeHtml(r.icon && !r.icon.startsWith('i:') ? r.icon : '')}" oninput="setRoomIcon(this.value)"><span class="rs-clear" onclick="setRoomIcon('')">Clear</span></div>`;
     host.appendChild(box);
     setTimeout(() => document.addEventListener('click', function off() { const b = host.querySelector('.room-style'); if (b) b.remove(); document.removeEventListener('click', off); }), 0);
   }
+  function setRoomIconKey(k) { if (!currentRoom) return; if (currentRoom.icon === 'i:' + k) delete currentRoom.icon; else currentRoom.icon = 'i:' + k; save(); renderRoomView(); toggleRoomStyle(); }
   function setRoomColor(k) { if (!currentRoom) return; if (k) currentRoom.color = k; else delete currentRoom.color; save(); renderRoomView(); toggleRoomStyle(); }
   function setRoomIcon(v) {
     if (!currentRoom) return;
