@@ -694,7 +694,7 @@
           <div class="plus-btn" id="plusBtn" onclick="toggleMenu()">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
           </div>
-          <textarea id="composerInput" rows="1" placeholder="Dump it here."></textarea>
+          <textarea id="composerInput" rows="1" placeholder="How can Nenemi help?"></textarea>
           <div class="mic-btn" id="homeMic" title="Say it instead">
             <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
           </div>
@@ -1233,7 +1233,7 @@
     input.value = ''; growComposer();
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
     captureText(text, source, document.getElementById('chatLog'), recapMode ? 'end_of_day_recap' : null);
-    if (recapMode) { recapMode = false; input.placeholder = "Dump it here."; }
+    if (recapMode) { recapMode = false; input.placeholder = "How can Nenemi help?"; }
   }
   // door 2: the same capture, inside the sanctuary, so nobody gets kicked back out to Home
   function stuckSend() {
