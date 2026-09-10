@@ -506,22 +506,30 @@
 
   /* ---------- phones (last on purpose: these must win over everything above) ---------- */
   @media (max-width: 720px) {
-    .app { height: 100vh; height: 100dvh; padding-top: env(safe-area-inset-top); }
+    /* the notch and the home bar, read once; every rule below uses these */
+    :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
+    .app { height: 100vh; height: 100dvh; padding-top: var(--sat); }
     /* home */
     .greeting-big { font-size: 26px; margin-bottom: 22px; }
     .greeting-big { margin-bottom: 26px; }
     .greeting-big .accent { font-size: 36px; }
     .greeting-big .hello { font-size: 10px; padding-bottom: 10px; margin-bottom: 14px; }
-    .wordmark { top: calc(15px + env(safe-area-inset-top)); left: 12px; font-size: 9.5px; }
+    .wordmark { top: 15px; left: 12px; font-size: 9.5px; }
     .topnav { left: auto; right: 56px; transform: none; }
-    .tn-menu { left: auto; right: 12px; transform: none; top: calc(50px + env(safe-area-inset-top)); }
+    .tn-menu { left: auto; right: 12px; transform: none; top: 50px; }
     .composer-pill { padding: 16px 14px 10px; border-radius: 20px; }
-    .home-center { width: 100%; max-width: 94%; }
-    .chat-log { max-height: 34vh; }
+    .home-center { width: 100%; max-width: 94%; margin: auto 0; }
+    #pane-home { justify-content: flex-start; padding-top: 64px; padding-bottom: calc(16px + var(--sab)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .chat-log { max-height: 40vh; }
+    .bubble.dos { align-self: stretch; max-width: 100%; }
+    /* once the box is talking, the greeting steps back so the reply has the room */
+    .app.talking .greeting-big { font-size: 20px; margin-bottom: 14px; }
+    .app.talking .greeting-big .accent { font-size: 26px; }
+    .app.talking .greeting-big .hello { padding-bottom: 6px; margin-bottom: 8px; }
     .intro { font-size: 12px; margin-top: 20px; }
     /* account */
-    .account-slot { top: calc(8px + env(safe-area-inset-top)); right: 10px; }
-    .topnav { top: calc(8px + env(safe-area-inset-top)); padding: 3px; }
+    .account-slot { top: 8px; right: 10px; }
+    .topnav { top: 8px; padding: 3px; }
     .topnav .tn { font-size: 10px; padding: 7px 9px; letter-spacing: 0.08em; }
     .account-slot .signed-label { display: none; }
     .account-slot .who { display: none; }
@@ -565,7 +573,8 @@
     .ag-row { gap: 10px; }
     .sheet { padding: 18px; }
     /* stuck: doors and the move */
-    .stuck-close { top: calc(10px + env(safe-area-inset-top)); right: 12px; }
+    .stuck-close { top: 10px; right: 12px; }
+    #pane-stuck { justify-content: flex-start; }
     .doors { padding: 56px 16px 24px; }
     .doors-mark { display: none; }
     .doors-title { font-size: 30px; }
@@ -588,7 +597,7 @@
     /* focus + friction */
     .lockdown-task { font-size: 22px; padding: 0 16px; }
     .friction-card { width: 92vw; }
-    .voice-hint { bottom: calc(18px + env(safe-area-inset-bottom)); max-width: 92vw; text-align: center; }
+    .voice-hint { bottom: calc(18px + var(--sab)); max-width: 92vw; text-align: center; }
   }
 </style>
 </head>
@@ -1236,6 +1245,7 @@
     captureText(text, source, document.getElementById('stuckLog'));
   }
   function captureText(text, source, log, mode) {
+    if (log.id === 'chatLog') { const a = document.querySelector('.app'); if (a) a.classList.add('talking'); }
     log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
     log.scrollTop = log.scrollHeight;
 
@@ -1245,6 +1255,9 @@
     if (auth.smart && location.protocol !== 'file:') { smartCapture(text, source, log, mode); return; }
     heuristicCapture(text, source, log);
   }
+  // phones: the home column scrolls as a whole, so the newest bubble is walked into view rather than trusting one box's scrollTop
+  (function () { const log = document.getElementById('chatLog'); if (!log || !window.MutationObserver) return;
+    new MutationObserver(() => { const last = log.lastElementChild; if (last && window.innerWidth <= 720) { try { last.scrollIntoView({ block: 'nearest' }); } catch (e) {} } }).observe(log, { childList: true }); })();
   // "I need to get the laptop by 5, pick up my meds, call the barber": times or deadlines, to-do verbs, two or more things
   function looksLikeDay(text) {
     const timed = /\b(by|before|after|at|around|until|till)\s+(like\s+)?\d{1,2}(:\d{2})?\s*(am|pm|o'?clock)?\b|\b\d{1,2}(:\d{2})?\s*(am|pm)\b|\bnoon\b|\btonight\b|\bthis (morning|afternoon|evening)\b|\b(today|tomorrow)\b.*\b(by|at|before)\s+\d/i.test(text);

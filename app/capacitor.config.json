@@ -7,7 +7,7 @@
     "allowNavigation": ["www.mynenemi.com", "mynenemi.com", "*.clerk.accounts.dev", "*.clerk.com", "accounts.google.com", "appleid.apple.com"]
   },
   "ios": {
-    "contentInset": "always",
+    "contentInset": "never",
     "backgroundColor": "#0A0A0A",
     "preferredContentMode": "mobile",
     "scheme": "Nenemi"
