@@ -8,7 +8,6 @@
     "open": "cap open ios"
   },
   "dependencies": {
-    "@capacitor-community/speech-recognition": "^7.0.1",
     "@capacitor/cli": "^8.5.1",
     "@capacitor/core": "^8.5.1",
     "@capacitor/ios": "^8.5.1"

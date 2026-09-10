@@ -6,8 +6,8 @@ One screen at a time. Do the step, come back, say "done". Nothing here needs to 
 
 - `app/` is the native shell. It is a Capacitor project that opens www.mynenemi.com inside the app, so every push to `main` updates the app too, with no new App Store review.
 - Bundle ID: `com.ollinos.nenemi`. App name: Nenemi. iPhone only, portrait only. Minimum iOS 15.
-- App icon and splash are in the Xcode project.
-- The mic works inside the app through Apple's own speech recognizer. The web page notices it is inside the shell and uses that instead of the browser API.
+- App icon (teal N on black) and splash are in the Xcode project.
+- The mic works inside the app through Apple's own speech recognizer, shipped as a local Swift package (`app/ios/App/NenemiSpeech`). The web page notices it is inside the shell and uses that instead of the browser API.
 - Microphone and speech permission text is written. Encryption exemption is declared.
 - Support page: https://www.mynenemi.com/support.html. Privacy: https://www.mynenemi.com/privacy.html. Terms: https://www.mynenemi.com/terms.html.
 
@@ -35,6 +35,8 @@ npx cap sync ios
 npx cap open ios
 ```
 Xcode opens with the Nenemi project.
+
+Already cloned once? In Terminal, inside `nenemi/app`: `git pull`, then `npx cap sync ios`, then `npx cap open ios`.
 
 ### 5. Signing, once
 1. In Xcode's left sidebar click the blue "App" at the top.
