@@ -148,6 +148,10 @@
   @keyframes glowDrift { from { filter: blur(28px) hue-rotate(0deg); } to { filter: blur(28px) hue-rotate(55deg); } }
   @media (prefers-reduced-motion: reduce) { #pane-home::before { animation: none; } }
   #pane-home > * { position: relative; z-index: 1; }
+  /* the same teal light, quieter, under the cards on every other screen. stuck keeps its own sanctuary glow */
+  #pane-roomview::before, #pane-rooms::before, #pane-calendar::before, #pane-notes::before { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 52% 40% at 50% 30%, var(--hg1) 0%, var(--hg2) 42%, transparent 76%); opacity: 0.75; filter: blur(34px); }
+  #pane-roomview > *, #pane-rooms > *, #pane-calendar > *, #pane-notes > * { position: relative; z-index: 1; }
   .home-center { display: flex; flex-direction: column; align-items: center; width: 680px; max-width: 90%; }
   @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
   .wordmark { position: absolute; top: 22px; left: 26px; z-index: 30; font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; color: var(--ink); transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent), 0 0 28px color-mix(in srgb, var(--ink) 25%, transparent); user-select: none; cursor: pointer; }

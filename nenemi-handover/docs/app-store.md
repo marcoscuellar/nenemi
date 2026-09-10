@@ -61,7 +61,7 @@ Already cloned once? In Terminal, inside `nenemi/app`: `git pull`, then `npx cap
 4. Ten to thirty minutes later the build shows up in App Store Connect under TestFlight.
 
 ### 9. Fill the listing
-Everything below is ready to paste. Screenshots come from me the moment you say the build is up.
+Everything below is ready to paste. Screenshots are in `nenemi-handover/store/screenshots/` (`6.7` for the 6.7" slot, `6.5` for the 6.5" slot), five each, in order. Download them from GitHub and drag them in.
 
 ### 10. Submit for review
 1. App Store tab, 1.0 Prepare for Submission.
@@ -115,4 +115,3 @@ No account is needed. Open the app and type or speak into the box on the first s
 ## Still to do before submission
 
 - Clerk must move from the development instance to a production instance on mynenemi.com, and Sign in with Apple must be added. Apple requires it whenever Google sign-in is offered. That is a guided setup with you at the keyboard, about twenty minutes.
-- Screenshots for 6.7" and 6.5" iPhones. I generate these from the live site once the build exists.
