@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   /* monochrome: black, white, and the greys between. the accent is white. */
   :root {
@@ -211,7 +211,7 @@
   @media (max-width: 980px) { .cal-inner { grid-template-columns: 1fr; } }
 
   .cal-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; }
-  .cal-date { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
+  .cal-date { font-family: var(--font-body); font-weight: 300; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
   .cal-sub { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line2); }
   .cal-nav { display: flex; align-items: center; gap: 8px; }
   .cal-nav .nav-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -269,7 +269,7 @@
   /* Smart Cal card */
   .smart-cal { background: var(--card); border: 1px solid var(--line2); border-radius: 16px; padding: 22px 18px 18px; position: sticky; top: 0; }
   .sc-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-text); }
-  .sc-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 28px; line-height: 1.08; margin-top: 10px; }
+  .sc-title { font-family: var(--font-body); font-weight: 300; font-size: 28px; line-height: 1.08; margin-top: 10px; }
   .sc-desc { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 8px; }
   .sc-dump { width: 100%; min-height: 150px; margin-top: 14px; background: var(--sanctuary); border: 1px solid var(--line2); border-radius: 8px; padding: 12px 12px; color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; resize: vertical; outline: none; }
   .sc-dump::placeholder { color: var(--faint); }
@@ -306,7 +306,7 @@
   .notes-earlier .ne-text { color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .notes-earlier .ne-empty { color: var(--faint); font-size: 13.5px; padding: 8px 0; }
   .kicker { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line2); }
-  .hub-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
+  .hub-title { font-family: var(--font-body); font-weight: 300; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
   .hub-sub { color: var(--muted); font-size: 14.5px; margin-top: 8px; }
   .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-content: start; }
   .room-card { background: var(--card); border: 1px solid var(--line2); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
@@ -336,11 +336,11 @@
   .new-room-card { border: 1.5px dashed var(--line2); border-radius: 18px; padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 118px; }
 
   /* ROOM VIEW pane */
-  .rv-header { padding: 64px 48px 0; width: 100%; max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
+  .rv-header { padding: 64px 48px 14px; width: 100%; max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--line); }
   .rv-title-wrap { flex: 1; }
-  .rv-name { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
+  .rv-name { font-family: var(--font-body); font-weight: 300; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
   .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 2px; }
-  .rv-body { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 900px; margin: 0 auto; }
+  .rv-body { flex: 1; overflow-y: auto; padding: 18px 48px 40px; width: 100%; max-width: 900px; margin: 0 auto; }
   .rv-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 28px; }
   .log-more { font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; padding: 12px 0 0; }
   .log-more:hover { color: var(--ink); }
@@ -354,7 +354,7 @@
   .re-last .re-q { color: var(--muted); }
   .re-last .re-when { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
   .re-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .re-next-text { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 24px; line-height: 1.15; }
+  .re-next-text { font-family: var(--font-body); font-weight: 300; font-size: 24px; line-height: 1.15; }
   .re-next-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--faint); margin-bottom: 4px; }
   .re-btn { flex-shrink: 0; padding: 11px 16px; border-radius: 10px; border: none; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
   .re-btn:hover { background: var(--sage-text); }
@@ -420,7 +420,7 @@
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
   .doors { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; padding: 0 20px; }
   .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(255,255,255,0.4); margin-bottom: 28px; }
-  .doors-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 36px; text-align: center; letter-spacing: -0.01em; line-height: 1.08; }
+  .doors-title { font-family: var(--font-body); font-weight: 300; font-size: 36px; text-align: center; letter-spacing: -0.01em; line-height: 1.08; }
   .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
   .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #1C1C1C 0%, #121212 100%); border: 1px solid rgba(244,242,236,0.08); transition: transform 140ms ease, border-color 140ms ease; }
@@ -448,7 +448,7 @@
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
   .stuck-eyebrow { font-family: var(--font-mono); font-size: 11.5px; color: var(--sage-text); letter-spacing: 0.06em; margin-top: 26px; }
-  .stuck-nudge { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 34px; text-align: center; max-width: 520px; line-height: 1.12; letter-spacing: -0.01em; margin: 18px auto 0; }
+  .stuck-nudge { font-family: var(--font-body); font-weight: 300; font-size: 34px; text-align: center; max-width: 520px; line-height: 1.12; letter-spacing: -0.01em; margin: 18px auto 0; }
   .stuck-quote { max-width: 440px; margin: 18px auto 0; padding: 2px 0 2px 16px; border-left: 1px solid var(--line2); color: var(--muted); font-size: 14px; line-height: 1.55; text-align: left; }
   .stuck-quote .where { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .stuck-sub { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 12px; max-width: 340px; }
@@ -557,9 +557,9 @@
     .room-name { font-size: 15px; line-height: 1.25; }
     .room-oneliner { font-size: 13px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12px; min-height: 110px; }
-    .rv-header { padding: 64px 18px 0; }
+    .rv-header { padding: 64px 18px 12px; }
     .rv-name { font-size: 23px; }
-    .rv-body { padding: 16px 18px 40px; }
+    .rv-body { padding: 18px 18px 40px; }
     .notes-body { padding: 8px 18px 60px; }
     .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
     .notes-box textarea { min-height: 160px; font-size: 14.5px; }
