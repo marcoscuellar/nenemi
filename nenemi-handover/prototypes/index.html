@@ -148,13 +148,13 @@
   @keyframes glowDrift { from { filter: blur(28px) hue-rotate(0deg); } to { filter: blur(28px) hue-rotate(55deg); } }
   @media (prefers-reduced-motion: reduce) { #pane-home::before { animation: none; } }
   #pane-home > * { position: relative; z-index: 1; }
-  .home-center { display: flex; flex-direction: column; align-items: center; width: 560px; max-width: 90%; }
+  .home-center { display: flex; flex-direction: column; align-items: center; width: 680px; max-width: 90%; }
   @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
   .wordmark { position: absolute; top: 22px; left: 26px; z-index: 30; font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; color: var(--ink); transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent), 0 0 28px color-mix(in srgb, var(--ink) 25%, transparent); user-select: none; cursor: pointer; }
   .app.quiet .wordmark { display: none; }
-  .greeting-big { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1.35; text-align: left; width: 100%; padding-left: 4px; box-sizing: border-box; margin-bottom: 36px; }
-  /* editorial: one serif headline, one mono kicker over a hairline, one italic word, air */
-  .greeting-big .accent { display: block; color: var(--ink); font-family: 'DM Serif Display', Georgia, 'Times New Roman', serif; font-weight: 400; font-size: 46px; line-height: 1.06; letter-spacing: -0.01em; }
+  /* one quiet line, centered, light. the box under it is the whole screen */
+  .greeting-big { font-family: var(--font-body); font-weight: 300; font-size: 38px; line-height: 1.2; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 34px; color: var(--ink); letter-spacing: -0.01em; }
+  .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
   .greeting-big .hello { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--line2); }
 
   .chat-log { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; width: 100%; max-height: 260px; overflow-y: auto; }
@@ -164,10 +164,10 @@
   .bubble.dos.confirm { background: var(--sage-fill); border-color: var(--sage-fill); color: var(--sage-text); font-family: var(--font-mono); font-size: 12.5px; }
 
   .composer-pill {
-    position: relative; width: 100%;
-    display: flex; flex-direction: column; align-items: stretch; gap: 8px;
+    position: relative; width: 100%; box-sizing: border-box;
+    display: flex; flex-direction: row; align-items: flex-end; gap: 8px;
     background: var(--pill-bg); border: 1px solid var(--line2);
-    border-radius: 22px; padding: 18px 16px 12px 16px;
+    border-radius: 30px; padding: 10px 10px 10px 12px;
     box-shadow: 0 0 70px rgba(255,255,255,0.18);
   }
   .composer-pill:focus-within { border-color: var(--line2); box-shadow: 0 0 84px rgba(255,255,255,0.26); }
@@ -175,10 +175,12 @@
   .composer-row .spacer { flex: 1; }
   .plus-btn { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
   .plus-btn.open { color: var(--sage-text); border-color: var(--sage); }
-  .composer-pill textarea { width: 100%; box-sizing: border-box; min-height: 72px; max-height: 40vh; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0; }
+  .composer-pill textarea { flex: 1; min-width: 0; box-sizing: border-box; min-height: 26px; max-height: 40vh; align-self: center; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0; }
   .composer-pill textarea::placeholder { color: var(--faint); }
   .mic-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; flex-shrink: 0; }
-  .send-btn { width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; background: var(--sage); border: none; color: var(--on-sage); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .send-btn { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: var(--sage); border: none; color: var(--on-sage); display: none; align-items: center; justify-content: center; cursor: pointer; }
+  .composer-pill.has-text .send-btn { display: flex; }
+  .mic-btn { width: 36px; height: 36px; }
 
   .plus-menu { position: absolute; bottom: calc(100% + 12px); left: 0; background: var(--surface); border: 1px solid var(--line2); border-radius: 16px; padding: 6px; width: 210px; display: none; flex-direction: column; box-shadow: 0 16px 44px rgba(0,0,0,0.5); z-index: 40; }
   .plus-menu.open { display: flex; }
@@ -511,26 +513,21 @@
     :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
     .app { height: 100vh; height: 100dvh; padding-top: var(--sat); }
     /* home */
-    .greeting-big { font-size: 20px; margin-bottom: 20px; }
-    .greeting-big .accent { font-size: 28px; }
-    .greeting-big .hello { font-size: 10px; padding-bottom: 10px; margin-bottom: 14px; }
+    .greeting-big { font-size: 26px; margin-bottom: 22px; }
     .wordmark { top: 15px; left: 12px; font-size: 9.5px; }
     .topnav { left: auto; right: 56px; transform: none; }
     .tn-menu { left: auto; right: 12px; transform: none; top: 50px; }
-    .composer-pill { padding: 12px 12px 8px; border-radius: 18px; }
-    .composer-pill textarea { min-height: 56px; font-size: 14.5px; }
+    .composer-pill { padding: 8px 8px 8px 10px; border-radius: 26px; gap: 6px; }
+    .composer-pill textarea { min-height: 24px; font-size: 15px; }
     .plus-btn { width: 32px; height: 32px; }
-    .send-btn { width: 34px; height: 34px; }
-    .stuck-link { font-size: 12.5px; margin-top: 16px; }
+    .send-btn, .mic-btn { width: 32px; height: 32px; }
     .home-center { width: 100%; max-width: 86%; margin: auto 0; }
     #pane-home { justify-content: flex-start; padding-top: 64px; padding-bottom: calc(16px + var(--sab)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .chat-log { max-height: 40vh; margin-top: 18px; }
     .bubble { font-size: 13px; padding: 10px 13px; max-width: 88%; }
     .bubble.dos { align-self: flex-start; max-width: 92%; }
     /* once the box is talking, the greeting steps back so the reply has the room */
-    .app.talking .greeting-big { font-size: 20px; margin-bottom: 14px; }
-    .app.talking .greeting-big .accent { font-size: 26px; }
-    .app.talking .greeting-big .hello { padding-bottom: 6px; margin-bottom: 8px; }
+    .app.talking .greeting-big { font-size: 21px; margin-bottom: 14px; }
     .intro { font-size: 12px; margin-top: 20px; }
     /* account */
     .account-slot { top: 8px; right: 10px; }
@@ -671,7 +668,7 @@
       <div class="home-center">
         <div class="greeting-big" id="greetingText">Hey there,<br><span class="accent">what's on your mind?</span></div>
 
-        <div class="composer-pill">
+        <div class="composer-pill" id="composerPill">
           <div class="plus-menu" id="plusMenu">
             <div class="menu-item" onclick="closeMenuAnd('calendar')">
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
@@ -694,22 +691,17 @@
               I'm stuck
             </div>
           </div>
-          <textarea id="composerInput" rows="2" placeholder="Hi, I'm Nenemi. Drop it all here. We'll help you sort it out."></textarea>
-          <div class="composer-row">
           <div class="plus-btn" id="plusBtn" onclick="toggleMenu()">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
           </div>
-          <div class="spacer"></div>
+          <textarea id="composerInput" rows="1" placeholder="Dump it here."></textarea>
           <div class="mic-btn" id="homeMic" title="Say it instead">
             <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
           </div>
           <div class="send-btn" onclick="sendCapture()">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          </div>
         </div>
-
-        <div class="stuck-link" onclick="go('stuck')">Feeling stuck? <span>we got you →</span></div>
         <div class="intro" id="intro" hidden>New here? Nenemi holds what you're working on in rooms, so you never restart from zero. Say anything to try it. <span onclick="if (window.Clerk) Clerk.openSignIn()">Sign in</span> to keep it.</div>
 
         <div class="chat-log" id="chatLog"></div>
@@ -989,7 +981,10 @@
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
     const g = greetingLines();
-    el.innerHTML = `<span class="hello">${escapeHtml(g.hello)}</span><span class="accent">${escapeHtml(g.line).replace(/\*/g, '')}</span>`;
+    // "What's taking up space?" becomes "What's taking up space, Marcos?" when the name is known
+    const name = userFirstName(); let line = g.line.replace(/\*/g, '');
+    if (name) { const m = line.match(/^(.*?)([.?!]*)$/); line = `${m[1]}, ${name}${m[2]}`; }
+    el.innerHTML = `<span class="accent">${escapeHtml(line)}</span>`;
   }
 
   function toggleMenu() {
@@ -1009,7 +1004,7 @@
     closeMenu(); go('home'); recapMode = true;
     const input = document.getElementById('composerInput');
     input.placeholder = "How did today go? What happened, what's still open, what can just go. I'll hold what matters.";
-    input.focus();
+    growComposer(); input.focus();
   }
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('plusMenu');
@@ -1238,7 +1233,7 @@
     input.value = ''; growComposer();
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
     captureText(text, source, document.getElementById('chatLog'), recapMode ? 'end_of_day_recap' : null);
-    if (recapMode) { recapMode = false; input.placeholder = "Hi, I'm Nenemi. Drop it all here. We'll help you sort it out."; }
+    if (recapMode) { recapMode = false; input.placeholder = "Dump it here."; }
   }
   // door 2: the same capture, inside the sanctuary, so nobody gets kicked back out to Home
   function stuckSend() {
@@ -1393,7 +1388,7 @@
   function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   document.getElementById('composerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCapture(); } });
-  function growComposer() { const t = document.getElementById('composerInput'); t.style.height = 'auto'; t.style.height = Math.max(72, Math.min(t.scrollHeight, window.innerHeight * 0.4)) + 'px'; }
+  function growComposer() { const t = document.getElementById('composerInput'); t.style.height = 'auto'; t.style.height = Math.max(26, Math.min(t.scrollHeight, window.innerHeight * 0.4)) + 'px'; const pill = document.getElementById('composerPill'); if (pill) pill.classList.toggle('has-text', t.value.trim().length > 0); }
   document.getElementById('composerInput').addEventListener('input', growComposer);
   document.getElementById('quickAddInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') quickAdd(); });
 
