@@ -21,12 +21,12 @@
     --sanctuary: #0A0A0A;
     --surface: #141414;
     --surface2: #1C1C1C;
-    --card: #161616;
+    --card: #1A1A1A;
     --ink: #F4F2EC;
-    --muted: #9C9C96;
-    --faint: #6A6A65;
-    --line: rgba(244,242,236,0.09);
-    --line2: rgba(244,242,236,0.16);
+    --muted: #BDBDB6;
+    --faint: #8C8C85;
+    --line: rgba(244,242,236,0.14);
+    --line2: rgba(244,242,236,0.26);
     --sage: #F4F2EC;
     --sage-text: #D6D4CE;
     --sage-fill: rgba(244,242,236,0.10);
@@ -306,9 +306,9 @@
   .notes-earlier .ne-empty { color: var(--faint); font-size: 13.5px; padding: 8px 0; }
   .kicker { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line2); }
   .hub-title { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
-  .hub-sub { color: var(--muted); font-size: 13.5px; margin-top: 8px; }
+  .hub-sub { color: var(--muted); font-size: 14.5px; margin-top: 8px; }
   .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-content: start; }
-  .room-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
+  .room-card { background: var(--card); border: 1px solid var(--line2); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
   .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
   .room-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 17px; line-height: 1; }
@@ -329,8 +329,8 @@
   .room-style .rs-clear { font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; }
   .room-style .rs-clear:hover { color: var(--ink); }
   .room-touch { font-family: var(--font-mono); font-size: 10px; color: var(--faint); white-space: nowrap; margin-top: 4px; }
-  .room-name { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-  .room-oneliner { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
+  .room-name { font-family: var(--font-display); font-weight: 700; font-size: 17px; margin-bottom: 4px; }
+  .room-oneliner { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
   .loop-pill { display: inline-block; font-family: var(--font-mono); font-size: 10.5px; background: var(--sage-fill); color: var(--sage-text); padding: 4px 9px; border-radius: 999px; }
   .new-room-card { border: 1.5px dashed var(--line2); border-radius: 18px; padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 118px; }
 
@@ -338,7 +338,7 @@
   .rv-header { padding: 64px 48px 0; width: 100%; max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 14px; }
   .rv-title-wrap { flex: 1; }
   .rv-name { font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
-  .rv-oneliner { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 2px; }
   .rv-body { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 900px; margin: 0 auto; }
   .rv-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 28px; }
   .log-more { font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; padding: 12px 0 0; }
@@ -389,7 +389,7 @@
 
   .brief-card { background: var(--surface); border: 1px solid var(--line2); border-radius: 18px; padding: 20px; margin-bottom: 22px; }
   .brief-label { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--sage-text); letter-spacing: 0.04em; margin-bottom: 10px; }
-  .brief-text { font-size: 15px; line-height: 1.65; }
+  .brief-text { font-size: 16px; line-height: 1.65; }
   .room-link-row { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 11px 16px; background: var(--sage-fill); border-radius: 12px; color: var(--sage-text); font-size: 13.5px; cursor: pointer; width: fit-content; }
   .section-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.04em; margin: 4px 0 12px; }
   .loop-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background 600ms ease, box-shadow 600ms ease; }
@@ -399,12 +399,12 @@
   .loop-check svg { display: none; width: 11px; height: 11px; stroke: var(--sanctuary); }
   .loop-row.resolved .loop-check svg { display: block; }
   .loop-row.resolved .loop-text { text-decoration: line-through; color: var(--faint); }
-  .loop-text { flex: 1; font-size: 14.5px; }
+  .loop-text { flex: 1; font-size: 15.5px; }
   .loop-row:hover .loop-focus { opacity: 1; }
   .loop-focus { opacity: 0; transition: opacity 120ms ease; display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; white-space: nowrap; }
   .log-entry { padding: 13px 0; border-bottom: 1px solid var(--line); }
   .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); margin-bottom: 5px; }
-  .log-text { font-size: 14px; line-height: 1.55; }
+  .log-text { font-size: 15px; line-height: 1.55; }
   .quickadd { margin-top: 20px; display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--line2); border-radius: 14px; padding: 9px 9px 9px 16px; align-items: center; }
   .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 14px; color: var(--ink); }
   .quickadd input::placeholder { color: var(--faint); }
@@ -553,8 +553,8 @@
     .room-card, .new-room-card { padding: 14px; border-radius: 16px; }
     .room-card-top { margin-bottom: 8px; }
     .room-icon { width: 28px; height: 28px; font-size: 15px; }
-    .room-name { font-size: 14px; line-height: 1.25; }
-    .room-oneliner { font-size: 12px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .room-name { font-size: 15px; line-height: 1.25; }
+    .room-oneliner { font-size: 13px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12px; min-height: 110px; }
     .rv-header { padding: 64px 18px 0; }
     .rv-name { font-size: 23px; }
@@ -568,7 +568,9 @@
     .rv-cols { grid-template-columns: 1fr; gap: 26px; margin-top: 22px; }
     .loop-focus { opacity: 1; }
     .re-next-text { font-size: 19px; }
-    .brief-text { font-size: 13.5px; }
+    .brief-text { font-size: 14.5px; }
+    .loop-text { font-size: 15px; }
+    .log-text { font-size: 14px; }
     /* calendar: the dump box comes first, then the day */
     .cal-topbar { padding-right: 120px; }
     .cal-inner { display: flex; flex-direction: column; padding: 16px 14px 60px; gap: 18px; }
