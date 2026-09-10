@@ -151,7 +151,7 @@
   /* the same teal light, quieter, under the cards on every other screen. stuck keeps its own sanctuary glow */
   #pane-roomview::before, #pane-rooms::before, #pane-calendar::before, #pane-notes::before { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
     /* no blur filter here: on iOS a blurred layer under scrolling text makes the text render soft */
-    background: radial-gradient(ellipse 56% 44% at 50% 30%, var(--hg1) 0%, var(--hg2) 38%, transparent 70%); opacity: 0.6; }
+    background: radial-gradient(ellipse 70% 55% at 100% 0%, var(--hg1) 0%, var(--hg2) 34%, transparent 68%); opacity: 0.7; }
   #pane-roomview > *, #pane-rooms > *, #pane-calendar > *, #pane-notes > * { position: relative; z-index: 1; }
   #pane-roomview > .rv-header { z-index: 2; } /* the icon and color picker hangs below the header, over the body */
   .home-center { display: flex; flex-direction: column; align-items: center; width: 680px; max-width: 90%; }
@@ -317,7 +317,7 @@
   .room-card[style*="--rc"] { box-shadow: 0 10px 30px -8px color-mix(in srgb, var(--rc) 55%, transparent); border-color: color-mix(in srgb, var(--rc) 35%, var(--line)); }
   .room-card[style*="--rc"]:hover { box-shadow: 0 14px 36px -8px color-mix(in srgb, var(--rc) 70%, transparent); }
   .room-card[style*="--rc"] .room-icon, .rv-icon[style*="--rc"] { background: color-mix(in srgb, var(--rc) 18%, transparent); color: var(--rc); }
-  .rv-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 21px; line-height: 1; cursor: pointer; flex-shrink: 0; position: relative; }
+  .rv-icon { width: 34px; height: 34px; border-radius: 10px; margin-top: 2px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 21px; line-height: 1; cursor: pointer; flex-shrink: 0; position: relative; }
   .rv-icon:hover { filter: brightness(1.08); }
   .room-style { position: absolute; top: 46px; left: 0; z-index: 20; background: var(--card); border: 1px solid var(--line2); border-radius: 14px; padding: 12px; box-shadow: 0 12px 32px rgba(0,0,0,.28); width: 236px; cursor: default; }
   .room-style .rs-dots { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -341,28 +341,29 @@
   .new-room-card { border: 1.5px dashed var(--line2); border-radius: 18px; padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 118px; }
 
   /* ROOM VIEW pane */
-  .rv-header { padding: 64px 48px 14px; width: 100%; max-width: 900px; margin: 0 auto; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--line); }
+  .rv-header { padding: 70px 24px 22px; width: 100%; max-width: 680px; margin: 0 auto; display: flex; align-items: flex-start; gap: 12px; }
   .rv-title-wrap { flex: 1; }
   .rv-name { font-family: var(--font-body); font-weight: 300; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
   .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 2px; }
-  .rv-body { flex: 1; overflow-y: auto; padding: 18px 48px 40px; width: 100%; max-width: 900px; margin: 0 auto; }
-  .rv-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 28px; }
+  .rv-body { flex: 1; overflow-y: auto; padding: 6px 24px 60px; width: 100%; max-width: 680px; margin: 0 auto; }
+  .rv-cols { display: grid; grid-template-columns: 1fr; gap: 38px; margin-top: 40px; }
   .log-more { font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; padding: 12px 0 0; }
   .log-more:hover { color: var(--ink); }
   /* re-entry card: pays the restart tax in ten seconds */
-  .reentry { background: linear-gradient(180deg, var(--glow) 0%, var(--surface) 100%); border: 1px solid var(--sage-fill); border-radius: 18px; padding: 20px; margin-bottom: 16px; }
+  .reentry { padding: 0; margin-bottom: 16px; }
   .re-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-  .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sage-text); }
+  .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
   .re-away { font-size: 12.5px; color: var(--muted); }
-  .re-brief { font-size: 15px; line-height: 1.65; color: var(--ink); margin-bottom: 16px; }
+  .re-brief { font-size: 17px; font-weight: 300; line-height: 1.7; color: var(--ink); margin-bottom: 22px; }
   .re-last { font-size: 14px; line-height: 1.55; color: var(--ink); margin-bottom: 14px; }
   .re-last .re-q { color: var(--muted); }
   .re-last .re-when { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
-  .re-next { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .re-next-text { font-family: var(--font-body); font-weight: 300; font-size: 24px; line-height: 1.15; }
-  .re-next-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--faint); margin-bottom: 4px; }
-  .re-btn { flex-shrink: 0; padding: 11px 16px; border-radius: 10px; border: none; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
-  .re-btn:hover { background: var(--sage-text); }
+  .re-next { display: flex; align-items: center; gap: 14px; padding: 15px 18px 15px 22px; border-radius: 999px; background: var(--btn); color: var(--btn-ink); cursor: pointer; }
+  .re-next > div:first-child { flex: 1; display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+  .re-next-text { font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 1.3; }
+  .re-next-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; white-space: nowrap; }
+  .re-btn { flex-shrink: 0; padding: 0; border-radius: 0; border: none; background: transparent; color: inherit; font-family: var(--font-body); font-weight: 500; font-size: 18px; cursor: pointer; white-space: nowrap; }
+  .re-next:hover { filter: brightness(1.05); }
   .room-quiet { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
   .sync-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); cursor: pointer; }
   .sync-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
@@ -397,10 +398,10 @@
   .brief-label { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--sage-text); letter-spacing: 0.04em; margin-bottom: 10px; }
   .brief-text { font-size: 16px; line-height: 1.65; }
   .room-link-row { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 11px 16px; background: var(--sage-fill); border-radius: 12px; color: var(--sage-text); font-size: 13.5px; cursor: pointer; width: fit-content; }
-  .section-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.04em; margin: 4px 0 12px; }
-  .loop-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background 600ms ease, box-shadow 600ms ease; }
+  .section-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.14em; text-transform: uppercase; margin: 4px 0 6px; }
+  .loop-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); border-radius: 10px; transition: background 600ms ease, box-shadow 600ms ease; }
   .loop-row.lit { background: var(--sage-fill); box-shadow: 0 0 0 10px var(--sage-fill); }
-  .loop-check { width: 18px; height: 18px; border-radius: 6px; border: 1.5px solid var(--line2); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .loop-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--line2); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .loop-row.resolved .loop-check { background: var(--sage); border-color: var(--sage); }
   .loop-check svg { display: none; width: 11px; height: 11px; stroke: var(--sanctuary); }
   .loop-row.resolved .loop-check svg { display: block; }
@@ -408,13 +409,14 @@
   .loop-text { flex: 1; font-size: 15.5px; }
   .loop-row:hover .loop-focus { opacity: 1; }
   .loop-focus { opacity: 0; transition: opacity 120ms ease; display: flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; white-space: nowrap; }
-  .log-entry { padding: 13px 0; border-bottom: 1px solid var(--line); }
-  .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); margin-bottom: 5px; }
+  .log-entry { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--faint); margin-bottom: 6px; }
   .log-text { font-size: 15px; line-height: 1.55; }
-  .quickadd { margin-top: 20px; display: flex; gap: 8px; background: var(--surface); border: 1px solid var(--line2); border-radius: 14px; padding: 9px 9px 9px 16px; align-items: center; }
-  .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 14px; color: var(--ink); }
-  .quickadd input::placeholder { color: var(--faint); }
-  .quickadd button { width: 32px; height: 32px; border-radius: 50%; background: var(--sage); border: none; color: var(--on-sage); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .quickadd { margin-top: 44px; display: flex; gap: 8px; background: var(--btn); color: var(--btn-ink); border: 1px solid var(--btn); border-radius: 999px; padding: 8px 8px 8px 20px; align-items: center; }
+  .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15px; color: inherit; min-width: 0; }
+  .quickadd input::placeholder { color: inherit; opacity: 0.55; }
+  .quickadd .mic-btn { color: inherit; opacity: 0.8; }
+  .quickadd button { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid currentColor; color: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
   /* STUCK pane */
   #pane-stuck { background: radial-gradient(circle at 50% 38%, var(--glow2) 0%, var(--sanctuary) 60%); align-items: center; justify-content: center; overflow-y: auto; }
@@ -562,18 +564,19 @@
     .room-name { font-size: 15px; line-height: 1.25; }
     .room-oneliner { font-size: 13px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12px; min-height: 110px; }
-    .rv-header { padding: 64px 18px 12px; }
-    .rv-name { font-size: 23px; }
-    .rv-body { padding: 18px 18px 40px; }
+    .rv-header { padding: 64px 18px 18px; }
+    .rv-name { font-size: 24px; }
+    .rv-body { padding: 4px 18px 120px; }
     .notes-body { padding: 8px 18px 60px; }
     .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
     .notes-box textarea { min-height: 160px; font-size: 14.5px; }
-    .reentry { padding: 16px; }
-    .re-next { flex-direction: column; align-items: stretch; }
-    .re-btn { width: 100%; }
-    .rv-cols { grid-template-columns: 1fr; gap: 26px; margin-top: 22px; }
-    .loop-focus { opacity: 1; }
-    .re-next-text { font-size: 19px; }
+    .reentry { padding: 0; }
+    .re-brief { font-size: 16px; }
+    .rv-cols { gap: 32px; margin-top: 34px; }
+    .loop-focus { opacity: 1; font-size: 0; gap: 0; }
+    .loop-focus svg { width: 14px; height: 14px; }
+    .re-next-text { font-size: 15px; }
+    .quickadd { position: fixed; left: 16px; right: 16px; bottom: calc(16px + var(--sab)); margin: 0; z-index: 5; box-shadow: 0 10px 40px rgba(0,0,0,0.35); }
     .brief-text { font-size: 14.5px; }
     .loop-text { font-size: 15px; }
     .log-text { font-size: 14px; }
@@ -855,7 +858,7 @@
           </div>
         </div>
         <div class="quickadd">
-          <input id="quickAddInput" placeholder="Add a note to this room…" />
+          <input id="quickAddInput" placeholder="Add to this room" />
           <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
           <button onclick="quickAdd()">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1237,12 +1240,12 @@
     document.getElementById('rvReentry').innerHTML = `
       <div class="re-top"><div class="re-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div></div>
       <div class="re-brief">${escapeHtml(r.brief || '')}</div>
-      <div class="re-next">
+      <div class="re-next" role="button" onclick="pickUp()">
         <div>
           <div class="re-next-label">${next ? 'Next small move' : 'Nothing open'}</div>
           <div class="re-next-text">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
         </div>
-        <button class="re-btn" onclick="pickUp()">${next ? 'Pick up here →' : 'Just open it · 2 min →'}</button>
+        <span class="re-btn" aria-hidden="true">→</span>
       </div>`;
   }
   function openRoomLink() { if (currentRoom && currentRoom.link) window.open(currentRoom.link.url, '_blank'); }
