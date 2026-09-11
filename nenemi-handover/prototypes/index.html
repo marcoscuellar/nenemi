@@ -428,7 +428,15 @@
   .log-entry { padding: 14px 0; border-bottom: 1px solid var(--line); }
   .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--faint); margin-bottom: 6px; }
   .log-text { font-size: 15px; line-height: 1.55; }
-  .quickadd { margin-top: 44px; display: flex; gap: 8px; background: var(--btn); color: var(--btn-ink); border: 1px solid var(--btn); border-radius: 999px; padding: 8px 8px 8px 20px; align-items: center; }
+  .quickadd { margin-top: 44px; display: flex; gap: 8px; background: var(--btn); color: var(--btn-ink); border: 1px solid var(--btn); border-radius: 999px; padding: 8px; align-items: center; width: 52px; transition: width 220ms ease, padding 220ms ease; position: sticky; bottom: 16px; z-index: 5; box-shadow: 0 14px 34px rgba(0,0,0,0.28); }
+  .quickadd.expanded { width: 100%; padding: 8px 8px 8px 20px; }
+  .quickadd-toggle svg { transition: transform 200ms ease; }
+  .quickadd.expanded .quickadd-toggle svg { transform: rotate(45deg); }
+  .quickadd-fields { display: none; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+  .quickadd.expanded .quickadd-fields { display: flex; }
+  .rv-plus-wrap { position: relative; flex-shrink: 0; }
+  .rv-plus-wrap .plus-menu { bottom: calc(100% + 10px); left: auto; right: -6px; width: 190px; background: var(--surface); }
+  .rv-plus-wrap .menu-item { color: var(--ink); }
   .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15px; color: inherit; min-width: 0; }
   .quickadd input::placeholder { color: inherit; opacity: 0.55; }
   .quickadd .mic-btn { color: inherit; opacity: 0.8; }
@@ -602,6 +610,8 @@
     .loop-focus svg { width: 14px; height: 14px; }
     .re-next-text { font-size: 15px; }
     .quickadd { position: fixed; left: 16px; right: 16px; bottom: calc(16px + var(--sab)); margin: 0; z-index: 5; box-shadow: 0 10px 40px rgba(0,0,0,0.35); }
+    .quickadd.expanded { width: auto; }
+    .rv-plus-wrap .plus-menu { width: 170px; }
     .quickadd-note { position: fixed; left: 16px; right: 16px; bottom: calc(64px + var(--sab)); margin-top: 0; z-index: 5; }
     .log-thumb { max-width: 160px; max-height: 160px; }
     .brief-text { font-size: 14.5px; }
@@ -872,16 +882,33 @@
             <div class="log-more" id="rvLogMore" hidden onclick="showAllLog()">All of it</div>
           </div>
         </div>
-        <div class="quickadd">
-          <input id="quickAddInput" placeholder="Add to this room" />
-          <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
-          <button type="button" onclick="document.getElementById('quickAddFile').click()" title="Add a photo or file">
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+        <div class="quickadd" id="roomQuickadd">
+          <button type="button" class="quickadd-toggle" onclick="toggleQuickAdd()" title="Add to this room">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
           </button>
-          <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
-          <button onclick="quickAdd()">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
+          <div class="quickadd-fields" id="quickAddFields">
+            <input id="quickAddInput" placeholder="Add to this room" />
+            <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
+            <div class="rv-plus-wrap">
+              <div class="plus-menu" id="roomPlusMenu">
+                <div class="menu-item" onclick="pickRoomUpload('image/*')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+                  Add a photo
+                </div>
+                <div class="menu-item" onclick="pickRoomUpload('application/pdf')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
+                  Add a file
+                </div>
+              </div>
+              <button type="button" class="attach-btn" id="roomAttachBtn" onclick="toggleRoomPlusMenu()" title="Add a photo or file">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+              </button>
+            </div>
+            <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+            <button onclick="quickAdd()">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
         <div class="quickadd-note" id="quickAddNote" hidden></div>
       </div>
@@ -1339,6 +1366,24 @@
   }
   // a photo or file, scoped to the room it's dropped into — there's no way to auto-route a file the way text gets routed,
   // so this only lives inside a room, where the destination is already decided.
+  function toggleQuickAdd() {
+    const bar = document.getElementById('roomQuickadd'); if (!bar) return;
+    const open = !bar.classList.contains('expanded');
+    bar.classList.toggle('expanded', open);
+    if (open) { const inp = document.getElementById('quickAddInput'); if (inp) inp.focus(); }
+    else { const menu = document.getElementById('roomPlusMenu'), btn = document.getElementById('roomAttachBtn'); if (menu) menu.classList.remove('open'); if (btn) btn.classList.remove('open'); }
+  }
+  function toggleRoomPlusMenu() {
+    const btn = document.getElementById('roomAttachBtn'), menu = document.getElementById('roomPlusMenu');
+    if (!btn || !menu) return;
+    const open = !menu.classList.contains('open');
+    menu.classList.toggle('open', open); btn.classList.toggle('open', open);
+  }
+  function pickRoomUpload(accept) {
+    toggleRoomPlusMenu();
+    const input = document.getElementById('quickAddFile'); if (!input) return;
+    input.accept = accept; input.click();
+  }
   function showQuickAddNote(msg) {
     const el = document.getElementById('quickAddNote'); if (!el) return;
     el.textContent = msg; el.hidden = false;
