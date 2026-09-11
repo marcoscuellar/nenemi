@@ -433,6 +433,10 @@
   .quickadd input::placeholder { color: inherit; opacity: 0.55; }
   .quickadd .mic-btn { color: inherit; opacity: 0.8; }
   .quickadd button { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid currentColor; color: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .quickadd-note { margin-top: 10px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
+  .log-thumb { display: block; max-width: 220px; max-height: 220px; border-radius: 10px; margin-top: 6px; object-fit: cover; cursor: pointer; }
+  .log-file-chip { display: inline-flex; align-items: center; gap: 7px; margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: var(--surface2); color: var(--ink); text-decoration: none; font-size: 13.5px; }
+  .log-file-chip svg { flex-shrink: 0; color: var(--muted); }
 
   /* STUCK pane */
   #pane-stuck { background: radial-gradient(circle at 50% 38%, var(--glow2) 0%, var(--sanctuary) 60%); align-items: center; justify-content: center; overflow-y: auto; }
@@ -598,6 +602,8 @@
     .loop-focus svg { width: 14px; height: 14px; }
     .re-next-text { font-size: 15px; }
     .quickadd { position: fixed; left: 16px; right: 16px; bottom: calc(16px + var(--sab)); margin: 0; z-index: 5; box-shadow: 0 10px 40px rgba(0,0,0,0.35); }
+    .quickadd-note { position: fixed; left: 16px; right: 16px; bottom: calc(64px + var(--sab)); margin-top: 0; z-index: 5; }
+    .log-thumb { max-width: 160px; max-height: 160px; }
     .brief-text { font-size: 14.5px; }
     .loop-text { font-size: 15px; }
     .log-text { font-size: 14px; }
@@ -868,11 +874,16 @@
         </div>
         <div class="quickadd">
           <input id="quickAddInput" placeholder="Add to this room" />
+          <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
+          <button type="button" onclick="document.getElementById('quickAddFile').click()" title="Add a photo or file">
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+          </button>
           <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
           <button onclick="quickAdd()">
             <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
+        <div class="quickadd-note" id="quickAddNote" hidden></div>
       </div>
     </div>
 
@@ -1224,6 +1235,8 @@
         <div class="log-time">
           ${e.source === 'voice'
             ? '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg> VOICE'
+            : e.source === 'file'
+            ? `<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg> ${e.file && /^image\//.test(e.file.type) ? 'PHOTO' : 'FILE'}`
             : e.source === 'auto-routed'
             ? '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 7h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg> ON THE DAY'
             : e.source === 'focus'
@@ -1231,7 +1244,11 @@
             : '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2.5 3.5h11v9h-11z" stroke-linejoin="round"/><path d="M4.5 6.5h7M4.5 9h5" stroke-linecap="round"/></svg> TYPED'}
           · ${when(e)}
         </div>
-        <div class="log-text">${escapeHtml(e.text)}</div>
+        <div class="log-text">${e.file
+          ? (/^image\//.test(e.file.type)
+            ? `<a href="${e.file.url}" target="_blank" rel="noopener"><img class="log-thumb" src="${e.file.url}" alt="${escapeHtml(e.text)}"></a>`
+            : `<a class="log-file-chip" href="${e.file.url}" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 2.5h8l3 3v8h-11z" stroke-linejoin="round"/><path d="M11 2.5v3h3"/></svg>${escapeHtml(e.text)}</a>`)
+          : escapeHtml(e.text)}</div>
       </div>
     `).join('');
   }
@@ -1319,6 +1336,57 @@
     currentRoom.brief = "Just logged: \u201c" + text + "\u201d — the Brief will re-summarize from here.";
     input.value = '';
     save(); renderRoomView();
+  }
+  // a photo or file, scoped to the room it's dropped into — there's no way to auto-route a file the way text gets routed,
+  // so this only lives inside a room, where the destination is already decided.
+  function showQuickAddNote(msg) {
+    const el = document.getElementById('quickAddNote'); if (!el) return;
+    el.textContent = msg; el.hidden = false;
+    clearTimeout(showQuickAddNote._t); showQuickAddNote._t = setTimeout(() => { el.hidden = true; }, 4000);
+  }
+  // images get resized to a max 1600px edge and re-encoded as jpeg before upload — keeps a phone photo small
+  // and comfortably under the request size ceiling; anything else (a pdf) goes through as-is, capped at 3MB.
+  function prepareUpload(file) {
+    return new Promise((resolve, reject) => {
+      if (!/^image\//.test(file.type)) {
+        if (file.size > 3 * 1024 * 1024) return reject(new Error('too large'));
+        const reader = new FileReader();
+        reader.onload = () => resolve({ dataUrl: reader.result, type: file.type || 'application/pdf', name: file.name || 'file' });
+        reader.onerror = () => reject(new Error('read failed'));
+        reader.readAsDataURL(file);
+        return;
+      }
+      const img = new Image(); const objUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(objUrl);
+        const MAX = 1600; let { width, height } = img;
+        if (width > MAX || height > MAX) { const scale = MAX / Math.max(width, height); width = Math.round(width * scale); height = Math.round(height * scale); }
+        const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve({ dataUrl: canvas.toDataURL('image/jpeg', 0.82), type: 'image/jpeg', name: (file.name || 'photo').replace(/\.\w+$/, '') + '.jpg' });
+      };
+      img.onerror = () => { URL.revokeObjectURL(objUrl); reject(new Error('bad image')); };
+      img.src = objUrl;
+    });
+  }
+  async function handleQuickAddFile(files) {
+    const f = files && files[0]; const input = document.getElementById('quickAddFile'); if (input) input.value = '';
+    if (!f || !currentRoom) return;
+    try {
+      const { dataUrl, type, name } = await prepareUpload(f);
+      const r = await fetch(apiUrl().replace('/api/state', '/api/upload'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ name, type, dataUrl }) });
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        showQuickAddNote(d.error === 'storage not connected' ? "Photo storage isn't set up yet." : "Couldn't add that. Try again when you're back online.");
+        return;
+      }
+      const { url } = await r.json();
+      currentRoom.log.unshift({ source: 'file', ts: Date.now(), text: name, file: { url, type } });
+      currentRoom.brief = `Just added ${type.startsWith('image/') ? 'a photo' : 'a file'}: \u201c${name}\u201d — the Brief will re-summarize from here.`;
+      save(); renderRoomView();
+    } catch (e) {
+      showQuickAddNote("Couldn't add that. Try again when you're back online.");
+    }
   }
 
   function sendCapture() {

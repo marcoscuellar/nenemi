@@ -104,9 +104,10 @@ Everything below is ready to paste. Screenshots are in `nenemi-handover/store/sc
 | Do you collect data? | Yes |
 | Contact info: email, name | Collected, linked to the user, only when they sign in. Purpose: app functionality. |
 | User content: other user content (notes, rooms, calendar) | Collected, linked to the user. Purpose: app functionality. |
+| User content: photos or videos | Collected, linked to the user, only when they attach one to a room. Purpose: app functionality. |
 | Identifiers: user ID | Collected, linked. Purpose: app functionality. |
 | Used for tracking? | No |
-| Everything else (location, health, purchases, browsing, diagnostics, contacts, photos) | Not collected |
+| Everything else (location, health, purchases, browsing, diagnostics, contacts) | Not collected |
 
 ## Review notes, paste into "Notes" for the reviewer
 
