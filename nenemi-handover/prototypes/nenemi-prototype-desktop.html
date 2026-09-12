@@ -1204,14 +1204,30 @@
       </div>`);
   }
 
+  // voices load async in Chrome — cache them, refresh on voiceschanged, never block speech on it.
+  let cachedVoices = [];
+  function loadVoices() { cachedVoices = window.speechSynthesis.getVoices(); return cachedVoices; }
+  if ('speechSynthesis' in window) { loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices; }
+  // a calmer, more natural voice than the browser default. falls back to the browser's own pick if none match.
+  function pickCalmVoice() {
+    const voices = cachedVoices.length ? cachedVoices : loadVoices();
+    const calm = /Samantha|Daniel|Google US English|Natural|Enhanced/i;
+    return voices.find(v => v.lang.startsWith('en') && calm.test(v.name))
+        || voices.find(v => v.lang.startsWith('en'))
+        || null;
+  }
+
   // quick audio: reads the room's own re-entry line back. no recording, no key — the browser's built-in voice.
   function speakRoom(id) {
     const r = rooms.find(x => x.id === id);
     if (!r || !('speechSynthesis' in window)) return;
     const next = r.loops.find(l => !l.resolved);
     const line = [r.brief, next ? `Next: ${next.text}` : ''].filter(Boolean).join('. ') || r.one_liner;
+    const utter = new SpeechSynthesisUtterance(line);
+    utter.rate = 0.95; utter.pitch = 0.95;
+    const voice = pickCalmVoice(); if (voice) utter.voice = voice;
     window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(line));
+    window.speechSynthesis.speak(utter);
   }
   const CATCHUP_ICON_PLAY = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 2.5v11l9-5.5-9-5.5z" stroke-linejoin="round"/></svg>';
   const CATCHUP_ICON_STOP = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3.5" y="3.5" width="9" height="9" rx="1.5"/></svg>';
@@ -1229,6 +1245,8 @@
     const next = r.loops.find(l => !l.resolved);
     const line = [r.brief, next ? `Next small move: ${next.text}` : ''].filter(Boolean).join('. ') || r.one_liner;
     const utter = new SpeechSynthesisUtterance(line);
+    utter.rate = 0.95; utter.pitch = 0.95;
+    const voice = pickCalmVoice(); if (voice) utter.voice = voice;
     utter.onend = utter.onerror = () => { btn.classList.remove('playing'); btn.innerHTML = `${CATCHUP_ICON_PLAY} Catch me up (15s)`; };
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utter);
