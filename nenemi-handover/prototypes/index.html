@@ -428,7 +428,11 @@
   .log-entry { padding: 14px 0; border-bottom: 1px solid var(--line); }
   .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--faint); margin-bottom: 6px; }
   .log-text { font-size: 15px; line-height: 1.55; }
-  .quickadd { margin-top: 44px; display: flex; gap: 8px; background: var(--btn); color: var(--btn-ink); border: 1px solid var(--btn); border-radius: 999px; padding: 8px 8px 8px 20px; align-items: center; }
+  .quickadd { margin: 20px 0 28px; display: flex; gap: 8px; background: var(--btn); color: var(--btn-ink); border: 1px solid var(--btn); border-radius: 999px; padding: 8px; align-items: center; }
+  .quickadd input { padding-left: 6px; }
+  .rv-plus-wrap { position: relative; flex-shrink: 0; }
+  .rv-plus-wrap .plus-menu { top: calc(100% + 10px); bottom: auto; left: -6px; right: auto; width: 190px; background: var(--surface); border: 1px solid var(--ink); }
+  .rv-plus-wrap .menu-item { color: var(--ink); }
   .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15px; color: inherit; min-width: 0; }
   .quickadd input::placeholder { color: inherit; opacity: 0.55; }
   .quickadd .mic-btn { color: inherit; opacity: 0.8; }
@@ -453,6 +457,7 @@
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
   .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #1C1C1C 0%, #121212 100%); border: 1px solid rgba(244,242,236,0.08); transition: transform 140ms ease, border-color 140ms ease; }
   .door:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); }
+  .door-icon { display: block; color: var(--faint); margin-bottom: 10px; }
   .door-label { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
   .door-sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
   .door-why { margin-top: 12px; font-size: 12px; }
@@ -591,7 +596,7 @@
     .new-room-card { font-size: 12px; min-height: 110px; }
     .rv-header { padding: 64px 18px 18px; }
     .rv-name { font-size: 24px; }
-    .rv-body { padding: 4px 18px 120px; }
+    .rv-body { padding: 4px 18px 60px; }
     .notes-body { padding: 8px 18px 60px; }
     .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
     .notes-box textarea { min-height: 160px; font-size: 14.5px; }
@@ -601,7 +606,7 @@
     .loop-focus { opacity: 1; font-size: 0; gap: 0; }
     .loop-focus svg { width: 14px; height: 14px; }
     .re-next-text { font-size: 15px; }
-    .quickadd { position: fixed; left: 16px; right: 16px; bottom: calc(16px + var(--sab)); margin: 0; z-index: 5; box-shadow: 0 10px 40px rgba(0,0,0,0.35); }
+    .quickadd { margin: 16px 0 22px; }
     .quickadd-note { position: fixed; left: 16px; right: 16px; bottom: calc(64px + var(--sab)); margin-top: 0; z-index: 5; }
     .log-thumb { max-width: 160px; max-height: 160px; }
     .brief-text { font-size: 14.5px; }
@@ -855,7 +860,32 @@
         </div>
       </div>
       <div class="rv-body">
-        <div class="reentry" id="rvReentry"></div>
+        <div class="reentry" id="rvSummary"></div>
+        <div class="quickadd">
+          <div class="rv-plus-wrap">
+            <div class="plus-menu" id="roomPlusMenu">
+              <div class="menu-item" onclick="pickRoomUpload('image/*')">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+                Add a photo
+              </div>
+              <div class="menu-item" onclick="pickRoomUpload('application/pdf')">
+                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
+                Add a file
+              </div>
+            </div>
+            <button type="button" class="plus-btn" id="roomAttachBtn" onclick="toggleRoomPlusMenu()" title="Add a photo or file">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <input id="quickAddInput" placeholder="Add to this room" />
+          <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
+          <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+          <button onclick="quickAdd()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <div class="quickadd-note" id="quickAddNote" hidden></div>
+        <div class="reentry-next" id="rvNext"></div>
         <div class="brief-text" id="rvBrief" hidden></div>
         <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6.5 9.5L9.5 6.5M7 5L8.2 3.8a2.3 2.3 0 0 1 3.3 3.3L10 8.5M9 11l-1.2 1.2a2.3 2.3 0 0 1-3.3-3.3L6 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -872,18 +902,6 @@
             <div class="log-more" id="rvLogMore" hidden onclick="showAllLog()">All of it</div>
           </div>
         </div>
-        <div class="quickadd">
-          <input id="quickAddInput" placeholder="Add to this room" />
-          <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
-          <button type="button" onclick="document.getElementById('quickAddFile').click()" title="Add a photo or file">
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
-          </button>
-          <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
-          <button onclick="quickAdd()">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-        <div class="quickadd-note" id="quickAddNote" hidden></div>
       </div>
     </div>
 
@@ -898,21 +916,25 @@
         <div class="doors-sub">You don't need a new plan. You just need a way back in.</div>
         <div class="doors-grid">
           <div class="door" onclick="openDoor('start')">
+            <svg class="door-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6v7a2 2 0 0 0 2 2h8M13 11l4 4-4 4"/></svg>
             <div class="door-label">I can't start.</div>
             <div class="door-sub">We'll find the smallest possible first step.</div>
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Starting is the hardest part. We trick the brain by making the task tiny.</span></div>
           </div>
           <div class="door" onclick="openDoor('full')">
+            <svg class="door-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>
             <div class="door-label">My head is too full.</div>
             <div class="door-sub">Put it down. I've got it.</div>
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Working memory is limited. Offload the noise so you can focus.</span></div>
           </div>
           <div class="door" onclick="openDoor('tired')">
+            <svg class="door-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
             <div class="door-label">I have no energy.</div>
             <div class="door-sub">Let's shrink the day to match you.</div>
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Low dopamine means high resistance. We lower the bar to create momentum.</span></div>
           </div>
           <div class="door" onclick="openDoor('broke')">
+            <svg class="door-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11a9 9 0 1 1 2.6 6.4"/><path d="M3 17v-5h5"/></svg>
             <div class="door-label">I fell off.</div>
             <div class="door-sub">You didn't fail. You paused.</div>
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Shame is a productivity killer. We pick up exactly where you left off.</span></div>
@@ -1314,9 +1336,10 @@
     const last = r.log.find(e => e.source === 'voice' || e.source === 'typed') || r.log[0];
     const next = r.loops.find(l => !l.resolved);
     pickUpTask = next ? next.text : `Open up ${r.name} — just look around`;
-    document.getElementById('rvReentry').innerHTML = `
+    document.getElementById('rvSummary').innerHTML = `
       <div class="re-top"><div class="re-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div></div>
-      <div class="re-brief">${escapeHtml(r.brief || '')}</div>
+      <div class="re-brief">${escapeHtml(r.brief || '')}</div>`;
+    document.getElementById('rvNext').innerHTML = `
       <div class="re-next" role="button" onclick="pickUp()">
         <div>
           <div class="re-next-label">${next ? 'Next small move' : 'Nothing open'}</div>
@@ -1339,6 +1362,17 @@
   }
   // a photo or file, scoped to the room it's dropped into — there's no way to auto-route a file the way text gets routed,
   // so this only lives inside a room, where the destination is already decided.
+  function toggleRoomPlusMenu() {
+    const btn = document.getElementById('roomAttachBtn'), menu = document.getElementById('roomPlusMenu');
+    if (!btn || !menu) return;
+    const open = !menu.classList.contains('open');
+    menu.classList.toggle('open', open); btn.classList.toggle('open', open);
+  }
+  function pickRoomUpload(accept) {
+    toggleRoomPlusMenu();
+    const input = document.getElementById('quickAddFile'); if (!input) return;
+    input.accept = accept; input.click();
+  }
   function showQuickAddNote(msg) {
     const el = document.getElementById('quickAddNote'); if (!el) return;
     el.textContent = msg; el.hidden = false;
