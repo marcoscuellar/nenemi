@@ -143,7 +143,7 @@
   #pane-home { align-items: center; justify-content: center; background: var(--sanctuary); }
   /* the one place with color: a big soft glow behind the box, drifting slowly from blue toward violet and back */
   #pane-home::before { content: ''; position: absolute; inset: -20%; pointer-events: none; z-index: 0;
-    background: radial-gradient(ellipse 44% 40% at 50% 55%, var(--hg1) 0%, var(--hg2) 40%, transparent 74%);
+    background: radial-gradient(ellipse 50% 47% at 50% 55%, var(--hg1) 0%, var(--hg2) 40%, transparent 74%);
     filter: blur(28px); animation: glowDrift 90s ease-in-out infinite alternate; }
   @keyframes glowDrift { from { filter: blur(28px) hue-rotate(0deg); } to { filter: blur(28px) hue-rotate(55deg); } }
   @media (prefers-reduced-motion: reduce) { #pane-home::before { animation: none; } }
@@ -166,14 +166,14 @@
   .app.base .home-base { display: grid; }
   .bcard { background: var(--card); border: 1px solid var(--line2); border-radius: 18px; padding: 16px; min-height: 150px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; text-align: left; }
   .bcard:hover { border-color: var(--ink); }
-  .bc-ic { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--muted); }
+  .bc-ic { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
   .bc-name { font-weight: 600; font-size: 16px; }
   .bc-sub { color: var(--muted); font-size: 13.5px; line-height: 1.45; flex: 1; }
   .bc-tag { align-self: flex-start; font-family: var(--font-mono); font-size: 10.5px; padding: 4px 8px; border-radius: 6px; background: var(--surface2); color: var(--muted); }
   .bc-tag:empty { display: none; }
   .bcard.dark { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
-  .bcard.dark .bc-sub, .bcard.dark .bc-ic, .bcard.dark .bc-tag { color: inherit; opacity: 0.75; background: transparent; }
-  .bcard.dark .bc-ic, .bcard.dark .bc-tag { background: rgba(127,127,127,0.18); }
+  .bcard.dark .bc-sub, .bcard.dark .bc-ic, .bcard.dark .bc-tag { color: inherit; opacity: 0.75; }
+  .bcard.dark .bc-tag { background: rgba(127,127,127,0.18); }
   /* one quiet line, centered, light. the box under it is the whole screen */
   .greeting-big { font-family: var(--font-body); font-weight: 300; font-size: 32px; line-height: 1.2; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 34px; color: var(--ink); letter-spacing: -0.01em; }
   .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
@@ -328,8 +328,13 @@
   .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-content: start; }
   .room-card { background: var(--card); border: 1px solid var(--line2); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
-  .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .room-card.card-dormant { border-color: rgba(245,158,11,0.25); box-shadow: 0 0 16px rgba(245,158,11,0.08); }
+  .room-card.card-dormant:hover { border-color: rgba(245,158,11,0.4); }
+  .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
+  .room-card-icons { display: flex; align-items: center; gap: 6px; }
   .room-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 17px; line-height: 1; }
+  .room-rewind { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--faint); flex-shrink: 0; }
+  .room-rewind:hover { color: var(--muted); background: var(--surface2); }
   .room-card[style*="--rc"] { box-shadow: 0 10px 30px -8px color-mix(in srgb, var(--rc) 55%, transparent); border-color: color-mix(in srgb, var(--rc) 35%, var(--line)); }
   .room-card[style*="--rc"]:hover { box-shadow: 0 14px 36px -8px color-mix(in srgb, var(--rc) 70%, transparent); }
   .room-card[style*="--rc"] .room-icon, .rv-icon[style*="--rc"] { background: color-mix(in srgb, var(--rc) 18%, transparent); color: var(--rc); }
@@ -371,6 +376,9 @@
   .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
   .re-away { font-size: 12.5px; color: var(--muted); }
   .re-brief { font-size: 17px; font-weight: 300; line-height: 1.7; color: var(--ink); margin-bottom: 22px; }
+  .editable { cursor: text; border-radius: 6px; transition: background 120ms ease; }
+  .editable:hover { background: var(--surface2); }
+  .editable[contenteditable="true"] { outline: 1px solid var(--line2); background: var(--surface2); padding: 2px 6px; margin: -2px -6px; }
   .re-last { font-size: 14px; line-height: 1.55; color: var(--ink); margin-bottom: 14px; }
   .re-last .re-q { color: var(--muted); }
   .re-last .re-when { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
@@ -498,8 +506,13 @@
 
   /* LOCKDOWN pane */
   #pane-lockdown { align-items: center; justify-content: center; }
+  #pane-lockdown::before { content: ''; position: absolute; inset: -20%; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse 40% 36% at 50% 50%, var(--hg1) 0%, var(--hg2) 45%, transparent 75%);
+    filter: blur(32px); animation: lockdownBreathe 5s ease-in-out infinite; }
+  @keyframes lockdownBreathe { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.85; } }
+  @media (prefers-reduced-motion: reduce) { #pane-lockdown::before { animation: none; opacity: 0.6; } }
   .lockdown-label { position: absolute; top: 32px; left: 0; right: 0; text-align: center; font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.06em; }
-  .lockdown-inner { display: flex; flex-direction: column; align-items: center; }
+  .lockdown-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
   .lockdown-task { font-family: var(--font-display); font-weight: 700; font-size: 28px; text-align: center; max-width: 460px; }
   .lockdown-timer { font-family: var(--font-mono); font-size: 46px; color: var(--sage-text); margin-top: 26px; }
   .lockdown-hint { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 16px; }
@@ -1160,12 +1173,16 @@
       const openCount = r.loops.filter(l => !l.resolved).length;
       const badge = openCount > 0 ? `<div class="loop-pill">${openCount} to pick up</div>` : `<div class="loop-pill" style="opacity:0.55">resting</div>`;
       const quietDays = daysQuiet(r);
-      const quiet = openCount > 0 && quietDays >= 3 ? `<div class="room-quiet">Quiet for ${quietDays} days. Easy re-entry — it's all still here.</div>` : '';
+      const isDormant = openCount > 0 && quietDays >= 3;
+      const quiet = isDormant ? `<div class="room-quiet">Quiet for ${quietDays} days. Easy re-entry — it's all still here.</div>` : '';
       const next = nextLoop ? `<div class="room-next"><span class="room-next-kicker">Next</span> ${escapeHtml(nextLoop.text)}</div>` : '';
       return `
-      <div class="room-card" onclick="openRoom('${r.id}')"${roomStyleAttr(r)}>
+      <div class="room-card${isDormant ? ' card-dormant' : ''}" onclick="openRoom('${r.id}')"${roomStyleAttr(r)}>
         <div class="room-card-top">
-          <div class="room-icon">${roomIconHtml(r)}</div>
+          <div class="room-card-icons">
+            <div class="room-icon">${roomIconHtml(r)}</div>
+            <div class="room-rewind" title="Hear it" onclick="event.stopPropagation(); speakRoom('${r.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7M2.5 2.5v3.7h3.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div>
           <div class="room-touch">${r.log[0] ? when(r.log[0]) : ''}</div>
         </div>
         <div class="room-name">${escapeHtml(r.name)}</div>
@@ -1181,6 +1198,16 @@
       <div class="new-room-card limit">
         <div>That's your <b>${auth.roomLimit} free rooms</b>. ${fullAccessLine()}<br>The calendar is always free.${auth.billing ? `<br><span class="mini-btn" onclick="event.stopPropagation(); openFullAccess()">Open full access</span>` : ''}</div>
       </div>`);
+  }
+
+  // quick audio: reads the room's own re-entry line back. no recording, no key — the browser's built-in voice.
+  function speakRoom(id) {
+    const r = rooms.find(x => x.id === id);
+    if (!r || !('speechSynthesis' in window)) return;
+    const next = r.loops.find(l => !l.resolved);
+    const line = [r.brief, next ? `Next: ${next.text}` : ''].filter(Boolean).join('. ') || r.one_liner;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(new SpeechSynthesisUtterance(line));
   }
 
   // a room can wear a color and an icon. optional, one tap, never asked for.
@@ -1254,6 +1281,7 @@
         ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop('${l.text.replace(/'/g, "\\'")}')">Sit with me <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
       </div>
     `).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
+    document.querySelectorAll('#rvLoops .loop-text').forEach((el, i) => makeEditable(el, { set: (t) => { r.loops[i].text = t; } }));
 
     const shown = showAllLogFor === r.id ? r.log : r.log.slice(0, 3);
     const more = document.getElementById('rvLogMore'); more.hidden = r.log.length <= 3 || showAllLogFor === r.id; more.textContent = `All ${r.log.length} →`;
@@ -1337,6 +1365,30 @@
     const row = document.querySelectorAll('#rvLoops .loop-row')[i];
     if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('lit'); setTimeout(() => row.classList.remove('lit'), 2400); }
   }
+  // click to edit, in place: Enter or blur saves, Escape reverts. no separate edit mode to find first.
+  function makeEditable(el, opts) {
+    if (!el) return;
+    el.classList.add('editable');
+    let before = '';
+    el.onclick = () => {
+      if (el.isContentEditable) return;
+      before = el.textContent;
+      el.contentEditable = 'true';
+      el.focus();
+      const range = document.createRange(); range.selectNodeContents(el);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+    };
+    el.onkeydown = (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); el.blur(); }
+      else if (e.key === 'Escape') { el.textContent = before; el.contentEditable = 'false'; el.blur(); }
+    };
+    el.onblur = () => {
+      if (!el.isContentEditable) return;
+      el.contentEditable = 'false';
+      const text = el.textContent.trim();
+      if (text !== before.trim()) { opts.set(text); save(); }
+    };
+  }
   function renderReentry(r) {
     const last = r.log.find(e => e.source === 'voice' || e.source === 'typed') || r.log[0];
     const next = r.loops.find(l => !l.resolved);
@@ -1344,6 +1396,7 @@
     document.getElementById('rvSummary').innerHTML = `
       <div class="re-top"><div class="re-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div></div>
       <div class="re-brief">${escapeHtml(r.brief || '')}</div>`;
+    makeEditable(document.querySelector('#rvSummary .re-brief'), { set: (t) => { r.brief = t; } });
     document.getElementById('rvNext').innerHTML = `
       <div class="re-next" role="button" onclick="pickUp()">
         <div>
