@@ -375,6 +375,9 @@
   .re-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
   .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
   .re-away { font-size: 12.5px; color: var(--muted); }
+  .re-catchup { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; background: none; color: var(--faint); border: 1px solid var(--line2); border-radius: 999px; padding: 2px 8px; font-family: var(--font-body); font-size: 11px; cursor: pointer; }
+  .re-catchup:hover { color: var(--muted); border-color: var(--muted); }
+  .re-catchup.playing { color: var(--sage-text); border-color: var(--sage-text); }
   .re-brief { font-size: 17px; font-weight: 300; line-height: 1.7; color: var(--ink); margin-bottom: 22px; }
   .editable { cursor: text; border-radius: 6px; transition: background 120ms ease; }
   .editable:hover { background: var(--surface2); }
@@ -1067,6 +1070,7 @@
     if (dTag) dTag.textContent = new Date().toLocaleDateString(undefined, { weekday: 'long' });
   }
   function go(id) {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1208,6 +1212,27 @@
     const line = [r.brief, next ? `Next: ${next.text}` : ''].filter(Boolean).join('. ') || r.one_liner;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(line));
+  }
+  const CATCHUP_ICON_PLAY = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 2.5v11l9-5.5-9-5.5z" stroke-linejoin="round"/></svg>';
+  const CATCHUP_ICON_STOP = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3.5" y="3.5" width="9" height="9" rx="1.5"/></svg>';
+  // the room-view version of speakRoom: same free browser voice, but with a visible playing state you can stop.
+  function catchMeUp() {
+    const btn = document.getElementById('reCatchup');
+    if (!btn) return;
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      btn.classList.remove('playing'); btn.innerHTML = `${CATCHUP_ICON_PLAY} Catch me up (15s)`;
+      return;
+    }
+    const r = currentRoom;
+    if (!r || !('speechSynthesis' in window)) return;
+    const next = r.loops.find(l => !l.resolved);
+    const line = [r.brief, next ? `Next small move: ${next.text}` : ''].filter(Boolean).join('. ') || r.one_liner;
+    const utter = new SpeechSynthesisUtterance(line);
+    utter.onend = utter.onerror = () => { btn.classList.remove('playing'); btn.innerHTML = `${CATCHUP_ICON_PLAY} Catch me up (15s)`; };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    btn.classList.add('playing'); btn.innerHTML = `${CATCHUP_ICON_STOP} Stop`;
   }
 
   // a room can wear a color and an icon. optional, one tap, never asked for.
@@ -1394,7 +1419,10 @@
     const next = r.loops.find(l => !l.resolved);
     pickUpTask = next ? next.text : `Open up ${r.name} — just look around`;
     document.getElementById('rvSummary').innerHTML = `
-      <div class="re-top"><div class="re-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div></div>
+      <div class="re-top">
+        <div class="re-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div>
+        <button class="re-catchup" id="reCatchup" onclick="catchMeUp()">${CATCHUP_ICON_PLAY} Catch me up (15s)</button>
+      </div>
       <div class="re-brief">${escapeHtml(r.brief || '')}</div>`;
     makeEditable(document.querySelector('#rvSummary .re-brief'), { set: (t) => { r.brief = t; } });
     document.getElementById('rvNext').innerHTML = `
