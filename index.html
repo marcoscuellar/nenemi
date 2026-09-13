@@ -386,7 +386,8 @@
   /* ROOM VIEW pane */
   .rv-header { padding: 70px 24px 22px; width: 100%; max-width: 680px; margin: 0 auto; display: flex; align-items: flex-start; gap: 12px; }
   .rv-title-wrap { flex: 1; }
-  .rv-name { font-family: var(--font-body); font-weight: 300; font-size: 30px; line-height: 1.08; letter-spacing: -0.01em; }
+  .rv-name { font-family: var(--font-mono); font-weight: 700; font-size: 28px; line-height: 1.08; letter-spacing: -0.01em; text-transform: uppercase; }
+  .rv-name::after { content: '_'; }
   .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 2px; }
   .rv-body { flex: 1; overflow-y: auto; padding: 6px 24px 60px; width: 100%; max-width: 680px; margin: 0 auto; }
   .rv-cols { display: grid; grid-template-columns: 1fr; gap: 38px; margin-top: 40px; }
@@ -642,7 +643,7 @@
     .room-oneliner { font-size: 13px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12px; min-height: 110px; }
     .rv-header { padding: 64px 18px 18px; }
-    .rv-name { font-size: 24px; }
+    .rv-name { font-size: 21px; }
     .rv-body { padding: 4px 18px 60px; }
     .notes-body { padding: 8px 18px 60px; }
     .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
