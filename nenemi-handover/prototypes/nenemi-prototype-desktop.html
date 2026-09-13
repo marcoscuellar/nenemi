@@ -22,7 +22,7 @@
     --surface: #141414;
     --surface2: #1C1C1C;
     --card: #1A1A1A;
-    --ink: #F4F2EC;
+    --ink: #FFFFFF;
     --muted: #BDBDB6;
     --faint: #8C8C85;
     --line: rgba(244,242,236,0.14);
@@ -81,7 +81,7 @@
   }
   /* the sanctuary screens stay dark in both themes — calm, no glare when you're stuck */
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
-    --sanctuary: #0A0A0A; --surface: #141414; --surface2: #1C1C1C; --card: #161616; --ink: #F4F2EC; --muted: #9C9C96; --faint: #6A6A65;
+    --sanctuary: #0A0A0A; --surface: #141414; --surface2: #1C1C1C; --card: #161616; --ink: #FFFFFF; --muted: #9C9C96; --faint: #6A6A65;
     --line: rgba(244,242,236,0.09); --line2: rgba(244,242,236,0.16); --sage: #F4F2EC; --sage-text: #D6D4CE; --sage-fill: rgba(244,242,236,0.10); --on-sage: #0A0A0A; --glow2: #171717; --btn: #F4F2EC; --btn-ink: #0A0A0A;
     color: var(--ink);
   }
@@ -342,6 +342,11 @@
   .kicker { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line2); }
   .hub-title { font-family: var(--font-body); font-weight: 300; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
   .hub-sub { color: var(--muted); font-size: 14.5px; margin-top: 8px; }
+  /* rooms hub gets the calendar's bold mono header treatment: eyebrow + count row, big underscored title */
+  #pane-rooms .hub-top { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line2); }
+  #pane-rooms .kicker, #pane-rooms .hub-count { padding-bottom: 0; margin-bottom: 0; border-bottom: none; font-weight: 700; letter-spacing: 0.06em; }
+  #pane-rooms .hub-title { font-family: var(--font-mono); font-weight: 700; font-size: 46px; text-transform: uppercase; }
+  #pane-rooms .hub-title::after { content: '_'; }
   .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-content: start; }
   .room-card { background: var(--card); border: 1px solid var(--line2); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
@@ -626,6 +631,8 @@
     .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
     .hub-header { padding-top: 64px; }
     .hub-title { font-size: 28px; }
+    #pane-rooms .hub-title { font-size: 32px; }
+    #pane-rooms .hub-top { flex-wrap: wrap; gap: 6px; }
     .kicker { font-size: 10px; padding-bottom: 8px; margin-bottom: 10px; }
     .room-grid { padding: 14px 14px 40px; grid-template-columns: 1fr 1fr; gap: 10px; }
     .room-card, .new-room-card { padding: 14px; border-radius: 16px; }
@@ -884,7 +891,10 @@
     <div class="pane" id="pane-rooms">
       <div class="hub-header">
         <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
-        <span class="kicker">Rooms</span>
+        <div class="hub-top">
+          <span class="kicker">ROOMS</span>
+          <span class="hub-count" id="roomCount">0 ROOMS</span>
+        </div>
         <div class="hub-title">Your rooms</div>
         <div class="hub-sub">The ones that have gone quiet float up. No red badges here.</div>
         <div class="sync-badge" id="syncBadge" onclick="changeSync()" title="Click to change your sync code">Saved on this device</div>
@@ -1203,6 +1213,8 @@
   }
   function renderRoomList() {
     renderLoose();
+    const countEl = document.getElementById('roomCount');
+    if (countEl) countEl.textContent = `${rooms.length} ${rooms.length === 1 ? 'ROOM' : 'ROOMS'}`;
     const el = document.getElementById('roomList');
     el.innerHTML = rooms.slice().sort(roomOrder).map(r => {
       const nextLoop = r.loops.find(l => !l.resolved);
