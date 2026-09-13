@@ -73,7 +73,6 @@
   .main:has(#pane-calendar.active) .wordmark .wm-text { color: #2A2A26; }
   .main:has(#pane-calendar.active) .wm-mark .wm-arc-b { stroke: #2A2A26; }
   .main:has(#pane-calendar.active) .wm-mark .wm-dot { fill: #3FB7A6; stroke: #FBF9F5; }
-  .app.quiet .account-slot { display: none; }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   html, body { margin: 0; padding: 0; height: 100%; }
@@ -103,14 +102,14 @@
   .topnav .tn { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); padding: 7px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
   .topnav .tn:hover { color: var(--muted); }
   .topnav .tn.active { color: var(--sage-text); background: var(--sage-fill); }
-  .app.quiet .topnav { display: none; }
   .topnav .tn-has-menu { display: inline-flex; align-items: center; gap: 5px; }
   .topnav .tn-has-menu svg { opacity: .6; }
+  .tn-wrap { position: relative; display: inline-flex; }
+  .tn-wrap .tn-menu { top: calc(100% + 10px); left: 50%; }
   .tn-menu { position: absolute; top: 58px; left: 50%; transform: translateX(-50%); z-index: 31; min-width: 240px; background: var(--card); border: 1px solid var(--line2); border-radius: 14px; padding: 6px; box-shadow: 0 16px 44px var(--shadow); }
   .tn-menu .tn-mi { padding: 10px 12px; border-radius: 9px; font-size: 13.5px; color: var(--ink); cursor: pointer; }
   .tn-menu .tn-mi span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
   .tn-menu .tn-mi:hover { background: var(--surface2); }
-  .app.quiet .tn-menu { display: none; }
   .back-home { display: none !important; }
 
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--muted); font-size: 13.5px; cursor: pointer; margin-bottom: 2px; }
@@ -128,7 +127,7 @@
   .pane.active { display: flex; }
 
   /* HOME pane (minimal, centered) */
-  #pane-home { align-items: center; justify-content: center; background: var(--sanctuary); }
+  #pane-home { align-items: center; justify-content: center; background: var(--sanctuary); overflow-y: auto; padding: 90px 24px 60px; }
   /* the one place with color: a big soft glow behind the box, drifting slowly from blue toward violet and back */
   #pane-home::before { content: ''; position: absolute; inset: -20%; pointer-events: none; z-index: 0;
     background: radial-gradient(ellipse 50% 47% at 50% 55%, var(--hg1) 0%, var(--hg2) 40%, transparent 74%);
@@ -142,31 +141,16 @@
     background: radial-gradient(ellipse 70% 55% at 100% 0%, var(--hg1) 0%, var(--hg2) 34%, transparent 68%); opacity: 0.7; }
   #pane-roomview > *, #pane-rooms > *, #pane-calendar > *, #pane-notes > * { position: relative; z-index: 1; }
   #pane-roomview > .rv-header { z-index: 2; } /* the icon and color picker hangs below the header, over the body */
-  .home-center { display: flex; flex-direction: column; align-items: center; width: 680px; max-width: 90%; }
+  .home-center { display: flex; flex-direction: column; align-items: center; width: 720px; max-width: 92%; }
   .wordmark { position: absolute; top: 22px; left: 62px; z-index: 30; display: flex; align-items: center; gap: 8px; user-select: none; cursor: pointer; }
   .wordmark .wm-mark { flex-shrink: 0; }
   .wordmark .wm-text { font-family: var(--font-title); font-weight: 400; font-size: 13px; letter-spacing: 0.20em; color: var(--ink); }
-  .app.quiet .wordmark { display: none; }
-  .home-btn { position: absolute; top: 14px; left: 18px; z-index: 30; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line2); background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .home-btn:hover, .app.base .home-btn { color: var(--ink); border-color: var(--ink); }
-  .app.quiet .home-btn { display: none; }
-  /* the base: four doors under the pill, only when asked for. on open it is the greeting and the pill, nothing else */
-  .home-base { display: none; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; margin-top: 34px; }
-  .app.base .home-base { display: grid; }
-  .bcard { background: var(--card); border: 1px solid var(--line2); border-radius: 18px; padding: 16px; min-height: 150px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; text-align: left; }
-  .bcard:hover { border-color: var(--ink); }
-  .bc-ic { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
-  .bc-name { font-weight: 600; font-size: 16px; }
-  .bc-sub { color: var(--muted); font-size: 13.5px; line-height: 1.45; flex: 1; }
-  .bc-tag { align-self: flex-start; font-family: var(--font-mono); font-size: 10.5px; padding: 4px 8px; border-radius: 6px; background: var(--surface2); color: var(--muted); }
-  .bc-tag:empty { display: none; }
-  .bcard.dark { background: var(--ink); color: var(--sanctuary); border-color: var(--ink); }
-  .bcard.dark .bc-sub, .bcard.dark .bc-ic, .bcard.dark .bc-tag { color: inherit; opacity: 0.75; }
-  .bcard.dark .bc-tag { background: rgba(127,127,127,0.18); }
-  /* one quiet line, centered, light. the box under it is the whole screen */
-  .greeting-big { font-family: var(--font-body); font-weight: 300; font-size: 32px; line-height: 1.2; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 34px; color: var(--ink); letter-spacing: -0.01em; }
+  /* one quiet line, centered, huge. the box under it is the whole screen */
+  .greeting-big { font-family: var(--font-display); font-weight: 900; font-size: clamp(34px, 5.2vw, 58px); line-height: 0.98; letter-spacing: -0.02em; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 30px; color: var(--ink); }
   .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
-  .greeting-big .hello { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--line2); }
+  .greeting-big .hello { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 20px; }
+  /* once the box is talking, the huge headline steps back so the reply has the room */
+  .app.talking .greeting-big { font-size: clamp(22px, 3vw, 30px); margin-bottom: 18px; }
 
   .chat-log { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; width: 100%; max-height: 260px; overflow-y: auto; }
   .bubble { max-width: 78%; padding: 11px 15px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
@@ -174,20 +158,42 @@
   .bubble.dos { align-self: flex-start; background: var(--card); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
   .bubble.dos.confirm { background: var(--sage-fill); border-color: var(--sage-fill); color: var(--sage-text); font-family: var(--font-mono); font-size: 12.5px; }
 
+  /* home, below the box: a quiet return line, then a small preview of the rooms themselves */
+  .home-return { width: 100%; margin-top: 30px; }
+  .home-return .hr-line { display: flex; align-items: baseline; gap: 8px; padding: 14px 0; border-top: 1px solid var(--line2); font-size: 14px; color: var(--muted); cursor: pointer; }
+  .home-return .hr-line:hover { color: var(--ink); }
+  .home-return .hr-k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage-text); flex-shrink: 0; }
+  .home-return .hr-empty { padding: 14px 0; border-top: 1px solid var(--line2); font-size: 13.5px; color: var(--faint); }
+  .home-rooms { width: 100%; margin-top: 8px; }
+  .section-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+  .section-row h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0; font-weight: 600; }
+  .section-row .mono { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em; color: var(--faint); }
+  .room-grid-preview { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .rgp-card { background: var(--card); border: 1px solid var(--line2); border-radius: 14px; padding: 14px; cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 6px; min-height: 96px; }
+  .rgp-card:hover { border-color: var(--ink); }
+  .rgp-name { font-weight: 600; font-size: 14px; color: var(--ink); }
+  .rgp-sub { font-size: 12px; color: var(--muted); line-height: 1.4; flex: 1; }
+  .rgp-meta { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+  .rgp-more { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--line2); border-radius: 14px; color: var(--muted); font-size: 12.5px; cursor: pointer; min-height: 96px; }
+  .rgp-more:hover { border-color: var(--ink); color: var(--ink); }
+
   .composer-pill {
     position: relative; width: 100%; box-sizing: border-box;
-    display: flex; flex-direction: row; align-items: flex-end; gap: 8px;
-    background: var(--pill-bg); border: 1px solid var(--line2);
-    border-radius: 30px; padding: 10px 10px 10px 12px;
-    box-shadow: 0 0 70px rgba(63,183,166,0.14);
+    display: flex; flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--surface); border: 1px solid var(--line2);
+    border-radius: 18px; padding: 20px 20px 14px;
+    box-shadow: 0 26px 70px rgba(0,0,0,0.28);
   }
-  .composer-pill:focus-within { border-color: var(--teal-deep); box-shadow: 0 0 84px rgba(63,183,166,0.2); }
+  .composer-pill:focus-within { border-color: var(--teal-deep); box-shadow: 0 26px 80px rgba(63,183,166,0.12); }
+  .composer-pill textarea { width: 100%; box-sizing: border-box; min-height: 108px; max-height: 40vh; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0 0 14px; }
+  .composer-pill textarea::placeholder { color: var(--faint); }
+  .composer-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .composer-hint { font-size: 12px; color: var(--faint); }
+  .composer-actions { display: flex; align-items: center; gap: 6px; }
   .composer-row { display: flex; align-items: center; gap: 10px; }
   .composer-row .spacer { flex: 1; }
   .plus-btn { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
   .plus-btn.open { color: var(--sage-text); border-color: var(--sage); }
-  .composer-pill textarea { flex: 1; min-width: 0; box-sizing: border-box; min-height: 26px; max-height: 40vh; align-self: center; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0; }
-  .composer-pill textarea::placeholder { color: var(--faint); }
   .mic-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; flex-shrink: 0; }
   .send-btn { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: var(--sage); border: none; color: var(--on-sage); display: none; align-items: center; justify-content: center; cursor: pointer; }
   .composer-pill.has-text .send-btn { display: flex; }
@@ -607,24 +613,24 @@
     :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
     .app { height: 100vh; height: 100dvh; padding-top: var(--sat); }
     /* home */
-    .greeting-big { font-size: 24px; margin-bottom: 22px; }
-    .home-btn { top: 8px; left: 12px; }
-    .wordmark { top: 15px; left: 56px; gap: 6px; }
+    .greeting-big { font-size: 34px; margin-bottom: 22px; }
+    .wordmark { top: 15px; left: 14px; gap: 6px; }
     .wordmark .wm-mark { width: 15px; height: 15px; }
     .wordmark .wm-text { font-size: 9.5px; }
-    .home-base { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
-    .bcard { min-height: 138px; padding: 14px; border-radius: 16px; }
-    .bc-name { font-size: 15px; }
-    .bc-sub { font-size: 13px; }
-    .topnav { left: auto; right: 56px; transform: none; }
-    .tn-menu { left: auto; right: 12px; transform: none; top: 50px; }
-    .composer-pill { padding: 8px 8px 8px 10px; border-radius: 26px; gap: 6px; }
-    .composer-pill textarea { min-height: 24px; font-size: 15px; }
+    /* the pill nav drops the floating-centered look on a phone: full-width strip, scrolls sideways, sits right under the wordmark row */
+    .topnav { position: fixed; top: calc(38px + var(--sat)); left: 0; right: 0; transform: none; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 0; border-left: 0; border-right: 0; padding: 6px 14px; gap: 4px;
+      -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
+    .topnav::-webkit-scrollbar { display: none; }
+    .topnav .tn { font-size: 10px; padding: 7px 10px; letter-spacing: 0.06em; flex-shrink: 0; }
+    .tn-wrap .tn-menu { left: 0; transform: none; }
+    .composer-pill { padding: 16px 16px 12px; border-radius: 16px; }
+    .composer-pill textarea { min-height: 90px; font-size: 15px; margin-bottom: 10px; }
     .plus-btn { width: 32px; height: 32px; }
     .send-btn, .mic-btn { width: 32px; height: 32px; }
-    .home-center { width: 100%; max-width: 86%; margin: auto 0; }
+    .home-center { width: 100%; max-width: 92%; margin: 0; }
+    .room-grid-preview { grid-template-columns: 1fr 1fr; }
     #pane-home::before { inset: 0; }
-    #pane-home { justify-content: flex-start; padding-top: 64px; padding-bottom: calc(16px + var(--sab)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #pane-home { justify-content: flex-start; padding-top: 104px; padding-bottom: calc(16px + var(--sab)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .chat-log { max-height: 40vh; margin-top: 18px; }
     .bubble { font-size: 13px; padding: 10px 13px; max-width: 88%; }
     .bubble.dos { align-self: flex-start; max-width: 92%; }
@@ -633,8 +639,6 @@
     .intro { font-size: 12px; margin-top: 20px; }
     /* account */
     .account-slot { top: 8px; right: 10px; }
-    .topnav { top: 8px; padding: 3px; }
-    .topnav .tn { font-size: 10px; padding: 7px 9px; letter-spacing: 0.08em; }
     .account-slot .signed-label { display: none; }
     /* signed out on a phone: the top right is the dots only; sign in lives in that menu and in the intro line */
     .account-slot .signin-btn { display: none; }
@@ -643,7 +647,7 @@
     .acct-menu { right: 4px; min-width: 220px; }
     /* hubs + room */
     .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
-    .hub-header { padding-top: 64px; }
+    .hub-header { padding-top: 104px; }
     .hub-title { font-size: 28px; }
     #pane-rooms .hub-title { font-size: 32px; }
     #pane-rooms .hub-top { flex-wrap: wrap; gap: 6px; }
@@ -655,7 +659,7 @@
     .room-name { font-size: 15px; line-height: 1.25; }
     .room-oneliner { font-size: 13px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12px; min-height: 110px; }
-    .rv-header { padding: 64px 18px 18px; }
+    .rv-header { padding: 104px 18px 18px; }
     .rv-name { font-size: 21px; }
     .rv-oneliner { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .rv-body { padding: 4px 18px 60px; }
@@ -676,7 +680,7 @@
     .loop-text { font-size: 15px; }
     .log-text { font-size: 14px; }
     /* calendar: the dump box comes first, then the day */
-    .cal-topbar { padding-right: 120px; }
+    .cal-topbar { height: 104px; padding-right: 120px; }
     .cal-inner { display: flex; flex-direction: column; padding: 16px 14px 60px; gap: 18px; }
     .smart-cal { order: -1; position: static; padding: 16px 14px 14px; }
     .sc-title { font-size: 21px; }
@@ -691,21 +695,22 @@
     .ag-row { gap: 10px; }
     .sheet { padding: 18px; }
     /* stuck: doors and the move */
-    .stuck-close { top: 10px; right: 12px; }
+    .stuck-close { top: calc(96px + var(--sat)); right: 16px; }
     #pane-stuck, #pane-humans { justify-content: flex-start; }
-    .doors { padding: 56px 16px 24px; }
+    .doors { padding: 104px 16px 24px; }
     .doors-mark { display: none; }
     .doors-title { font-size: 26px; }
     .doors-sub { font-size: 12.5px; }
     .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
-    .humans-inner { padding: 56px 16px 24px; }
+    .humans-inner { padding: 104px 16px 24px; }
     .support-card { padding: 16px 18px; border-radius: 16px; }
     .support-name { font-size: 15.5px; }
     .support-for { font-size: 12.5px; }
     .support-links a { font-size: 12.5px; padding: 8px 12px; }
     .door { padding: 16px 16px 14px; border-radius: 18px; }
     .door-label { font-size: 16.5px; }
-    .stuck-inner { width: 100%; padding: 48px 16px 24px; }
+    .stuck-inner { width: 100%; padding: 104px 16px 24px; }
+    .lockdown-label { top: calc(90px + var(--sat)); }
     .stuck-mark { width: 56px; height: 56px; }
     .stuck-nudge { font-size: 22px; max-width: 100%; }
     .stuck-sub { font-size: 12.5px; }
@@ -786,11 +791,21 @@
         <div class="sheet-actions"><div class="spacer"></div><button class="sheet-btn ghost" onclick="closeSyncSheet()">Done</button></div>
       </div>
     </div>
-    <div class="home-btn" id="homeBtn" title="Home" onclick="toggleBase()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7M5.5 9.5V20h13V9.5"/></svg></div>
     <div class="wordmark" aria-label="Nenemi" onclick="goSanctuary()">
       <svg class="wm-mark" width="18" height="18" viewBox="0 0 120 120" aria-hidden="true"><path class="wm-arc-a" d="M39 23.63 A42 42 0 0 0 81 96.37" fill="none" stroke="#3FB7A6" stroke-width="14" stroke-linecap="butt"/><path class="wm-arc-b" d="M39 23.63 A42 42 0 0 1 81 96.37" fill="none" stroke="#F4F1EA" stroke-width="14" stroke-linecap="butt"/><circle class="wm-dot" cx="81" cy="96.37" r="11" fill="#F4F1EA" stroke="#0A0A0A" stroke-width="3"/></svg>
       <span class="wm-text">NENEMI</span>
     </div>
+    <nav class="topnav" id="topnav">
+      <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
+      <div class="tn-wrap" onmouseenter="openRoomsMega()" onmouseleave="closeRoomsMegaSoon()">
+        <div class="tn tn-has-menu" id="tn-rooms" onclick="go('rooms')">Rooms<svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="tn-menu" id="roomsMega" hidden></div>
+      </div>
+      <div class="tn" id="tn-calendar" onclick="go('calendar')">Plan my day</div>
+      <div class="tn" id="tn-notes" onclick="go('notes')">Recap</div>
+      <div class="tn" id="tn-stuck" onclick="go('stuck')">Stuck</div>
+      <div class="tn" id="tn-humans" onclick="go('humans')">Humans</div>
+    </nav>
     <div class="tn-menu" id="dayMenu" hidden>
       <div class="tn-mi" onclick="closeDayMenu(); go('calendar')">Build my day<span>Dump it, get a day back</span></div>
       <div class="tn-mi" onclick="closeDayMenu(); go('notes')">Write about it<span>A page for today, yours only</span></div>
@@ -805,46 +820,27 @@
         <div class="greeting-big" id="greetingText">Hey there,<br><span class="accent">what's on your mind?</span></div>
 
         <div class="composer-pill" id="composerPill">
-          <div class="plus-menu" id="plusMenu">
-            <div class="menu-item" onclick="closeMenuAnd('calendar')">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
-              My day
+          <textarea id="composerInput" rows="1" placeholder="Start anywhere…"></textarea>
+          <div class="composer-bar">
+            <span class="composer-hint">Messy is fine.</span>
+            <div class="composer-actions">
+              <div class="mic-btn" id="homeMic" title="Say it instead">
+                <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
+              </div>
+              <div class="send-btn" onclick="sendCapture()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
             </div>
-            <div class="menu-item" onclick="closeMenuAnd('notes')">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 2.5h10v11H3z" stroke-linejoin="round"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke-linecap="round"/></svg>
-              Write about it
-            </div>
-            <div class="menu-item" onclick="closeMenuAnd('rooms')">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2"/></svg>
-              Rooms
-            </div>
-            <div class="menu-item" onclick="startRecap()">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M2 12.5c2-1 3.5-1 5 0s3.5 1 5 0M2 8.5c2-1 3.5-1 5 0s3.5 1 5 0M8 2v3" stroke-linecap="round"/></svg>
-              Recap the day
-            </div>
-            <div class="menu-item" onclick="closeMenuAnd('stuck')">
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
-              I'm stuck
-            </div>
-          </div>
-          <div class="plus-btn" id="plusBtn" onclick="toggleMenu()">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
-          </div>
-          <textarea id="composerInput" rows="1" placeholder="How can Nenemi help?"></textarea>
-          <div class="mic-btn" id="homeMic" title="Say it instead">
-            <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
-          </div>
-          <div class="send-btn" onclick="sendCapture()">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
         </div>
 
         <div class="chat-log" id="chatLog"></div>
-        <div class="home-base" id="base">
-          <div class="bcard" onclick="go('rooms')"><div class="bc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7M5.5 9.5V20h13V9.5"/></svg></div><div class="bc-name">Rooms</div><div class="bc-sub" id="bcRooms">Where you left off.</div><div class="bc-tag" id="bcRoomsTag"></div></div>
-          <div class="bcard" onclick="go('calendar')"><div class="bc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><div class="bc-name">My day</div><div class="bc-sub" id="bcDay">Dump it, get a day back.</div><div class="bc-tag" id="bcDayTag"></div></div>
-          <div class="bcard dark" onclick="go('stuck')"><div class="bc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/></svg></div><div class="bc-name">Feeling stuck?</div><div class="bc-sub">Four doors, then one small move.</div><div class="bc-tag">We got you</div></div>
-          <div class="bcard" onclick="goHumans()"><div class="bc-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4.5-6.2"/></svg></div><div class="bc-name">Human support</div><div class="bc-sub">Coaches, therapists, and 988. Real people, one tap.</div><div class="bc-tag">Always here</div></div>
+
+        <div class="home-return" id="homeReturn"></div>
+
+        <div class="home-rooms" id="homeRoomsSection">
+          <div class="section-row"><h2>Your rooms</h2><span class="mono">ORDERED BY RECENCY</span></div>
+          <div class="room-grid-preview" id="homeRoomsPreview"></div>
         </div>
       </div>
     </div>
@@ -1160,6 +1156,43 @@
     if (dEl) dEl.textContent = next ? `${next.name} at ${hourLabel(next.start)}.${next.kind === 'buffer' ? '' : ' Air after.'}` : list.length ? 'The day is done. Nothing left on it.' : 'Nothing planned yet. Dump it, get a day back.';
     if (dTag) dTag.textContent = new Date().toLocaleDateString(undefined, { weekday: 'long' });
   }
+  // Home, below the box: one quiet line back into wherever you left off, then a small preview of the rooms themselves.
+  function renderHomeReturn() {
+    const el = document.getElementById('homeReturn'); if (!el) return;
+    const mine = rooms.filter(r => !r.demo && !r.archived);
+    const last = (lastRoomId && rooms.find(r => r.id === lastRoomId)) || mine[0] || null;
+    if (!last) { el.innerHTML = `<div class="hr-empty">Nothing to return to yet. Say something above and it makes a room.</div>`; }
+    else {
+      const open = (last.loops || []).find(l => !l.resolved);
+      el.innerHTML = `<div class="hr-line" onclick="openRoom('${last.id}')"><span class="hr-k">Where you left off</span><span>${escapeHtml(last.name)}${open ? ' — ' + escapeHtml(open.text) : ''}</span></div>`;
+    }
+    renderHomeRoomsPreview(mine);
+  }
+  function renderHomeRoomsPreview(mine) {
+    const el = document.getElementById('homeRoomsPreview'); if (!el) return;
+    mine = mine || rooms.filter(r => !r.demo && !r.archived);
+    const list = mine.slice().sort(roomOrder).slice(0, 5);
+    el.innerHTML = list.map(r => {
+      const openCount = r.loops.filter(l => !l.resolved).length;
+      return `<div class="rgp-card" onclick="openRoom('${r.id}')">
+        <div class="rgp-name">${escapeHtml(r.name)}</div>
+        <div class="rgp-sub">${escapeHtml(r.one_liner)}</div>
+        <div class="rgp-meta">${openCount > 0 ? openCount + ' to pick up' : 'resting'}</div>
+      </div>`;
+    }).join('') + `<div class="rgp-more" onclick="go('rooms')">${mine.length ? 'View all rooms →' : 'Start a room →'}</div>`;
+  }
+  let roomsMegaCloseT = null;
+  function openRoomsMega() {
+    clearTimeout(roomsMegaCloseT);
+    const el = document.getElementById('roomsMega'); if (!el) return;
+    const mine = rooms.filter(r => !r.demo && !r.archived).slice().sort(roomOrder).slice(0, 4);
+    el.innerHTML = mine.map(r => `<div class="tn-mi" onclick="openRoom('${r.id}')">${escapeHtml(r.name)}<span>${escapeHtml(r.one_liner)}</span></div>`).join('')
+      + `<div class="tn-mi" onclick="go('rooms')">${mine.length ? 'View all rooms' : 'Start a room'}<span>${mine.length} of ${auth.roomLimit} free rooms</span></div>`;
+    el.hidden = false;
+  }
+  function closeRoomsMegaSoon() {
+    roomsMegaCloseT = setTimeout(() => { const el = document.getElementById('roomsMega'); if (el) el.hidden = true; }, 220);
+  }
   function go(id) {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
@@ -1168,11 +1201,13 @@
     const nav = document.getElementById('nav-' + id);
     if (nav) nav.classList.add('active');
     closeDayMenu();
-    const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id === 'notes' ? 'calendar' : id);
+    closeRoomsMegaSoon();
+    const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id === 'lockdown' ? 'stuck' : id);
     if (id === 'notes') renderNotes();
     document.querySelectorAll('.topnav .tn').forEach(n => n.classList.toggle('active', n.id === tnId));
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
+    if (id === 'home') renderHomeReturn();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
     if (id === 'stuck') showDoors();
     stopVoice();
@@ -1203,16 +1238,19 @@
     // "What's taking up space?" becomes "What's taking up space, Marcos?" when the name is known
     const name = userFirstName(); let line = g.line.replace(/\*/g, '');
     if (name) { const m = line.match(/^(.*?)([.?!]*)$/); line = `${m[1]}, ${name}${m[2]}`; }
-    el.innerHTML = `<span class="accent">${escapeHtml(line)}</span>`;
+    const timeWord = g.hello.split(' · ')[0];
+    el.innerHTML = `<span class="hello">${escapeHtml(timeWord)}</span><span class="accent">${escapeHtml(line)}</span>`;
   }
 
   function toggleMenu() {
-    document.getElementById('plusMenu').classList.toggle('open');
-    document.getElementById('plusBtn').classList.toggle('open');
+    const menu = document.getElementById('plusMenu'), btn = document.getElementById('plusBtn');
+    if (!menu || !btn) return;
+    menu.classList.toggle('open'); btn.classList.toggle('open');
   }
   function closeMenu() {
-    document.getElementById('plusMenu').classList.remove('open');
-    document.getElementById('plusBtn').classList.remove('open');
+    const menu = document.getElementById('plusMenu'), btn = document.getElementById('plusBtn');
+    if (!menu || !btn) return;
+    menu.classList.remove('open'); btn.classList.remove('open');
   }
   function closeMenuAnd(id) { closeMenu(); go(id); }
   function toggleDayMenu(ev) { ev.stopPropagation(); const m = document.getElementById('dayMenu'); m.hidden = !m.hidden; if (!m.hidden) setTimeout(() => document.addEventListener('click', closeDayMenu, { once: true }), 0); }
@@ -1228,7 +1266,7 @@
   document.addEventListener('click', (e) => {
     const menu = document.getElementById('plusMenu');
     const btn = document.getElementById('plusBtn');
-    if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
+    if (menu && btn && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
   });
 
   const roomIconSvg = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 7.5L8 2l6 5.5M3.5 6.5V13.5h9V6.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -1871,7 +1909,7 @@
       (d.loops_to_add || []).forEach(t => { if (t && !room.loops.some(l => l.text.toLowerCase() === t.toLowerCase())) room.loops.push({ text: t, resolved: false }); });
       (d.loops_to_resolve || []).forEach(t => { const l = room.loops.find(l => l.text.toLowerCase() === String(t).toLowerCase()); if (l) l.resolved = true; });
       if (d.brief) room.brief = d.brief;
-      save(); renderRoomList(); if (currentRoom && currentRoom.id === room.id) renderRoomView();
+      save(); renderRoomList(); renderHomeReturn(); if (currentRoom && currentRoom.id === room.id) renderRoomView();
       log.innerHTML += `<div class="bubble dos confirm">${reply || 'Filed under ' + escapeHtml(room.name) + '.'}<br><span class="mini-btn" onclick="openRoom('${room.id}')">Open ${escapeHtml(room.name)}</span></div>`;
       return;
     }
@@ -1884,7 +1922,7 @@
       const room = { id: 'r' + Date.now(), name: d.room_name || note.split(/\s+/).slice(0, 4).join(' '), one_liner: d.one_liner || note,
         brief: d.brief || `New room. First note: \u201c${note}\u201d — the Brief will grow from here.`,
         loops: (d.loops_to_add || []).filter(Boolean).map(t => ({ text: t, resolved: false })), log: [{ source, ts: Date.now(), text: note }], link: null };
-      rooms.unshift(room); save(); renderRoomList();
+      rooms.unshift(room); save(); renderRoomList(); renderHomeReturn();
       log.innerHTML += `<div class="bubble dos confirm">${reply || 'Made a room: ' + escapeHtml(room.name) + '.'}<br><span class="mini-btn" onclick="openRoom('${room.id}')">Open ${escapeHtml(room.name)}</span></div>`;
       return;
     }
@@ -1909,7 +1947,7 @@
     const name = words.slice(0, 5).join(' ').replace(/^\w/, c => c.toUpperCase());
     const room = { id: 'r' + Date.now(), name, one_liner: text, brief: `New room. First note: \u201c${text}\u201d — the Brief will grow from here.`,
       loops: [], log: [{ source, ts: Date.now(), text }], link: null };
-    rooms.unshift(room); save(); renderRoomList();
+    rooms.unshift(room); save(); renderRoomList(); renderHomeReturn();
     if (btn) { btn.parentElement.outerHTML = `<div class="bubble dos confirm">Made a room: ${escapeHtml(name)}.</div>`; setTimeout(() => openRoom(room.id), 500); }
     else openRoom(room.id);
   }
@@ -1926,7 +1964,7 @@
   function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
   document.getElementById('composerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCapture(); } });
-  function growComposer() { const t = document.getElementById('composerInput'); t.style.height = 'auto'; t.style.height = Math.max(26, Math.min(t.scrollHeight, window.innerHeight * 0.4)) + 'px'; const pill = document.getElementById('composerPill'); if (pill) pill.classList.toggle('has-text', t.value.trim().length > 0); }
+  function growComposer() { const t = document.getElementById('composerInput'); t.style.height = 'auto'; t.style.height = Math.max(108, Math.min(t.scrollHeight, window.innerHeight * 0.4)) + 'px'; const pill = document.getElementById('composerPill'); if (pill) pill.classList.toggle('has-text', t.value.trim().length > 0); }
   document.getElementById('composerInput').addEventListener('input', growComposer);
   document.getElementById('quickAddInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); quickAdd(); } });
 
@@ -2774,6 +2812,7 @@
   restore();
   renderCal();
   renderRoomList();
+  renderHomeReturn();
   renderGreeting();
   initAuth().then(() => { renderGreeting(); return pullState(); }).then(() => { if (window.__afterCheckout) afterCheckout(); });
 
