@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   /* monochrome: black, white, and the greys between. the accent is white. */
   :root {
@@ -85,6 +85,16 @@
     --line: rgba(244,242,236,0.09); --line2: rgba(244,242,236,0.16); --sage: #F4F2EC; --sage-text: #D6D4CE; --sage-fill: rgba(244,242,236,0.10); --on-sage: #0A0A0A; --glow2: #171717; --btn: #F4F2EC; --btn-ink: #0A0A0A;
     color: var(--ink);
   }
+  /* the calendar keeps its own warm look in both app themes — it's one chosen aesthetic, not a light-theme variant.
+     #evtSheet (the event editor) is calendar-only but lives outside #pane-calendar in the DOM, so it needs the same override. */
+  #pane-calendar, #evtSheet {
+    --sanctuary: #FBF9F5; --surface: #FFFFFF; --surface2: #F1EBDF; --card: #FFFFFF; --ink: #2A2A26; --muted: #7A7062; --faint: #A39A8C;
+    --line: #EBE3D3; --line2: #E6D9BE; --sage: #C08A4E; --sage-text: #8F6F2E; --sage-fill: rgba(192,138,78,0.14); --on-sage: #FBF9F5;
+    --evt-block: rgba(159,191,166,0.24); --evt-fixed: #2A2A26; --evt-buffer: #FBF6EC; --btn: #2A2A26; --btn-ink: #FBF9F5;
+    --font-body: 'Public Sans', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
+    color: var(--ink);
+  }
+  #pane-calendar { background: var(--sanctuary); }
   .app.quiet .account-slot { display: none; }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -227,10 +237,13 @@
   .cal-inner { max-width: 1180px; margin: 0 auto; padding: 36px 40px 60px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; }
   @media (max-width: 980px) { .cal-inner { grid-template-columns: 1fr; } }
 
-  .cal-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 18px; }
-  .cal-date { font-family: var(--font-body); font-weight: 300; font-size: 42px; line-height: 1.06; letter-spacing: -0.01em; }
-  .cal-sub { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.18em; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line2); }
-  .cal-nav { display: flex; align-items: center; gap: 8px; }
+  .cal-head { padding-bottom: 22px; margin-bottom: 22px; border-bottom: 1px solid var(--ink); }
+  .cal-head-top { display: flex; align-items: baseline; justify-content: space-between; }
+  .cal-sub, .cal-count { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted); text-transform: uppercase; }
+  .cal-head-main { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 16px; }
+  .cal-date { font-family: var(--font-mono); font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; }
+  .cal-date::after { content: '_'; }
+  .cal-nav { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .cal-nav .nav-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .cal-nav .nav-btn:hover { border-color: var(--sage); color: var(--sage-text); }
   .cal-nav .nav-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
@@ -243,13 +256,17 @@
   .ag-row .hl { width: 64px; flex-shrink: 0; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 6px; }
   .ag-row.now .hl { color: var(--sage-text); }
   .ag-row .hb { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-  .ag-card { background: var(--evt-block); border-radius: 10px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
+  .ag-card { background: var(--evt-block); border-radius: 12px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
   .ag-card:hover { transform: translateX(2px); }
   .ag-card.fixed { background: var(--evt-fixed); }
-  .ag-card.buffer { background: var(--evt-buffer); }
+  .ag-card.buffer { background: var(--evt-buffer); border: 1px dashed var(--line2); }
   .ag-card.past { opacity: 0.55; }
-  .ag-title { font-size: 14px; font-weight: 600; color: var(--ink); }
-  .ag-meta { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--muted); margin-top: 4px; }
+  .ag-title { font-family: var(--font-body); font-size: 15px; font-weight: 700; letter-spacing: -0.005em; color: var(--ink); }
+  .ag-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: #5F7A65; margin-top: 4px; text-transform: uppercase; }
+  .ag-card.fixed .ag-title { color: #FBF9F5; }
+  .ag-card.fixed .ag-meta { color: #C7A9E0; }
+  .ag-card.buffer .ag-title { color: #6E5A34; }
+  .ag-card.buffer .ag-meta { color: #A28638; }
   .ag-now { height: 1px; background: var(--sage); position: relative; margin: 2px 0; }
   .ag-now::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
   .ag-empty { color: var(--faint); font-size: 13px; padding: 22px 0; text-align: center; }
@@ -609,7 +626,7 @@
     .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
     .hub-header { padding-top: 64px; }
     .hub-title { font-size: 28px; }
-    .kicker, .cal-sub { font-size: 10px; padding-bottom: 8px; margin-bottom: 10px; }
+    .kicker { font-size: 10px; padding-bottom: 8px; margin-bottom: 10px; }
     .room-grid { padding: 14px 14px 40px; grid-template-columns: 1fr 1fr; gap: 10px; }
     .room-card, .new-room-card { padding: 14px; border-radius: 16px; }
     .room-card-top { margin-bottom: 8px; }
@@ -642,8 +659,11 @@
     .sc-title { font-size: 21px; }
     .sc-desc { font-size: 12px; }
     .sc-dump { min-height: 88px; font-size: 13.5px; }
-    .cal-head { flex-wrap: wrap; gap: 10px; }
-    .cal-date { font-size: 28px; }
+    .cal-head { padding-bottom: 16px; margin-bottom: 16px; }
+    .cal-sub, .cal-count { font-size: 11px; }
+    .cal-head-main { flex-wrap: wrap; gap: 10px; }
+    .cal-date { font-size: 30px; }
+    .cal-nav .nav-pill { padding: 8px 10px; font-size: 9px; }
     .ag-row .hl { width: 50px; font-size: 9.5px; }
     .ag-row { gap: 10px; }
     .sheet { padding: 18px; }
@@ -793,14 +813,17 @@
         <div class="cal-inner">
           <div class="cal-left">
             <div class="cal-head">
-              <div>
-                <div class="cal-sub" id="calSub">Sunday, September 6</div>
-                <div class="cal-date" id="calDate">Today</div>
+              <div class="cal-head-top">
+                <div class="cal-sub" id="calSub">TUE · SEP 15</div>
+                <div class="cal-count" id="calCount">0 ITEMS</div>
               </div>
-              <div class="cal-nav">
-                <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <div class="nav-pill" onclick="goToday()" title="Back to today">Day by day</div>
-                <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="cal-head-main">
+                <div class="cal-date" id="calDate">Today</div>
+                <div class="cal-nav">
+                  <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <div class="nav-pill" onclick="goToday()" title="Back to today">Day by day</div>
+                  <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                </div>
               </div>
             </div>
             <div class="agenda" id="agenda"></div>
@@ -1909,8 +1932,9 @@
   function renderCal() {
     const isToday = dkey(selectedDay) === dkey(today);
     document.getElementById('calDate').textContent = dayTitle(selectedDay);
-    document.getElementById('calSub').textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'long' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}`;
+    document.getElementById('calSub').textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'short' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
     const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
+    document.getElementById('calCount').textContent = `${list.length} ${list.length === 1 ? 'ITEM' : 'ITEMS'}`;
     const nowH = today.getHours() + today.getMinutes() / 60;
     const el = document.getElementById('agenda');
     if (!list.length) {
