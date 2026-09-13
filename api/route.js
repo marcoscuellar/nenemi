@@ -3,13 +3,17 @@
 // POST /api/route
 //   headers: Authorization: Bearer <clerk token>   (or ?device=<sync code> while signed out)
 //   body:    { text, rooms: [{ id, name, one_liner, brief, loops: [..], recent: [..] }], loose: [..],
-//              mode?: 'end_of_day_recap' | 'wrap_up', pinned_room_id?: string }
+//              mode?: 'end_of_day_recap' | 'wrap_up' | 'shrink_move', pinned_room_id?: string }
 //   returns: { action, room_id, room_name, one_liner, note, loops_to_add, loops_to_resolve, brief, reply }
 //
 // pinned_room_id locks the decision to that one room (used when the person is
 // typing/tapping inside a room's own box, where routing is already decided) —
 // enforced server-side, not just prompted for. mode "wrap_up" needs no typed
 // text: it asks Claude to recap that room's own recent activity instead.
+// mode "shrink_move" asks for one smaller first step for the room's current
+// next move — atomic by construction: the server clears loops_to_add,
+// loops_to_resolve and brief on the way out, so only "note"/"reply" carry
+// anything back, whatever the model returns.
 //
 // Claude reads the dump plus a trimmed view of the user's rooms and decides:
 // file it, start a room, hold it loose, or hand off to the stuck sanctuary.
@@ -67,6 +71,8 @@ If the request includes "pinned_room_id", the person is typing directly inside t
 
 When mode is "wrap_up", the person tapped a "wrap up today's progress" button inside pinned_room_id's own room — they typed nothing new. Look only at that room's recent_notes and open_loops already provided: action is "file" targeting pinned_room_id; note is a one or two sentence recap of today's activity in the room, written like a log entry ("Wrapped up: ..."); brief is the refreshed Where-you-left-off text, same rules as always; reply is one short warm confirmation line, e.g. "Today's saved. Pick up here next time."; loops_to_add/loops_to_resolve only when the recent notes clearly imply a change, otherwise empty. Never invent progress that isn't in recent_notes.
 
+When mode is "shrink_move", the person tapped "Too big? Make it smaller" on one specific next move inside pinned_room_id, given as "they_said". It feels too big to start. note must be exactly one smaller physical first step that takes under about a minute to start or finish — concrete, no preamble, no "you could", just the move itself in a few words (e.g. "Open the file and read the first paragraph"). reply can repeat the same move warmly in one short line. Nothing else about the room changes.
+
 Never invent facts that aren't in what they said or in the room data. When unsure between filing and a new room, file.`;
 
 function trim(s, n) { return typeof s === 'string' ? (s.length > n ? s.slice(0, n) + '…' : s) : ''; }
@@ -92,10 +98,11 @@ export default async function handler(req, res) {
   if (who.error) return res.status(who.status).json({ error: who.error });
 
   const body = req.body || {};
-  const mode = body.mode === 'end_of_day_recap' ? 'end_of_day_recap' : body.mode === 'wrap_up' ? 'wrap_up' : null;
+  const mode = body.mode === 'end_of_day_recap' ? 'end_of_day_recap' : body.mode === 'wrap_up' ? 'wrap_up' : body.mode === 'shrink_move' ? 'shrink_move' : null;
   const pinnedRoomId = body.pinned_room_id ? String(body.pinned_room_id) : null;
   const text = trim(String(body.text || '').trim(), MAX_TEXT);
   if (!text && mode !== 'wrap_up') return res.status(400).json({ error: 'nothing to route' });
+  if (mode === 'shrink_move' && !pinnedRoomId) return res.status(400).json({ error: 'missing pinned room' });
 
   const rooms = roomsForPrompt(body.rooms);
   const loose = (Array.isArray(body.loose) ? body.loose : []).slice(0, 10).map(t => trim(typeof t === 'string' ? t : t?.text, 160));
@@ -134,6 +141,9 @@ export default async function handler(req, res) {
     if (d.action === 'new_room' && !d.room_name) d.room_name = trim(d.note.split(/\s+/).slice(0, 4).join(' '), 60);
     if (d.action === 'day' && mode === 'end_of_day_recap') d.action = 'loose';
     if (d.action !== 'day') d.day = null; else if (d.day !== 'tomorrow') d.day = 'today';
+
+    // shrink_move is atomic: only the replacement step text leaves this endpoint, whatever else the model returned
+    if (mode === 'shrink_move') { d.action = 'file'; d.room_id = pinnedRoomId; d.loops_to_add = []; d.loops_to_resolve = []; d.brief = null; d.day = null; }
 
     return res.status(200).json({ ...d, usage: { input: response.usage.input_tokens, output: response.usage.output_tokens, cached: response.usage.cache_read_input_tokens || 0 } });
   } catch (err) {

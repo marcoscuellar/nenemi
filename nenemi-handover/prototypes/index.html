@@ -294,6 +294,8 @@
   .kind-chip.on { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
   .sheet-notes { min-height: 84px; font-family: var(--font-body); font-size: 14px; line-height: 1.5; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; resize: vertical; outline: none; }
   .sheet-notes:focus { border-color: var(--sage); }
+  .sheet-input { font-family: var(--font-body); font-size: 14.5px; text-transform: none; letter-spacing: normal; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; }
+  .sheet-input:focus { border-color: var(--sage); }
   .sheet-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
   .sheet-actions .spacer { flex: 1; }
   .sheet-btn { font-family: var(--font-body); font-weight: 600; font-size: 13.5px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
@@ -414,6 +416,10 @@
   .re-next-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; white-space: nowrap; }
   .re-btn { flex-shrink: 0; padding: 0; border-radius: 0; border: none; background: transparent; color: inherit; font-family: var(--font-body); font-weight: 500; font-size: 18px; cursor: pointer; white-space: nowrap; }
   .re-next:hover { filter: brightness(1.05); }
+  .shrink-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 10px 6px 0; }
+  .shrink-link { font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; }
+  .shrink-link:hover { color: var(--ink); }
+  .shrink-status { font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
   .room-quiet { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
   .room-next { font-size: 13px; color: var(--ink); line-height: 1.4; margin: 10px 0 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .room-next-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-right: 6px; }
@@ -737,6 +743,25 @@
         </div>
       </div>
     </div>
+    <div class="sheet-back" id="wrapupSheet" hidden onclick="if (event.target === this) closeWrapupSheet(false)">
+      <div class="sheet">
+        <div class="sheet-row" style="justify-content:space-between; align-items:center;">
+          <div class="sheet-kicker">Wrap up</div>
+          <div class="icon-btn" style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)" onclick="closeWrapupSheet(false)" title="Close">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
+          </div>
+        </div>
+        <p class="sheet-p" id="wrapupPreview"></p>
+        <label class="sheet-label">Before you go, what's the very first physical move when you open this room next time?
+          <input class="sheet-input" id="wrapupBaton" placeholder="e.g. Open the file and read the first paragraph" />
+        </label>
+        <div class="sheet-actions">
+          <button class="sheet-btn ghost" onclick="closeWrapupSheet(false)">Skip for now</button>
+          <div class="spacer"></div>
+          <button class="sheet-btn primary" onclick="closeWrapupSheet(true)">Save</button>
+        </div>
+      </div>
+    </div>
     <div class="sheet-back" id="syncSheet" hidden onclick="if (event.target === this) closeSyncSheet()">
       <div class="sheet">
         <div class="sheet-kicker">My day · in your calendar app</div>
@@ -956,6 +981,7 @@
           <div class="rv-col">
             <div class="section-label">Still open</div>
             <div id="rvLoops"></div>
+            <div class="log-more" id="rvLoopsMore" hidden onclick="toggleAllLoops()"></div>
           </div>
           <div class="rv-col">
             <div class="section-label">Recent</div>
@@ -1362,14 +1388,33 @@
     if (r.link) { linkRow.style.display = 'flex'; document.getElementById('rvLinkLabel').textContent = r.link.label; }
     else { linkRow.style.display = 'none'; }
 
-    document.getElementById('rvLoops').innerHTML = r.loops.length ? r.loops.map((l, i) => `
-      <div class="loop-row ${l.resolved ? 'resolved' : ''}">
+    const indexedLoops = r.loops.map((loop, index) => ({ loop, index }));
+    const openLoops = indexedLoops.filter(x => !x.loop.resolved);
+    const resolvedLoops = indexedLoops.filter(x => x.loop.resolved);
+    const loopsExpanded = showAllLoopsFor === r.id;
+    const visibleLoops = loopsExpanded ? [...openLoops, ...resolvedLoops] : openLoops.slice(0, 3);
+    const hiddenOpen = openLoops.length - Math.min(openLoops.length, 3);
+    const loopRow = ({ loop: l, index: i }) => `
+      <div class="loop-row ${l.resolved ? 'resolved' : ''}" data-idx="${i}">
         <div class="loop-check" onclick="toggleLoop(${i})"><svg viewBox="0 0 16 16" fill="none" stroke-width="2"><path d="M3 8l3.5 3.5L13 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="loop-text">${l.text}</div>
         ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop('${l.text.replace(/'/g, "\\'")}')">Sit with me <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
-      </div>
-    `).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
-    document.querySelectorAll('#rvLoops .loop-text').forEach((el, i) => makeEditable(el, { set: (t) => { r.loops[i].text = t; } }));
+      </div>`;
+    document.getElementById('rvLoops').innerHTML = visibleLoops.length ? visibleLoops.map(loopRow).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
+    document.querySelectorAll('#rvLoops .loop-text').forEach((el, idx) => makeEditable(el, { set: (t) => { r.loops[visibleLoops[idx].index].text = t; } }));
+
+    const loopsMore = document.getElementById('rvLoopsMore');
+    const canExpandLoops = hiddenOpen > 0 || resolvedLoops.length > 0;
+    loopsMore.hidden = !canExpandLoops;
+    if (canExpandLoops) {
+      if (loopsExpanded) { loopsMore.textContent = 'Show fewer loops'; }
+      else {
+        const parts = [];
+        if (hiddenOpen > 0) parts.push(`${hiddenOpen} more open`);
+        if (resolvedLoops.length > 0) parts.push(`${resolvedLoops.length} completed`);
+        loopsMore.textContent = `View all loops (${parts.join(', ')}) ›`;
+      }
+    }
 
     const shown = showAllLogFor === r.id ? r.log : r.log.slice(0, 3);
     const more = document.getElementById('rvLogMore'); more.hidden = r.log.length <= 3 || showAllLogFor === r.id; more.textContent = `All ${r.log.length} →`;
@@ -1424,6 +1469,8 @@
   function toggleLoop(i) { currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved; save(); renderRoomView(); }
   let showAllLogFor = null;
   function showAllLog() { showAllLogFor = currentRoom && currentRoom.id; renderRoomView(); }
+  let showAllLoopsFor = null;
+  function toggleAllLoops() { showAllLoopsFor = (currentRoom && showAllLoopsFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
 
   // ---------- re-entry: pay the restart tax in ten seconds ----------
   function lastTouch(r) { const e = r.log.find(x => x.ts); return e ? e.ts : null; }
@@ -1450,7 +1497,7 @@
     if (/\b(calendar|build (a|the|my) day|smart cal|the day)\b/i.test(pickUpTask)) { go('calendar'); return; }
     const i = currentRoom.loops.findIndex(l => !l.resolved);
     if (i < 0) { const q = document.getElementById('quickAddInput'); if (q) q.focus(); return; }
-    const row = document.querySelectorAll('#rvLoops .loop-row')[i];
+    const row = document.querySelector(`#rvLoops .loop-row[data-idx="${i}"]`);
     if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('lit'); setTimeout(() => row.classList.remove('lit'), 2400); }
   }
   // click to edit, in place: Enter or blur saves, Escape reverts. no separate edit mode to find first.
@@ -1495,7 +1542,42 @@
           <div class="re-next-text">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
         </div>
         <span class="re-btn" aria-hidden="true">→</span>
-      </div>`;
+      </div>
+      ${next ? `<div class="shrink-row">
+        <span class="shrink-link" id="shrinkLink" onclick="event.stopPropagation(); shrinkMove()">Too big? Make it smaller.</span>
+        <span class="shrink-status" id="shrinkStatus" hidden></span>
+      </div>` : ''}`;
+  }
+  // "too big? make it smaller" — one smaller physical first step, atomic: only this loop's text ever changes.
+  async function shrinkMove() {
+    if (!currentRoom) return;
+    const idx = currentRoom.loops.findIndex(l => !l.resolved);
+    if (idx < 0) return;
+    const link = document.getElementById('shrinkLink'); const status = document.getElementById('shrinkStatus');
+    if (!link) return;
+    const original = currentRoom.loops[idx].text;
+    link.textContent = 'Making it smaller…';
+    status.hidden = true; status.textContent = '';
+    const fail = () => {
+      link.textContent = 'Too big? Make it smaller.';
+      status.hidden = false; status.textContent = "Can't shrink it further right now.";
+      clearTimeout(shrinkMove._t); shrinkMove._t = setTimeout(() => { status.hidden = true; }, 4000);
+    };
+    if (!(auth.smart && location.protocol !== 'file:')) { fail(); return; }
+    try {
+      const ctx = {
+        mode: 'shrink_move',
+        pinned_room_id: currentRoom.id,
+        text: original,
+        rooms: [{ id: currentRoom.id, name: currentRoom.name, one_liner: currentRoom.one_liner, brief: currentRoom.brief, loops: currentRoom.loops.filter(l => !l.resolved).map(l => l.text), recent: currentRoom.log.slice(0, 4).map(e => e.text) }],
+      };
+      const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
+      if (!r.ok) throw new Error('route ' + r.status);
+      const d = await r.json();
+      const smaller = (d.note || d.reply || '').trim();
+      if (!smaller) throw new Error('empty');
+      if (currentRoom.loops[idx] && !currentRoom.loops[idx].resolved) { currentRoom.loops[idx].text = smaller; save(); renderRoomView(); }
+    } catch (e) { fail(); }
   }
   function openRoomLink() { if (currentRoom && currentRoom.link) window.open(currentRoom.link.url, '_blank'); }
 
@@ -1505,11 +1587,13 @@
     if (!text) return;
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
     currentRoom.log.unshift({ source, ts: Date.now(), text });
-    currentRoom.brief = "Just logged: \u201c" + text + "\u201d — the Brief will re-summarize from here.";
     input.value = '';
     save(); renderRoomView();
   }
-  // a deliberate closing action for a room: recap today's own activity, in the room's own words, not a guess made quietly in the background.
+  // a deliberate closing action for a room: recap today's own activity, in the room's own words,
+  // then a human baton pass — future-them, not Claude, chooses where the next visit starts.
+  function normalizeLoopText(t) { return (t || '').trim().toLowerCase().replace(/\s+/g, ' '); }
+  let pendingWrapup = null;
   async function wrapUpDay() {
     if (!currentRoom) return;
     const btn = document.getElementById('btnWrapUp');
@@ -1521,14 +1605,7 @@
     btn.disabled = true;
     status.hidden = false; status.textContent = 'Wrapping up…';
 
-    const finish = (note, brief) => {
-      currentRoom.log.unshift({ source: 'recap', ts: Date.now(), text: note });
-      if (brief) currentRoom.brief = brief;
-      save(); renderRoomView();
-      status.hidden = false; status.textContent = 'Saved.';
-      btn.disabled = false;
-      setTimeout(() => { status.hidden = true; }, 2500);
-    };
+    let result = { note: 'Wrapped up for today.', brief: null, loopsToAdd: [], loopsToResolve: [], preview: '' };
 
     if (auth.smart && location.protocol !== 'file:') {
       try {
@@ -1540,13 +1617,52 @@
         const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
         if (!r.ok) throw new Error('route ' + r.status);
         const d = await r.json();
-        (d.loops_to_add || []).forEach(t => { if (t && !currentRoom.loops.some(l => l.text.toLowerCase() === t.toLowerCase())) currentRoom.loops.push({ text: t, resolved: false }); });
-        (d.loops_to_resolve || []).forEach(t => { const l = currentRoom.loops.find(l => l.text.toLowerCase() === String(t).toLowerCase()); if (l) l.resolved = true; });
-        finish(d.note || d.reply || 'Wrapped up for today.', d.brief);
-        return;
-      } catch (e) { /* falls through to the offline version below */ }
+        result = {
+          note: d.note || d.reply || 'Wrapped up for today.',
+          brief: d.brief || null,
+          loopsToAdd: d.loops_to_add || [],
+          loopsToResolve: d.loops_to_resolve || [],
+          preview: d.brief || d.note || d.reply || '',
+        };
+      } catch (e) { /* offline defaults above stand */ }
     }
-    finish('Wrapped up for today.', null);
+
+    btn.disabled = false; status.hidden = true;
+    const suggested = result.loopsToAdd[0] || (currentRoom.loops.find(l => !l.resolved) || {}).text || '';
+    openWrapupSheet(result, suggested);
+  }
+  function openWrapupSheet(result, suggested) {
+    pendingWrapup = result;
+    document.getElementById('wrapupPreview').textContent = result.preview || "Today's wrapped up.";
+    document.getElementById('wrapupBaton').value = suggested || '';
+    document.getElementById('wrapupSheet').hidden = false;
+  }
+  // Save and "Skip for now"/× all commit the AI recap — only whether a human baton comes along differs.
+  function closeWrapupSheet(commit) {
+    const result = pendingWrapup;
+    pendingWrapup = null;
+    document.getElementById('wrapupSheet').hidden = true;
+    if (!result) return;
+    const baton = commit ? document.getElementById('wrapupBaton').value : '';
+    applyWrapup(result, baton);
+    const status = document.getElementById('wrapUpStatus');
+    status.hidden = false; status.textContent = 'Saved.';
+    setTimeout(() => { status.hidden = true; }, 2500);
+  }
+  function applyWrapup(result, baton) {
+    const r = currentRoom;
+    if (!r) return;
+    if (result.brief) r.brief = result.brief;
+    (result.loopsToResolve || []).forEach(t => { const l = r.loops.find(l => normalizeLoopText(l.text) === normalizeLoopText(t)); if (l) l.resolved = true; });
+    (result.loopsToAdd || []).forEach(t => { if (t && !r.loops.some(l => normalizeLoopText(l.text) === normalizeLoopText(t))) r.loops.push({ text: t, resolved: false }); });
+    r.log.unshift({ source: 'recap', ts: Date.now(), text: result.note || 'Wrapped up for today.' });
+    const trimmedBaton = normalizeLoopText(baton);
+    if (trimmedBaton) {
+      const existingIdx = r.loops.findIndex(l => !l.resolved && normalizeLoopText(l.text) === trimmedBaton);
+      if (existingIdx >= 0) { const [loop] = r.loops.splice(existingIdx, 1); r.loops.unshift(loop); }
+      else { r.loops.unshift({ text: baton.trim(), resolved: false }); }
+    }
+    save(); renderRoomView();
   }
   // a photo or file, scoped to the room it's dropped into — there's no way to auto-route a file the way text gets routed,
   // so this only lives inside a room, where the destination is already decided.
