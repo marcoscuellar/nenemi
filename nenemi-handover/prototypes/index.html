@@ -422,7 +422,10 @@
   .dp-mic { position: absolute; right: 10px; bottom: 10px; width: 26px; height: 26px; color: var(--faint); }
   .dp-from { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin: 18px 0 6px; }
   .dp-fromtxt { font-size: 12.5px; color: var(--muted); margin-bottom: 18px; }
-  .dp-btn { width: 100%; background: var(--teal); color: var(--on-sage); font-weight: 700; text-align: center; border: none; border-radius: 12px; padding: 13px; font-size: 14px; cursor: pointer; }
+  .dp-actions { display: flex; gap: 8px; }
+  .dp-attach { flex-shrink: 0; width: 46px; background: var(--surface); color: var(--muted); border: 1px solid var(--line2); border-radius: 12px; padding: 13px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .dp-attach:hover { color: var(--teal); border-color: var(--teal); }
+  .dp-btn { flex: 1; background: var(--teal); color: var(--on-sage); font-weight: 700; text-align: center; border: none; border-radius: 12px; padding: 13px; font-size: 14px; cursor: pointer; }
   .dp-btn:hover { background: var(--teal-soft); }
   /* desktop: room content left, dump panel sticky right — same idea as the calendar's day + smart-cal split */
   @media (min-width: 981px) {
@@ -481,9 +484,6 @@
   .log-text { font-size: 15px; line-height: 1.55; }
   .quickadd { margin: 20px 0 28px; display: flex; gap: 8px; background: var(--surface2); color: var(--ink); border: 1px solid var(--line2); border-radius: 999px; padding: 8px; align-items: center; }
   .quickadd input { padding-left: 6px; }
-  .rv-plus-wrap { position: relative; flex-shrink: 0; }
-  .rv-plus-wrap .plus-menu { top: calc(100% + 10px); bottom: auto; left: auto; right: -6px; width: 190px; background: var(--surface); border: 1px solid var(--ink); }
-  .rv-plus-wrap .menu-item { color: var(--ink); }
   .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15px; color: var(--ink); min-width: 0; }
   .quickadd input::placeholder { color: var(--faint); opacity: 1; }
   .quickadd .mic-btn { color: var(--faint); opacity: 1; }
@@ -990,21 +990,6 @@
         <div class="rv-capture-panel">
           <div class="dp-head">
             <div class="dp-k">Leave it here</div>
-            <div class="rv-plus-wrap">
-              <div class="plus-menu" id="roomPlusMenu">
-                <div class="menu-item" onclick="pickRoomUpload('image/*')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
-                  Add a photo
-                </div>
-                <div class="menu-item" onclick="pickRoomUpload('application/pdf')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
-                  Add a file
-                </div>
-              </div>
-              <button type="button" class="plus-btn" id="roomAttachBtn" onclick="toggleRoomPlusMenu()" title="Add a photo or file">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
-              </button>
-            </div>
           </div>
           <h4>Dump anything.</h4>
           <div class="dp-sub">No organizing needed. A name, a worry, a next step, a half-thought. NENEMI files it into this room for you.</div>
@@ -1016,7 +1001,15 @@
           <div class="quickadd-note" id="quickAddNote" hidden></div>
           <div class="dp-from">In this room</div>
           <div class="dp-fromtxt" id="dpFromText"></div>
-          <button type="button" class="dp-btn" onclick="quickAdd()">Add to this room</button>
+          <div class="dp-actions">
+            <button type="button" class="dp-attach" onclick="pickRoomUpload('image/*')" title="Add a photo">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+            </button>
+            <button type="button" class="dp-attach" onclick="pickRoomUpload('application/pdf')" title="Add a file">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
+            </button>
+            <button type="button" class="dp-btn" onclick="quickAdd()">Add to this room</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1717,14 +1710,7 @@
   }
   // a photo or file, scoped to the room it's dropped into — there's no way to auto-route a file the way text gets routed,
   // so this only lives inside a room, where the destination is already decided.
-  function toggleRoomPlusMenu() {
-    const btn = document.getElementById('roomAttachBtn'), menu = document.getElementById('roomPlusMenu');
-    if (!btn || !menu) return;
-    const open = !menu.classList.contains('open');
-    menu.classList.toggle('open', open); btn.classList.toggle('open', open);
-  }
   function pickRoomUpload(accept) {
-    toggleRoomPlusMenu();
     const input = document.getElementById('quickAddFile'); if (!input) return;
     input.accept = accept; input.click();
   }
