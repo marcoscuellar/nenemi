@@ -60,7 +60,19 @@
     --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
     color: var(--ink);
   }
+  /* the calendar keeps its own warm, light surface — that contrast against the dark app is what makes it stand out.
+     #evtSheet (the event editor) is calendar-only but lives outside #pane-calendar in the DOM, so it needs the same override. */
+  #pane-calendar, #evtSheet {
+    --sanctuary: #FBF9F5; --surface: #FFFFFF; --surface2: #F1EBDF; --card: #FFFFFF; --ink: #2A2A26; --muted: #7A7062; --faint: #A39A8C;
+    --line: #EBE3D3; --line2: #E6D9BE; --sage: #3FB7A6; --sage-text: #2C8578; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
+    --evt-block: rgba(63,183,166,0.16); --evt-fixed: #2A2A26; --evt-buffer: #FBF6EC; --btn: #3FB7A6; --btn-ink: #06201C;
+    --font-body: 'Public Sans', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
+    color: var(--ink);
+  }
   #pane-calendar { background: var(--sanctuary); }
+  .main:has(#pane-calendar.active) .wordmark .wm-text { color: #2A2A26; }
+  .main:has(#pane-calendar.active) .wm-mark .wm-arc-b { stroke: #2A2A26; }
+  .main:has(#pane-calendar.active) .wm-mark .wm-dot { fill: #3FB7A6; stroke: #FBF9F5; }
   .app.quiet .account-slot { display: none; }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -223,17 +235,17 @@
   .ag-row .hl { width: 64px; flex-shrink: 0; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 6px; }
   .ag-row.now .hl { color: var(--sage-text); }
   .ag-row .hb { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-  .ag-card { background: var(--ink); border-radius: 12px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
+  .ag-card { background: var(--surface); box-shadow: 0 1px 2px rgba(60,50,30,.07); border-radius: 12px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
   .ag-card:hover { transform: translateX(2px); }
-  .ag-card.fixed { background: var(--ink); }
-  .ag-card.buffer { background: var(--evt-buffer); border: 1px dashed var(--line2); }
+  .ag-card.fixed { background: var(--evt-fixed); box-shadow: 0 6px 16px rgba(42,42,38,.18); }
+  .ag-card.buffer { background: var(--evt-buffer); border: 1px dashed var(--line2); box-shadow: none; }
   .ag-card.past { opacity: 0.55; }
-  .ag-title { font-family: var(--font-body); font-size: 15px; font-weight: 700; letter-spacing: -0.005em; color: var(--sanctuary); }
-  .ag-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--teal-deep); margin-top: 4px; text-transform: uppercase; }
-  .ag-card.fixed .ag-title { color: var(--sanctuary); }
-  .ag-card.fixed .ag-meta { color: #6A4C9C; }
-  .ag-card.buffer .ag-title { color: #D9B36A; }
-  .ag-card.buffer .ag-meta { color: #B49458; }
+  .ag-title { font-family: var(--font-body); font-size: 15px; font-weight: 700; letter-spacing: -0.005em; color: var(--ink); }
+  .ag-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--sage-text); margin-top: 4px; text-transform: uppercase; }
+  .ag-card.fixed .ag-title { color: #FBF9F5; }
+  .ag-card.fixed .ag-meta { color: #C7A9E0; }
+  .ag-card.buffer .ag-title { color: #6E5A34; }
+  .ag-card.buffer .ag-meta { color: #A28638; }
   .ag-now { height: 1px; background: var(--sage); position: relative; margin: 2px 0; }
   .ag-now::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
   .ag-empty { color: var(--faint); font-size: 13px; padding: 22px 0; text-align: center; }
@@ -348,6 +360,11 @@
   .room-style .rs-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
   .room-style .rs-clear { font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; }
   .room-style .rs-clear:hover { color: var(--ink); }
+  .room-style .rs-archive { font-size: 12.5px; color: var(--faint); cursor: pointer; }
+  .room-style .rs-archive:hover { color: var(--muted); }
+  .archived-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 2px; border-top: 1px solid var(--line); font-size: 13px; color: var(--faint); }
+  .archived-restore { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sage-text); cursor: pointer; }
+  .archived-restore:hover { color: var(--ink); }
   .room-name { font-family: var(--font-title); font-weight: 500; font-size: 17px; letter-spacing: 0.01em; margin-bottom: 4px; }
   .room-oneliner { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
   .loop-pill { display: inline-block; font-family: var(--font-mono); font-size: 10.5px; background: var(--sage-fill); color: var(--sage-text); padding: 4px 9px; border-radius: 999px; }
@@ -465,7 +482,7 @@
   .quickadd { margin: 20px 0 28px; display: flex; gap: 8px; background: var(--surface2); color: var(--ink); border: 1px solid var(--line2); border-radius: 999px; padding: 8px; align-items: center; }
   .quickadd input { padding-left: 6px; }
   .rv-plus-wrap { position: relative; flex-shrink: 0; }
-  .rv-plus-wrap .plus-menu { top: calc(100% + 10px); bottom: auto; left: -6px; right: auto; width: 190px; background: var(--surface); border: 1px solid var(--ink); }
+  .rv-plus-wrap .plus-menu { top: calc(100% + 10px); bottom: auto; left: auto; right: -6px; width: 190px; background: var(--surface); border: 1px solid var(--ink); }
   .rv-plus-wrap .menu-item { color: var(--ink); }
   .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15px; color: var(--ink); min-width: 0; }
   .quickadd input::placeholder { color: var(--faint); opacity: 1; }
@@ -1137,7 +1154,7 @@
   function goHumans() { go('humans'); }
   function hourLabel(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); const d = new Date(); d.setHours(hr, m, 0, 0); return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: m ? '2-digit' : undefined }).replace(' ', '').toLowerCase(); }
   function renderBase() {
-    const mine = rooms.filter(r => !r.demo);
+    const mine = rooms.filter(r => !r.demo && !r.archived);
     const last = (lastRoomId && rooms.find(r => r.id === lastRoomId)) || mine[0] || null;
     const open = last ? (last.loops || []).find(l => !l.resolved) : null;
     const rEl = document.getElementById('bcRooms'), rTag = document.getElementById('bcRoomsTag');
@@ -1252,10 +1269,12 @@
   }
   function renderRoomList() {
     renderLoose();
+    const active = rooms.filter(r => !r.archived);
+    const archived = rooms.filter(r => r.archived);
     const countEl = document.getElementById('roomCount');
-    if (countEl) countEl.textContent = `${rooms.length} ${rooms.length === 1 ? 'ROOM' : 'ROOMS'}`;
+    if (countEl) countEl.textContent = `${active.length} ${active.length === 1 ? 'ROOM' : 'ROOMS'}`;
     const el = document.getElementById('roomList');
-    el.innerHTML = rooms.slice().sort(roomOrder).map((r, i) => {
+    el.innerHTML = active.slice().sort(roomOrder).map((r, i) => {
       const nextLoop = r.loops.find(l => !l.resolved);
       const openCount = r.loops.filter(l => !l.resolved).length;
       const badge = openCount > 0 ? `<div class="loop-pill">${openCount} to pick up</div>` : `<div class="loop-pill" style="opacity:0.55">resting</div>`;
@@ -1285,7 +1304,15 @@
       </div>` : `
       <div class="new-room-card limit">
         <div>That's your <b>${auth.roomLimit} free rooms</b>. ${fullAccessLine()}<br>The calendar is always free.${auth.billing ? `<br><span class="mini-btn" onclick="event.stopPropagation(); openFullAccess()">Open full access</span>` : ''}</div>
-      </div>`);
+      </div>`) + (archived.length ? `
+      <div class="toggle-row${showArchived ? ' open' : ''}" onclick="toggleArchived()">
+        <span>${archived.length} archived</span>
+        <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </div>` : '') + (showArchived ? archived.map(r => `
+      <div class="archived-row">
+        <div class="archived-name">${escapeHtml(r.name)}</div>
+        <span class="archived-restore" onclick="event.stopPropagation(); unarchiveRoom('${r.id}')">Bring it back</span>
+      </div>`).join('') : '');
   }
 
   // voices load async in Chrome — cache them, refresh on voiceschanged, never block speech on it.
@@ -1367,7 +1394,8 @@
     const box = document.createElement('div'); box.className = 'room-style'; box.onclick = e => e.stopPropagation();
     box.innerHTML = `<div class="rs-dots"><div class="rs-dot none ${r.color ? '' : 'on'}" title="No color" onclick="setRoomColor(null)"></div>${Object.entries(ROOM_COLORS).map(([k, v]) => `<div class="rs-dot ${r.color === k ? 'on' : ''}" style="background:${v}" title="${k}" onclick="setRoomColor('${k}')"></div>`).join('')}</div>
       <div class="rs-icons">${Object.keys(ROOM_ICONS).map(k => `<div class="rs-ic ${r.icon === 'i:' + k ? 'on' : ''}" title="${k}" onclick="setRoomIconKey('${k}')">${roomIconSvgFor(k)}</div>`).join('')}</div>
-      <div class="rs-row"><input id="rsIcon" placeholder="Or any emoji, or a letter" maxlength="8" value="${escapeHtml(r.icon && !r.icon.startsWith('i:') ? r.icon : '')}" oninput="setRoomIcon(this.value)"><span class="rs-clear" onclick="setRoomIcon('')">Clear</span></div>`;
+      <div class="rs-row"><input id="rsIcon" placeholder="Or any emoji, or a letter" maxlength="8" value="${escapeHtml(r.icon && !r.icon.startsWith('i:') ? r.icon : '')}" oninput="setRoomIcon(this.value)"><span class="rs-clear" onclick="setRoomIcon('')">Clear</span></div>
+      ${!r.demo ? `<div class="rs-row"><span class="rs-archive" onclick="archiveCurrentRoom()">Archive this room</span></div>` : ''}`;
     host.appendChild(box);
     setTimeout(() => document.addEventListener('click', function off() { const b = host.querySelector('.room-style'); if (b) b.remove(); document.removeEventListener('click', off); }), 0);
   }
@@ -1379,6 +1407,18 @@
     const rvIcon = document.getElementById('rvIcon'); const box = rvIcon.querySelector('.room-style');
     rvIcon.childNodes.forEach(n => { if (n !== box) n.remove(); }); rvIcon.insertAdjacentHTML('afterbegin', roomIconHtml(currentRoom));
     const inp = document.getElementById('rsIcon'); if (inp && inp.value !== (currentRoom.icon || '') && !v.trim()) inp.value = '';
+  }
+  // archiving hides a room and frees its slot in the free-plan count — nothing is deleted, it can always come back.
+  function archiveCurrentRoom() {
+    if (!currentRoom || currentRoom.demo) return;
+    currentRoom.archived = true;
+    save();
+    go('rooms');
+  }
+  function unarchiveRoom(id) {
+    const r = rooms.find(x => x.id === id); if (!r) return;
+    delete r.archived;
+    save(); renderRoomList();
   }
 
   let currentRoom = null;
@@ -1485,6 +1525,8 @@
   function toggleLogRow() { showAllLogFor = (currentRoom && showAllLogFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
   let showAllLoopsFor = null;
   function toggleLoopsRow() { showAllLoopsFor = (currentRoom && showAllLoopsFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
+  let showArchived = false;
+  function toggleArchived() { showArchived = !showArchived; renderRoomList(); }
 
   // ---------- re-entry: pay the restart tax in ten seconds ----------
   function lastTouch(r) { const e = r.log.find(x => x.ts); return e ? e.ts : null; }
@@ -1813,7 +1855,7 @@
     try {
       const ctx = {
         text,
-        rooms: rooms.map(r => ({ id: r.id, name: r.name, one_liner: r.one_liner, brief: r.brief, loops: r.loops.filter(l => !l.resolved).map(l => l.text), recent: r.log.slice(0, 4).map(e => e.text) })),
+        rooms: rooms.filter(r => !r.archived).map(r => ({ id: r.id, name: r.name, one_liner: r.one_liner, brief: r.brief, loops: r.loops.filter(l => !l.resolved).map(l => l.text), recent: r.log.slice(0, 4).map(e => e.text) })),
         loose: loose.map(t => t.text),
         mode: mode || null,
       };
@@ -1922,13 +1964,13 @@
   function contextNudges(state) {
     // nudges built from what you were actually doing
     const out = [];
-    const recent = rooms.filter(r => !r.demo && lastTouch(r)).sort((a, b) => lastTouch(b) - lastTouch(a))[0];
+    const recent = rooms.filter(r => !r.demo && !r.archived && lastTouch(r)).sort((a, b) => lastTouch(b) - lastTouch(a))[0];
     if (state === 'broke' && recent) {
       const last = recent.log.find(e => e.source !== 'auto-routed') || recent.log[0];
       if (last) out.push({ t: 'Pick up exactly where you were.', q: last.text, where: recent.name, m: 'context reinstatement', g: 'focus & friction', s: ['broke'] });
     }
     if (state === 'tired') {
-      const withLoop = rooms.filter(r => r.loops.some(l => !l.resolved)).sort((a, b) => (lastTouch(b) || 0) - (lastTouch(a) || 0))[0];
+      const withLoop = rooms.filter(r => !r.archived && r.loops.some(l => !l.resolved)).sort((a, b) => (lastTouch(b) || 0) - (lastTouch(a) || 0))[0];
       if (withLoop) { const l = withLoop.loops.find(x => !x.resolved); out.push({ t: 'If anything today, just this. Or nothing. Both are fine.', q: l.text, where: withLoop.name, m: 'single-tasking', g: 'focus & friction', s: ['tired'] }); }
     }
     return out;
@@ -2123,7 +2165,7 @@
     document.getElementById('evMins').value = e ? Math.round((e.end - e.start) * 60) : 30;
     pickKind(e ? (e.kind || 'block') : 'block');
     const sel = document.getElementById('evRoom');
-    sel.innerHTML = `<option value="">No room</option>` + rooms.map(r => `<option value="${r.id}"${e && e.room === r.id ? ' selected' : ''}>${escapeHtml(r.name)}</option>`).join('');
+    sel.innerHTML = `<option value="">No room</option>` + rooms.filter(r => !r.archived || r.id === (e && e.room)).map(r => `<option value="${r.id}"${e && e.room === r.id ? ' selected' : ''}>${escapeHtml(r.name)}</option>`).join('');
     document.getElementById('evNotes').value = e && e.notes ? e.notes : '';
     document.getElementById('evDelete').hidden = !e;
     document.getElementById('evTomorrow').hidden = !e;
@@ -2265,7 +2307,7 @@
       text, day: dkey(selectedDay), weekday: selectedDay.toLocaleDateString('en-US', { weekday: 'long' }), is_today: dkey(selectedDay) === dkey(today),
       now: toTimeValue(now.getHours() + now.getMinutes() / 60),
       existing: dayList(selectedDay).slice().sort((a, b) => a.start - b.start).map(e => ({ start: toTimeValue(e.start), end: toTimeValue(e.end), name: e.name, kind: e.kind })),
-      rooms: rooms.map(r => ({ id: r.id, name: r.name })),
+      rooms: rooms.filter(r => !r.archived).map(r => ({ id: r.id, name: r.name })),
     };
     const r = await fetch(apiUrl().replace('/api/state', '/api/plan'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
     if (!r.ok) throw new Error('plan ' + r.status);
@@ -2399,7 +2441,7 @@
   function syncCode() { try { let c = localStorage.getItem(SYNC_KEY); if (!c) { c = newSyncCode(); localStorage.setItem(SYNC_KEY, c); } return c; } catch (e) { return 'local-only'; } }
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
   const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, ready: false, smart: false, billing: false, price: 10, planSource: null, planUntil: null };
-  function ownRooms() { return rooms.filter(r => !r.demo).length; }
+  function ownRooms() { return rooms.filter(r => !r.demo && !r.archived).length; }
   function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
   function apiUrl() { return auth.signedIn ? '/api/state' : `/api/state?device=${encodeURIComponent(syncCode())}`; }
   async function authHeaders(extra) {
