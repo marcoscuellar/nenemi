@@ -60,15 +60,6 @@
     --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
     color: var(--ink);
   }
-  /* the calendar keeps its own warm look in both app themes — it's one chosen aesthetic, not a light-theme variant.
-     #evtSheet (the event editor) is calendar-only but lives outside #pane-calendar in the DOM, so it needs the same override. */
-  #pane-calendar, #evtSheet {
-    --sanctuary: #FBF9F5; --surface: #FFFFFF; --surface2: #F1EBDF; --card: #FFFFFF; --ink: #2A2A26; --muted: #7A7062; --faint: #A39A8C;
-    --line: #EBE3D3; --line2: #E6D9BE; --sage: #C08A4E; --sage-text: #8F6F2E; --sage-fill: rgba(192,138,78,0.14); --on-sage: #FBF9F5;
-    --evt-block: rgba(159,191,166,0.24); --evt-fixed: #2A2A26; --evt-buffer: #FBF6EC; --btn: #2A2A26; --btn-ink: #FBF9F5;
-    --font-body: 'Public Sans', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
-    color: var(--ink);
-  }
   #pane-calendar { background: var(--sanctuary); }
   .app.quiet .account-slot { display: none; }
   * { box-sizing: border-box; }
@@ -144,10 +135,6 @@
   .wordmark .wm-mark { flex-shrink: 0; }
   .wordmark .wm-text { font-family: var(--font-title); font-weight: 400; font-size: 13px; letter-spacing: 0.20em; color: var(--ink); }
   .app.quiet .wordmark { display: none; }
-  /* the calendar pane is a light warm surface — the wordmark needs its "on white" lockup there, not warm-white-on-cream */
-  .main:has(#pane-calendar.active) .wordmark .wm-text { color: #2A2A26; }
-  .main:has(#pane-calendar.active) .wm-mark .wm-arc-b { stroke: #2A2A26; }
-  .main:has(#pane-calendar.active) .wm-mark .wm-dot { fill: #3FB7A6; stroke: #FBF9F5; }
   .home-btn { position: absolute; top: 14px; left: 18px; z-index: 30; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line2); background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .home-btn:hover, .app.base .home-btn { color: var(--ink); border-color: var(--ink); }
   .app.quiet .home-btn { display: none; }
@@ -242,11 +229,11 @@
   .ag-card.buffer { background: var(--evt-buffer); border: 1px dashed var(--line2); }
   .ag-card.past { opacity: 0.55; }
   .ag-title { font-family: var(--font-body); font-size: 15px; font-weight: 700; letter-spacing: -0.005em; color: var(--ink); }
-  .ag-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: #5F7A65; margin-top: 4px; text-transform: uppercase; }
-  .ag-card.fixed .ag-title { color: #FBF9F5; }
+  .ag-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--sage-text); margin-top: 4px; text-transform: uppercase; }
+  .ag-card.fixed .ag-title { color: var(--ink); }
   .ag-card.fixed .ag-meta { color: #C7A9E0; }
-  .ag-card.buffer .ag-title { color: #6E5A34; }
-  .ag-card.buffer .ag-meta { color: #A28638; }
+  .ag-card.buffer .ag-title { color: #D9B36A; }
+  .ag-card.buffer .ag-meta { color: #B49458; }
   .ag-now { height: 1px; background: var(--sage); position: relative; margin: 2px 0; }
   .ag-now::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
   .ag-empty { color: var(--faint); font-size: 13px; padding: 22px 0; text-align: center; }
@@ -333,6 +320,9 @@
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
   .room-card.card-dormant { border-color: rgba(245,158,11,0.25); box-shadow: 0 0 16px rgba(245,158,11,0.08); }
   .room-card.card-dormant:hover { border-color: rgba(245,158,11,0.4); }
+  .room-card.card-resume { border-color: var(--teal-deep); box-shadow: inset 3px 0 0 var(--teal), 0 10px 30px -12px rgba(0,0,0,0.7); }
+  .room-card.card-resume:hover { border-color: var(--teal); }
+  .room-resume-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin: 10px 0 2px; }
   .room-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
   .room-card-icons { display: flex; align-items: center; gap: 6px; }
   .room-icon { width: 32px; height: 32px; border-radius: 9px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 17px; line-height: 1; }
@@ -382,7 +372,7 @@
   /* re-entry card: pays the restart tax in ten seconds */
   .reentry { padding: 0; margin-bottom: 16px; }
   .re-top { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-  .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+  .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); font-weight: 600; }
   .re-away { font-size: 12.5px; color: var(--muted); }
   .re-brief { font-size: 17px; font-weight: 300; line-height: 1.7; color: var(--ink); margin-bottom: 22px; }
   .editable { cursor: text; border-radius: 6px; transition: background 120ms ease; }
@@ -1229,7 +1219,7 @@
     const countEl = document.getElementById('roomCount');
     if (countEl) countEl.textContent = `${rooms.length} ${rooms.length === 1 ? 'ROOM' : 'ROOMS'}`;
     const el = document.getElementById('roomList');
-    el.innerHTML = rooms.slice().sort(roomOrder).map(r => {
+    el.innerHTML = rooms.slice().sort(roomOrder).map((r, i) => {
       const nextLoop = r.loops.find(l => !l.resolved);
       const openCount = r.loops.filter(l => !l.resolved).length;
       const badge = openCount > 0 ? `<div class="loop-pill">${openCount} to pick up</div>` : `<div class="loop-pill" style="opacity:0.55">resting</div>`;
@@ -1237,8 +1227,9 @@
       const isDormant = openCount > 0 && quietDays >= 3;
       const quiet = isDormant ? `<div class="room-quiet">Quiet for ${quietDays} days. Easy re-entry — it's all still here.</div>` : '';
       const next = nextLoop ? `<div class="room-next"><span class="room-next-kicker">Next</span> ${escapeHtml(nextLoop.text)}</div>` : '';
+      const resume = i === 0 && openCount > 0 ? `<div class="room-resume-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div>` : '';
       return `
-      <div class="room-card${isDormant ? ' card-dormant' : ''}" onclick="openRoom('${r.id}')"${roomStyleAttr(r)}>
+      <div class="room-card${isDormant ? ' card-dormant' : ''}${resume ? ' card-resume' : ''}" onclick="openRoom('${r.id}')"${roomStyleAttr(r)}>
         <div class="room-card-top">
           <div class="room-card-icons">
             <div class="room-icon">${roomIconHtml(r)}</div>
@@ -1246,6 +1237,7 @@
           </div>
           <div class="room-touch">${r.log[0] ? when(r.log[0]) : ''}</div>
         </div>
+        ${resume}
         <div class="room-name">${escapeHtml(r.name)}</div>
         <div class="room-oneliner">${escapeHtml(r.one_liner)}</div>
         ${next}
