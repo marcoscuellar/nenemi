@@ -2,8 +2,14 @@
 //
 // POST /api/route
 //   headers: Authorization: Bearer <clerk token>   (or ?device=<sync code> while signed out)
-//   body:    { text, rooms: [{ id, name, one_liner, brief, loops: [..], recent: [..] }], loose: [..] }
+//   body:    { text, rooms: [{ id, name, one_liner, brief, loops: [..], recent: [..] }], loose: [..],
+//              mode?: 'end_of_day_recap' | 'wrap_up', pinned_room_id?: string }
 //   returns: { action, room_id, room_name, one_liner, note, loops_to_add, loops_to_resolve, brief, reply }
+//
+// pinned_room_id locks the decision to that one room (used when the person is
+// typing/tapping inside a room's own box, where routing is already decided) —
+// enforced server-side, not just prompted for. mode "wrap_up" needs no typed
+// text: it asks Claude to recap that room's own recent activity instead.
 //
 // Claude reads the dump plus a trimmed view of the user's rooms and decides:
 // file it, start a room, hold it loose, or hand off to the stuck sanctuary.
@@ -57,6 +63,10 @@ Also:
 
 When mode is "end_of_day_recap": they are emptying their head at the end of the day so they don't carry it to bed. Sort what they said: things still open become loops_to_add on the right room (or a new room if it's clearly a project); worries and half-thoughts with nowhere to go are "loose"; anything they say is done, doesn't matter, or they want to drop is let go and not stored anywhere. If most of it is done or venting, action is "loose" with a short note of only what's worth keeping. The reply says, in one line, what's held and what was let go, e.g. "Held the two things for Ollin. The rest can go. Nothing to carry."
 
+If the request includes "pinned_room_id", the person is typing directly inside that room's own box, not from Home — action must be "file" targeting that room_id, unless they're unmistakably saying they're stuck ("stuck"). Never propose "new_room" or file elsewhere when pinned_room_id is set.
+
+When mode is "wrap_up", the person tapped a "wrap up today's progress" button inside pinned_room_id's own room — they typed nothing new. Look only at that room's recent_notes and open_loops already provided: action is "file" targeting pinned_room_id; note is a one or two sentence recap of today's activity in the room, written like a log entry ("Wrapped up: ..."); brief is the refreshed Where-you-left-off text, same rules as always; reply is one short warm confirmation line, e.g. "Today's saved. Pick up here next time."; loops_to_add/loops_to_resolve only when the recent notes clearly imply a change, otherwise empty. Never invent progress that isn't in recent_notes.
+
 Never invent facts that aren't in what they said or in the room data. When unsure between filing and a new room, file.`;
 
 function trim(s, n) { return typeof s === 'string' ? (s.length > n ? s.slice(0, n) + '…' : s) : ''; }
@@ -82,12 +92,14 @@ export default async function handler(req, res) {
   if (who.error) return res.status(who.status).json({ error: who.error });
 
   const body = req.body || {};
+  const mode = body.mode === 'end_of_day_recap' ? 'end_of_day_recap' : body.mode === 'wrap_up' ? 'wrap_up' : null;
+  const pinnedRoomId = body.pinned_room_id ? String(body.pinned_room_id) : null;
   const text = trim(String(body.text || '').trim(), MAX_TEXT);
-  if (!text) return res.status(400).json({ error: 'nothing to route' });
+  if (!text && mode !== 'wrap_up') return res.status(400).json({ error: 'nothing to route' });
 
   const rooms = roomsForPrompt(body.rooms);
   const loose = (Array.isArray(body.loose) ? body.loose : []).slice(0, 10).map(t => trim(typeof t === 'string' ? t : t?.text, 160));
-  const mode = body.mode === 'end_of_day_recap' ? 'end_of_day_recap' : null;
+  if (pinnedRoomId && !rooms.some(r => r.id === pinnedRoomId)) return res.status(400).json({ error: 'unknown room' });
 
   const client = new Anthropic({ apiKey: API_KEY });
   try {
@@ -103,7 +115,8 @@ export default async function handler(req, res) {
           rooms,
           loose_thoughts: loose,
           mode,
-          they_said: text,
+          pinned_room_id: pinnedRoomId,
+          they_said: text || null,
         }),
       }],
     });
@@ -112,6 +125,9 @@ export default async function handler(req, res) {
 
     const d = response.parsed_output;
     if (!d) return res.status(502).json({ error: 'could not read the model reply' });
+
+    // a pinned room is a hard constraint, not a suggestion — the model never gets to move or lose it
+    if (pinnedRoomId && d.action !== 'stuck') { d.action = 'file'; d.room_id = pinnedRoomId; }
 
     // never trust a room id that isn't the user's
     if (d.action === 'file' && !rooms.some(r => r.id === d.room_id)) d.action = rooms.length ? 'loose' : 'new_room';

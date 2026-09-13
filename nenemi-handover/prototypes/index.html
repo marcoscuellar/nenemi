@@ -451,6 +451,11 @@
   .quickadd .mic-btn { color: inherit; opacity: 0.8; }
   .quickadd button { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid currentColor; color: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .quickadd-note { margin-top: 10px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
+  .room-wrapup-bar { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .btn-secondary { background: none; color: var(--muted); border: 1px solid var(--line2); border-radius: 999px; padding: 7px 14px; font-family: var(--font-body); font-size: 12.5px; font-weight: 500; cursor: pointer; }
+  .btn-secondary:hover { color: var(--ink); border-color: var(--muted); }
+  .btn-secondary:disabled { opacity: 0.5; cursor: default; }
+  .wrapup-status { font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
   .log-thumb { display: block; max-width: 220px; max-height: 220px; border-radius: 10px; margin-top: 6px; object-fit: cover; cursor: pointer; }
   .log-file-chip { display: inline-flex; align-items: center; gap: 7px; margin-top: 6px; padding: 8px 12px; border-radius: 10px; background: var(--surface2); color: var(--ink); text-decoration: none; font-size: 13.5px; }
   .log-file-chip svg { flex-shrink: 0; color: var(--muted); }
@@ -903,6 +908,10 @@
           </button>
         </div>
         <div class="quickadd-note" id="quickAddNote" hidden></div>
+        <div class="room-wrapup-bar">
+          <button type="button" class="btn-secondary" id="btnWrapUp" onclick="wrapUpDay()">Wrap up today's progress</button>
+          <span class="wrapup-status" id="wrapUpStatus" hidden></span>
+        </div>
         <div class="reentry-next" id="rvNext"></div>
         <div class="brief-text" id="rvBrief" hidden></div>
         <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
@@ -1463,6 +1472,45 @@
     currentRoom.brief = "Just logged: \u201c" + text + "\u201d — the Brief will re-summarize from here.";
     input.value = '';
     save(); renderRoomView();
+  }
+  // a deliberate closing action for a room: recap today's own activity, in the room's own words, not a guess made quietly in the background.
+  async function wrapUpDay() {
+    if (!currentRoom) return;
+    const btn = document.getElementById('btnWrapUp');
+    const status = document.getElementById('wrapUpStatus');
+    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+    const todays = currentRoom.log.filter(e => e.ts >= startOfDay.getTime());
+    if (!todays.length) { showQuickAddNote("Nothing new here today."); return; }
+
+    btn.disabled = true;
+    status.hidden = false; status.textContent = 'Wrapping up…';
+
+    const finish = (note, brief) => {
+      currentRoom.log.unshift({ source: 'recap', ts: Date.now(), text: note });
+      if (brief) currentRoom.brief = brief;
+      save(); renderRoomView();
+      status.hidden = false; status.textContent = 'Saved.';
+      btn.disabled = false;
+      setTimeout(() => { status.hidden = true; }, 2500);
+    };
+
+    if (auth.smart && location.protocol !== 'file:') {
+      try {
+        const ctx = {
+          mode: 'wrap_up',
+          pinned_room_id: currentRoom.id,
+          rooms: [{ id: currentRoom.id, name: currentRoom.name, one_liner: currentRoom.one_liner, brief: currentRoom.brief, loops: currentRoom.loops.filter(l => !l.resolved).map(l => l.text), recent: todays.map(e => e.text) }],
+        };
+        const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
+        if (!r.ok) throw new Error('route ' + r.status);
+        const d = await r.json();
+        (d.loops_to_add || []).forEach(t => { if (t && !currentRoom.loops.some(l => l.text.toLowerCase() === t.toLowerCase())) currentRoom.loops.push({ text: t, resolved: false }); });
+        (d.loops_to_resolve || []).forEach(t => { const l = currentRoom.loops.find(l => l.text.toLowerCase() === String(t).toLowerCase()); if (l) l.resolved = true; });
+        finish(d.note || d.reply || 'Wrapped up for today.', d.brief);
+        return;
+      } catch (e) { /* falls through to the offline version below */ }
+    }
+    finish('Wrapped up for today.', null);
   }
   // a photo or file, scoped to the room it's dropped into — there's no way to auto-route a file the way text gets routed,
   // so this only lives inside a room, where the destination is already decided.
