@@ -148,7 +148,7 @@
   .bc-sub { color: var(--muted); font-size: 13.5px; line-height: 1.45; flex: 1; }
   .bc-tag { align-self: flex-start; font-family: var(--font-mono); font-size: 10.5px; padding: 4px 8px; border-radius: 6px; background: var(--surface2); color: var(--muted); }
   .bc-tag:empty { display: none; }
-  .bcard.dark { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+  .bcard.dark { background: var(--btn); color: var(--ink); border-color: var(--btn); }
   .bcard.dark .bc-sub, .bcard.dark .bc-ic, .bcard.dark .bc-tag { color: inherit; opacity: 0.75; }
   .bcard.dark .bc-tag { background: rgba(127,127,127,0.18); }
   /* one quiet line, centered, light. the box under it is the whole screen */
@@ -357,7 +357,8 @@
   /* ROOM VIEW pane */
   .rv-header { padding: 70px 24px 22px; width: 100%; max-width: 760px; margin: 0 auto; display: flex; align-items: flex-start; gap: 12px; }
   .rv-title-wrap { flex: 1; }
-  .rv-name { font-family: var(--font-title); font-weight: 500; font-size: 26px; line-height: 1.15; letter-spacing: 0.01em; }
+  .rv-name { font-family: var(--font-mono); font-weight: 700; font-size: 28px; line-height: 1.08; letter-spacing: -0.01em; text-transform: uppercase; }
+  .rv-name::after { content: '_'; }
   .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 2px; }
   .rv-header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
   .rv-actions { display: flex; gap: 8px; }
@@ -365,32 +366,54 @@
   .rv-action-btn:hover { color: var(--ink); border-color: var(--muted); }
   .rv-action-btn.playing { color: var(--sage-text); border-color: var(--sage-text); }
   .rv-action-btn:disabled { opacity: 0.5; cursor: default; }
-  .rv-body { flex: 1; overflow-y: auto; padding: 6px 24px 60px; width: 100%; max-width: 760px; margin: 0 auto; }
-  .rv-cols { display: grid; grid-template-columns: 1fr; gap: 38px; margin-top: 40px; }
-  .log-more { font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; padding: 12px 0 0; }
-  .log-more:hover { color: var(--ink); }
-  /* re-entry card: pays the restart tax in ten seconds */
-  .reentry { padding: 0; margin-bottom: 16px; }
-  .re-top { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
-  .re-kicker { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); font-weight: 600; }
-  .re-away { font-size: 12.5px; color: var(--muted); }
-  .re-brief { font-size: 17px; font-weight: 300; line-height: 1.7; color: var(--ink); margin-bottom: 22px; }
+  .rv-body { flex: 1; overflow-y: auto; padding: 6px 24px 60px; width: 100%; max-width: 760px; margin: 0 auto; display: block; }
+  .rv-main { min-width: 0; }
+  .rv-cols { display: grid; grid-template-columns: 1fr; gap: 0; margin-top: 8px; }
+  /* the two anchors: where you left off, what's next — everything else waits below a toggle */
+  .anchor-label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); margin: 26px 0 10px; }
+  .anchor-label:first-child { margin-top: 0; }
+  .anchor-block { background: var(--surface2); border: 1px solid var(--line2); border-radius: 14px; padding: 16px 18px; }
+  .anchor-text { font-size: 16px; font-weight: 300; line-height: 1.65; color: var(--ink); }
+  .anchor-meta { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 8px; }
   .editable { cursor: text; border-radius: 6px; transition: background 120ms ease; }
-  .editable:hover { background: var(--surface2); }
-  .editable[contenteditable="true"] { outline: 1px solid var(--line2); background: var(--surface2); padding: 2px 6px; margin: -2px -6px; }
-  .re-last { font-size: 14px; line-height: 1.55; color: var(--ink); margin-bottom: 14px; }
-  .re-last .re-q { color: var(--muted); }
-  .re-last .re-when { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
+  .editable:hover { background: var(--surface); }
+  .editable[contenteditable="true"] { outline: 1px solid var(--line2); background: var(--surface); padding: 2px 6px; margin: -2px -6px; }
   .re-next { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 18px; background: linear-gradient(180deg, #17211f, #12191a); border: 1px solid var(--teal-deep); color: var(--ink); cursor: pointer; box-shadow: 0 8px 24px -14px rgba(63,183,166,0.35); }
-  .re-next > div:first-child { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .re-next > div:first-child { flex: 1; min-width: 0; }
   .re-next-text { font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 1.3; color: var(--ink); }
-  .re-next-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); white-space: nowrap; }
   .re-btn { flex-shrink: 0; padding: 0; border-radius: 0; border: none; background: transparent; color: var(--teal); font-family: var(--font-body); font-weight: 500; font-size: 18px; cursor: pointer; white-space: nowrap; }
   .re-next:hover { border-color: var(--teal); }
   .shrink-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 10px 6px 0; }
   .shrink-link { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); opacity: 0.85; cursor: pointer; }
   .shrink-link:hover { opacity: 1; }
   .shrink-status { font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
+  /* still open / everything you've left here: collapsed toggles, full list only on request */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 2px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); cursor: pointer; }
+  .toggle-row:hover { color: var(--ink); }
+  .toggle-row .chev { color: var(--faint); transition: transform 160ms ease; flex-shrink: 0; }
+  .toggle-row.open .chev { transform: rotate(90deg); }
+  .rv-col:first-child .toggle-row { border-top: none; }
+  /* the dump panel: calendar's "dump the day" treatment, applied to a room */
+  .rv-capture-panel { background: var(--surface2); border: 1px solid var(--line2); border-radius: 18px; padding: 22px; margin-top: 32px; box-shadow: 0 10px 30px -12px rgba(0,0,0,0.7); }
+  .dp-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+  .dp-k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal); }
+  .rv-capture-panel h4 { font-family: var(--font-display); font-weight: 900; font-size: 22px; letter-spacing: -0.01em; margin: 6px 0 10px; color: var(--ink); }
+  .dp-sub { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-bottom: 16px; }
+  .dp-box-wrap { position: relative; }
+  .dp-box-wrap textarea#quickAddInput { width: 100%; box-sizing: border-box; min-height: 100px; background: var(--sanctuary); border: 1px solid var(--line2); border-radius: 12px; padding: 14px 44px 14px 16px; font-family: var(--font-body); font-size: 13.5px; line-height: 1.5; color: var(--ink); resize: vertical; outline: none; }
+  .dp-box-wrap textarea#quickAddInput::placeholder { color: var(--faint); }
+  .dp-box-wrap textarea#quickAddInput:focus { border-color: var(--teal); }
+  .dp-mic { position: absolute; right: 10px; bottom: 10px; width: 26px; height: 26px; color: var(--faint); }
+  .dp-from { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); margin: 18px 0 6px; }
+  .dp-fromtxt { font-size: 12.5px; color: var(--muted); margin-bottom: 18px; }
+  .dp-btn { width: 100%; background: var(--teal); color: var(--on-sage); font-weight: 700; text-align: center; border: none; border-radius: 12px; padding: 13px; font-size: 14px; cursor: pointer; }
+  .dp-btn:hover { background: var(--teal-soft); }
+  /* desktop: room content left, dump panel sticky right — same idea as the calendar's day + smart-cal split */
+  @media (min-width: 981px) {
+    .rv-header, .rv-body { max-width: 1180px; }
+    .rv-body { display: grid; grid-template-columns: minmax(0,1fr) 340px; gap: 40px; align-items: start; }
+    .rv-capture-panel { position: sticky; top: 24px; margin-top: 0; }
+  }
   .room-quiet { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
   .room-next { font-size: 13px; color: var(--ink); line-height: 1.4; margin: 10px 0 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .room-next-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin-right: 6px; }
@@ -624,9 +647,10 @@
     .notes-body { padding: 8px 18px 60px; }
     .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
     .notes-box textarea { min-height: 160px; font-size: 14.5px; }
-    .reentry { padding: 0; }
-    .re-brief { font-size: 16px; }
-    .rv-cols { gap: 32px; margin-top: 34px; }
+    .anchor-text { font-size: 15px; }
+    .rv-capture-panel { padding: 16px; margin-top: 24px; }
+    .rv-capture-panel h4 { font-size: 19px; }
+    .dp-box-wrap textarea#quickAddInput { min-height: 76px; font-size: 15px; }
     .loop-focus { opacity: 1; font-size: 0; gap: 0; }
     .loop-focus svg { width: 14px; height: 14px; }
     .re-next-text { font-size: 15px; }
@@ -922,48 +946,62 @@
         </div>
       </div>
       <div class="rv-body">
-        <div class="reentry" id="rvSummary"></div>
-        <div class="reentry-next" id="rvNext"></div>
-        <div class="brief-text" id="rvBrief" hidden></div>
-        <div class="quickadd">
-          <div class="rv-plus-wrap">
-            <div class="plus-menu" id="roomPlusMenu">
-              <div class="menu-item" onclick="pickRoomUpload('image/*')">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
-                Add a photo
+        <div class="rv-main">
+          <div class="anchor-label">Where you left off</div>
+          <div class="anchor-block" id="rvSummary"></div>
+          <div class="anchor-label">What's next</div>
+          <div class="reentry-next" id="rvNext"></div>
+          <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6.5 9.5L9.5 6.5M7 5L8.2 3.8a2.3 2.3 0 0 1 3.3 3.3L10 8.5M9 11l-1.2 1.2a2.3 2.3 0 0 1-3.3-3.3L6 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="rvLinkLabel">Continue in Claude</span>
+          </div>
+          <div class="rv-cols">
+            <div class="rv-col">
+              <div class="toggle-row" id="rvLoopsToggle" onclick="toggleLoopsRow()">
+                <span id="rvLoopsToggleLabel">Still open</span>
+                <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
               </div>
-              <div class="menu-item" onclick="pickRoomUpload('application/pdf')">
-                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
-                Add a file
-              </div>
+              <div id="rvLoops" hidden></div>
             </div>
-            <button type="button" class="plus-btn" id="roomAttachBtn" onclick="toggleRoomPlusMenu()" title="Add a photo or file">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
-            </button>
+            <div class="rv-col">
+              <div class="toggle-row" id="rvLogToggle" onclick="toggleLogRow()">
+                <span>Everything you've left here</span>
+                <svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
+              <div id="rvLog" hidden></div>
+            </div>
           </div>
-          <input id="quickAddInput" placeholder="Add to this room" />
+        </div>
+        <div class="rv-capture-panel">
+          <div class="dp-head">
+            <div class="dp-k">Leave it here</div>
+            <div class="rv-plus-wrap">
+              <div class="plus-menu" id="roomPlusMenu">
+                <div class="menu-item" onclick="pickRoomUpload('image/*')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+                  Add a photo
+                </div>
+                <div class="menu-item" onclick="pickRoomUpload('application/pdf')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
+                  Add a file
+                </div>
+              </div>
+              <button type="button" class="plus-btn" id="roomAttachBtn" onclick="toggleRoomPlusMenu()" title="Add a photo or file">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+          <h4>Dump anything.</h4>
+          <div class="dp-sub">No organizing needed. A name, a worry, a next step, a half-thought. NENEMI files it into this room for you.</div>
+          <div class="dp-box-wrap">
+            <textarea id="quickAddInput" rows="3" placeholder="Sarah wants pricing by Thu, the Ramirez follow-up, that idea about the onboarding email…"></textarea>
+            <div class="mic-btn dp-mic" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+          </div>
           <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
-          <div class="mic-btn" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
-          <button onclick="quickAdd()">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12.5V3.5M8 3.5L4 7.5M8 3.5L12 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-        <div class="quickadd-note" id="quickAddNote" hidden></div>
-        <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6.5 9.5L9.5 6.5M7 5L8.2 3.8a2.3 2.3 0 0 1 3.3 3.3L10 8.5M9 11l-1.2 1.2a2.3 2.3 0 0 1-3.3-3.3L6 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span id="rvLinkLabel">Continue in Claude</span>
-        </div>
-        <div class="rv-cols">
-          <div class="rv-col">
-            <div class="section-label">Still open</div>
-            <div id="rvLoops"></div>
-            <div class="log-more" id="rvLoopsMore" hidden onclick="toggleAllLoops()"></div>
-          </div>
-          <div class="rv-col">
-            <div class="section-label">Recent</div>
-            <div id="rvLog"></div>
-            <div class="log-more" id="rvLogMore" hidden onclick="showAllLog()">All of it</div>
-          </div>
+          <div class="quickadd-note" id="quickAddNote" hidden></div>
+          <div class="dp-from">In this room</div>
+          <div class="dp-fromtxt" id="dpFromText"></div>
+          <button type="button" class="dp-btn" onclick="quickAdd()">Add to this room</button>
         </div>
       </div>
     </div>
@@ -1370,8 +1408,7 @@
     const openLoops = indexedLoops.filter(x => !x.loop.resolved);
     const resolvedLoops = indexedLoops.filter(x => x.loop.resolved);
     const loopsExpanded = showAllLoopsFor === r.id;
-    const visibleLoops = loopsExpanded ? [...openLoops, ...resolvedLoops] : openLoops.slice(0, 3);
-    const hiddenOpen = openLoops.length - Math.min(openLoops.length, 3);
+    const visibleLoops = loopsExpanded ? [...openLoops, ...resolvedLoops] : [];
     const loopRow = ({ loop: l, index: i }) => `
       <div class="loop-row ${l.resolved ? 'resolved' : ''}" data-idx="${i}">
         <div class="loop-check" onclick="toggleLoop(${i})"><svg viewBox="0 0 16 16" fill="none" stroke-width="2"><path d="M3 8l3.5 3.5L13 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
@@ -1379,23 +1416,22 @@
         ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop('${l.text.replace(/'/g, "\\'")}')">Sit with me <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
       </div>`;
     document.getElementById('rvLoops').innerHTML = visibleLoops.length ? visibleLoops.map(loopRow).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
+    document.getElementById('rvLoops').hidden = !loopsExpanded;
     document.querySelectorAll('#rvLoops .loop-text').forEach((el, idx) => makeEditable(el, { set: (t) => { r.loops[visibleLoops[idx].index].text = t; } }));
 
-    const loopsMore = document.getElementById('rvLoopsMore');
-    const canExpandLoops = hiddenOpen > 0 || resolvedLoops.length > 0;
-    loopsMore.hidden = !canExpandLoops;
-    if (canExpandLoops) {
-      if (loopsExpanded) { loopsMore.textContent = 'Show fewer loops'; }
-      else {
-        const parts = [];
-        if (hiddenOpen > 0) parts.push(`${hiddenOpen} more open`);
-        if (resolvedLoops.length > 0) parts.push(`${resolvedLoops.length} completed`);
-        loopsMore.textContent = `View all loops (${parts.join(', ')}) ›`;
-      }
-    }
+    const loopsToggle = document.getElementById('rvLoopsToggle');
+    loopsToggle.parentElement.hidden = r.loops.length === 0;
+    loopsToggle.classList.toggle('open', loopsExpanded);
+    document.getElementById('rvLoopsToggleLabel').textContent = openLoops.length > 0
+      ? `Still open · ${openLoops.length}`
+      : (resolvedLoops.length > 0 ? `All caught up · ${resolvedLoops.length} completed` : 'Still open');
 
-    const shown = showAllLogFor === r.id ? r.log : r.log.slice(0, 3);
-    const more = document.getElementById('rvLogMore'); more.hidden = r.log.length <= 3 || showAllLogFor === r.id; more.textContent = `All ${r.log.length} →`;
+    const logExpanded = showAllLogFor === r.id;
+    const logToggle = document.getElementById('rvLogToggle');
+    logToggle.parentElement.hidden = r.log.length === 0;
+    logToggle.classList.toggle('open', logExpanded);
+    document.getElementById('rvLog').hidden = !logExpanded;
+    const shown = logExpanded ? r.log : [];
     document.getElementById('rvLog').innerHTML = shown.map(e => `
       <div class="log-entry">
         <div class="log-time">
@@ -1417,6 +1453,9 @@
           : escapeHtml(e.text)}</div>
       </div>
     `).join('');
+
+    const dpFromText = document.getElementById('dpFromText');
+    if (dpFromText) dpFromText.textContent = r.log.length ? `${r.log.length} thing${r.log.length === 1 ? '' : 's'} resting here · all still here.` : 'Nothing here yet.';
   }
 
   // ---------- write about it: one page per day ----------
@@ -1446,9 +1485,9 @@
   }
   function toggleLoop(i) { currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved; save(); renderRoomView(); }
   let showAllLogFor = null;
-  function showAllLog() { showAllLogFor = currentRoom && currentRoom.id; renderRoomView(); }
+  function toggleLogRow() { showAllLogFor = (currentRoom && showAllLogFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
   let showAllLoopsFor = null;
-  function toggleAllLoops() { showAllLoopsFor = (currentRoom && showAllLoopsFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
+  function toggleLoopsRow() { showAllLoopsFor = (currentRoom && showAllLoopsFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
 
   // ---------- re-entry: pay the restart tax in ten seconds ----------
   function lastTouch(r) { const e = r.log.find(x => x.ts); return e ? e.ts : null; }
@@ -1475,6 +1514,7 @@
     if (/\b(calendar|build (a|the|my) day|smart cal|the day)\b/i.test(pickUpTask)) { go('calendar'); return; }
     const i = currentRoom.loops.findIndex(l => !l.resolved);
     if (i < 0) { const q = document.getElementById('quickAddInput'); if (q) q.focus(); return; }
+    if (showAllLoopsFor !== currentRoom.id) { showAllLoopsFor = currentRoom.id; renderRoomView(); }
     const row = document.querySelector(`#rvLoops .loop-row[data-idx="${i}"]`);
     if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('lit'); setTimeout(() => row.classList.remove('lit'), 2400); }
   }
@@ -1507,17 +1547,12 @@
     const next = r.loops.find(l => !l.resolved);
     pickUpTask = next ? next.text : `Open up ${r.name} — just look around`;
     document.getElementById('rvSummary').innerHTML = `
-      <div class="re-top">
-        <div class="re-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div>
-      </div>
-      <div class="re-brief">${escapeHtml(r.brief || '')}</div>`;
-    makeEditable(document.querySelector('#rvSummary .re-brief'), { set: (t) => { r.brief = t; } });
+      <div class="anchor-text">${escapeHtml(r.brief || '')}</div>
+      <div class="anchor-meta">${escapeHtml(awayLine(r))}</div>`;
+    makeEditable(document.querySelector('#rvSummary .anchor-text'), { set: (t) => { r.brief = t; } });
     document.getElementById('rvNext').innerHTML = `
       <div class="re-next" role="button" onclick="pickUp()">
-        <div>
-          <div class="re-next-label">${next ? 'Next small move' : 'Nothing open'}</div>
-          <div class="re-next-text">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
-        </div>
+        <div class="re-next-text">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
         <span class="re-btn" aria-hidden="true">→</span>
       </div>
       ${next ? `<div class="shrink-row">
@@ -1868,7 +1903,7 @@
   document.getElementById('composerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCapture(); } });
   function growComposer() { const t = document.getElementById('composerInput'); t.style.height = 'auto'; t.style.height = Math.max(26, Math.min(t.scrollHeight, window.innerHeight * 0.4)) + 'px'; const pill = document.getElementById('composerPill'); if (pill) pill.classList.toggle('has-text', t.value.trim().length > 0); }
   document.getElementById('composerInput').addEventListener('input', growComposer);
-  document.getElementById('quickAddInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') quickAdd(); });
+  document.getElementById('quickAddInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); quickAdd(); } });
 
   // ---------- stuck: every nudge maps to an external motor (docs/nenemi-external-motors.md) ----------
   // states: start (can't start) · much (too much) · broke (it broke) · tired (just tired)
