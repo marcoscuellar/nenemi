@@ -14,75 +14,50 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* monochrome: black, white, and the greys between. the accent is white. */
+  /* NENEMI brand system v1.0: ink black, warm white, one signature teal. dark only — the calm is the brand. */
   :root {
     --sanctuary: #0A0A0A;
-    --surface: #141414;
-    --surface2: #1C1C1C;
-    --card: #1A1A1A;
-    --ink: #FFFFFF;
-    --muted: #BDBDB6;
-    --faint: #8C8C85;
-    --line: rgba(244,242,236,0.14);
-    --line2: rgba(244,242,236,0.26);
-    --sage: #F4F2EC;
-    --sage-text: #D6D4CE;
-    --sage-fill: rgba(244,242,236,0.10);
-    --on-sage: #0A0A0A;
+    --surface: #111113;
+    --surface2: #161618;
+    --card: #111113;
+    --ink: #F4F1EA;
+    --muted: #A4A099;
+    --faint: #6F6B64;
+    --line: #26262A;
+    --line2: #34343A;
+    --sage: #3FB7A6;
+    --sage-text: #3FB7A6;
+    --sage-fill: rgba(63,183,166,0.14);
+    --on-sage: #06201C;
+    --teal: #3FB7A6;
+    --teal-soft: #7FD0C4;
+    --teal-deep: #2C8578;
 
-    --glow: #1B1B1B;
+    --glow: #161618;
     --glow-stop: 62%;
-    --hg1: rgba(28, 170, 178, 0.55);
-    --hg2: rgba(12, 84, 96, 0.32);
-    --glow2: #171717;
+    --hg1: rgba(63, 183, 166, 0.5);
+    --hg2: rgba(44, 133, 120, 0.3);
+    --glow2: #161618;
     --evt-block: #1E1E1E;
     --evt-fixed: #151515;
     --evt-fixed-line: #7A7A75;
     --evt-buffer: #1A1A1A;
-    --btn: #F4F2EC;
-    --btn-ink: #0A0A0A;
-    --pill-bg: rgba(20,20,20,0.75);
+    --btn: #3FB7A6;
+    --btn-ink: #06201C;
+    --pill-bg: rgba(17,17,19,0.8);
     --shadow: rgba(0,0,0,0.5);
 
     --font-display: 'Archivo', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+    --font-title: 'Poppins', sans-serif;
   }
-  /* light: pure white paper, black ink. the same picture, reversed. */
-  html[data-theme="light"] {
-    --sanctuary: #FFFFFF;
-    --surface: #FAFAFA;
-    --surface2: #F0F0EE;
-    --card: #FFFFFF;
-    --ink: #111111;
-    --muted: #5C5C58;
-    --faint: #8E8E88;
-    --line: rgba(17,17,17,0.10);
-    --line2: rgba(17,17,17,0.20);
-    --sage: #111111;
-    --sage-text: #2E2E2B;
-    --sage-fill: #ECECEA;
-    --on-sage: #FFFFFF;
-    --glow: #EDEDEB;
-    --glow-stop: 62%;
-    --hg1: rgba(120, 214, 218, 0.95);
-    --hg2: rgba(184, 234, 236, 0.6);
-    --glow2: #F3F3F1;
-    --evt-block: #EFEFED;
-    --evt-fixed: #F7F7F6;
-    --evt-fixed-line: #9A9A95;
-    --evt-buffer: #F3F3F1;
-    --btn: #111111;
-    --btn-ink: #FFFFFF;
-    --pill-bg: rgba(255,255,255,0.9);
-    --shadow: rgba(0,0,0,0.12);
-  }
-  /* the sanctuary screens stay dark in both themes — calm, no glare when you're stuck */
+  /* the sanctuary screens are the same one dark ground as everywhere else now */
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
-    --sanctuary: #0A0A0A; --surface: #141414; --surface2: #1C1C1C; --card: #161616; --ink: #FFFFFF; --muted: #9C9C96; --faint: #6A6A65;
-    --line: rgba(244,242,236,0.09); --line2: rgba(244,242,236,0.16); --sage: #F4F2EC; --sage-text: #D6D4CE; --sage-fill: rgba(244,242,236,0.10); --on-sage: #0A0A0A; --glow2: #171717; --btn: #F4F2EC; --btn-ink: #0A0A0A;
+    --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #F4F1EA; --muted: #A4A099; --faint: #6F6B64;
+    --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
     color: var(--ink);
   }
   /* the calendar keeps its own warm look in both app themes — it's one chosen aesthetic, not a light-theme variant.
@@ -165,9 +140,14 @@
   #pane-roomview > *, #pane-rooms > *, #pane-calendar > *, #pane-notes > * { position: relative; z-index: 1; }
   #pane-roomview > .rv-header { z-index: 2; } /* the icon and color picker hangs below the header, over the body */
   .home-center { display: flex; flex-direction: column; align-items: center; width: 680px; max-width: 90%; }
-  @font-face { font-family: 'Nenemi Mark'; src: url(/icons/nenemi-mark.woff2) format('woff2'); font-weight: 900; font-display: swap; }
-  .wordmark { position: absolute; top: 22px; left: 62px; z-index: 30; font-family: 'Nenemi Mark', 'Archivo', sans-serif; font-weight: 900; font-size: 13px; letter-spacing: 0.06em; color: var(--ink); transform: scaleX(1.12); transform-origin: left center; text-shadow: 0 0 10px color-mix(in srgb, var(--ink) 55%, transparent), 0 0 28px color-mix(in srgb, var(--ink) 25%, transparent); user-select: none; cursor: pointer; }
+  .wordmark { position: absolute; top: 22px; left: 62px; z-index: 30; display: flex; align-items: center; gap: 8px; user-select: none; cursor: pointer; }
+  .wordmark .wm-mark { flex-shrink: 0; }
+  .wordmark .wm-text { font-family: var(--font-title); font-weight: 400; font-size: 13px; letter-spacing: 0.20em; color: var(--ink); }
   .app.quiet .wordmark { display: none; }
+  /* the calendar pane is a light warm surface — the wordmark needs its "on white" lockup there, not warm-white-on-cream */
+  .main:has(#pane-calendar.active) .wordmark .wm-text { color: #2A2A26; }
+  .main:has(#pane-calendar.active) .wm-mark .wm-arc-b { stroke: #2A2A26; }
+  .main:has(#pane-calendar.active) .wm-mark .wm-dot { fill: #3FB7A6; stroke: #FBF9F5; }
   .home-btn { position: absolute; top: 14px; left: 18px; z-index: 30; width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line2); background: var(--surface); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .home-btn:hover, .app.base .home-btn { color: var(--ink); border-color: var(--ink); }
   .app.quiet .home-btn { display: none; }
@@ -200,9 +180,9 @@
     display: flex; flex-direction: row; align-items: flex-end; gap: 8px;
     background: var(--pill-bg); border: 1px solid var(--line2);
     border-radius: 30px; padding: 10px 10px 10px 12px;
-    box-shadow: 0 0 70px rgba(255,255,255,0.18);
+    box-shadow: 0 0 70px rgba(63,183,166,0.14);
   }
-  .composer-pill:focus-within { border-color: var(--line2); box-shadow: 0 0 84px rgba(255,255,255,0.26); }
+  .composer-pill:focus-within { border-color: var(--teal-deep); box-shadow: 0 0 84px rgba(63,183,166,0.2); }
   .composer-row { display: flex; align-items: center; gap: 10px; }
   .composer-row .spacer { flex: 1; }
   .plus-btn { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
@@ -282,7 +262,6 @@
   .sheet-row { display: flex; gap: 12px; }
   .sheet-row label, .sheet-label { display: flex; flex-direction: column; gap: 6px; flex: 1; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .sheet input[type=time], .sheet input[type=number], .sheet select { font-family: var(--font-body); font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 9px 10px; outline: none; color-scheme: dark; }
-  html[data-theme="light"] .sheet input, html[data-theme="light"] .sheet select { color-scheme: light; }
   .sheet-h { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
   .sheet-p { font-size: 14px; line-height: 1.5; color: var(--muted); }
   .sheet-p.small { font-size: 12.5px; }
@@ -347,10 +326,10 @@
   /* rooms hub gets the calendar's bold mono header treatment: eyebrow + count row, big underscored title */
   #pane-rooms .hub-top { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--line2); }
   #pane-rooms .kicker, #pane-rooms .hub-count { padding-bottom: 0; margin-bottom: 0; border-bottom: none; font-weight: 700; letter-spacing: 0.06em; }
-  #pane-rooms .hub-title { font-family: var(--font-mono); font-weight: 700; font-size: 46px; text-transform: uppercase; }
+  #pane-rooms .hub-title { font-family: var(--font-display); font-weight: 800; font-size: 46px; letter-spacing: -0.02em; text-transform: uppercase; }
   #pane-rooms .hub-title::after { content: '_'; }
   .room-grid { flex: 1; overflow-y: auto; padding: 20px 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-content: start; }
-  .room-card { background: var(--card); border: 1px solid var(--line2); border-radius: 18px; padding: 18px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; }
+  .room-card { background: var(--card); border: 1px solid var(--line2); border-radius: 20px; padding: 20px; cursor: pointer; transition: background 120ms ease, border-color 120ms ease; box-shadow: 0 10px 30px -12px rgba(0,0,0,0.7); }
   .room-card:hover { background: var(--surface2); border-color: var(--line2); }
   .room-card.card-dormant { border-color: rgba(245,158,11,0.25); box-shadow: 0 0 16px rgba(245,158,11,0.08); }
   .room-card.card-dormant:hover { border-color: rgba(245,158,11,0.4); }
@@ -380,7 +359,7 @@
   .room-style .rs-clear { font-size: 12px; color: var(--muted); cursor: pointer; white-space: nowrap; }
   .room-style .rs-clear:hover { color: var(--ink); }
   .room-touch { font-family: var(--font-mono); font-size: 10px; color: var(--faint); white-space: nowrap; margin-top: 4px; }
-  .room-name { font-family: var(--font-display); font-weight: 700; font-size: 17px; margin-bottom: 4px; }
+  .room-name { font-family: var(--font-title); font-weight: 500; font-size: 17px; letter-spacing: 0.01em; margin-bottom: 4px; }
   .room-oneliner { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
   .loop-pill { display: inline-block; font-family: var(--font-mono); font-size: 10.5px; background: var(--sage-fill); color: var(--sage-text); padding: 4px 9px; border-radius: 999px; }
   .new-room-card { border: 1.5px dashed var(--line2); border-radius: 18px; padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 118px; }
@@ -388,8 +367,7 @@
   /* ROOM VIEW pane */
   .rv-header { padding: 70px 24px 22px; width: 100%; max-width: 760px; margin: 0 auto; display: flex; align-items: flex-start; gap: 12px; }
   .rv-title-wrap { flex: 1; }
-  .rv-name { font-family: var(--font-mono); font-weight: 700; font-size: 28px; line-height: 1.08; letter-spacing: -0.01em; text-transform: uppercase; }
-  .rv-name::after { content: '_'; }
+  .rv-name { font-family: var(--font-title); font-weight: 500; font-size: 26px; line-height: 1.15; letter-spacing: 0.01em; }
   .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 2px; }
   .rv-header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
   .rv-actions { display: flex; gap: 8px; }
@@ -413,15 +391,15 @@
   .re-last { font-size: 14px; line-height: 1.55; color: var(--ink); margin-bottom: 14px; }
   .re-last .re-q { color: var(--muted); }
   .re-last .re-when { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
-  .re-next { display: flex; align-items: center; gap: 14px; padding: 15px 18px 15px 22px; border-radius: 999px; background: var(--btn); color: var(--btn-ink); cursor: pointer; }
-  .re-next > div:first-child { flex: 1; display: flex; align-items: baseline; gap: 12px; min-width: 0; }
-  .re-next-text { font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 1.3; }
-  .re-next-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.6; white-space: nowrap; }
-  .re-btn { flex-shrink: 0; padding: 0; border-radius: 0; border: none; background: transparent; color: inherit; font-family: var(--font-body); font-weight: 500; font-size: 18px; cursor: pointer; white-space: nowrap; }
-  .re-next:hover { filter: brightness(1.05); }
+  .re-next { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: 18px; background: linear-gradient(180deg, #17211f, #12191a); border: 1px solid var(--teal-deep); color: var(--ink); cursor: pointer; box-shadow: 0 8px 24px -14px rgba(63,183,166,0.35); }
+  .re-next > div:first-child { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .re-next-text { font-family: var(--font-body); font-weight: 500; font-size: 16px; line-height: 1.3; color: var(--ink); }
+  .re-next-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); white-space: nowrap; }
+  .re-btn { flex-shrink: 0; padding: 0; border-radius: 0; border: none; background: transparent; color: var(--teal); font-family: var(--font-body); font-weight: 500; font-size: 18px; cursor: pointer; white-space: nowrap; }
+  .re-next:hover { border-color: var(--teal); }
   .shrink-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 10px 6px 0; }
-  .shrink-link { font-family: var(--font-mono); font-size: 11px; color: var(--faint); cursor: pointer; }
-  .shrink-link:hover { color: var(--ink); }
+  .shrink-link { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); opacity: 0.85; cursor: pointer; }
+  .shrink-link:hover { opacity: 1; }
   .shrink-status { font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
   .room-quiet { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
   .room-next { font-size: 13px; color: var(--ink); line-height: 1.4; margin: 10px 0 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -473,15 +451,15 @@
   .log-entry { padding: 14px 0; border-bottom: 1px solid var(--line); }
   .log-time { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.12em; color: var(--faint); margin-bottom: 6px; }
   .log-text { font-size: 15px; line-height: 1.55; }
-  .quickadd { margin: 20px 0 28px; display: flex; gap: 8px; background: var(--btn); color: var(--btn-ink); border: 1px solid var(--btn); border-radius: 999px; padding: 8px; align-items: center; }
+  .quickadd { margin: 20px 0 28px; display: flex; gap: 8px; background: var(--surface2); color: var(--ink); border: 1px solid var(--line2); border-radius: 999px; padding: 8px; align-items: center; }
   .quickadd input { padding-left: 6px; }
   .rv-plus-wrap { position: relative; flex-shrink: 0; }
   .rv-plus-wrap .plus-menu { top: calc(100% + 10px); bottom: auto; left: -6px; right: auto; width: 190px; background: var(--surface); border: 1px solid var(--ink); }
   .rv-plus-wrap .menu-item { color: var(--ink); }
-  .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15px; color: inherit; min-width: 0; }
-  .quickadd input::placeholder { color: inherit; opacity: 0.55; }
-  .quickadd .mic-btn { color: inherit; opacity: 0.8; }
-  .quickadd button { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid currentColor; color: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .quickadd input { flex: 1; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15px; color: var(--ink); min-width: 0; }
+  .quickadd input::placeholder { color: var(--faint); opacity: 1; }
+  .quickadd .mic-btn { color: var(--faint); opacity: 1; }
+  .quickadd button { width: 32px; height: 32px; border-radius: 50%; background: var(--teal); border: none; color: var(--on-sage); cursor: pointer; display: flex; align-items: center; justify-content: center; }
   .quickadd-note { margin-top: 10px; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
   .wrapup-status { font-family: var(--font-mono); font-size: 11px; color: var(--faint); }
   .log-thumb { display: block; max-width: 220px; max-height: 220px; border-radius: 10px; margin-top: 6px; object-fit: cover; cursor: pointer; }
@@ -494,15 +472,15 @@
   #pane-stuck .doors, #pane-stuck .stuck-inner { margin: auto; padding-top: 48px; padding-bottom: 40px; }
   .stuck-close { position: absolute; top: 24px; right: 32px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .stuck-inner { display: flex; flex-direction: column; align-items: center; }
-  .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(255,255,255,0.22); }
+  .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(63,183,166,0.28); }
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
   .doors { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; padding: 0 20px; }
-  .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(255,255,255,0.4); margin-bottom: 28px; }
+  .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(63,183,166,0.45); margin-bottom: 28px; }
   .doors-title { font-family: var(--font-body); font-weight: 300; font-size: 36px; text-align: center; letter-spacing: -0.01em; line-height: 1.08; }
   .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
-  .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #1C1C1C 0%, #121212 100%); border: 1px solid rgba(244,242,236,0.08); transition: transform 140ms ease, border-color 140ms ease; }
-  .door:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); }
+  .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(244,241,234,0.08); transition: transform 140ms ease, border-color 140ms ease; }
+  .door:hover { transform: translateY(-2px); border-color: rgba(63,183,166,0.4); }
   .door-icon { display: block; color: var(--faint); margin-bottom: 10px; }
   .door-label { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
   .door-sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
@@ -516,12 +494,12 @@
   /* HUMAN SUPPORT: its own screen, not a table bolted to the doors */
   .humans-inner { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 560px; padding: 48px 20px 40px; margin: auto; }
   .support-list { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 34px; }
-  .support-card { border-radius: 18px; padding: 20px 22px; background: linear-gradient(160deg, #1C1C1C 0%, #121212 100%); border: 1px solid rgba(244,242,236,0.08); }
-  .support-name { font-family: var(--font-display); font-weight: 700; font-size: 17px; color: var(--ink); }
+  .support-card { border-radius: 18px; padding: 20px 22px; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(244,241,234,0.08); }
+  .support-name { font-family: var(--font-title); font-weight: 500; font-size: 17px; letter-spacing: 0.01em; color: var(--ink); }
   .support-for { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
   .support-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
   .support-links a { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--muted); text-decoration: none; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--line2); }
-  .support-links a:hover { color: var(--ink); border-color: rgba(255,255,255,0.4); }
+  .support-links a:hover { color: var(--ink); border-color: rgba(63,183,166,0.4); }
   .doors-back:hover { color: var(--sage-text); }
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
@@ -530,7 +508,7 @@
   .stuck-quote { max-width: 440px; margin: 18px auto 0; padding: 2px 0 2px 16px; border-left: 1px solid var(--line2); color: var(--muted); font-size: 14px; line-height: 1.55; text-align: left; }
   .stuck-quote .where { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .stuck-sub { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 12px; max-width: 340px; }
-  .stuck-box { width: 560px; max-width: 92vw; margin-top: 26px; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 22px; padding: 18px 16px 12px; box-shadow: 0 0 70px rgba(255,255,255,0.18); }
+  .stuck-box { width: 560px; max-width: 92vw; margin-top: 26px; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 22px; padding: 18px 16px 12px; box-shadow: 0 0 70px rgba(63,183,166,0.14); }
   .stuck-box textarea { width: 100%; box-sizing: border-box; min-height: 84px; max-height: 40vh; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0; }
   .stuck-box textarea::placeholder { color: var(--faint); }
   .stuck-log { width: 560px; max-width: 92vw; margin-top: 16px; }
@@ -603,7 +581,9 @@
     /* home */
     .greeting-big { font-size: 24px; margin-bottom: 22px; }
     .home-btn { top: 8px; left: 12px; }
-    .wordmark { top: 15px; left: 56px; font-size: 9.5px; }
+    .wordmark { top: 15px; left: 56px; gap: 6px; }
+    .wordmark .wm-mark { width: 15px; height: 15px; }
+    .wordmark .wm-text { font-size: 9.5px; }
     .home-base { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 28px; }
     .bcard { min-height: 138px; padding: 14px; border-radius: 16px; }
     .bc-name { font-size: 15px; }
@@ -778,7 +758,10 @@
       </div>
     </div>
     <div class="home-btn" id="homeBtn" title="Home" onclick="toggleBase()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7M5.5 9.5V20h13V9.5"/></svg></div>
-    <div class="wordmark" aria-label="Nenemi" onclick="goSanctuary()">NENEMI</div>
+    <div class="wordmark" aria-label="Nenemi" onclick="goSanctuary()">
+      <svg class="wm-mark" width="18" height="18" viewBox="0 0 120 120" aria-hidden="true"><path class="wm-arc-a" d="M39 23.63 A42 42 0 0 0 81 96.37" fill="none" stroke="#3FB7A6" stroke-width="14" stroke-linecap="butt"/><path class="wm-arc-b" d="M39 23.63 A42 42 0 0 1 81 96.37" fill="none" stroke="#F4F1EA" stroke-width="14" stroke-linecap="butt"/><circle class="wm-dot" cx="81" cy="96.37" r="11" fill="#F4F1EA" stroke="#0A0A0A" stroke-width="3"/></svg>
+      <span class="wm-text">NENEMI</span>
+    </div>
     <div class="tn-menu" id="dayMenu" hidden>
       <div class="tn-mi" onclick="closeDayMenu(); go('calendar')">Build my day<span>Dump it, get a day back</span></div>
       <div class="tn-mi" onclick="closeDayMenu(); go('notes')">Write about it<span>A page for today, yours only</span></div>
@@ -2390,21 +2373,6 @@
   let syncTimer = null, syncOn = false;
   function newSyncCode() { const w = () => SYNC_WORDS[Math.floor(Math.random() * SYNC_WORDS.length)]; return `${w()}-${w()}-${Math.floor(1000 + Math.random() * 9000)}`; }
   function syncCode() { try { let c = localStorage.getItem(SYNC_KEY); if (!c) { c = newSyncCode(); localStorage.setItem(SYNC_KEY, c); } return c; } catch (e) { return 'local-only'; } }
-  // ---------- theme: dark is home, light is there if you want it ----------
-  const THEME_KEY = 'nenemi.theme';
-  function currentTheme() { try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; } catch (e) { return 'dark'; } }
-  function applyTheme(t) {
-    if (t === 'light') document.documentElement.setAttribute('data-theme', 'light'); else document.documentElement.removeAttribute('data-theme');
-    const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", t === "light" ? "#FFFFFF" : "#0A0A0A");
-  }
-  function themeIcon() {
-    return currentTheme() === 'light'
-      ? '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg>'
-      : '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4" stroke-linecap="round"/></svg>';
-  }
-  function toggleTheme() { const next = currentTheme() === 'light' ? 'dark' : 'light'; try { localStorage.setItem(THEME_KEY, next); } catch (e) {} applyTheme(next); renderAccount(); }
-  applyTheme(currentTheme());
-
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
   const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, ready: false, smart: false, billing: false, price: 10, planSource: null, planUntil: null };
   function ownRooms() { return rooms.filter(r => !r.demo).length; }
@@ -2474,7 +2442,6 @@
     const items = [
       planRow,
       `<div class="sep"></div>`,
-      `<div class="mi" onclick="toggleTheme(); toggleAcctMenu()">${currentTheme() === 'light' ? 'Dark mode' : 'Light mode'}<span class="k">theme</span></div>`,
       `<div class="mi" onclick="showPhoneSetup(); toggleAcctMenu()">Put Nenemi on your phone<span class="k">install</span></div>`,
       `<div class="mi" onclick="exportRooms(); toggleAcctMenu()">Export my rooms<span class="k">json</span></div>`,
       `<div class="mi" onclick="showCalendarSync(); toggleAcctMenu()">Sync my calendar<span class="k">subscribe</span></div>`,
