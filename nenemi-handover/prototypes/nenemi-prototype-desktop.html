@@ -377,12 +377,15 @@
   #pane-rooms .toggle-row, #pane-rooms .archived-row { grid-column: 1 / -1; padding-left: 6px; padding-right: 6px; }
 
   /* ROOM VIEW pane */
-  .rv-header { padding: 70px 24px 22px; width: 100%; max-width: 760px; margin: 0 auto; display: flex; align-items: flex-start; gap: 12px; }
-  .rv-title-wrap { flex: 1; }
-  .rv-name { font-family: var(--font-mono); font-weight: 700; font-size: 28px; line-height: 1.08; letter-spacing: -0.01em; text-transform: uppercase; }
+  .rv-header { padding: 70px 24px 22px; width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .rv-head-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; width: 100%; }
+  .rv-title-wrap { flex: 1; min-width: 0; }
+  .rv-label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+  .rv-name-row { display: flex; align-items: center; gap: 12px; }
+  .rv-name { font-family: var(--font-mono); font-weight: 700; font-size: clamp(32px, 4.5vw, 52px); line-height: 1.02; letter-spacing: -0.02em; text-transform: uppercase; }
   .rv-name::after { content: '_'; }
-  .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 2px; }
-  .rv-header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+  .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 8px; }
+  .rv-header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; padding-top: 4px; }
   .rv-actions { display: flex; gap: 8px; }
   .rv-action-btn { width: 36px; height: 36px; flex-shrink: 0; padding: 0; border-radius: 999px; border: 1px solid var(--line2); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); }
   .rv-action-btn:hover { color: var(--ink); border-color: var(--muted); }
@@ -669,8 +672,8 @@
     .room-oneliner { font-size: 13px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12px; min-height: 168px; }
     .rv-header { padding: 64px 18px 18px; }
-    .rv-name { font-size: 21px; }
-    .rv-oneliner { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rv-name { font-size: 30px; }
+    .rv-oneliner { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 6px; }
     .rv-body { padding: 4px 18px 60px; }
     .notes-body { padding: 8px 18px 60px; }
     .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
@@ -979,17 +982,22 @@
         <div class="icon-btn" onclick="go('rooms')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <div class="rv-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
-        <div class="rv-title-wrap">
-          <div class="rv-name" id="rvName">Memory App</div>
-          <div class="rv-oneliner" id="rvOneliner">the memory app — NENEMI itself</div>
-        </div>
-        <div class="rv-header-actions">
-          <div class="rv-actions">
-            <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3v-7a9 9 0 1 1 18 0v7h-3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></button>
-            <button type="button" class="rv-action-btn" id="btnWrapUp" onclick="wrapUpDay()" title="Wrap up today's progress"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></button>
+        <div class="rv-head-row">
+          <div class="rv-title-wrap">
+            <div class="rv-label">You are in this room</div>
+            <div class="rv-name-row">
+              <div class="rv-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
+              <div class="rv-name" id="rvName">Memory App</div>
+            </div>
+            <div class="rv-oneliner" id="rvOneliner">the memory app — NENEMI itself</div>
           </div>
-          <span class="wrapup-status" id="wrapUpStatus" hidden></span>
+          <div class="rv-header-actions">
+            <div class="rv-actions">
+              <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3v-7a9 9 0 1 1 18 0v7h-3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></button>
+              <button type="button" class="rv-action-btn" id="btnWrapUp" onclick="wrapUpDay()" title="Wrap up today's progress"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></button>
+            </div>
+            <span class="wrapup-status" id="wrapUpStatus" hidden></span>
+          </div>
         </div>
       </div>
       <div class="rv-body">
