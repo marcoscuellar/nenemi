@@ -128,12 +128,6 @@
 
   /* HOME pane (minimal, centered) */
   #pane-home { align-items: center; justify-content: center; background: var(--sanctuary); overflow-y: auto; padding: 90px 24px 60px; }
-  /* the one place with color: a big soft glow behind the box, drifting slowly from blue toward violet and back */
-  #pane-home::before { content: ''; position: absolute; inset: -20%; pointer-events: none; z-index: 0;
-    background: radial-gradient(ellipse 50% 47% at 50% 55%, var(--hg1) 0%, var(--hg2) 40%, transparent 74%);
-    filter: blur(28px); animation: glowDrift 90s ease-in-out infinite alternate; }
-  @keyframes glowDrift { from { filter: blur(28px) hue-rotate(0deg); } to { filter: blur(28px) hue-rotate(55deg); } }
-  @media (prefers-reduced-motion: reduce) { #pane-home::before { animation: none; } }
   #pane-home > * { position: relative; z-index: 1; }
   /* the same teal light, quieter, under the cards on every other screen. stuck keeps its own sanctuary glow */
   #pane-roomview::before, #pane-rooms::before, #pane-calendar::before, #pane-notes::before { content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
