@@ -182,8 +182,8 @@
   .composer-pill textarea { width: 100%; box-sizing: border-box; min-height: 108px; max-height: 40vh; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0 0 14px; }
   .composer-pill textarea::placeholder { color: var(--faint); }
   .composer-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
-  .composer-hint { font-size: 12px; color: var(--faint); }
   .composer-actions { display: flex; align-items: center; gap: 6px; }
+  .home-plus-wrap { position: relative; flex-shrink: 0; }
   .composer-row { display: flex; align-items: center; gap: 10px; }
   .composer-row .spacer { flex: 1; }
   .plus-btn { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; background: var(--surface2); border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
@@ -198,6 +198,7 @@
   .menu-item { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; font-size: 14px; color: var(--ink); cursor: pointer; }
   .menu-item:hover { background: var(--surface2); }
   .menu-item svg { stroke: var(--sage-text); flex-shrink: 0; }
+  .menu-sep { height: 1px; background: var(--line); margin: 6px 4px; }
 
   .stuck-link { text-align: center; color: var(--muted); font-size: 13.5px; margin-top: 20px; cursor: pointer; }
   .stuck-link span { color: var(--sage-text); font-weight: 600; }
@@ -816,7 +817,39 @@
         <div class="composer-pill" id="composerPill">
           <textarea id="composerInput" rows="1" placeholder="Start anywhere…"></textarea>
           <div class="composer-bar">
-            <span class="composer-hint">Messy is fine.</span>
+            <div class="home-plus-wrap">
+              <div class="plus-menu" id="plusMenu">
+                <div class="menu-item" onclick="pickHomeUpload('image/*')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+                  Add a photo
+                </div>
+                <div class="menu-item" onclick="pickHomeUpload('application/pdf')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
+                  Add a file
+                </div>
+                <div class="menu-sep"></div>
+                <div class="menu-item" onclick="closeMenuAnd('calendar')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
+                  My day
+                </div>
+                <div class="menu-item" onclick="closeMenuAnd('notes')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 2.5h10v11H3z" stroke-linejoin="round"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke-linecap="round"/></svg>
+                  Write about it
+                </div>
+                <div class="menu-item" onclick="closeMenuAnd('rooms')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2"/></svg>
+                  Rooms
+                </div>
+                <div class="menu-item" onclick="closeMenuAnd('stuck')">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
+                  I'm stuck
+                </div>
+              </div>
+              <div class="plus-btn" id="plusBtn" onclick="toggleMenu()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
+              </div>
+            </div>
+            <input type="file" id="homeUploadFile" accept="image/*,application/pdf" hidden onchange="handleHomeUploadFile(this.files)" />
             <div class="composer-actions">
               <div class="mic-btn" id="homeMic" title="Say it instead">
                 <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
@@ -1280,11 +1313,11 @@
     const el = document.getElementById('looseShelf'); if (!el) return;
     if (!loose.length) { el.innerHTML = ''; return; }
     el.innerHTML = `<div class="loose-label">Loose thoughts — ${loose.length} held, no room yet</div><div class="loose-row">${loose.map((t, i) => `
-      <div class="loose-chip"><span class="lt" title="${escapeHtml(t.text)}">${escapeHtml(t.text)}</span>
+      <div class="loose-chip">${t.file ? `<a class="lt" href="${t.file.url}" target="_blank" rel="noopener" title="${escapeHtml(t.text)}">${t.file.type.startsWith('image/') ? '🖼' : '📄'} ${escapeHtml(t.text)}</a>` : `<span class="lt" title="${escapeHtml(t.text)}">${escapeHtml(t.text)}</span>`}
         ${canAddRoom() ? `<span class="lb" onclick="looseToRoom(${i})">make it a room</span>` : ''}
         <span class="lb quiet" onclick="looseDrop(${i})">let it go</span></div>`).join('')}</div>`;
   }
-  function looseToRoom(i) { const t = loose.splice(i, 1)[0]; if (!t) return; pendingCapture = { text: t.text, source: t.source || 'typed' }; save(); createRoomFromCapture(null); }
+  function looseToRoom(i) { const t = loose.splice(i, 1)[0]; if (!t) return; pendingCapture = { text: t.text, source: t.source || 'typed', file: t.file || null }; save(); renderLoose(); createRoomFromCapture(null); }
   function looseDrop(i) { loose.splice(i, 1); save(); renderLoose(); }
   function keepLoose(btn) {
     if (!pendingCapture) return;
@@ -1795,6 +1828,35 @@
       showQuickAddNote("Couldn't add that. Try again when you're back online.");
     }
   }
+  // a photo or file dropped on Home, before any room is decided — it holds loose, same as an unrouted note,
+  // until it's made into a room or let go.
+  function pickHomeUpload(accept) {
+    toggleMenu();
+    const input = document.getElementById('homeUploadFile'); if (!input) return;
+    input.accept = accept; input.click();
+  }
+  async function handleHomeUploadFile(files) {
+    const f = files && files[0]; const input = document.getElementById('homeUploadFile'); if (input) input.value = '';
+    if (!f) return;
+    const log = document.getElementById('chatLog');
+    try {
+      const { dataUrl, type, name } = await prepareUpload(f);
+      const r = await fetch(apiUrl().replace('/api/state', '/api/upload'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ name, type, dataUrl }) });
+      if (!r.ok) {
+        const d = await r.json().catch(() => ({}));
+        log.innerHTML += `<div class="bubble dos">${d.error === 'storage not connected' ? "Photo storage isn't set up yet." : "Couldn't add that. Try again when you're back online."}</div>`;
+        log.scrollTop = log.scrollHeight; return;
+      }
+      const { url } = await r.json();
+      loose.unshift({ text: name, source: 'file', ts: Date.now(), file: { url, type } }); save(); renderLoose();
+      document.querySelector('.app').classList.add('talking');
+      log.innerHTML += `<div class="bubble dos confirm">Holding ${type.startsWith('image/') ? 'that photo' : 'that file'} loose. It's on the Rooms page whenever you want it.<br><span class="mini-btn" onclick="looseToRoom(0)">Make it a room</span></div>`;
+      log.scrollTop = log.scrollHeight;
+    } catch (e) {
+      log.innerHTML += `<div class="bubble dos">Couldn't add that. Try again when you're back online.</div>`;
+      log.scrollTop = log.scrollHeight;
+    }
+  }
 
   function sendCapture() {
     const input = document.getElementById('composerInput');
@@ -1932,15 +1994,15 @@
       if (btn) btn.parentElement.outerHTML = `<div class="bubble dos">That's your ${auth.roomLimit} free rooms. ${fullAccessLine()} The calendar is always free, and this note is still here.${fullAccessBtn()}</div>`;
       pendingCapture = null; return;
     }
-    const { text, source } = pendingCapture; pendingCapture = null;
+    const { text, source, file } = pendingCapture; pendingCapture = null;
     // room name from the real words, not the "um oh yeah so" a voice dump starts with
     const FILLER = /^(um+|uh+|oh+|ah+|yeah|yes|no|okay|ok|so|like|well|sorry|just|basically|actually|right|hmm+|erm|i|i'm|was|saying|this|is|for|the|a|an|and|it|that|to|of|we|were|talking|about)$/i;
     const raw = text.replace(/[.!?,]+/g, ' ').split(/\s+/).filter(Boolean);
     let words = raw.filter(w => !FILLER.test(w));
     if (words.length < 2) words = raw;
-    const name = words.slice(0, 5).join(' ').replace(/^\w/, c => c.toUpperCase());
+    const name = file ? text.replace(/\.\w+$/, '').replace(/^\w/, c => c.toUpperCase()) : words.slice(0, 5).join(' ').replace(/^\w/, c => c.toUpperCase());
     const room = { id: 'r' + Date.now(), name, one_liner: text, brief: `New room. First note: \u201c${text}\u201d — the Brief will grow from here.`,
-      loops: [], log: [{ source, ts: Date.now(), text }], link: null };
+      loops: [], log: [{ source, ts: Date.now(), text, ...(file ? { file } : {}) }], link: null };
     rooms.unshift(room); save(); renderRoomList(); renderHomeReturn();
     if (btn) { btn.parentElement.outerHTML = `<div class="bubble dos confirm">Made a room: ${escapeHtml(name)}.</div>`; setTimeout(() => openRoom(room.id), 500); }
     else openRoom(room.id);
