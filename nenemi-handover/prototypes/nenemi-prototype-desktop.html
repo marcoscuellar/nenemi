@@ -611,7 +611,7 @@
     :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
     .app { height: 100vh; height: 100dvh; padding-top: var(--sat); }
     /* home */
-    .greeting-big { font-size: 34px; margin-bottom: 22px; }
+    .greeting-big { font-size: 34px; margin-bottom: 22px; text-align: left; }
     .wordmark { top: 15px; left: 14px; gap: 6px; }
     .wordmark .wm-mark { width: 15px; height: 15px; }
     .wordmark .wm-text { font-size: 9.5px; }
@@ -1271,11 +1271,11 @@
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
     const g = greetingLines();
-    // "What's taking up space?" becomes "What's taking up space, Marcos?" when the name is known
-    const name = userFirstName(); let line = g.line.replace(/\*/g, '');
-    if (name) { const m = line.match(/^(.*?)([.?!]*)$/); line = `${m[1]}, ${name}${m[2]}`; }
+    const name = userFirstName();
+    const line = g.line.replace(/\*/g, '');
     const timeWord = g.hello.split(' · ')[0];
-    el.innerHTML = `<span class="hello">${escapeHtml(timeWord)}</span><span class="accent">${escapeHtml(line)}</span>`;
+    const small = name ? `${timeWord}, ${name}` : timeWord;
+    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="accent">${escapeHtml(line)}</span>`;
   }
 
   // phone-only nav drawer: the pill nav slides in from the left instead of scrolling sideways
