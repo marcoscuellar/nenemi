@@ -111,6 +111,9 @@
   .tn-menu .tn-mi span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
   .tn-menu .tn-mi:hover { background: var(--surface2); }
   .back-home { display: none !important; }
+  /* the drawer + hamburger only exist on a phone-width screen; desktop keeps the floating pill and never sees these */
+  .hamburger-btn { display: none; }
+  .nav-overlay { display: none; }
 
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--muted); font-size: 13.5px; cursor: pointer; margin-bottom: 2px; }
   .nav-item svg { stroke: currentColor; flex-shrink: 0; }
@@ -175,7 +178,7 @@
     position: relative; width: 100%; box-sizing: border-box;
     display: flex; flex-direction: column; align-items: stretch; gap: 0;
     background: var(--surface); border: 1px solid var(--line2);
-    border-radius: 18px; padding: 20px 20px 14px;
+    border-radius: 4px; padding: 20px 20px 14px;
     box-shadow: 0 26px 70px rgba(0,0,0,0.28);
   }
   .composer-pill:focus-within { border-color: var(--teal-deep); box-shadow: 0 26px 80px rgba(63,183,166,0.12); }
@@ -612,20 +615,28 @@
     .wordmark { top: 15px; left: 14px; gap: 6px; }
     .wordmark .wm-mark { width: 15px; height: 15px; }
     .wordmark .wm-text { font-size: 9.5px; }
-    /* the pill nav drops the floating-centered look on a phone: full-width strip, scrolls sideways, sits right under the wordmark row */
-    .topnav { position: fixed; top: calc(38px + var(--sat)); left: 0; right: 0; transform: none; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 0; border-left: 0; border-right: 0; padding: 6px 14px; gap: 4px;
-      -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent); }
-    .topnav::-webkit-scrollbar { display: none; }
-    .topnav .tn { font-size: 10px; padding: 7px 10px; letter-spacing: 0.06em; flex-shrink: 0; }
-    .tn-wrap .tn-menu { left: 0; transform: none; }
-    .composer-pill { padding: 16px 16px 12px; border-radius: 16px; }
+    /* the pill nav becomes a hamburger + a small dropdown card on a phone: sized to its own content, not a full-height panel */
+    .hamburger-btn { display: flex; position: fixed; top: 8px; right: 52px; width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--line2); background: var(--surface); color: var(--muted); align-items: center; justify-content: center; cursor: pointer; z-index: 31; }
+    .hamburger-btn:hover, .hamburger-btn.open { color: var(--ink); border-color: var(--ink); }
+    .nav-overlay { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 45; opacity: 0; pointer-events: none; transition: opacity 180ms ease; }
+    .nav-overlay.open { opacity: 1; pointer-events: auto; }
+    .topnav { position: fixed; top: calc(46px + var(--sat)); left: auto; right: 12px; bottom: auto; width: 200px; max-width: 60vw; transform: none;
+      flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 1px;
+      background: var(--card); border: 1px solid var(--line2); border-radius: 14px;
+      padding: 6px; backdrop-filter: none; -webkit-backdrop-filter: none; z-index: 50; overflow-y: auto; max-height: 70vh;
+      box-shadow: 0 16px 44px rgba(0,0,0,0.5); opacity: 0; transform-origin: top right; transform: scale(0.96); pointer-events: none; transition: opacity 160ms ease, transform 160ms ease; }
+    .topnav.open { opacity: 1; transform: scale(1); pointer-events: auto; }
+    .topnav .tn { font-size: 13px; padding: 11px 10px; letter-spacing: 0.03em; border-radius: 9px; text-align: left; }
+    .tn-wrap { display: flex; flex-direction: column; align-items: stretch; }
+    .tn-wrap .tn-menu { position: static; transform: none; margin: 0 0 2px 10px; width: auto; min-width: 0; box-shadow: none; border: none; background: transparent; padding: 0; }
+    .composer-pill { padding: 16px 16px 12px; border-radius: 4px; }
     .composer-pill textarea { min-height: 90px; font-size: 15px; margin-bottom: 10px; }
     .plus-btn { width: 32px; height: 32px; }
     .send-btn, .mic-btn { width: 32px; height: 32px; }
     .home-center { width: 100%; max-width: 92%; margin: 0; }
     .room-grid-preview { grid-template-columns: 1fr 1fr; }
     #pane-home::before { inset: 0; }
-    #pane-home { justify-content: flex-start; padding-top: 104px; padding-bottom: calc(16px + var(--sab)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #pane-home { justify-content: flex-start; padding-top: 64px; padding-bottom: calc(16px + var(--sab)); overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .chat-log { max-height: 40vh; margin-top: 18px; }
     .bubble { font-size: 13px; padding: 10px 13px; max-width: 88%; }
     .bubble.dos { align-self: flex-start; max-width: 92%; }
@@ -642,7 +653,7 @@
     .acct-menu { right: 4px; min-width: 220px; }
     /* hubs + room */
     .hub-header, .loose-shelf { padding-left: 18px; padding-right: 18px; }
-    .hub-header { padding-top: 104px; }
+    .hub-header { padding-top: 64px; }
     .hub-title { font-size: 28px; }
     #pane-rooms .hub-title { font-size: 32px; }
     #pane-rooms .hub-top { flex-wrap: wrap; gap: 6px; }
@@ -654,7 +665,7 @@
     .room-name { font-size: 15px; line-height: 1.25; }
     .room-oneliner { font-size: 13px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .new-room-card { font-size: 12px; min-height: 110px; }
-    .rv-header { padding: 104px 18px 18px; }
+    .rv-header { padding: 64px 18px 18px; }
     .rv-name { font-size: 21px; }
     .rv-oneliner { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .rv-body { padding: 4px 18px 60px; }
@@ -675,7 +686,7 @@
     .loop-text { font-size: 15px; }
     .log-text { font-size: 14px; }
     /* calendar: the dump box comes first, then the day */
-    .cal-topbar { height: 104px; padding-right: 120px; }
+    .cal-topbar { height: 64px; padding-right: 120px; }
     .cal-inner { display: flex; flex-direction: column; padding: 16px 14px 60px; gap: 18px; }
     .smart-cal { order: -1; position: static; padding: 16px 14px 14px; }
     .sc-title { font-size: 21px; }
@@ -690,22 +701,22 @@
     .ag-row { gap: 10px; }
     .sheet { padding: 18px; }
     /* stuck: doors and the move */
-    .stuck-close { top: calc(96px + var(--sat)); right: 16px; }
+    .stuck-close { top: calc(56px + var(--sat)); right: 16px; }
     #pane-stuck, #pane-humans { justify-content: flex-start; }
-    .doors { padding: 104px 16px 24px; }
+    .doors { padding: 64px 16px 24px; }
     .doors-mark { display: none; }
     .doors-title { font-size: 26px; }
     .doors-sub { font-size: 12.5px; }
     .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
-    .humans-inner { padding: 104px 16px 24px; }
+    .humans-inner { padding: 64px 16px 24px; }
     .support-card { padding: 16px 18px; border-radius: 16px; }
     .support-name { font-size: 15.5px; }
     .support-for { font-size: 12.5px; }
     .support-links a { font-size: 12.5px; padding: 8px 12px; }
     .door { padding: 16px 16px 14px; border-radius: 18px; }
     .door-label { font-size: 16.5px; }
-    .stuck-inner { width: 100%; padding: 104px 16px 24px; }
-    .lockdown-label { top: calc(90px + var(--sat)); }
+    .stuck-inner { width: 100%; padding: 64px 16px 24px; }
+    .lockdown-label { top: calc(50px + var(--sat)); }
     .stuck-mark { width: 56px; height: 56px; }
     .stuck-nudge { font-size: 22px; max-width: 100%; }
     .stuck-sub { font-size: 12.5px; }
@@ -789,6 +800,10 @@
     <div class="wordmark" aria-label="Nenemi" onclick="goSanctuary()">
       <svg class="wm-mark" width="18" height="18" viewBox="0 0 120 120" aria-hidden="true"><path class="wm-arc-a" d="M39 23.63 A42 42 0 0 0 81 96.37" fill="none" stroke="#3FB7A6" stroke-width="14" stroke-linecap="butt"/><path class="wm-arc-b" d="M39 23.63 A42 42 0 0 1 81 96.37" fill="none" stroke="#F4F1EA" stroke-width="14" stroke-linecap="butt"/><circle class="wm-dot" cx="81" cy="96.37" r="11" fill="#F4F1EA" stroke="#0A0A0A" stroke-width="3"/></svg>
       <span class="wm-text">NENEMI</span>
+    </div>
+    <div class="nav-overlay" id="navOverlay" onclick="closeNavDrawer()"></div>
+    <div class="hamburger-btn" id="hamburgerBtn" onclick="toggleNavDrawer()" title="Menu">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4.5h12M2 8h12M2 11.5h12" stroke-linecap="round"/></svg>
     </div>
     <nav class="topnav" id="topnav">
       <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
@@ -1222,6 +1237,7 @@
     if (nav) nav.classList.add('active');
     closeDayMenu();
     closeRoomsMegaSoon();
+    closeNavDrawer();
     const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id === 'lockdown' ? 'stuck' : id);
     if (id === 'notes') renderNotes();
     document.querySelectorAll('.topnav .tn').forEach(n => n.classList.toggle('active', n.id === tnId));
@@ -1262,6 +1278,18 @@
     el.innerHTML = `<span class="hello">${escapeHtml(timeWord)}</span><span class="accent">${escapeHtml(line)}</span>`;
   }
 
+  // phone-only nav drawer: the pill nav slides in from the left instead of scrolling sideways
+  function toggleNavDrawer() {
+    const nav = document.getElementById('topnav'), overlay = document.getElementById('navOverlay'), btn = document.getElementById('hamburgerBtn');
+    if (!nav || !overlay || !btn) return;
+    const open = !nav.classList.contains('open');
+    nav.classList.toggle('open', open); overlay.classList.toggle('open', open); btn.classList.toggle('open', open);
+  }
+  function closeNavDrawer() {
+    const nav = document.getElementById('topnav'), overlay = document.getElementById('navOverlay'), btn = document.getElementById('hamburgerBtn');
+    if (!nav || !overlay || !btn) return;
+    nav.classList.remove('open'); overlay.classList.remove('open'); btn.classList.remove('open');
+  }
   function toggleMenu() {
     const menu = document.getElementById('plusMenu'), btn = document.getElementById('plusBtn');
     if (!menu || !btn) return;
