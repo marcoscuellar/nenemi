@@ -315,10 +315,10 @@
   .notes-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
   .notes-date { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   .notes-saved { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
-  .notes-box { display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 22px; padding: 20px 18px 12px; }
+  .notes-box { display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 4px; padding: 20px 18px 12px; }
   .notes-box textarea { width: 100%; box-sizing: border-box; min-height: 220px; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 16px; line-height: 1.7; color: var(--ink); padding: 0; margin: 0; }
   .notes-box textarea::placeholder { color: var(--faint); }
-  .notes-hold { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
+  .notes-hold { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 9px 14px; border-radius: 4px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
   .notes-hold:hover { color: var(--ink); border-color: var(--ink); }
   .notes-log { margin-top: 14px; } .notes-log:empty { display: none; }
   .notes-earlier .ne { display: flex; gap: 16px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
@@ -332,6 +332,8 @@
   /* rooms hub: teal eyebrow, huge bold title, then a section row (name + count) right above the grid — same editorial anatomy as the guide */
   #pane-rooms .kicker { padding-bottom: 0; margin-bottom: 0; border-bottom: none; font-weight: 700; letter-spacing: 0.1em; color: var(--sage-text); }
   #pane-rooms .hub-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(64px, 9vw, 100px); line-height: 0.84; letter-spacing: -0.065em; text-transform: uppercase; margin-top: 10px; }
+  #pane-notes .kicker { padding-bottom: 0; margin-bottom: 0; border-bottom: none; font-weight: 700; letter-spacing: 0.1em; color: var(--teal-soft); }
+  #pane-notes .hub-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(38px, 5.5vw, 62px); line-height: 0.94; letter-spacing: -0.02em; margin-top: 10px; }
   .hub-section-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; max-width: 1180px; margin: 26px auto 0; padding: 0 48px 12px; border-bottom: 1px solid var(--line2); }
   .hub-section-row h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0; font-weight: 600; }
   .hub-section-row .mono { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
@@ -522,10 +524,10 @@
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
   .doors { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; padding: 0 20px; }
   .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(63,183,166,0.45); margin-bottom: 28px; }
-  .doors-title { font-family: var(--font-body); font-weight: 300; font-size: 36px; text-align: center; letter-spacing: -0.01em; line-height: 1.08; }
+  .doors-title { font-family: var(--font-black); font-weight: 900; font-size: 34px; text-align: center; letter-spacing: -0.015em; line-height: 1.05; }
   .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
-  .door { border-radius: 22px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(244,241,234,0.08); transition: transform 140ms ease, border-color 140ms ease; }
+  .door { border-radius: 4px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(255,255,255,0.08); transition: transform 140ms ease, border-color 140ms ease; }
   .door:hover { transform: translateY(-2px); border-color: rgba(63,183,166,0.4); }
   .door-icon { display: block; color: var(--faint); margin-bottom: 10px; }
   .door-label { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
@@ -540,11 +542,11 @@
   /* HUMAN SUPPORT: its own screen, not a table bolted to the doors */
   .humans-inner { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 560px; padding: 48px 20px 40px; margin: auto; }
   .support-list { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 34px; }
-  .support-card { border-radius: 18px; padding: 20px 22px; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(244,241,234,0.08); }
+  .support-card { border-radius: 4px; padding: 20px 22px; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(255,255,255,0.08); }
   .support-name { font-family: var(--font-title); font-weight: 500; font-size: 17px; letter-spacing: 0.01em; color: var(--ink); }
   .support-for { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
   .support-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-  .support-links a { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--muted); text-decoration: none; padding: 9px 14px; border-radius: 12px; border: 1px solid var(--line2); }
+  .support-links a { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--muted); text-decoration: none; padding: 9px 14px; border-radius: 4px; border: 1px solid var(--line2); }
   .support-links a:hover { color: var(--ink); border-color: rgba(63,183,166,0.4); }
   .doors-back:hover { color: var(--sage-text); }
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
@@ -686,7 +688,7 @@
     .rv-oneliner { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 6px; }
     .rv-body { padding: 4px 18px 60px; }
     .notes-body { padding: 8px 18px 60px; }
-    .notes-box { padding: 16px 14px 10px; border-radius: 20px; }
+    .notes-box { padding: 16px 14px 10px; border-radius: 4px; }
     .notes-box textarea { min-height: 160px; font-size: 14.5px; }
     .anchor-text { font-size: 15px; }
     .rv-capture-panel { padding: 16px; margin-top: 24px; }
@@ -729,11 +731,11 @@
     .doors-sub { font-size: 12.5px; }
     .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
     .humans-inner { padding: 64px 16px 24px; }
-    .support-card { padding: 16px 18px; border-radius: 16px; }
+    .support-card { padding: 16px 18px; border-radius: 4px; }
     .support-name { font-size: 15.5px; }
     .support-for { font-size: 12.5px; }
     .support-links a { font-size: 12.5px; padding: 8px 12px; }
-    .door { padding: 16px 16px 14px; border-radius: 18px; }
+    .door { padding: 16px 16px 14px; border-radius: 4px; }
     .door-label { font-size: 16.5px; }
     .stuck-inner { width: 100%; padding: 64px 16px 24px; }
     .lockdown-label { top: calc(50px + var(--sat)); }
