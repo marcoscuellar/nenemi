@@ -136,7 +136,11 @@
   .greeting-big .hello { display: block; font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--muted); text-transform: none; letter-spacing: normal; margin-bottom: 6px; }
   .greeting-big .ready { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--teal); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 20px; }
   /* once the box is talking, the huge headline steps back so the reply has the room */
-  .app.talking .greeting-big { font-size: clamp(22px, 3vw, 30px); margin-bottom: 18px; }
+  .app.talking .greeting-big { font-size: clamp(22px, 3vw, 30px); margin-bottom: 18px; order: 0; flex-shrink: 0; }
+  /* once a conversation starts, the composer sinks to the bottom and the thread fills in above it, like texting */
+  .app.talking .home-center { flex: 1; min-height: 0; }
+  .app.talking .chat-log { order: 1; flex: 1; min-height: 0; max-height: none; justify-content: flex-end; }
+  .app.talking .composer-pill { order: 2; flex-shrink: 0; margin-top: 14px; }
 
   .chat-log { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; width: 100%; max-height: 260px; overflow-y: auto; }
   .bubble { max-width: 78%; padding: 11px 15px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
