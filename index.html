@@ -61,19 +61,6 @@
     --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
     color: var(--ink);
   }
-  /* the calendar keeps its own warm, light surface — that contrast against the dark app is what makes it stand out.
-     #evtSheet (the event editor) is calendar-only but lives outside #pane-calendar in the DOM, so it needs the same override. */
-  #pane-calendar, #evtSheet {
-    --sanctuary: #FBF9F5; --surface: #FFFFFF; --surface2: #F1EBDF; --card: #FFFFFF; --ink: #2A2A26; --muted: #7A7062; --faint: #A39A8C;
-    --line: #EBE3D3; --line2: #E6D9BE; --sage: #3FB7A6; --sage-text: #2C8578; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
-    --evt-block: rgba(63,183,166,0.16); --evt-fixed: #2A2A26; --evt-buffer: #FBF6EC; --btn: #3FB7A6; --btn-ink: #06201C;
-    --font-body: 'Public Sans', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
-    color: var(--ink);
-  }
-  #pane-calendar { background: var(--sanctuary); }
-  .main:has(#pane-calendar.active) .wordmark .wm-text { color: #2A2A26; }
-  .main:has(#pane-calendar.active) .wm-mark .wm-arc-b { stroke: #2A2A26; }
-  .main:has(#pane-calendar.active) .wm-mark .wm-dot { fill: #3FB7A6; stroke: #FBF9F5; }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
   html, body { margin: 0; padding: 0; height: 100%; }
@@ -213,98 +200,107 @@
   .back-home:hover { color: var(--sage-text); }
 
 
-  /* ---------- CALENDAR (day view + Smart Cal) ---------- */
+  /* ---------- PLAN MY DAY (Calendar, day view + Smart Cal) ---------- */
   #pane-calendar { flex-direction: column; overflow: hidden; }
   .cal-topbar { height: 60px; flex-shrink: 0; }
   .cal-topbar .back-home { margin: 0; }
   .cal-body { flex: 1; overflow-y: auto; }
-  .cal-inner { max-width: 1180px; margin: 0 auto; padding: 36px 40px 60px; display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 36px; align-items: start; }
-  @media (max-width: 980px) { .cal-inner { grid-template-columns: 1fr; } }
+  .cal-inner { max-width: 1180px; margin: 0 auto; padding: 36px 40px 60px; }
+  .cal-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; margin-top: 32px; }
+  .cal-columns > * { min-width: 0; }
+  @media (max-width: 980px) { .cal-columns { grid-template-columns: minmax(0, 1fr); } }
 
-  .cal-head { padding-bottom: 22px; margin-bottom: 22px; border-bottom: 1px solid var(--ink); }
-  .cal-head-top { display: flex; align-items: baseline; justify-content: space-between; }
-  .cal-sub, .cal-count { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted); text-transform: uppercase; }
-  .cal-head-main { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 16px; }
-  .cal-date { font-family: var(--font-mono); font-weight: 700; font-size: 46px; line-height: 1; letter-spacing: -0.01em; text-transform: uppercase; }
-  .cal-date::after { content: '_'; }
-  .cal-nav { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .cal-nav .nav-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .cal-nav .nav-btn:hover { border-color: var(--sage); color: var(--sage-text); }
-  .cal-nav .nav-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 12px; border-radius: 6px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
-  .cal-nav .nav-pill:hover { border-color: var(--sage); color: var(--sage-text); }
+  .cal-head { padding-bottom: 22px; border-bottom: 1px solid var(--line2); }
+  .cal-eyebrow { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal-soft); }
+  .cal-head-main { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 10px; gap: 16px; }
+  .cal-date { font-family: var(--font-black); font-weight: 900; font-size: clamp(30px, 5.4vw, 70px); line-height: 0.92; letter-spacing: -0.02em; text-transform: uppercase; }
+  .cal-nav { display: flex; align-items: center; gap: 16px; flex-shrink: 0; padding-bottom: 8px; }
+  .cal-nav .nav-btn { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
+  .cal-nav .nav-btn:hover { color: var(--ink); }
+  .cal-nav .nav-pill { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-soft); cursor: pointer; }
+  .cal-nav .nav-pill:hover { color: var(--teal); }
 
-  /* agenda: only the hours that matter, cards you can open */
-  .agenda { border-top: 1px solid var(--line); }
-  .ag-row { display: flex; gap: 14px; border-bottom: 1px solid var(--line); padding: 10px 0; min-height: 44px; }
-  .ag-row.empty { min-height: 30px; padding: 6px 0; }
-  .ag-row .hl { width: 64px; flex-shrink: 0; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 6px; }
-  .ag-row.now .hl { color: var(--sage-text); }
-  .ag-row .hb { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-  .ag-card { background: var(--surface); box-shadow: 0 1px 2px rgba(60,50,30,.07); border-radius: 12px; padding: 11px 14px; cursor: pointer; transition: transform 120ms ease; }
-  .ag-card:hover { transform: translateX(2px); }
-  .ag-card.fixed { background: var(--evt-fixed); box-shadow: 0 6px 16px rgba(42,42,38,.18); }
-  .ag-card.buffer { background: var(--evt-buffer); border: 1px dashed var(--line2); box-shadow: none; }
-  .ag-card.past { opacity: 0.55; }
+  /* right column: the day's blocks, one row each */
+  .cal-col-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .cal-col-title { font-weight: 700; font-size: 16px; color: var(--ink); }
+  .cal-col-desc { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 6px; max-width: 400px; }
+  .cal-blocks-count { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-soft); flex-shrink: 0; white-space: nowrap; }
+  .agenda { border-top: 1px solid var(--line2); margin-top: 20px; }
+  .ag-row { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .ag-row:hover .ag-title { color: var(--teal-soft); }
+  .ag-time { width: 68px; flex-shrink: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--faint); padding-top: 2px; }
+  .ag-body { flex: 1; min-width: 0; }
   .ag-title { font-family: var(--font-body); font-size: 15px; font-weight: 700; letter-spacing: -0.005em; color: var(--ink); }
-  .ag-meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--sage-text); margin-top: 4px; text-transform: uppercase; }
-  .ag-card.fixed .ag-title { color: #FBF9F5; }
-  .ag-card.fixed .ag-meta { color: #C7A9E0; }
-  .ag-card.buffer .ag-title { color: #6E5A34; }
-  .ag-card.buffer .ag-meta { color: #A28638; }
-  .ag-now { height: 1px; background: var(--sage); position: relative; margin: 2px 0; }
-  .ag-now::before { content: ''; position: absolute; left: -4px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--sage); }
+  .ag-desc { font-size: 12.5px; color: var(--muted); line-height: 1.4; margin-top: 3px; }
+  .ag-tag { flex-shrink: 0; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); padding-top: 2px; white-space: nowrap; }
+  .ag-tag.fixed, .ag-tag.room { color: var(--teal-soft); }
+  .ag-tag.passed { color: var(--teal); }
+  .ag-row.past .ag-title, .ag-row.past .ag-desc { opacity: 0.55; }
+  .ag-passed-prompt { margin: -2px 0 14px; padding: 14px 16px; border: 1px solid var(--teal-deep); border-radius: 4px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; cursor: default; }
+  .ag-passed-prompt .app-title { font-weight: 700; font-size: 13.5px; color: var(--ink); }
+  .ag-passed-prompt .app-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .ag-passed-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .ag-passed-btn { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 12px; border-radius: 4px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .ag-passed-btn:hover { border-color: var(--teal); color: var(--teal-soft); }
   .ag-empty { color: var(--faint); font-size: 13px; padding: 22px 0; text-align: center; }
+  .regroup-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; margin-top: 6px; border: 1px solid var(--line2); border-radius: 4px; font-size: 12.5px; color: var(--muted); }
+  .regroup-btn { font-family: var(--font-mono); font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-soft); cursor: pointer; flex-shrink: 0; }
+  .regroup-btn:hover { color: var(--teal); }
   .agenda-actions { display: flex; gap: 10px; padding: 16px 0 0; }
-  .ag-btn { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
-  .ag-btn:hover { border-color: var(--sage); color: var(--sage-text); }
+  .ag-btn { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 10px 14px; border-radius: 4px; border: 1px solid var(--line2); background: var(--surface); color: var(--ink); cursor: pointer; }
+  .ag-btn:hover { border-color: var(--teal); color: var(--teal-soft); }
   /* editor sheet */
   .sheet-back { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; z-index: 80; padding: 16px; }
-  .sheet { width: 100%; max-width: 460px; background: var(--card); border: 1px solid var(--line2); border-radius: 20px; padding: 22px; box-shadow: 0 24px 70px var(--shadow); display: flex; flex-direction: column; gap: 12px; }
-  .sheet-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-text); }
+  .sheet { width: 100%; max-width: 460px; background: var(--card); border: 1px solid var(--line2); border-radius: 4px; padding: 22px; box-shadow: 0 24px 70px var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+  .sheet-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-soft); }
   .sheet-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; background: transparent; border: none; border-bottom: 1px solid var(--line2); color: var(--ink); padding: 6px 0; outline: none; width: 100%; }
-  .sheet-title:focus { border-bottom-color: var(--sage); }
+  .sheet-title:focus { border-bottom-color: var(--teal); }
   .sheet-row { display: flex; gap: 12px; }
   .sheet-row label, .sheet-label { display: flex; flex-direction: column; gap: 6px; flex: 1; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
-  .sheet input[type=time], .sheet input[type=number], .sheet select { font-family: var(--font-body); font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 9px 10px; outline: none; color-scheme: dark; }
+  .sheet input[type=time], .sheet input[type=number], .sheet select { font-family: var(--font-body); font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 4px; padding: 9px 10px; outline: none; color-scheme: dark; }
   .sheet-h { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
   .sheet-p { font-size: 14px; line-height: 1.5; color: var(--muted); }
   .sheet-p.small { font-size: 12.5px; }
-  .sheet-link { font-family: var(--font-mono); font-size: 12px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; }
-  .sheet-mini { font-family: var(--font-mono); font-size: 11px; color: var(--sage-text); border-bottom: 1px solid var(--line2); cursor: pointer; }
+  .sheet-link { font-family: var(--font-mono); font-size: 12px; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 4px; padding: 10px 12px; outline: none; width: 100%; }
+  .sheet-mini { font-family: var(--font-mono); font-size: 11px; color: var(--teal-soft); border-bottom: 1px solid var(--line2); cursor: pointer; }
   .sheet-actions a.sheet-btn { text-decoration: none; text-align: center; }
   .sheet-kinds { display: flex; gap: 8px; }
-  .kind-chip { font-family: var(--font-mono); font-size: 11px; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
+  .kind-chip { font-family: var(--font-mono); font-size: 11px; padding: 7px 12px; border-radius: 4px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
   .kind-chip.on { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
-  .sheet-notes { min-height: 84px; font-family: var(--font-body); font-size: 14px; line-height: 1.5; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; resize: vertical; outline: none; }
-  .sheet-notes:focus { border-color: var(--sage); }
-  .sheet-input { font-family: var(--font-body); font-size: 14.5px; text-transform: none; letter-spacing: normal; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 10px; padding: 10px 12px; outline: none; width: 100%; }
-  .sheet-input:focus { border-color: var(--sage); }
+  .sheet-notes { min-height: 84px; font-family: var(--font-body); font-size: 14px; line-height: 1.5; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 4px; padding: 10px 12px; resize: vertical; outline: none; }
+  .sheet-notes:focus { border-color: var(--teal); }
+  .sheet-input { font-family: var(--font-body); font-size: 14.5px; text-transform: none; letter-spacing: normal; color: var(--ink); background: var(--surface); border: 1px solid var(--line2); border-radius: 4px; padding: 10px 12px; outline: none; width: 100%; }
+  .sheet-input:focus { border-color: var(--teal); }
   .sheet-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
   .sheet-actions .spacer { flex: 1; }
-  .sheet-btn { font-family: var(--font-body); font-weight: 600; font-size: 13.5px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
+  .sheet-btn { font-family: var(--font-body); font-weight: 600; font-size: 13.5px; padding: 10px 16px; border-radius: 4px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; }
   .sheet-btn.primary { background: var(--btn); color: var(--btn-ink); border-color: transparent; }
-  .sheet-btn.ghost:hover { color: var(--sage-text); border-color: var(--sage); }
+  .sheet-btn.ghost:hover { color: var(--teal-soft); border-color: var(--teal); }
 
-  /* Smart Cal card */
-  .smart-cal { background: var(--card); border: 1px solid var(--line2); border-radius: 16px; padding: 22px 18px 18px; position: sticky; top: 0; }
-  .sc-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-text); }
-  .sc-title { font-family: var(--font-body); font-weight: 300; font-size: 28px; line-height: 1.08; margin-top: 10px; }
+  /* left column: capture card */
+  .smart-cal { background: var(--card); border: 1px solid var(--line2); border-radius: 4px; padding: 22px; }
+  .sc-title { font-family: var(--font-body); font-weight: 700; font-size: 22px; line-height: 1.15; }
   .sc-desc { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 8px; }
-  .sc-dump { width: 100%; min-height: 150px; margin-top: 14px; background: var(--sanctuary); border: 1px solid var(--line2); border-radius: 8px; padding: 12px 12px; color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; resize: vertical; outline: none; }
+  .sc-dump { width: 100%; min-height: 150px; margin-top: 14px; background: var(--sanctuary); border: 1px solid var(--line2); border-radius: 4px; padding: 12px 12px; color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; resize: vertical; outline: none; }
   .sc-dump::placeholder { color: var(--faint); }
-  .sc-dump:focus { border-color: var(--sage); }
+  .sc-dump:focus { border-color: var(--teal); }
   .sc-divider { height: 1px; background: var(--line); margin: 16px 0 14px; }
   .sc-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--faint); }
   .sc-ro-text { color: var(--muted); font-size: 13px; line-height: 1.5; margin-top: 8px; }
-  .sc-ro-text .names { color: var(--sage-text); font-weight: 600; }
+  .sc-ro-text .names { color: var(--teal-soft); font-weight: 600; }
   .sc-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .sc-chip { font-family: var(--font-mono); font-size: 11px; padding: 7px 11px; border-radius: 6px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
-  .sc-chip:hover { color: var(--sage-text); border-color: var(--sage); }
-  .sc-chip.primary { background: var(--sage-fill); color: var(--sage-text); border-color: var(--sage-fill); }
-  .sc-build { width: 100%; margin-top: 18px; padding: 12px; border: none; border-radius: 10px; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; }
-  .sc-build:hover { background: var(--sage-text); }
+  .sc-chip { font-family: var(--font-mono); font-size: 11px; padding: 7px 11px; border-radius: 4px; border: 1px solid var(--line2); color: var(--muted); cursor: pointer; }
+  .sc-chip:hover { color: var(--teal-soft); border-color: var(--teal); }
+  .sc-chip.primary { background: var(--sage-fill); color: var(--teal-soft); border-color: var(--sage-fill); }
+  .cal-summary-row { display: grid; grid-template-columns: 1fr 1fr; margin-top: 18px; border-top: 1px solid var(--line2); border-bottom: 1px solid var(--line2); }
+  .cal-summary-cell { padding: 14px 14px 14px 0; }
+  .cal-summary-cell + .cal-summary-cell { padding-left: 14px; border-left: 1px solid var(--line2); }
+  .cal-summary-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .cal-summary-value { font-size: 13.5px; color: var(--ink); font-weight: 600; }
+  .sc-build { width: 100%; margin-top: 18px; padding: 13px; border: none; border-radius: 4px; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 14px; letter-spacing: 0.02em; text-transform: uppercase; cursor: pointer; }
+  .sc-build:hover { background: var(--teal-soft); }
   .sc-build:disabled { opacity: .7; cursor: default; }
-  .sc-note { font-family: var(--font-mono); font-size: 11px; line-height: 1.55; color: var(--sage-text); margin-top: 12px; min-height: 1em; }
+  .sc-note { font-family: var(--font-mono); font-size: 11px; line-height: 1.55; color: var(--teal-soft); margin-top: 12px; min-height: 1em; }
 
   /* ROOMS HUB pane */
   .hub-header { padding: 64px 48px 8px; width: 100%; max-width: 1180px; margin: 0 auto; }
@@ -700,18 +696,21 @@
     .log-text { font-size: 14px; }
     /* calendar: the dump box comes first, then the day */
     .cal-topbar { height: 64px; padding-right: 120px; }
-    .cal-inner { display: flex; flex-direction: column; padding: 16px 14px 60px; gap: 18px; }
-    .smart-cal { order: -1; position: static; padding: 16px 14px 14px; }
+    .cal-inner { padding: 16px 14px 60px; }
+    .cal-columns { gap: 18px; margin-top: 20px; }
+    .smart-cal { order: -1; padding: 16px 14px 14px; }
     .sc-title { font-size: 21px; }
     .sc-desc { font-size: 12px; }
     .sc-dump { min-height: 88px; font-size: 13.5px; }
-    .cal-head { padding-bottom: 16px; margin-bottom: 16px; }
-    .cal-sub, .cal-count { font-size: 11px; }
+    .cal-head { padding-bottom: 16px; }
+    .cal-blocks-count { font-size: 9.5px; }
     .cal-head-main { flex-wrap: wrap; gap: 10px; }
     .cal-date { font-size: 30px; }
-    .cal-nav .nav-pill { padding: 8px 10px; font-size: 9px; }
-    .ag-row .hl { width: 50px; font-size: 9.5px; }
+    .cal-nav .nav-pill { font-size: 10px; }
+    .ag-time { width: 50px; font-size: 9.5px; }
     .ag-row { gap: 10px; }
+    .cal-summary-row { grid-template-columns: 1fr; }
+    .cal-summary-cell + .cal-summary-cell { padding-left: 0; border-left: none; border-top: 1px solid var(--line2); padding-top: 14px; margin-top: 14px; }
     .sheet { padding: 18px; }
     /* stuck: doors and the move */
     .stuck-close { top: calc(56px + var(--sat)); right: 16px; }
@@ -900,45 +899,57 @@
       </div>
       <div class="cal-body">
         <div class="cal-inner">
-          <div class="cal-left">
-            <div class="cal-head">
-              <div class="cal-head-top">
-                <div class="cal-sub" id="calSub">TUE · SEP 15</div>
-                <div class="cal-count" id="calCount">0 ITEMS</div>
-              </div>
-              <div class="cal-head-main">
-                <div class="cal-date" id="calDate">Today</div>
-                <div class="cal-nav">
-                  <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                  <div class="nav-pill" onclick="goToday()" title="Back to today">Day by day</div>
-                  <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                </div>
+          <div class="cal-head">
+            <div class="cal-eyebrow">Plan my day / Today only</div>
+            <div class="cal-head-main">
+              <div class="cal-date" id="calDate">Today</div>
+              <div class="cal-nav">
+                <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="nav-pill" onclick="goToday()" title="Back to today">Today</div>
+                <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
               </div>
             </div>
-            <div class="agenda" id="agenda"></div>
-            <div class="agenda-actions">
-              <button class="ag-btn" onclick="editEvent(null)">+ Add block</button>
-              <button class="ag-btn" onclick="addDayToCalendar()">Add to my calendar</button>
-            </div>
+            <div class="cal-sub" id="calSub" hidden>TUE · SEP 15</div>
           </div>
 
-          <div class="smart-cal">
-            <div class="sc-kicker">Smart cal</div>
-            <div class="sc-title">Dump the day.</div>
-            <div class="sc-desc">No organizing needed. What exists, what is fixed, what you are avoiding, what needs to happen, all in one breath. NENEMI turns it into one usable day.</div>
-            <div class="sc-dump-wrap">
-              <textarea class="sc-dump" id="calDump" placeholder="The 2pm with Sarah, I keep putting off the taxes, lunch at some point, finish the proposal opener..."></textarea>
-              <div class="mic-btn" id="calMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+          <div class="cal-columns">
+            <div class="smart-cal">
+              <div class="sc-title">What does today need to hold?</div>
+              <div class="sc-desc">Put down appointments, obligations, worries, and things you hope to touch. Messy is fine.</div>
+              <div class="sc-dump-wrap">
+                <textarea class="sc-dump" id="calDump" placeholder="I have a call at 2. Need to fix the Test App empty state, get groceries, and I really need a break before dinner…"></textarea>
+                <div class="mic-btn" id="calMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+              </div>
+              <div class="sc-divider"></div>
+              <div class="sc-label">from yesterday</div>
+              <div class="sc-ro-text" id="roText"></div>
+              <div class="sc-chips" id="roChips">
+                <div class="sc-chip primary" onclick="roMoveAll()">move to today</div>
+                <div class="sc-chip" onclick="roTossAll()">toss 'em</div>
+              </div>
+              <div class="cal-summary-row" id="calSummary"></div>
+              <button class="sc-build" onclick="buildDay()">Build my day</button>
+              <div class="sc-note" id="calNote"></div>
             </div>
-            <div class="sc-divider"></div>
-            <div class="sc-label">from yesterday</div>
-            <div class="sc-ro-text" id="roText"></div>
-            <div class="sc-chips" id="roChips">
-              <div class="sc-chip primary" onclick="roMoveAll()">move to today</div>
-              <div class="sc-chip" onclick="roTossAll()">toss 'em</div>
+
+            <div class="cal-left">
+              <div class="cal-col-head">
+                <div>
+                  <div class="cal-col-title">Your day, with room to move.</div>
+                  <div class="cal-col-desc">Built from appointments, room context, and what you just said.</div>
+                </div>
+                <div class="cal-blocks-count" id="calCount">0 BLOCKS</div>
+              </div>
+              <div class="agenda" id="agenda"></div>
+              <div class="regroup-row">
+                <span>Day changed? Rebuild only what remains.</span>
+                <span class="regroup-btn" onclick="regroupDay()">Regroup my day</span>
+              </div>
+              <div class="agenda-actions">
+                <button class="ag-btn" onclick="editEvent(null)">+ Add block</button>
+                <button class="ag-btn" onclick="addDayToCalendar()">Add to my calendar</button>
+              </div>
             </div>
-            <button class="sc-build" onclick="buildDay()">Build this day</button>
-            <div class="sc-note" id="calNote"></div>
           </div>
         </div>
       </div>
@@ -2230,6 +2241,7 @@
   function fmtClock(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); return `${((hr + 11) % 12) + 1}:${String(m).padStart(2,'0')}`; }
   function fmtAmPm(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); const ap = hr >= 12 ? 'pm' : 'am'; const h12 = ((hr + 11) % 12) + 1; return m ? `${h12}:${String(m).padStart(2,'0')}${ap}` : `${h12}${ap}`; }
   function fmtHourLabel(h) { return `${((h + 11) % 12) + 1} ${h >= 12 ? 'PM' : 'AM'}`; }
+  function fmtClockCaps(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); const ap = hr >= 12 ? 'PM' : 'AM'; const h12 = ((hr + 11) % 12) + 1; return `${h12}:${String(m).padStart(2,'0')} ${ap}`; }
   function kindLabel(k) { return k === 'fixed' ? 'Fixed' : k === 'buffer' ? 'Buffer' : 'Focus'; }
   function dayTitle(d) {
     const diff = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000);
@@ -2242,42 +2254,119 @@
 
   function renderCal() {
     const isToday = dkey(selectedDay) === dkey(today);
-    document.getElementById('calDate').textContent = dayTitle(selectedDay);
-    document.getElementById('calSub').textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'short' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+    document.getElementById('calDate').textContent = selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    const calSub = document.getElementById('calSub');
+    if (calSub) calSub.textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'short' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
     const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
-    document.getElementById('calCount').textContent = `${list.length} ${list.length === 1 ? 'ITEM' : 'ITEMS'}`;
+    document.getElementById('calCount').textContent = `${list.length} block${list.length === 1 ? '' : 's'}`;
     const nowH = today.getHours() + today.getMinutes() / 60;
     const el = document.getElementById('agenda');
     if (!list.length) {
-      el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the right, or add one block.' : 'Nothing here yet.'}</div>`;
-      renderRollover(); return;
+      el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the left, or add one block.' : 'Nothing here yet.'}</div>`;
+      renderRollover(); renderCalSummary(); return;
     }
-    // only the hours that matter: from the first thing (or now) to the last thing, plus a little air
-    let from = Math.floor(list[0].start), to = Math.ceil(list[list.length - 1].end);
-    // "now" gets at most one row of air on either side; it never opens up a pile of empty hours
-    if (isToday && nowH < list[0].start) from = Math.max(from - 1, Math.floor(nowH));
-    if (isToday && nowH > list[list.length - 1].end) to = Math.min(to + 1, Math.floor(nowH) + 1);
-    from = Math.max(0, from); to = Math.min(24, Math.max(to, from + 1));
-    let html = '';
-    if (isToday && nowH < from) html += `<div class="ag-row empty now"><div class="hl">now</div><div class="hb"><div class="ag-now"></div></div></div>`;
-    for (let h = from; h < to; h++) {
-      const here = list.filter(e => Math.floor(e.start) === h);
-      const isNowRow = isToday && Math.floor(nowH) === h;
-      const cards = here.map(e => {
-        const i = dayList(selectedDay).indexOf(e);
-        const mins = Math.round((e.end - e.start) * 60);
-        const room = e.room ? rooms.find(r => r.id === e.room) : null;
-        const past = isToday && e.end <= nowH;
-        return `<div class="ag-card ${e.kind || 'block'}${past ? ' past' : ''}" onclick="editEvent(${i})">
-          <div class="ag-title">${escapeHtml(e.name)}</div>
-          <div class="ag-meta">${fmtClock(e.start)} · ${kindLabel(e.kind)} · ${mins} min${room ? ' · ' + escapeHtml(room.name) : ''}${e.notes ? ' · notes' : ''}</div>
+    el.innerHTML = list.map(e => {
+      const i = dayList(selectedDay).indexOf(e);
+      const room = e.room ? rooms.find(r => r.id === e.room) : null;
+      const past = isToday && e.end <= nowH;
+      const unacked = past && !e.acked;
+      const tag = unacked ? 'passed' : e.kind === 'fixed' ? 'fixed' : room ? 'room' : e.kind === 'buffer' ? 'protected' : 'focus';
+      const tagLabel = unacked ? 'Time passed' : e.kind === 'fixed' ? 'Fixed' : room ? 'From room' : e.kind === 'buffer' ? 'Protected' : 'Focus';
+      const desc = e.notes || `${kindLabel(e.kind)} · ${Math.round((e.end - e.start) * 60)} min${room ? ' · ' + escapeHtml(room.name) : ''}`;
+      const prompt = unacked ? `
+        <div class="ag-passed-prompt" onclick="event.stopPropagation()">
+          <div>
+            <div class="app-title">This time has passed. What happened?</div>
+            <div class="app-sub">Your answer updates ${room ? escapeHtml(room.name) : 'the day'} and the rest of today.</div>
+          </div>
+          <div class="ag-passed-actions">
+            <button type="button" class="ag-passed-btn" onclick="markBlockDone(${i})">Done</button>
+            <button type="button" class="ag-passed-btn" onclick="keepBlockToday(${i})">Keep today</button>
+            <button type="button" class="ag-passed-btn" onclick="puntRowTomorrow(${i})">Move tomorrow</button>
+          </div>
+        </div>` : '';
+      return `<div class="ag-row${past ? ' past' : ''}" onclick="editEvent(${i})">
+          <div class="ag-time">${fmtClockCaps(e.start)}</div>
+          <div class="ag-body">
+            <div class="ag-title">${escapeHtml(e.name)}</div>
+            <div class="ag-desc">${escapeHtml(desc)}</div>
+            ${prompt}
+          </div>
+          <div class="ag-tag ${tag}">${tagLabel}</div>
         </div>`;
-      }).join('');
-      html += `<div class="ag-row${here.length ? '' : ' empty'}${isNowRow ? ' now' : ''}"><div class="hl">${fmtHourLabel(h)}</div><div class="hb">${isNowRow && !here.length ? '<div class="ag-now"></div>' : ''}${cards}</div></div>`;
-    }
-    if (isToday && nowH >= to) html += `<div class="ag-row empty now"><div class="hl">now</div><div class="hb"><div class="ag-now"></div></div></div>`;
-    el.innerHTML = html;
+    }).join('');
     renderRollover();
+    renderCalSummary();
+  }
+
+  function renderCalSummary() {
+    const el = document.getElementById('calSummary'); if (!el) return;
+    const isToday = dkey(selectedDay) === dkey(today);
+    const nowH = today.getHours() + today.getMinutes() / 60;
+    const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
+    const fixedList = list.filter(e => e.kind === 'fixed');
+    const nextFixed = (isToday ? fixedList.find(e => e.end > nowH) : fixedList[0]) || null;
+    const lastFixed = fixedList[fixedList.length - 1] || null;
+    el.innerHTML = `
+      <div class="cal-summary-cell">
+        <div class="cal-summary-label">Fixed appointment</div>
+        <div class="cal-summary-value">${nextFixed ? `${fmtAmPm(nextFixed.start)} · ${escapeHtml(nextFixed.name)}` : 'None today'}</div>
+      </div>
+      <div class="cal-summary-cell">
+        <div class="cal-summary-label">Available until</div>
+        <div class="cal-summary-value">${lastFixed ? `${fmtAmPm(lastFixed.start)} · ${escapeHtml(lastFixed.name)}` : 'The end of the day'}</div>
+      </div>`;
+  }
+
+  // ---------- a block's time has passed: say what happened without opening the editor ----------
+  function applyPunt(where, i) {
+    const list = dayList(selectedDay); const e = list[i]; if (!e) return false;
+    list.splice(i, 1);
+    const dur = Math.max(0.25, e.end - e.start);
+    if (where === 'tomorrow') {
+      const tm = new Date(selectedDay); tm.setDate(tm.getDate() + 1); const tl = dayList(tm);
+      let s = !overlaps(tl, e.start, e.start + dur) ? e.start : nextFreeSlot(tl, dur, e.start);
+      if (s === null) s = nextFreeSlot(tl, dur, 8); if (s === null) s = e.start;
+      tl.push(Object.assign({}, e, { start: s, end: Math.min(24, s + dur), acked: false }));
+      calNote(`${e.name} is on tomorrow at ${fmtAmPm(s)}. Nothing's overdue.`);
+    } else {
+      const r = rooms.find(x => x.id === e.room);
+      if (r) {
+        if (!r.loops.some(l => !l.resolved && l.text.toLowerCase() === e.name.toLowerCase())) r.loops.push({ text: e.name, resolved: false });
+        r.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `Back in the room from the day: ${e.name}.` });
+        calNote(`${e.name} is back in ${r.name}, waiting. Not lost.`);
+      } else {
+        loose.unshift({ text: e.name, source: 'calendar', ts: Date.now() });
+        calNote(`${e.name} is off the day, held loose on Rooms.`);
+      }
+    }
+    save();
+    return true;
+  }
+  function puntRowTomorrow(i) { if (applyPunt('tomorrow', i)) renderCal(); }
+  function markBlockDone(i) {
+    const list = dayList(selectedDay); const e = list[i]; if (!e) return;
+    list.splice(i, 1); calNote(`${e.name} is done. Nice.`); save(); renderCal();
+  }
+  function keepBlockToday(i) {
+    const list = dayList(selectedDay); const e = list[i]; if (!e) return;
+    e.acked = true; save(); renderCal();
+  }
+  // rebuild only what's left: past and fixed blocks stay put, the rest re-flows from now
+  function regroupDay() {
+    const list = dayList(selectedDay);
+    const nowH = dkey(selectedDay) === dkey(today) ? today.getHours() + today.getMinutes() / 60 : 8;
+    const remaining = [];
+    for (let i = list.length - 1; i >= 0; i--) {
+      const e = list[i];
+      const past = dkey(selectedDay) === dkey(today) && e.end <= nowH;
+      if (e.kind !== 'fixed' && !past) { remaining.push(list.splice(i, 1)[0]); }
+    }
+    if (!remaining.length) { calNote('Nothing left to regroup — the rest of today is already fixed or done.'); return; }
+    const items = remaining.reverse().map(e => ({ name: e.name, kind: e.kind, start: null, minutes: Math.round((e.end - e.start) * 60), avoiding: false, priority: false, due: null, energy: 'high', room_id: e.room || null }));
+    const r = placeItems(items, nowH);
+    save(); renderCal();
+    calNote(`Regrouped. ${r.blocks + r.buffers} block${(r.blocks + r.buffers) === 1 ? '' : 's'} re-placed from now.`);
   }
 
   // ---------- open a block, change anything, or delete it ----------
@@ -2322,27 +2411,8 @@
   // not today: one tap, nothing overdue, nothing lost
   function punt(where) {
     if (editing === null) return closeEvent();
-    const list = dayList(selectedDay); const e = list[editing]; if (!e) return closeEvent();
-    list.splice(editing, 1);
-    const dur = Math.max(0.25, e.end - e.start);
-    if (where === 'tomorrow') {
-      const tm = new Date(selectedDay); tm.setDate(tm.getDate() + 1); const tl = dayList(tm);
-      let s = !overlaps(tl, e.start, e.start + dur) ? e.start : nextFreeSlot(tl, dur, e.start);
-      if (s === null) s = nextFreeSlot(tl, dur, 8); if (s === null) s = e.start;
-      tl.push(Object.assign({}, e, { start: s, end: Math.min(24, s + dur) }));
-      calNote(`${e.name} is on tomorrow at ${fmtAmPm(s)}. Nothing's overdue.`);
-    } else {
-      const r = rooms.find(x => x.id === e.room);
-      if (r) {
-        if (!r.loops.some(l => !l.resolved && l.text.toLowerCase() === e.name.toLowerCase())) r.loops.push({ text: e.name, resolved: false });
-        r.log.unshift({ source: 'auto-routed', ts: Date.now(), text: `Back in the room from the day: ${e.name}.` });
-        calNote(`${e.name} is back in ${r.name}, waiting. Not lost.`);
-      } else {
-        loose.unshift({ text: e.name, source: 'calendar', ts: Date.now() });
-        calNote(`${e.name} is off the day, held loose on Rooms.`);
-      }
-    }
-    save(); renderCal(); closeEvent();
+    if (applyPunt(where, editing)) renderCal();
+    closeEvent();
   }
   function deleteEvent() {
     if (editing === null) return closeEvent();
@@ -2536,7 +2606,7 @@
     const btn = document.querySelector('.sc-build');
     building = true; btn.disabled = true; btn.textContent = 'Reading the day…'; calNote('');
     let out;
-    try { out = await planDay(raw); } finally { building = false; btn.disabled = false; btn.textContent = 'Build this day'; }
+    try { out = await planDay(raw); } finally { building = false; btn.disabled = false; btn.textContent = 'Build my day'; }
     if (out.placed) box.value = '';   // otherwise their words stay in the box
     calNote(out.note);
   }
