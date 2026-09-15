@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Archivo+Black&family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   /* NENEMI brand system v1.0: ink black, warm white, one signature teal. dark only — the calm is the brand. */
   :root {
@@ -50,6 +50,7 @@
     --shadow: rgba(0,0,0,0.5);
 
     --font-display: 'Archivo', sans-serif;
+    --font-black: 'Archivo Black', 'Archivo', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
     --font-title: 'Poppins', sans-serif;
@@ -143,7 +144,7 @@
   .wordmark .wm-mark { flex-shrink: 0; }
   .wordmark .wm-text { font-family: var(--font-title); font-weight: 400; font-size: 13px; letter-spacing: 0.20em; color: var(--ink); }
   /* one quiet line, centered, huge. the box under it is the whole screen */
-  .greeting-big { font-family: var(--font-display); font-weight: 900; font-size: clamp(34px, 5.2vw, 58px); line-height: 0.98; letter-spacing: -0.02em; text-transform: uppercase; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 30px; color: var(--ink); }
+  .greeting-big { font-family: var(--font-black); font-weight: 900; font-size: clamp(34px, 5.2vw, 58px); line-height: 0.98; letter-spacing: -0.02em; text-transform: uppercase; text-align: center; width: 100%; box-sizing: border-box; margin-bottom: 30px; color: var(--ink); }
   .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
   .greeting-big .hello { display: block; font-family: var(--font-body); font-weight: 400; font-size: 15px; color: var(--muted); text-transform: none; letter-spacing: normal; margin-bottom: 6px; }
   .greeting-big .ready { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--teal); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 20px; }
@@ -329,7 +330,7 @@
   .hub-sub { color: var(--muted); font-size: 14.5px; margin-top: 8px; }
   /* rooms hub: teal eyebrow, huge bold title, then a section row (name + count) right above the grid — same editorial anatomy as the guide */
   #pane-rooms .kicker { padding-bottom: 0; margin-bottom: 0; border-bottom: none; font-weight: 700; letter-spacing: 0.1em; color: var(--sage-text); }
-  #pane-rooms .hub-title { font-family: var(--font-display); font-weight: 900; font-size: clamp(64px, 9vw, 100px); line-height: 0.84; letter-spacing: -0.065em; text-transform: uppercase; margin-top: 10px; }
+  #pane-rooms .hub-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(64px, 9vw, 100px); line-height: 0.84; letter-spacing: -0.065em; text-transform: uppercase; margin-top: 10px; }
   .hub-section-row { display: flex; justify-content: space-between; align-items: baseline; width: 100%; max-width: 1180px; margin: 26px auto 0; padding: 0 48px 12px; border-bottom: 1px solid var(--line2); }
   .hub-section-row h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0; font-weight: 600; }
   .hub-section-row .mono { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
@@ -371,7 +372,7 @@
   .archived-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 2px; border-top: 1px solid var(--line); font-size: 13px; color: var(--faint); }
   .archived-restore { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sage-text); cursor: pointer; }
   .archived-restore:hover { color: var(--ink); }
-  .room-name { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -0.03em; text-transform: uppercase; line-height: 1.05; margin-bottom: 10px; }
+  .room-name { font-family: var(--font-black); font-weight: 900; font-size: 24px; letter-spacing: -0.03em; text-transform: uppercase; line-height: 1.05; margin-bottom: 10px; }
   .room-oneliner { color: var(--muted); font-size: 13px; line-height: 1.5; margin-bottom: 12px; }
   .loop-pill { display: inline-block; font-family: var(--font-mono); font-size: 10.5px; background: var(--sage-fill); color: var(--sage-text); padding: 4px 9px; border-radius: 999px; }
   .new-room-card { border: 0; border-right: 1px dashed var(--line2); border-bottom: 1px dashed var(--line2); border-radius: 0; padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 205px; }
