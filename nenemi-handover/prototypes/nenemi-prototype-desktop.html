@@ -386,7 +386,11 @@
   .rv-name { font-family: var(--font-mono); font-weight: 700; font-size: clamp(32px, 4.5vw, 52px); line-height: 1.02; letter-spacing: -0.02em; text-transform: uppercase; }
   .rv-name::after { content: '_'; }
   .rv-oneliner { color: var(--muted); font-size: 14px; margin-top: 8px; }
-  .rv-header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; padding-top: 4px; }
+  .rv-header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; padding-top: 4px; }
+  .rv-status { text-align: right; }
+  .rv-status-label { display: block; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+  .rv-status-label::before { content: '● '; }
+  .rv-status-sub { display: block; font-family: var(--font-mono); font-size: 10px; color: var(--faint); margin-top: 4px; }
   .rv-actions { display: flex; gap: 8px; }
   .rv-action-btn { width: 36px; height: 36px; flex-shrink: 0; padding: 0; border-radius: 999px; border: 1px solid var(--line2); background: var(--surface); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); }
   .rv-action-btn:hover { color: var(--ink); border-color: var(--muted); }
@@ -993,6 +997,10 @@
             <div class="rv-oneliner" id="rvOneliner">the memory app — NENEMI itself</div>
           </div>
           <div class="rv-header-actions">
+            <div class="rv-status">
+              <span class="rv-status-label" id="rvStatusLabel">caught up</span>
+              <span class="rv-status-sub" id="rvStatusSub">Last updated today</span>
+            </div>
             <div class="rv-actions">
               <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3v-7a9 9 0 1 1 18 0v7h-3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></button>
               <button type="button" class="rv-action-btn" id="btnWrapUp" onclick="wrapUpDay()" title="Wrap up today's progress"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></button>
@@ -1527,6 +1535,11 @@
     const rvIcon = document.getElementById('rvIcon');
     rvIcon.innerHTML = roomIconHtml(r); rvIcon.style.cssText = ROOM_COLORS[r.color] ? `--rc:${ROOM_COLORS[r.color]}` : '';
     renderReentry(r);
+    const openCount = r.loops.filter(l => !l.resolved).length;
+    const statusLabel = document.getElementById('rvStatusLabel'), statusSub = document.getElementById('rvStatusSub');
+    if (statusLabel) statusLabel.textContent = openCount > 0 ? `${openCount} still open` : 'caught up';
+    const touch = lastTouch(r);
+    if (statusSub) statusSub.textContent = touch ? `Last updated ${relTime(touch)}` : 'Nothing here yet';
 
     const linkRow = document.getElementById('rvLinkRow');
     if (r.link) { linkRow.style.display = 'flex'; document.getElementById('rvLinkLabel').textContent = r.link.label; }
