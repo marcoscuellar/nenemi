@@ -404,6 +404,7 @@
   .anchor-label:first-child { margin-top: 0; }
   .anchor-block { background: none; border: none; padding: 0; }
   .anchor-text { font-size: 20px; font-weight: 400; line-height: 1.6; color: var(--ink); }
+  .anchor-highlight { color: var(--teal); }
   .anchor-label:not(:first-child) { border-top: 1px solid var(--line); padding-top: 22px; }
   .editable { cursor: text; border-radius: 6px; transition: background 120ms ease; }
   .editable:hover { background: var(--surface); }
@@ -1692,8 +1693,13 @@
     const last = r.log.find(e => e.source === 'voice' || e.source === 'typed') || r.log[0];
     const next = r.loops.find(l => !l.resolved);
     pickUpTask = next ? next.text : `Open up ${r.name} — just look around`;
+    const briefText = r.brief || '';
+    const briefSplit = briefText.match(/^([\s\S]*\b(?:but|however|though|yet)\b\s*,?\s*)([\s\S]+)$/i);
+    const briefHtml = briefSplit && briefSplit[2].trim().length > 3
+      ? `${escapeHtml(briefSplit[1])}<span class="anchor-highlight">${escapeHtml(briefSplit[2])}</span>`
+      : escapeHtml(briefText);
     document.getElementById('rvSummary').innerHTML = `
-      <div class="anchor-text">${escapeHtml(r.brief || '')}</div>`;
+      <div class="anchor-text">${briefHtml}</div>`;
     makeEditable(document.querySelector('#rvSummary .anchor-text'), { set: (t) => { r.brief = t; } });
     document.getElementById('rvNext').innerHTML = `
       <div class="re-next" role="button" onclick="pickUp()">
