@@ -336,18 +336,18 @@
   .room-grid { flex: 1; overflow-y: auto; padding: 0 48px 40px; width: 100%; max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; align-content: start; border-top: 1px solid var(--line2); border-left: 1px solid var(--line2); }
   .room-card { background: var(--card); border: 0; border-right: 1px solid var(--line2); border-bottom: 1px solid var(--line2); border-radius: 0; padding: 19px; min-height: 205px; cursor: pointer; transition: background 120ms ease; box-shadow: none; display: flex; flex-direction: column; }
   .room-card:hover { background: var(--surface2); }
-  .room-resume-kicker { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin: 0 0 8px; }
+  .room-resume-kicker { font-family: var(--font-mono); font-size: 10px; line-height: 1.5; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin: 0 0 10px; }
   .room-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; gap: 8px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.04em; color: var(--faint); }
   .room-card-icons { display: flex; align-items: center; gap: 6px; }
   .room-index { text-transform: none; }
-  .room-icon { display: none; }
+  .room-icon { width: 22px; height: 22px; border-radius: 6px; background: var(--surface2); color: var(--sage-text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .room-icon svg { width: 13px; height: 13px; }
   .room-rewind { width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--faint); flex-shrink: 0; opacity: 0; transition: opacity 120ms ease; }
   .room-card:hover .room-rewind { opacity: 1; }
   .room-rewind:hover { color: var(--muted); background: var(--surface2); }
   .room-status { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
   .room-card-foot { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 14px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .room-card-foot b { color: var(--sage-text); font-weight: 700; }
-  .room-card[style*="--rc"] { box-shadow: inset 3px 0 0 var(--rc); }
   .room-card[style*="--rc"] .room-icon, .rv-icon[style*="--rc"] { background: color-mix(in srgb, var(--rc) 18%, transparent); color: var(--rc); }
   .rv-icon { width: 34px; height: 34px; border-radius: 10px; margin-top: 2px; background: var(--surface2); display: flex; align-items: center; justify-content: center; color: var(--sage-text); font-size: 21px; line-height: 1; cursor: pointer; flex-shrink: 0; position: relative; }
   .rv-icon:hover { filter: brightness(1.08); }
@@ -1385,6 +1385,7 @@
         <div class="room-card-top">
           <div class="room-card-icons">
             <span class="room-index">${String(i + 1).padStart(2, '0')}</span>
+            <div class="room-icon">${roomIconHtml(r)}</div>
             <div class="room-rewind" title="Hear it" onclick="event.stopPropagation(); speakRoom('${r.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7M2.5 2.5v3.7h3.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           </div>
           <span class="room-status">${status}</span>
