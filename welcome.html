@@ -76,6 +76,25 @@ section.block { padding: 110px 64px; }
 h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(32px, 4vw, 52px); line-height: 1.05; letter-spacing: -.02em; max-width: 640px; margin-bottom: 16px; }
 .sub { font-size: 15px; font-weight: 300; color: var(--muted); max-width: 480px; line-height: 1.65; margin-bottom: 52px; }
 
+/* PROOF */
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 40px; }
+.proof-still { display: flex; flex-direction: column; gap: 14px; }
+.proof-shot { background: var(--card); border-radius: 14px; padding: 20px; min-height: 160px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 0 30px rgba(63,183,166,.08); border: 1px solid var(--line); }
+.proof-cap { font-size: 14px; color: var(--muted); line-height: 1.5; }
+.proof-cap b { color: #FFFFFF; font-weight: 600; }
+.proof-dump-box { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.7; }
+.proof-cursor { display: inline-block; width: 2px; height: 12px; background: var(--teal); margin-right: 2px; vertical-align: middle; }
+.proof-room-row { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; margin-bottom: 8px; color: #FFFFFF; }
+.proof-room-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+.proof-room-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.proof-stuck { gap: 8px; }
+.proof-door { font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; color: var(--muted); padding: 9px 12px; background: rgba(244,241,234,.04); border-radius: 8px; border: 1px solid var(--line); }
+.proof-line { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 560px; border-top: 1px solid var(--line); padding-top: 22px; }
+@media (max-width: 720px) { .proof-grid { grid-template-columns: 1fr; } }
+
+/* CLOSE */
+.close-note { display: block; margin-top: 16px; font-family: var(--sans); font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--faint); }
+
 /* THE MOMENT */
 .moment-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 44px; }
 .m { padding: 32px 28px; background: var(--card); border-radius: 12px; box-shadow: 0 0 40px rgba(63,183,166,.10); }
@@ -306,7 +325,102 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
   </div>
 </section>
 
-<!-- 3. SMART CALENDAR -->
+<section class="block" id="proof">
+  <div class="inner">
+    <span class="tag" style="display:block;margin-bottom:32px;">HOW IT HOLDS</span>
+    <div class="proof-grid">
+      <div class="proof-still">
+        <div class="proof-shot">
+          <p class="proof-dump-box"><span class="proof-cursor"></span>email john, finish the report, gym after work, call mom, why do I feel behind</p>
+        </div>
+        <p class="proof-cap"><b>Dump</b> — Put it down messy.</p>
+      </div>
+      <div class="proof-still">
+        <div class="proof-shot">
+          <div class="proof-room-row"><span class="proof-room-dot"></span>Ollin OS Sales</div>
+          <p class="proof-room-sub">Where you left off — the intro call notes, still here</p>
+        </div>
+        <p class="proof-cap"><b>Room</b> — Come back. It still knows where you were.</p>
+      </div>
+      <div class="proof-still">
+        <div class="proof-shot proof-stuck">
+          <div class="proof-door">I can't start</div>
+          <div class="proof-door">My head is too full</div>
+          <div class="proof-door">I have no energy</div>
+        </div>
+        <p class="proof-cap"><b>Stuck</b> — Four doors. Then one step.</p>
+      </div>
+    </div>
+    <p class="proof-line">It's 1:07. You had a plan. You can't start. That's not a character flaw.</p>
+  </div>
+</section>
+
+<!-- 5. SAFETY NET -->
+<section class="band" id="safetynet">
+  <div class="inner two">
+    <div class="side">
+      <span class="tag t">THE BOX HOLDS. PEOPLE HEAL.</span>
+      <h2 class="headline">Systems help.<br>People heal.</h2>
+      <p class="body">If you're past what an app can do, here's a human.</p>
+      <div class="sn-links">
+        <a href="tel:988" class="sn-link"><span>[ 988 — SUICIDE &amp; CRISIS LIFELINE ]</span><span class="arrow">→</span></a>
+        <a href="https://chadd.org/professional-directory/" target="_blank" rel="noopener" class="sn-link"><span>[ FIND AN ADHD COACH ]</span><span class="arrow">→</span></a>
+        <a href="https://www.psychologytoday.com/us/therapists/adhd" target="_blank" rel="noopener" class="sn-link"><span>[ NEURO-AFFIRMING THERAPY ]</span><span class="arrow">→</span></a>
+        <a href="https://findtreatment.gov" target="_blank" rel="noopener" class="sn-link"><span>[ SUBSTANCE USE SUPPORT ]</span><span class="arrow">→</span></a>
+      </div>
+      <div class="founder">
+        <div class="founder-avatar"></div>
+        <div class="founder-text">
+          <strong>A NOTE FROM MARCOS</strong>
+          I built Nenemi because I needed it. <span>If you're in the thick of it and want to talk — not as a user, just as a human — my door's open.</span>
+          <br><a href="mailto:marcos@ollinos.com" class="founder-link">→ reach out directly</a>
+        </div>
+      </div>
+    </div>
+    <div class="sn-photo">
+      <div class="sn-photo-overlay"></div>
+      <div class="sn-photo-tag">[ REAL PEOPLE. REAL SUPPORT. ]</div>
+    </div>
+  </div>
+</section>
+
+<section class="open-sec" id="access">
+  <div class="glow"></div>
+  <div class="inner">
+    <h2 style="max-width:none;margin-bottom:32px;">If that&rsquo;s your brain, open it.</h2>
+    <a href="/?open=1" class="big">[ OPEN NENEMI ]</a>
+    <div class="close-note">An account keeps the record. Private and secure.</div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="foot-brand"><a href="/welcome.html" class="mark" aria-label="Nenemi"><svg class="wm-mark" width="18" height="18" viewBox="0 0 120 120" aria-hidden="true"><path d="M39 23.63 A42 42 0 0 0 81 96.37" fill="none" stroke="#3FB7A6" stroke-width="14" stroke-linecap="butt"/><path d="M39 23.63 A42 42 0 0 1 81 96.37" fill="none" stroke="#F4F1EA" stroke-width="14" stroke-linecap="butt"/><circle cx="81" cy="96.37" r="11" fill="#F4F1EA" stroke="#0A0A0A" stroke-width="3"/></svg><span class="wm-text">NENEMI</span></a><span class="foot-ollin">an OLLIN company</span></div>
+  <div class="foot-quote">"You're mid-process. There's a difference."</div>
+  <div class="foot-links"><span>[ FOR NEURODIVERGENT // FROM A NEURODIVERGENT ] · 2026</span><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/support.html">Support</a></div>
+</footer>
+
+<script>
+/* Smart Calendar carousel: auto-advance, pause on hover, only while on screen */
+(function(){
+  const phone = document.getElementById('scPhone'), dotsNav = document.getElementById('scDots'); if (!phone || !dotsNav) return;
+  const slides = phone.querySelectorAll('.slide'), dots = dotsNav.querySelectorAll('button');
+  let idx = 0, timer = null, paused = false;
+  function show(i){ idx = (i + slides.length) % slides.length; slides.forEach((s, n) => s.classList.toggle('active', n === idx)); dots.forEach((d, n) => d.classList.toggle('active', n === idx)); }
+  function tick(){ if (!paused) show(idx + 1); }
+  function start(){ stop(); timer = setInterval(tick, 4200); }
+  function stop(){ if (timer) clearInterval(timer); timer = null; }
+  dots.forEach((d, n) => d.addEventListener('click', () => { show(n); start(); }));
+  phone.addEventListener('mouseenter', () => { paused = true; });
+  phone.addEventListener('mouseleave', () => { paused = false; });
+  if ('IntersectionObserver' in window) { new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold: 0.25 }).observe(phone); } else start();
+})();
+</script>
+
+
+<!-- ARCHIVE — not live, kept for reference. Restructured to the 6-section live order (Hero, Foundation, 10:10/Yeah Same, Proof, People, Close); everything below was cut from the live page, not deleted.
+
+3. SMART CALENDAR (phone mockup carousel)
 <section class="band" id="smartcal">
   <div class="inner smartcal-inner">
     <div class="mockup">
@@ -373,6 +487,7 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
   </div>
 </section>
 
+4. THE 1:07 TRILOGY (Wall / Doors / Acts moment cards)
 <section class="block">
   <div class="inner">
     <div class="section-tag"><span class="tag">[ THE MOMENT NENEMI WAS BUILT FOR ]</span></div>
@@ -402,6 +517,7 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
   </div>
 </section>
 
+5. ARCHETYPE GRID (5 real-rooms photo cards)
 <section class="block people">
   <div class="inner">
     <span class="tag" style="display:block;margin-bottom:16px;">[ RADICAL REALISM // THE SCENES NENEMI LIVES IN ]</span>
@@ -432,6 +548,7 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
   </div>
 </section>
 
+6. SIX FEATURES ESSAYS (had 2 "Claude" mentions)
 <section class="block" id="system">
   <div class="inner">
     <div class="section-tag"><span class="tag">[ SYSTEM LOGIC // HOW IT WORKS ]</span></div>
@@ -448,35 +565,10 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
   </div>
 </section>
 
+7. EXTRA SYSTEM-OVERVIEW COPY (old People-section intro paragraph, replaced with the one-line body above)
+<p class="body">We're your neurodivergent friend, not just your software. If you're struggling beyond the app, here are vetted resources to find your people.</p>
 
-<!-- 5. SAFETY NET -->
-<section class="band" id="safetynet">
-  <div class="inner two">
-    <div class="side">
-      <span class="tag t">[ 03 // THE SAFETY NET ]</span>
-      <h2 class="headline">Systems help.<br>People heal.</h2>
-      <p class="body">We're your neurodivergent friend, not just your software. If you're struggling beyond the app, here are vetted resources to find your people.</p>
-      <div class="sn-links">
-        <a href="https://chadd.org/professional-directory/" target="_blank" rel="noopener" class="sn-link"><span>[ FIND AN ADHD COACH ]</span><span class="arrow">→</span></a>
-        <a href="https://www.psychologytoday.com/us/therapists/adhd" target="_blank" rel="noopener" class="sn-link"><span>[ NEURO-AFFIRMING THERAPY ]</span><span class="arrow">→</span></a>
-        <a href="https://findtreatment.gov" target="_blank" rel="noopener" class="sn-link"><span>[ SUBSTANCE USE SUPPORT ]</span><span class="arrow">→</span></a>
-      </div>
-      <div class="founder">
-        <div class="founder-avatar"></div>
-        <div class="founder-text">
-          <strong>A NOTE FROM MARCOS</strong>
-          I built Nenemi because I needed it. <span>If you're in the thick of it and want to talk — not as a user, just as a human — my door's open.</span>
-          <br><a href="mailto:marcos@ollinos.com" class="founder-link">→ reach out directly</a>
-        </div>
-      </div>
-    </div>
-    <div class="sn-photo">
-      <div class="sn-photo-overlay"></div>
-      <div class="sn-photo-tag">[ REAL PEOPLE. REAL SUPPORT. ]</div>
-    </div>
-  </div>
-</section>
-
+8. EXTRA SYSTEM-OVERVIEW COPY (old Close section, had 2 "Claude" mentions, replaced with the 3-line Close above)
 <section class="open-sec" id="access">
   <div class="glow"></div>
   <div class="inner">
@@ -488,28 +580,6 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
   </div>
 </section>
 
-
-<footer>
-  <div class="foot-brand"><a href="/welcome.html" class="mark" aria-label="Nenemi"><svg class="wm-mark" width="18" height="18" viewBox="0 0 120 120" aria-hidden="true"><path d="M39 23.63 A42 42 0 0 0 81 96.37" fill="none" stroke="#3FB7A6" stroke-width="14" stroke-linecap="butt"/><path d="M39 23.63 A42 42 0 0 1 81 96.37" fill="none" stroke="#F4F1EA" stroke-width="14" stroke-linecap="butt"/><circle cx="81" cy="96.37" r="11" fill="#F4F1EA" stroke="#0A0A0A" stroke-width="3"/></svg><span class="wm-text">NENEMI</span></a><span class="foot-ollin">an OLLIN company</span></div>
-  <div class="foot-quote">"You're mid-process. There's a difference."</div>
-  <div class="foot-links"><span>[ FOR NEURODIVERGENT // FROM A NEURODIVERGENT ] · 2026</span><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/support.html">Support</a></div>
-</footer>
-
-<script>
-/* Smart Calendar carousel: auto-advance, pause on hover, only while on screen */
-(function(){
-  const phone = document.getElementById('scPhone'), dotsNav = document.getElementById('scDots'); if (!phone || !dotsNav) return;
-  const slides = phone.querySelectorAll('.slide'), dots = dotsNav.querySelectorAll('button');
-  let idx = 0, timer = null, paused = false;
-  function show(i){ idx = (i + slides.length) % slides.length; slides.forEach((s, n) => s.classList.toggle('active', n === idx)); dots.forEach((d, n) => d.classList.toggle('active', n === idx)); }
-  function tick(){ if (!paused) show(idx + 1); }
-  function start(){ stop(); timer = setInterval(tick, 4200); }
-  function stop(){ if (timer) clearInterval(timer); timer = null; }
-  dots.forEach((d, n) => d.addEventListener('click', () => { show(n); start(); }));
-  phone.addEventListener('mouseenter', () => { paused = true; });
-  phone.addEventListener('mouseleave', () => { paused = false; });
-  if ('IntersectionObserver' in window) { new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold: 0.25 }).observe(phone); } else start();
-})();
-</script>
+END ARCHIVE -->
 </body>
 </html>
