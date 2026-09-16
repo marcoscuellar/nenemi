@@ -184,7 +184,8 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 .result { background: var(--card); border-radius: 12px; padding: 1rem 1.2rem; font-size: 14px; line-height: 1.6; max-width: 520px; box-shadow: var(--glow); }
 
 /* 3. SMART CALENDAR · phone */
-.mockup { background: var(--card); border-radius: 28px; padding: 2.25rem 1.75rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 40px rgba(63,183,166,.08); }
+.smartcal-inner { display: flex; justify-content: center; }
+.mockup { background: var(--card); border-radius: 28px; padding: 2.25rem 1.75rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 40px rgba(63,183,166,.08); max-width: 400px; }
 .phone { position: relative; width: 100%; max-width: 340px; aspect-ratio: 9 / 17; background: #0C0C0C; border-radius: 36px; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(0,0,0,.8), 0 0 0 1px rgba(244,241,234,.08), var(--glow); }
 .notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 58px; height: 16px; background: #000; border-radius: 999px; z-index: 4; box-shadow: 0 0 0 1px rgba(244,241,234,.06); }
 .status { position: absolute; top: 10px; left: 0; right: 0; height: 20px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; font-family: var(--mono); font-size: 9px; letter-spacing: .06em; color: var(--faint); z-index: 5; }
@@ -307,14 +308,14 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 
 <!-- 3. SMART CALENDAR -->
 <section class="band" id="smartcal">
-  <div class="inner two">
+  <div class="inner smartcal-inner">
     <div class="mockup">
       <div class="phone" id="scPhone">
         <div class="notch"></div>
         <div class="status"><span>9:07</span><span>NENEMI</span></div>
 
         <div class="slide active" data-slide="0">
-          <p class="p-greet">Morning · Marcos</p>
+          <p class="p-greet">Morning</p>
           <h3 class="p-head">What's on<br>your mind?</h3>
           <p class="p-instr">Dump it all here.<br>Don't clean it up. Don't organize it.<br>If it's easier, use the mic.</p>
           <div class="p-box">
@@ -325,7 +326,7 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
         </div>
 
         <div class="slide" data-slide="1">
-          <p class="p-greet">A moment · Marcos</p>
+          <p class="p-greet">A moment</p>
           <h3 class="p-head">We're<br>sorting it.</h3>
           <p class="p-instr">Take a breath.<br>This is the part you don't have to do.<br>We'll hand it back, simple.</p>
           <div class="p-box p-center">
@@ -339,7 +340,7 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
         </div>
 
         <div class="slide" data-slide="2">
-          <p class="p-greet">Here you go · Marcos</p>
+          <p class="p-greet">Here you go</p>
           <h3 class="p-head">A simple<br>plan.</h3>
           <p class="p-instr">Sized to today's energy.<br>Not your inbox. Not their expectations.<br>Move things around if you need to.</p>
           <div class="p-day">
@@ -353,7 +354,7 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
         </div>
 
         <div class="slide" data-slide="3">
-          <p class="p-greet">It's 1:07 · Marcos</p>
+          <p class="p-greet">It's 1:07</p>
           <h3 class="p-head">And if you<br>ignore it?</h3>
           <p class="p-instr">Nothing breaks.<br>No streaks. No shame.<br>You just come back.</p>
           <div class="p-box" style="gap:14px; justify-content:center;">
@@ -368,13 +369,6 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
         <button class="active" aria-label="Slide 1"></button><button aria-label="Slide 2"></button><button aria-label="Slide 3"></button><button aria-label="Slide 4"></button>
       </div>
       <p class="phone-cap">DUMP → PLAN → DO → RECOVER</p>
-    </div>
-
-    <div class="side">
-      <span class="tag t">01 // THE SMART CALENDAR</span>
-      <h2 class="headline">Start your day without overthinking it.</h2>
-      <p class="body">You don't need a perfect plan. You need one that fits the day you're actually having. Tell Nenemi what's in your head — it gives you back something simple enough to follow, soft enough to forgive you.</p>
-      <div class="result">Yours, not the app's. And if today gets away from you, you just come back.</div>
     </div>
   </div>
 </section>
