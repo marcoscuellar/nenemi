@@ -1,0 +1,163 @@
+<title>Nenemi N Marks</title>
+<style>
+  :root {
+    --bg: #0A0A0A; --card: #111113; --card2: #161618; --ink: #FFFFFF;
+    --muted: #A4A099; --faint: #6F6B64; --line: #26262A; --line2: #34343A;
+    --teal: #3FB7A6; --teal-soft: #7FD0C4; --on-teal: #06201C;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    padding: 56px 24px 90px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  .kicker {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal-soft);
+  }
+  h1 {
+    font-family: 'Archivo Black', 'Archivo', sans-serif; font-weight: 900;
+    font-size: clamp(32px, 6vw, 52px); line-height: 0.98; letter-spacing: -0.02em;
+    text-transform: uppercase; margin: 10px 0 12px; text-wrap: balance;
+  }
+  .lede { color: var(--muted); font-size: 15.5px; line-height: 1.6; max-width: 600px; margin: 0 0 48px; }
+  .lede b { color: var(--ink); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 56px; }
+  .cell { background: var(--card); padding: 40px 32px 28px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  .mark-big { width: 168px; height: 168px; }
+  .cell-label { font-weight: 700; font-size: 16px; text-align: center; }
+  .cell-note { color: var(--muted); font-size: 13px; line-height: 1.55; text-align: center; max-width: 280px; }
+  .cell-tag { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint);
+    padding-bottom: 10px; margin: 0 0 22px; border-bottom: 1px solid var(--line2);
+  }
+
+  .test-row { display: flex; flex-wrap: wrap; gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 56px; }
+  .test-cell { flex: 1 1 260px; background: var(--card); padding: 26px; }
+  .test-name { font-weight: 700; font-size: 13px; margin-bottom: 18px; }
+  .scale-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .scale-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .scale-item svg { display: block; }
+  .scale-tag { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--faint); }
+  .app-icon-sim { width: 40px; height: 40px; border-radius: 9px; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+  .app-icon-sim.tiny { width: 16px; height: 16px; border-radius: 3.5px; }
+  .wordmark-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+  .wordmark-row svg { flex-shrink: 0; }
+  .wordmark-text {
+    font-family: 'Archivo Black', 'Archivo', sans-serif; font-weight: 900;
+    font-size: 22px; letter-spacing: 0.03em;
+  }
+
+  .verdict { background: var(--card2); border: 1px solid var(--line2); border-radius: 4px; padding: 28px 26px; }
+  .verdict .cell-tag { margin-bottom: 8px; display: block; }
+  .verdict p { color: var(--muted); font-size: 14.5px; line-height: 1.65; margin: 0 0 10px; max-width: 680px; }
+  .verdict p:last-child { margin-bottom: 0; }
+  .verdict b { color: var(--teal-soft); }
+
+  @media (max-width: 480px) {
+    body { padding: 40px 16px 60px; }
+    .cell { padding: 30px 18px 22px; }
+    .mark-big { width: 130px; height: 130px; }
+  }
+</style>
+
+<div class="wrap">
+  <div class="kicker">Nenemi / Mark exploration, round 2</div>
+  <h1>The ribbon, amped up</h1>
+  <p class="lede">Same swoosh, same energy — edge-to-edge, rounded, taking up the whole square. Flattened to one or two solid colors instead of gradient shading, so it's the exact same file at favicon size and at splash size.</p>
+
+  <div class="grid">
+
+    <div class="cell">
+      <svg class="mark-big" viewBox="0 0 100 100">
+        <rect width="100" height="100" rx="16" fill="#161618"/>
+        <g fill="#FFFFFF">
+          <rect x="3" y="3" width="29" height="94" rx="7"/>
+          <rect x="68" y="3" width="29" height="94" rx="7"/>
+          <rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/>
+        </g>
+        <rect x="41" y="36.5" width="18" height="27" rx="6" fill="#3FB7A6" transform="rotate(69.06 50 50)"/>
+      </svg>
+      <div class="cell-label">Ribbon</div>
+      <div class="cell-tag">flat · fold accent</div>
+      <div class="cell-note">Bold and rounded, filling the whole square. The teal band across the diagonal reads as the ribbon's fold — flat color, not a gradient.</div>
+    </div>
+
+    <div class="cell">
+      <svg class="mark-big" viewBox="0 0 100 100">
+        <rect width="100" height="100" rx="16" fill="#161618"/>
+        <g fill="#3FB7A6">
+          <rect x="3" y="3" width="29" height="94" rx="7"/>
+          <rect x="68" y="3" width="29" height="94" rx="7"/>
+          <rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/>
+        </g>
+      </svg>
+      <div class="cell-label">Ribbon Solid</div>
+      <div class="cell-tag">flat · full teal</div>
+      <div class="cell-note">The same shape, entirely teal. Maximum color presence — no split, no accent, just the mark owning the whole square.</div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Legibility at real sizes — app icon (40px), favicon (16px), next to the wordmark</div>
+
+  <div class="test-row">
+
+    <div class="test-cell">
+      <div class="test-name">Ribbon</div>
+      <div class="scale-row">
+        <div class="scale-item">
+          <div class="app-icon-sim">
+            <svg width="30" height="30" viewBox="0 0 100 100"><g fill="#FFFFFF"><rect x="3" y="3" width="29" height="94" rx="7"/><rect x="68" y="3" width="29" height="94" rx="7"/><rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/></g><rect x="41" y="36.5" width="18" height="27" rx="6" fill="#3FB7A6" transform="rotate(69.06 50 50)"/></svg>
+          </div>
+          <span class="scale-tag">40px</span>
+        </div>
+        <div class="scale-item">
+          <div class="app-icon-sim tiny">
+            <svg width="12" height="12" viewBox="0 0 100 100"><g fill="#FFFFFF"><rect x="3" y="3" width="29" height="94" rx="7"/><rect x="68" y="3" width="29" height="94" rx="7"/><rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/></g><rect x="41" y="36.5" width="18" height="27" rx="6" fill="#3FB7A6" transform="rotate(69.06 50 50)"/></svg>
+          </div>
+          <span class="scale-tag">16px</span>
+        </div>
+      </div>
+      <div class="wordmark-row">
+        <svg width="30" height="30" viewBox="0 0 100 100"><g fill="#FFFFFF"><rect x="3" y="3" width="29" height="94" rx="7"/><rect x="68" y="3" width="29" height="94" rx="7"/><rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/></g><rect x="41" y="36.5" width="18" height="27" rx="6" fill="#3FB7A6" transform="rotate(69.06 50 50)"/></svg>
+        <span class="wordmark-text">NENEMI</span>
+      </div>
+    </div>
+
+    <div class="test-cell">
+      <div class="test-name">Ribbon Solid</div>
+      <div class="scale-row">
+        <div class="scale-item">
+          <div class="app-icon-sim">
+            <svg width="30" height="30" viewBox="0 0 100 100"><g fill="#3FB7A6"><rect x="3" y="3" width="29" height="94" rx="7"/><rect x="68" y="3" width="29" height="94" rx="7"/><rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/></g></svg>
+          </div>
+          <span class="scale-tag">40px</span>
+        </div>
+        <div class="scale-item">
+          <div class="app-icon-sim tiny">
+            <svg width="12" height="12" viewBox="0 0 100 100"><g fill="#3FB7A6"><rect x="3" y="3" width="29" height="94" rx="7"/><rect x="68" y="3" width="29" height="94" rx="7"/><rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/></g></svg>
+          </div>
+          <span class="scale-tag">16px</span>
+        </div>
+      </div>
+      <div class="wordmark-row">
+        <svg width="30" height="30" viewBox="0 0 100 100"><g fill="#3FB7A6"><rect x="3" y="3" width="29" height="94" rx="7"/><rect x="68" y="3" width="29" height="94" rx="7"/><rect x="-5" y="36.5" width="110" height="27" rx="8" transform="rotate(69.06 50 50)"/></g></svg>
+        <span class="wordmark-text">NENEMI</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="verdict">
+    <span class="cell-tag">Where this landed</span>
+    <p>Same ribbon silhouette as the reference — thick rounded bars, edge-to-edge, almost no margin — just without the gradient shading, so it's one file for the favicon, the app icon, and the splash screen instead of three different treatments.</p>
+    <p><b>Ribbon</b> keeps the teal fold detail for a bit of dimension at larger sizes. <b>Ribbon Solid</b> drops that and is just teal, full stop — the boldest, simplest version, and my pick if you want it to read as a color block first and a letterform second.</p>
+  </div>
+</div>
