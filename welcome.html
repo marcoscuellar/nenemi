@@ -61,10 +61,12 @@ h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(44px, 4vw, 64
 .split-img .img { position: absolute; inset: 0; background-size: cover; background-position: 50% 30%; }
 .split-cap { position: absolute; bottom: 20px; left: 20px; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: rgba(10,10,10,.75); padding: 6px 10px; border-radius: 6px; box-shadow: 0 0 18px rgba(63,183,166,.22), 0 0 50px rgba(63,183,166,.08); }
 .split-text { padding: 84px 64px; display: flex; flex-direction: column; justify-content: center; }
-.split-text .tag { margin-bottom: 28px; }
-.quote { font-family: var(--serif); font-size: clamp(24px, 2.7vw, 36px); line-height: 1.3; margin-bottom: 24px; }
+.split-text .tag { margin-bottom: 28px; color: #A4A099; }
+.quote { font-family: var(--serif); font-weight: 900; color: #FFFFFF; font-size: clamp(24px, 2.7vw, 36px); line-height: 1.3; margin-bottom: 24px; }
 .quote span { color: var(--teal); }
-.rule { font-size: 14px; font-weight: 300; color: var(--muted); line-height: 1.75; border-top: 1px solid var(--line); padding-top: 22px; }
+.found-quote { font-family: var(--sans); font-style: italic; font-size: 16px; color: var(--muted); margin-bottom: 22px; }
+.found-body { font-size: 16px; font-weight: 300; color: var(--muted); line-height: 1.75; border-top: 1px solid var(--line); padding-top: 22px; }
+.found-body p + p { margin-top: 18px; }
 
 /* SECTION frame */
 section.block { padding: 110px 64px; }
@@ -279,12 +281,16 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 <section class="split">
   <div class="split-img">
     <div class="img" style="background-image:url('/photos/originals/photo-03-autonomous.jpg');"></div>
-    <div class="split-cap">[ ARCHETYPE 01 // THE EXECUTIVE OVERRIDE ]</div>
+    <div class="split-cap">Mid-process. Not behind.</div>
   </div>
   <div class="split-text">
-    <span class="tag">[ THE FOUNDATION // NEVER CHANGES ]</span>
-    <div class="quote">You're not behind. You're mid-process. <span>There's a difference.</span></div>
-    <div class="rule">"Just do it, you know what to do."<br><br>Nenemi is a different kind of tool — built around how your brain actually works. Grounded in research, shaped by science, and built from hundreds of hours talking to professionals and people living it every day. No guilt built in. No streaks to break. No punishment for being human.</div>
+    <span class="tag">THE FOUNDATION</span>
+    <div class="quote">You&rsquo;re not behind. You&rsquo;re mid-process.<br><span>There&rsquo;s a difference.</span></div>
+    <p class="found-quote">&ldquo;Just do it. You know what to do.&rdquo;</p>
+    <div class="found-body">
+      <p>That&rsquo;s the voice that shows up when you pause.<br>Nenemi doesn&rsquo;t use it.</p>
+      <p>Built around how your brain actually works.<br>No guilt. No streaks. No punishment for being human.</p>
+    </div>
   </div>
 </section>
 
