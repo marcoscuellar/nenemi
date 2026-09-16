@@ -268,25 +268,14 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 <div class="nav-fade" aria-hidden="true"></div>
 
 <section class="hero">
-  <div class="hero-img" id="heroImg"></div>
-  <script>
-  /* five heroes, one per visit, in order: the floor, the kitchen table, the desk, the phone at the desk, running late.
-     Remembered on the device. When the kitchen shot is the hero, the Safety Net photo swaps so it isn't on the page twice. */
-  (function(){
-    var pics = [null, ['/photos/hero-b.jpg', '72% 40%'], ['/photos/hero-c.jpg', '72% 40%'], ['/photos/hero-d.jpg', '50% 50%'], ['/photos/hero-e.jpg', '50% 30%']];
-    var n = 0;
-    try { var seen = localStorage.getItem('nenemi.hero'); n = seen === null ? 0 : (parseInt(seen, 10) + 1) % pics.length; localStorage.setItem('nenemi.hero', String(n)); } catch (e) {}
-    if (pics[n]) { var el = document.getElementById('heroImg'); el.style.backgroundImage = "url('" + pics[n][0] + "')"; el.style.backgroundPosition = pics[n][1]; }
-    if (n === 1) document.documentElement.classList.add('hero-b');
-  })();
-  </script>
+  <div class="hero-img"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <span class="hero-kicker">Nenemi · pick up where you left off</span>
+    <span class="hero-kicker">NENEMI · PICK UP WHERE YOU LEFT OFF</span>
     <h1>Made for your brain.<br>Not for their expectations.</h1>
-    <p class="hero-sub">Dump what's in your head. Come back. It's still there.<br>No one needs another productivity app.</p>
+    <p class="hero-sub">Dump what&rsquo;s in your head. Come back. It&rsquo;s still there.<br>No one needs another productivity app.</p>
     <div class="actions">
-      <a href="/?open=1" class="btn solid">[ Open Nenemi ]</a>
+      <a href="/?open=1" class="btn solid">[ OPEN NENEMI ]</a>
       <a href="#system" class="hero-link">See how it works ↓</a>
     </div>
   </div>
