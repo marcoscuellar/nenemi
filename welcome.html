@@ -42,9 +42,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px;
 .hero-img { position: absolute; inset: 0; background: url('/photos/hero.jpg') 72% 40% / cover no-repeat; }
 .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,10,.96) 0%, rgba(10,10,10,.8) 40%, rgba(10,10,10,.3) 66%, rgba(10,10,10,0) 100%), linear-gradient(to right, rgba(10,10,10,.68) 0%, rgba(10,10,10,.3) 42%, transparent 64%); }
 .hero-content { position: relative; z-index: 2; max-width: 900px; }
-.hero-kicker { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--faint); padding-bottom: 12px; margin-bottom: 22px; border-bottom: 1px solid var(--line); max-width: 420px; }
-h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(56px, 6vw, 96px); line-height: 0.97; letter-spacing: -.02em; margin-bottom: 22px; color: #FFFFFF; text-shadow: 0 2px 28px rgba(0,0,0,.7), 0 1px 3px rgba(0,0,0,.5); }
-.hero-sub { font-size: 17px; font-weight: 300; color: var(--muted); max-width: 480px; line-height: 1.65; margin-bottom: 34px; text-shadow: 0 1px 18px rgba(0,0,0,.8), 0 1px 2px rgba(0,0,0,.6); }
+.hero-kicker { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--faint); padding-bottom: 12px; margin-bottom: 22px; border-bottom: 1px solid var(--line); max-width: 420px; }
+h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(44px, 4vw, 64px); line-height: 0.98; letter-spacing: -.02em; max-width: 720px; margin-bottom: 22px; color: #FFFFFF; }
+.hero-sub { font-size: 18px; font-weight: 300; color: var(--muted); max-width: 480px; line-height: 1.5; margin-bottom: 24px; }
 .actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .btn { display: inline-block; padding: 14px 28px; border-radius: 999px; font-size: 14px; font-weight: 600; text-decoration: none; letter-spacing: .01em; }
 .btn.solid { background: var(--teal); color: #06201C; font-weight: 600; }
@@ -53,7 +53,7 @@ h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(56px, 6vw, 96
 .btn.ghost:hover { color: var(--ink); border-color: rgba(244,241,234,.5); }
 .hero-link { display: inline-flex; align-items: center; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; }
 .hero-link:hover { color: var(--ink); }
-.hero-note { display: block; margin-top: 20px; font-family: var(--sans); font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--faint); }
+.hero-note { display: block; margin-top: 16px; font-family: var(--sans); font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--faint); }
 
 /* SPLIT (philosophy, architect) */
 .split { display: grid; grid-template-columns: 1fr 1fr; min-height: 600px; background: var(--bg2); }
@@ -146,6 +146,8 @@ footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: ce
   .nav-links { display: none; }
   .hero { padding: 0 0 56px 24px; min-height: 620px; }
   .hero-img { background-position: 68% 30%; }
+  h1 { font-size: 36px; max-width: 100%; }
+  .hero-sub { font-size: 16px; }
   .maker { flex-direction: column; align-items: flex-start; gap: 18px; padding: 40px 24px 56px; }
   .split { grid-template-columns: 1fr; }
   .split-img { min-height: 340px; }
