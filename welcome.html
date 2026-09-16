@@ -40,6 +40,7 @@ nav > * { position: relative; z-index: 1; }
 .nav-links { display: flex; gap: 26px; align-items: center; }
 .nav-link { font-family: var(--mono); font-size: 9.5px; letter-spacing: .16em; color: var(--muted); text-decoration: none; text-shadow: 0 1px 6px rgba(0,0,0,.7); }
 .nav-link:hover { color: var(--ink); }
+.nav-sep { color: var(--faint); font-family: var(--mono); font-size: 9.5px; }
 .nav-cta { padding: 9px 18px; background: var(--teal); color: #06201C; border-radius: 999px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-decoration: none; font-weight: 600; }
 
 /* HERO */
@@ -56,6 +57,8 @@ h1 { font-family: var(--serif); font-weight: 900; font-size: clamp(42px, 4.3vw, 
 .btn.solid:hover { opacity: .92; }
 .btn.ghost { background: rgba(244,241,234,.06); color: var(--muted); border: 1px solid rgba(244,241,234,.2); font-weight: 500; }
 .btn.ghost:hover { color: var(--ink); border-color: rgba(244,241,234,.5); }
+.hero-link { display: inline-flex; align-items: center; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; }
+.hero-link:hover { color: var(--ink); }
 .hero-note { position: absolute; bottom: 30px; right: 48px; z-index: 2; font-family: var(--mono); font-size: 9.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); }
 
 /* SPLIT (philosophy, architect) */
@@ -256,9 +259,9 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 <nav id="nav">
   <a href="/welcome.html" class="mark" aria-label="Nenemi"><svg class="wm-mark" width="18" height="18" viewBox="0 0 120 120" aria-hidden="true"><path d="M39 23.63 A42 42 0 0 0 81 96.37" fill="none" stroke="#3FB7A6" stroke-width="14" stroke-linecap="butt"/><path d="M39 23.63 A42 42 0 0 1 81 96.37" fill="none" stroke="#F4F1EA" stroke-width="14" stroke-linecap="butt"/><circle cx="81" cy="96.37" r="11" fill="#F4F1EA" stroke="#0A0A0A" stroke-width="3"/></svg><span class="wm-text">NENEMI</span></a>
   <div class="nav-links">
-    <a href="#system" class="nav-link">[ SYSTEM ]</a>
-    <a href="#safetynet" class="nav-link">[ SAFETY NET ]</a>
-    <a href="#access" class="nav-link">[ ACCESS ]</a>
+    <a href="#system" class="nav-link">How it works</a>
+    <span class="nav-sep">·</span>
+    <a href="/about.html" class="nav-link">People</a>
   </div>
   <a href="/?open=1" class="nav-cta">[ OPEN NENEMI ]</a>
 </nav>
@@ -279,15 +282,15 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
   </script>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <span class="hero-kicker">Nenemi · a memory app for ADHD brains</span>
+    <span class="hero-kicker">Nenemi · pick up where you left off</span>
     <h1>Made for your brain.<br>Not for their expectations.</h1>
-    <p class="hero-sub">Nenemi turns mental clutter into clear next steps.<br>Because no one needs another productivity app.</p>
+    <p class="hero-sub">Dump what's in your head. Come back. It's still there.<br>No one needs another productivity app.</p>
     <div class="actions">
-      <a href="/?open=1" class="btn solid">Open Nenemi</a>
-      <a href="#system" class="btn ghost">See how it works</a>
+      <a href="/?open=1" class="btn solid">[ Open Nenemi ]</a>
+      <a href="#system" class="hero-link">See how it works ↓</a>
     </div>
   </div>
-  <div class="hero-note">No spam. No streaks. Real updates from your neurodivergent friend.</div>
+  <div class="hero-note">Try it now. An account keeps the record. Private and secure.</div>
 </section>
 
 <section class="split">
