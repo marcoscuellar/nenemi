@@ -77,20 +77,17 @@ h2 { font-family: var(--serif); font-weight: 800; font-size: clamp(32px, 4vw, 52
 .sub { font-size: 15px; font-weight: 300; color: var(--muted); max-width: 480px; line-height: 1.65; margin-bottom: 52px; }
 
 /* PROOF */
-.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 40px; }
-.proof-still { display: flex; flex-direction: column; gap: 14px; }
-.proof-shot { background: var(--card); border-radius: 14px; padding: 20px; min-height: 160px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 0 30px rgba(63,183,166,.08); border: 1px solid var(--line); }
-.proof-cap { font-size: 14px; color: var(--muted); line-height: 1.5; }
-.proof-cap b { color: #FFFFFF; font-weight: 600; }
-.proof-dump-box { font-family: var(--mono); font-size: 12px; color: var(--muted); line-height: 1.7; }
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 44px; align-items: start; }
+.proof-still { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.proof-still .phone { max-width: 280px; }
+.proof-slide { position: absolute; inset: 0; padding: 38px 22px 22px; display: flex; flex-direction: column; }
+.proof-cap { font-size: 14px; color: var(--muted); line-height: 1.5; text-align: center; max-width: 280px; }
 .proof-cursor { display: inline-block; width: 2px; height: 12px; background: var(--teal); margin-right: 2px; vertical-align: middle; }
-.proof-room-row { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; margin-bottom: 8px; color: #FFFFFF; }
-.proof-room-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
-.proof-room-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
-.proof-stuck { gap: 8px; }
-.proof-door { font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; color: var(--muted); padding: 9px 12px; background: rgba(244,241,234,.04); border-radius: 8px; border: 1px solid var(--line); }
+.proof-room-note { font-size: 11px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+.proof-doors { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+.proof-door { font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em; color: var(--muted); padding: 10px 12px; background: rgba(244,241,234,.04); border-radius: 8px; border: 1px solid var(--line); }
 .proof-line { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 560px; border-top: 1px solid var(--line); padding-top: 22px; }
-@media (max-width: 720px) { .proof-grid { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .proof-grid { grid-template-columns: 1fr; justify-items: center; } }
 
 /* CLOSE */
 .close-note { display: block; margin-top: 16px; font-family: var(--sans); font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--faint); }
@@ -330,23 +327,47 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
     <span class="tag" style="display:block;margin-bottom:32px;">HOW IT HOLDS</span>
     <div class="proof-grid">
       <div class="proof-still">
-        <div class="proof-shot">
-          <p class="proof-dump-box"><span class="proof-cursor"></span>email john, finish the report, gym after work, call mom, why do I feel behind</p>
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="status"><span>9:07</span><span>NENEMI</span></div>
+          <div class="proof-slide">
+            <p class="p-greet">Morning</p>
+            <h3 class="p-head">Start<br>anywhere.</h3>
+            <div class="p-box">
+              <p class="p-text"><span class="proof-cursor"></span>email john, finish the report, gym after work, call mom, why do I feel behind</p>
+            </div>
+          </div>
         </div>
         <p class="proof-cap"><b>Dump</b> — Put it down messy.</p>
       </div>
       <div class="proof-still">
-        <div class="proof-shot">
-          <div class="proof-room-row"><span class="proof-room-dot"></span>Ollin OS Sales</div>
-          <p class="proof-room-sub">Where you left off — the intro call notes, still here</p>
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="status"><span>9:07</span><span>NENEMI</span></div>
+          <div class="proof-slide">
+            <p class="p-greet">Room</p>
+            <h3 class="p-head">Work</h3>
+            <p class="proof-room-note">Where you left off — the deck, a few slides left.</p>
+            <div class="p-box" style="flex:none;"><p class="p-text">Next: finish slide 3, send for feedback.</p></div>
+            <button class="p-cta">Resume →</button>
+          </div>
         </div>
         <p class="proof-cap"><b>Room</b> — Come back. It still knows where you were.</p>
       </div>
       <div class="proof-still">
-        <div class="proof-shot proof-stuck">
-          <div class="proof-door">I can't start</div>
-          <div class="proof-door">My head is too full</div>
-          <div class="proof-door">I have no energy</div>
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="status"><span>9:07</span><span>NENEMI</span></div>
+          <div class="proof-slide">
+            <p class="p-greet">Feeling stuck</p>
+            <h3 class="p-head">Where are<br>you right now?</h3>
+            <div class="proof-doors">
+              <div class="proof-door">I can't start</div>
+              <div class="proof-door">My head is too full</div>
+              <div class="proof-door">I have no energy</div>
+              <div class="proof-door">I fell off</div>
+            </div>
+          </div>
         </div>
         <p class="proof-cap"><b>Stuck</b> — Four doors. Then one step.</p>
       </div>
