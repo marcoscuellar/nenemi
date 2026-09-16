@@ -166,10 +166,11 @@ footer { background: #0E0E0E; padding: 36px 48px; display: flex; align-items: ce
 /* EVER HAVE THOSE DAYS */
 .days { background: var(--bg); padding: 110px 64px; border-top: 1px solid var(--line); }
 .days .inner { max-width: 1060px; margin: 0 auto; }
-.days .tag { display: block; margin-bottom: 18px; }
-.days h2 { max-width: 760px; }
-.days-yeah { font-family: var(--serif); font-size: clamp(40px, 4.5vw, 60px); color: var(--teal); line-height: 1.05; letter-spacing: -.02em; margin: 28px 0 18px; }
+.days .tag { display: block; margin-bottom: 18px; color: #A4A099; }
+.days h2 { max-width: 760px; font-weight: 900; color: #FFFFFF; }
+.days-yeah { font-family: var(--serif); font-weight: 900; font-size: clamp(40px, 4.5vw, 60px); color: var(--teal); line-height: 1.05; letter-spacing: -.02em; margin: 28px 0 18px; }
 .days-blurb { font-size: 15px; font-weight: 300; color: var(--muted); line-height: 1.7; max-width: 520px; }
+.days-blurb + .days-blurb { margin-top: 18px; }
 @media (max-width: 720px) { .days { padding: 72px 24px; } }
 
 /* shared bits for the two kept sections */
@@ -296,10 +297,11 @@ section.band { padding: 110px 64px; border-top: 1px solid var(--line); }
 
 <section class="days" id="days">
   <div class="inner">
-    <span class="tag">[ SYSTEM OVERVIEW ]</span>
-    <h2>Ever lose your to-do list by 10:10 AM, hit a wall by 1 PM, and feel exhausted and burnt out by 5 PM?</h2>
+    <span class="tag">THE DAY THAT FALLS APART</span>
+    <h2>Ever lose the list by 10:10,<br>hit a wall by 1:00,<br>and feel cooked by 5:00?</h2>
     <p class="days-yeah">Yeah. Same.</p>
-    <p class="days-blurb">Most tools help you plan your day. Nenemi helps you get back into it. When things fall apart, you don't need a better plan — you need a way back in.</p>
+    <p class="days-blurb">Most tools help you plan the day.<br>Nenemi helps you get back into it.</p>
+    <p class="days-blurb">When it falls apart, you don&rsquo;t need a better plan.<br>You need a way back in.</p>
   </div>
 </section>
 
