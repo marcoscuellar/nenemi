@@ -179,6 +179,9 @@
   .rgp-meta { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .rgp-more { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--line2); border-radius: 14px; color: var(--muted); font-size: 12.5px; cursor: pointer; min-height: 96px; }
   .rgp-more:hover { border-color: var(--ink); color: var(--ink); }
+  /* desktop-only home furniture: hidden until the >=900px layout turns it on */
+  .home-side { display: none; }
+  .side-rooms { display: none; }
 
   .composer-pill {
     position: relative; width: 100%; box-sizing: border-box;
@@ -1208,6 +1211,46 @@
     .app.talking .composer-pill { left: 240px; right: 0; margin: 0 auto; transform: none; max-width: 640px; }
     .app.talking #pane-home { padding-bottom: 120px; }
 
+    /* Home at rest: a composed two-column home — capture on the left, where-you-left-off on
+       the right, the four doors as a quiet full-width footer. Not a stretched phone column. */
+    .app:not(.talking) #pane-home { justify-content: center; padding-top: 80px; padding-bottom: 68px; }
+    .app:not(.talking) .home-center {
+      width: min(1080px, calc(100% - 104px)); max-width: none;
+      display: grid; grid-template-columns: 1.04fr 0.96fr; column-gap: 60px; row-gap: 32px;
+      align-items: start;
+    }
+    .app:not(.talking) .greeting-big { grid-column: 1; grid-row: 1; align-self: end; margin: 0; font-size: clamp(30px, 2.5vw, 42px); text-transform: none; }
+    .app:not(.talking) .composer-pill { grid-column: 1; grid-row: 2; margin: 0; }
+    .app:not(.talking) .chat-log { display: none; }
+    .app:not(.talking) .home-side { display: flex; flex-direction: column; gap: 16px; grid-column: 2; grid-row: 1 / span 2; }
+    .app:not(.talking) .where-now { grid-column: 1 / -1; grid-row: 3; margin-top: 10px; }
+    .app:not(.talking) .where-h { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+    .app:not(.talking) .where-grid { grid-template-columns: repeat(4, 1fr); }
+    .app:not(.talking) .where-card { flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px 16px; border-radius: 18px; }
+    .app:not(.talking) .where-card .wc-arrow { position: absolute; top: 16px; right: 14px; }
+    .app:not(.talking) .where-card { position: relative; }
+
+    /* right column: re-entry becomes a real card, rooms preview stacks two-up */
+    .app:not(.talking) .home-side .home-return { margin: 0; }
+    .app:not(.talking) .home-side .hr-line { flex-direction: column; align-items: flex-start; gap: 9px; padding: 20px; border: 1px solid var(--line2); border-radius: 18px; background: var(--card); box-shadow: var(--card-shadow); font-size: 15px; color: var(--ink); }
+    .app:not(.talking) .home-side .hr-line:hover { border-color: var(--ink); color: var(--ink); }
+    .app:not(.talking) .home-side .hr-empty { border: 1px dashed var(--line2); border-radius: 18px; padding: 20px; }
+    .app:not(.talking) .home-side .home-rooms { margin: 0; }
+    .app:not(.talking) .home-side .section-row { margin-bottom: 12px; }
+    .app:not(.talking) .home-side .room-grid-preview { grid-template-columns: 1fr 1fr; }
+
+    /* sidebar carries recent rooms so it reads as a real rail, not four buttons in a void */
+    .side-rooms { display: flex; flex-direction: column; gap: 1px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .side-lb { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); padding: 0 12px 8px; }
+    .side-room { display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; background: transparent; border: none; border-radius: 11px; padding: 9px 12px; font-family: var(--font-body); font-size: 13.5px; color: var(--muted); cursor: pointer; }
+    .side-room:hover { background: var(--surface); color: var(--ink); }
+    .side-room .sr-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .side-room .sr-dot { flex-shrink: 0; font-family: var(--font-mono); font-size: 10px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 9px; background: var(--sage-fill); color: var(--sage-text); display: flex; align-items: center; justify-content: center; }
+    .app.dark-pane .side-rooms { border-top-color: #26262A; }
+    .app.dark-pane .side-lb { color: #6b7075; }
+    .app.dark-pane .side-room { color: #9aa0a2; }
+    .app.dark-pane .side-room:hover { background: #1a1a1d; color: #fff; }
+
     /* Rooms: two-column card grid */
     #pane-rooms .hub-header, #pane-rooms .loose-shelf { max-width: 920px; }
     .room-grid { max-width: 920px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
@@ -1397,6 +1440,14 @@
             </button>
           </div>
         </div>
+
+        <aside class="home-side" id="homeSide">
+          <div class="home-return" id="homeReturn"></div>
+          <div class="home-rooms">
+            <div class="section-row"><h2>Your rooms</h2></div>
+            <div class="room-grid-preview" id="homeRoomsPreview"></div>
+          </div>
+        </aside>
       </div>
     </div>
 
@@ -1722,6 +1773,7 @@
         <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="2.4"/><circle cx="15.5" cy="8.5" r="2.4"/><circle cx="8.5" cy="15.5" r="2.4"/><circle cx="15.5" cy="15.5" r="2.4"/></svg></span>
         <span class="tab-lb">Rooms</span>
       </button>
+      <div class="side-rooms" id="sideRooms" aria-hidden="true"></div>
       <button type="button" class="tab tab-stuck" id="nav-stuck" onclick="go('stuck')">
         <span class="stuck-tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8.5 6 12.5l4 4"/><path d="M6 12.5h8.5a4.5 4.5 0 0 0 4.5-4.5V6"/></svg></span>
         <span class="tab-lb">I'm stuck</span>
@@ -1782,6 +1834,16 @@
       </div>`;
     }).join('') + `<div class="rgp-more" onclick="go('rooms')">${mine.length ? 'View all rooms →' : 'Start a room →'}</div>`;
   }
+  // desktop left rail: the handful of rooms you actually touch, so the sidebar carries weight
+  function renderSideRooms() {
+    const el = document.getElementById('sideRooms'); if (!el) return;
+    const mine = rooms.filter(r => !r.demo && !r.archived).slice().sort(roomOrder).slice(0, 4);
+    if (!mine.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div class="side-lb">Rooms</div>` + mine.map(r => {
+      const open = r.loops.filter(l => !l.resolved).length;
+      return `<button type="button" class="side-room" onclick="openRoom('${r.id}')"><span class="sr-name">${escapeHtml(r.name)}</span>${open ? `<span class="sr-dot">${open}</span>` : ''}</button>`;
+    }).join('');
+  }
   let roomsMegaCloseT = null;
   function openRoomsMega() {
     clearTimeout(roomsMegaCloseT);
@@ -1811,6 +1873,7 @@
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
     if (id === 'home') renderHomeReturn();
+    renderSideRooms();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
     // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
     const darkPanes = ['stuck','lockdown','humans'];
@@ -3601,6 +3664,7 @@
   renderCal();
   renderRoomList();
   renderHomeReturn();
+  renderSideRooms();
   renderGreeting();
   initAuth().then(() => { renderGreeting(); return pullState(); }).then(() => { if (window.__afterCheckout) afterCheckout(); });
 
