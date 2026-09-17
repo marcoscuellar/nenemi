@@ -64,7 +64,7 @@
   }
   /* DARK SANCTUARY (permanent) + panes not yet converted to the light system (transitional, removed page by page).
      Keeps every screen coherent while the redesign rolls out one page at a time. */
-  #pane-calendar, #pane-notes,
+  #pane-notes,
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
     --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #FFFFFF; --muted: #A4A099; --faint: #6F6B64;
     --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
@@ -926,7 +926,8 @@
   .loose-chip .lb.quiet { color: var(--faint); font-weight: 500; }
 
   /* ================= ROOM detail (light) ================= */
-  #pane-roomview { background: var(--paper); overflow-y: auto; padding: 70px 20px 128px; display: block; }
+  #pane-roomview { background: var(--paper); overflow-y: auto; padding: 70px 20px 128px; }
+  #pane-roomview.active { display: block; }
   #pane-roomview::before { display: none; }
   #pane-roomview .rv-header { position: relative; max-width: 560px; margin: 0 auto; display: block; padding: 0; border: none; background: none; }
   .rv-back { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink); cursor: pointer; margin-bottom: 16px; }
@@ -992,6 +993,70 @@
   .dp-tool svg { stroke: currentColor; }
   .rv-capture-panel .dp-btn { display: block; width: 100%; text-align: center; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 17px; border-radius: 999px; border: none; cursor: pointer; }
   #pane-roomview .quickadd-note { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+
+  /* ================= MY DAY (light) ================= */
+  #pane-calendar { background: var(--paper); overflow-y: auto; padding: 76px 20px 128px; }
+  #pane-calendar.active { display: block; }
+  #pane-calendar::before { display: none; }
+  #pane-calendar .cal-topbar, #pane-calendar .cal-col-head, #pane-calendar .regroup-row, #pane-calendar .agenda-actions, #pane-calendar .cal-sub { display: none; }
+  #pane-calendar .cal-body { padding: 0; overflow: visible; background: none; }
+  #pane-calendar .cal-inner { max-width: 560px; margin: 0 auto; width: 100%; }
+  #pane-calendar .cal-columns { display: block; gap: 0; }
+  #pane-calendar .cal-left, #pane-calendar .smart-cal { width: 100%; max-width: none; }
+  #pane-calendar .cal-head { margin-bottom: 2px; }
+  #pane-calendar .cal-eyebrow { font-family: var(--font-body); font-weight: 600; font-size: clamp(18px,5.2vw,23px); color: var(--muted); text-transform: none; letter-spacing: -0.01em; margin: 0 0 2px; }
+  #pane-calendar .cal-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(50px,16vw,76px); line-height: 0.88; letter-spacing: -0.04em; color: var(--ink); }
+  #pane-calendar .cal-date { font-family: var(--font-black); font-weight: 900; font-size: clamp(23px,6.5vw,31px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-top: 8px; text-transform: none; }
+  #pane-calendar .cal-subhead { font-family: var(--font-body); font-weight: 600; font-size: clamp(17px,5vw,22px); color: var(--muted); margin-top: 8px; letter-spacing: -0.01em; }
+  .week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin: 22px 0 4px; }
+  .ws-day { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0 15px; border: none; background: none; border-radius: 16px; cursor: pointer; }
+  .ws-day .ws-dow { font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--muted); }
+  .ws-day .ws-num { font-family: var(--font-body); font-size: 18px; font-weight: 700; color: var(--ink); }
+  .ws-day.sel { background: rgba(11,11,12,0.05); }
+  .ws-dot { position: absolute; bottom: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); }
+  .agenda { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .ag-empty { color: var(--muted); font-size: 15px; padding: 20px 4px; }
+  .ag-row { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 17px 18px; cursor: pointer; }
+  .ag-row.past { background: var(--surface); box-shadow: none; border-color: transparent; }
+  .ag-row.past .ag-title, .ag-row.past .ag-time, .ag-row.done .ag-title { color: var(--muted); }
+  .ag-time { font-family: var(--font-body); font-weight: 600; font-size: 14px; color: var(--muted); width: 76px; flex-shrink: 0; letter-spacing: -0.01em; }
+  .ag-body { flex: 1; min-width: 0; }
+  .ag-title { font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -0.01em; color: var(--ink); }
+  .ag-desc { font-family: var(--font-body); font-size: 14px; color: var(--muted); margin-top: 2px; }
+  .ag-tag { flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-body); font-weight: 700; font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; padding: 8px 13px; border-radius: 999px; background: rgba(11,11,12,0.05); color: var(--ink); border: 1px solid transparent; }
+  .ag-tag.passed { background: transparent; color: var(--faint); border-color: var(--line); }
+  .ag-tag.done { background: var(--ink); color: #fff; }
+  .ag-tag .ag-check { stroke: currentColor; }
+  .now-divider { display: flex; align-items: center; gap: 10px; margin: 6px 2px; }
+  .now-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .now-label { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+  .now-line { flex: 1; height: 1px; background: var(--line2); }
+  .day-entry { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 16px 18px; cursor: pointer; margin-top: 10px; }
+  .day-entry:first-of-type { margin-top: 18px; }
+  .day-entry .de-ic { width: 46px; height: 46px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; color: var(--ink); flex-shrink: 0; }
+  .day-entry .de-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .day-entry .de-tx b { font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--ink); }
+  .day-entry .de-tx i { font-style: normal; font-size: 14px; color: var(--muted); }
+  .day-entry .de-chev { color: var(--faint); flex-shrink: 0; }
+  .ag-passed-prompt { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .ag-passed-prompt .app-title { font-family: var(--font-body); font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+  .ag-passed-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ag-passed-btn { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line2); background: var(--card); color: var(--ink); cursor: pointer; }
+  .ag-passed-btn:first-child { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #pane-calendar .smart-cal { display: none; margin-top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 22px; }
+  #pane-calendar.dump-open .smart-cal { display: block; }
+  #pane-calendar .sc-title { font-family: var(--font-black); font-weight: 900; font-size: 20px; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 6px; text-transform: none; }
+  #pane-calendar .sc-desc { font-family: var(--font-body); font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+  #pane-calendar .sc-dump-wrap { position: relative; }
+  #pane-calendar .sc-dump { width: 100%; box-sizing: border-box; min-height: 90px; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 14px 16px; font-family: var(--font-body); font-size: 15px; color: var(--ink); caret-color: var(--teal); outline: none; }
+  #pane-calendar .sc-dump::placeholder { color: var(--faint); }
+  #pane-calendar .sc-dump-wrap .mic-btn { position: absolute; right: 12px; bottom: 12px; color: var(--muted); }
+  #pane-calendar .sc-build { display: block; width: 100%; margin-top: 14px; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 16px; border-radius: 999px; border: none; cursor: pointer; }
+  #pane-calendar .sc-note { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+  #pane-calendar .sc-chip { display: inline-block; font-size: 13px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line2); color: var(--ink); cursor: pointer; margin: 4px 6px 0 0; }
+  #pane-calendar .sc-chip.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #pane-calendar .sc-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--faint); margin: 14px 0 6px; }
+  #pane-calendar .sc-ro-text { font-size: 14px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -1175,16 +1240,12 @@
       <div class="cal-body">
         <div class="cal-inner">
           <div class="cal-head">
-            <div class="cal-eyebrow">Plan my day / Today only</div>
-            <div class="cal-head-main">
-              <div class="cal-date" id="calDate">Today</div>
-              <div class="cal-nav">
-                <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <div class="nav-pill" onclick="goToday()" title="Back to today">Today</div>
-                <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-              </div>
-            </div>
-            <div class="cal-sub" id="calSub" hidden>TUE · SEP 15</div>
+            <div class="cal-eyebrow">Today only</div>
+            <div class="cal-title">My day</div>
+            <div class="cal-date" id="calDate">Today</div>
+            <div class="cal-subhead">Your day, with room to move.</div>
+            <div class="cal-sub" id="calSub" hidden></div>
+            <div class="week-strip" id="weekStrip"></div>
           </div>
 
           <div class="cal-columns">
@@ -1216,6 +1277,16 @@
                 <div class="cal-blocks-count" id="calCount">0 BLOCKS</div>
               </div>
               <div class="agenda" id="agenda"></div>
+              <div class="day-entry" onclick="addToToday()">
+                <span class="de-ic"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg></span>
+                <span class="de-tx"><b>Add to today</b><i>Keep it realistic.</i></span>
+                <svg class="de-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
+              <div class="day-entry" onclick="go('notes')">
+                <span class="de-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+                <span class="de-tx"><b>Recap my day</b><i>Write about it when you're ready.</i></span>
+                <svg class="de-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
               <div class="regroup-row">
                 <span>Day changed? Rebuild only what remains.</span>
                 <span class="regroup-btn" onclick="regroupDay()">Regroup my day</span>
@@ -1561,7 +1632,7 @@
     if (id === 'home') renderHomeReturn();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
     // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
-    const darkPanes = ['calendar','notes','stuck','lockdown','humans'];
+    const darkPanes = ['notes','stuck','lockdown','humans'];
     document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
     if (id === 'stuck') showDoors();
     stopVoice();
@@ -2555,8 +2626,30 @@
   function shiftDay(n) { const d = new Date(selectedDay); d.setDate(d.getDate() + n); selectedDay = d; renderCal(); scrollCalToNow(); }
   function goToday() { selectedDay = new Date(today); renderCal(); }
 
+  function renderWeekStrip() {
+    const el = document.getElementById('weekStrip'); if (!el) return;
+    const sunday = new Date(selectedDay); sunday.setDate(selectedDay.getDate() - selectedDay.getDay());
+    const todayK = dkey(today), selK = dkey(selectedDay);
+    let html = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(sunday); d.setDate(sunday.getDate() + i); const k = dkey(d);
+      const dow = d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 2);
+      html += `<button type="button" class="ws-day${k === selK ? ' sel' : ''}" onclick="goDay('${k}')">
+        <span class="ws-dow">${dow}</span><span class="ws-num">${d.getDate()}</span>
+        ${k === todayK ? '<span class="ws-dot"></span>' : ''}</button>`;
+    }
+    el.innerHTML = html;
+  }
+  function goDay(k) { const [y, m, d] = k.split('-').map(Number); selectedDay = new Date(y, m - 1, d); renderCal(); }
+  // reveal the plan-my-day dump (kept out of the way until asked for)
+  function addToToday() {
+    const p = document.getElementById('pane-calendar'); if (p) p.classList.add('dump-open');
+    const sc = document.querySelector('#pane-calendar .smart-cal');
+    if (sc) { sc.scrollIntoView({ behavior: 'smooth', block: 'center' }); const t = document.getElementById('calDump'); if (t) setTimeout(() => t.focus(), 300); }
+  }
   function renderCal() {
     const isToday = dkey(selectedDay) === dkey(today);
+    renderWeekStrip();
     document.getElementById('calDate').textContent = selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
     const calSub = document.getElementById('calSub');
     if (calSub) calSub.textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'short' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
@@ -2568,36 +2661,45 @@
       el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the left, or add one block.' : 'Nothing here yet.'}</div>`;
       renderRollover(); renderCalSummary(); return;
     }
-    el.innerHTML = list.map(e => {
+    let html = '', nowShown = false;
+    list.forEach(e => {
       const i = dayList(selectedDay).indexOf(e);
       const room = e.room ? rooms.find(r => r.id === e.room) : null;
-      const past = isToday && e.end <= nowH;
+      const done = !!e.done;
+      const past = isToday && e.end <= nowH && !done;
+      if (isToday && !nowShown && !past && !done) {
+        html += `<div class="now-divider"><span class="now-dot"></span><span class="now-label">Now · ${fmtClockCaps(nowH)}</span><span class="now-line"></span></div>`;
+        nowShown = true;
+      }
       const unacked = past && !e.acked;
-      const tag = unacked ? 'passed' : e.kind === 'fixed' ? 'fixed' : room ? 'room' : e.kind === 'buffer' ? 'protected' : 'focus';
-      const tagLabel = unacked ? 'Time passed' : e.kind === 'fixed' ? 'Fixed' : room ? 'From room' : e.kind === 'buffer' ? 'Protected' : 'Focus';
+      let tag, tagLabel;
+      if (done) { tag = 'done'; tagLabel = 'Done'; }
+      else if (past) { tag = 'passed'; tagLabel = e.kind === 'buffer' ? 'Ended' : 'Passed'; }
+      else if (e.kind === 'fixed') { tag = 'fixed'; tagLabel = 'Fixed'; }
+      else if (room) { tag = 'room'; tagLabel = 'From room'; }
+      else if (e.kind === 'buffer') { tag = 'protected'; tagLabel = 'Protected'; }
+      else { tag = 'focus'; tagLabel = 'Focus'; }
       const desc = e.notes || `${kindLabel(e.kind)} · ${Math.round((e.end - e.start) * 60)} min${room ? ' · ' + escapeHtml(room.name) : ''}`;
       const prompt = unacked ? `
         <div class="ag-passed-prompt" onclick="event.stopPropagation()">
-          <div>
-            <div class="app-title">This time has passed. What happened?</div>
-            <div class="app-sub">Your answer updates ${room ? escapeHtml(room.name) : 'the day'} and the rest of today.</div>
-          </div>
+          <div class="app-title">This time has passed. What happened?</div>
           <div class="ag-passed-actions">
             <button type="button" class="ag-passed-btn" onclick="markBlockDone(${i})">Done</button>
             <button type="button" class="ag-passed-btn" onclick="keepBlockToday(${i})">Keep today</button>
             <button type="button" class="ag-passed-btn" onclick="puntRowTomorrow(${i})">Move tomorrow</button>
           </div>
         </div>` : '';
-      return `<div class="ag-row${past ? ' past' : ''}" onclick="editEvent(${i})">
+      html += `<div class="ag-row${past ? ' past' : ''}${done ? ' done' : ''}" onclick="editEvent(${i})">
           <div class="ag-time">${fmtClockCaps(e.start)}</div>
           <div class="ag-body">
             <div class="ag-title">${escapeHtml(e.name)}</div>
             <div class="ag-desc">${escapeHtml(desc)}</div>
             ${prompt}
           </div>
-          <div class="ag-tag ${tag}">${tagLabel}</div>
+          <div class="ag-tag ${tag}">${done ? '<svg class="ag-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ''}${tagLabel}</div>
         </div>`;
-    }).join('');
+    });
+    el.innerHTML = html;
     renderRollover();
     renderCalSummary();
   }
@@ -2649,7 +2751,7 @@
   function puntRowTomorrow(i) { if (applyPunt('tomorrow', i)) renderCal(); }
   function markBlockDone(i) {
     const list = dayList(selectedDay); const e = list[i]; if (!e) return;
-    list.splice(i, 1); calNote(`${e.name} is done. Nice.`); save(); renderCal();
+    e.done = true; e.acked = true; calNote(`${e.name} is done. Nice.`); save(); renderCal();
   }
   function keepBlockToday(i) {
     const list = dayList(selectedDay); const e = list[i]; if (!e) return;
