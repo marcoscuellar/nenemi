@@ -1162,6 +1162,51 @@
   #pane-humans .support-links a { font-family: var(--font-body); font-weight: 700; font-size: 14px; padding: 12px 20px; border-radius: 999px; border: 1px solid #34343A; color: #F4F1EA; text-decoration: none; }
   #pane-humans .support-links a:hover { border-color: #FFFFFF; }
   #pane-humans .support-card.urgent .support-links a { background: #FFFFFF; color: #0A0A0A; border-color: #FFFFFF; }
+
+  /* ===================== DESKTOP (>=900px): left sidebar + wide content ===================== */
+  @media (min-width: 900px) {
+    /* the bottom tab bar becomes a fixed left sidebar */
+    .tabbar {
+      top: 0; bottom: 0; left: 0; right: auto; transform: none;
+      width: 240px; flex-direction: column; align-items: stretch; justify-content: flex-start;
+      gap: 4px; border: none; border-right: 1px solid var(--line); border-radius: 0;
+      background: var(--card); box-shadow: none; padding: 96px 16px 22px;
+    }
+    .tab { flex: 0 0 auto; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 13px 16px; border-radius: 14px; }
+    .tab .tab-lb { font-size: 15px; }
+    .tab-stuck { margin-top: auto; }
+    .tab-stuck .stuck-tile { width: 34px; height: 34px; border-radius: 10px; }
+    .tab-stuck .stuck-tile svg { width: 17px; height: 17px; }
+    .app.dark-pane .tabbar { background: #0d0d0f; border-right-color: #232326; }
+
+    .wordmark { top: 30px; left: 26px; z-index: 60; }
+    .account-wrap { top: 26px; right: 34px; }
+
+    /* clear the sidebar; content centers in the remaining space */
+    #pane-home, #pane-rooms, #pane-roomview, #pane-calendar, #pane-notes, #pane-stuck, #pane-humans { padding-left: 240px; }
+    #pane-home { padding-top: 92px; padding-bottom: 60px; }
+
+    .home-center { max-width: 760px; }
+    .app.talking .composer-pill { left: 240px; right: 0; margin: 0 auto; transform: none; max-width: 640px; }
+    .app.talking #pane-home { padding-bottom: 120px; }
+
+    /* Rooms: two-column card grid */
+    #pane-rooms .hub-header, #pane-rooms .loose-shelf { max-width: 920px; }
+    .room-grid { max-width: 920px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+
+    /* Room detail: cards/rows on the left, capture panel sticky on the right */
+    #pane-roomview .rv-header { max-width: 960px; }
+    #pane-roomview .rv-body { max-width: 960px; display: grid; grid-template-columns: 1.35fr 1fr; gap: 14px; align-items: start; }
+    #pane-roomview .rv-card, #pane-roomview .rv-col { grid-column: 1; }
+    #pane-roomview .rv-capture-panel { grid-column: 2; grid-row: 1 / 100; position: sticky; top: 24px; }
+
+    /* My Day + Journal: wider centered column */
+    #pane-calendar .cal-inner { max-width: 700px; }
+    #pane-notes .notes-wrap { max-width: 700px; }
+
+    /* sanctuary + humans: wider centered */
+    #pane-stuck .doors, #pane-stuck .stuck-inner, #pane-humans .humans-inner { max-width: 720px; }
+  }
 </style>
 </head>
 <body>
