@@ -102,6 +102,10 @@
     .feat p{color:var(--dim);font-size:clamp(1.2rem,1.5vw,1.45rem);line-height:1.5;max-width:520px;margin:24px 0 0}
     .feat .mono.teal{font-size:.78rem;letter-spacing:.2em}
     #day .device{width:min(430px,92%)}
+    /* Rooms sits on paper; the Start-the-day phone tucks behind its top edge */
+    #day{position:relative;z-index:1;padding-bottom:34px}
+    #day .feat-media{align-self:end}
+    #rooms{position:relative;z-index:2;background:#f5f4ef;border-top:none;margin-top:-104px;padding-top:138px}
     .feat-media{display:flex;justify-content:center}
     /* device frame */
     .device{width:min(300px,78vw);border-radius:46px;padding:9px;background:#0a0a0a;box-shadow:0 40px 80px -30px rgba(10,10,10,.5);position:relative}
