@@ -14,52 +14,63 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Archivo+Black&family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* NENEMI brand system v1.0: ink black, warm white, one signature teal. dark only — the calm is the brand. */
+  /* NENEMI brand system v2.0: mist white, pure-white cards, ink black, warm gray. one restrained teal, semantic only.
+     The dark sanctuary (I'm stuck / lockdown) is the deliberate exception — see the dark-scope rule below. */
   :root {
-    --sanctuary: #0A0A0A;
-    --surface: #111113;
-    --surface2: #161618;
-    --card: #111113;
-    --ink: #FFFFFF;
-    --muted: #A4A099;
-    --faint: #6F6B64;
-    --line: #26262A;
-    --line2: #34343A;
-    --sage: #3FB7A6;
-    --sage-text: #3FB7A6;
-    --sage-fill: rgba(63,183,166,0.14);
-    --on-sage: #06201C;
-    --teal: #3FB7A6;
-    --teal-soft: #7FD0C4;
-    --teal-deep: #2C8578;
+    --paper: #EBECEE;      /* app ground: bright cool mist */
+    --sanctuary: #EBECEE;  /* home + light panes sit on the mist */
+    --surface: #F3F4F6;
+    --surface2: #FFFFFF;
+    --card: #FFFFFF;
+    --ink: #0B0B0C;
+    --ink-2: #17181B;
+    --muted: #6C7176;      /* warm-gray secondary text */
+    --faint: #9BA0A7;      /* placeholders / tertiary */
+    --line: #E7E8EB;       /* hairlines */
+    --line2: #DDDFE3;
+    /* sage/selected: neutral now. Selected nav = light-gray bg + black text, not teal. */
+    --sage: #12BAAA;
+    --sage-text: #0B0B0C;
+    --sage-fill: rgba(11,11,12,0.055);
+    --on-sage: #FFFFFF;
+    /* the one semantic teal: typing cursor, today marker, live/update dot, a short word from Nenemi */
+    --teal: #10B7A7;
+    --teal-soft: #7FD8CD;
+    --teal-deep: #0E9C8F;
 
-    --glow: #161618;
+    --glow: transparent;
     --glow-stop: 62%;
-    --hg1: rgba(63, 183, 166, 0.22);
-    --hg2: rgba(44, 133, 120, 0.12);
-    --glow2: #161618;
-    --evt-block: #1E1E1E;
-    --evt-fixed: #151515;
-    --evt-fixed-line: #7A7A75;
-    --evt-buffer: #1A1A1A;
-    --btn: #3FB7A6;
-    --btn-ink: #06201C;
-    --pill-bg: rgba(17,17,19,0.8);
-    --shadow: rgba(0,0,0,0.5);
+    --hg1: rgba(16,183,167,0.05);
+    --hg2: rgba(16,183,167,0.02);
+    --glow2: #F3F4F6;
+    --evt-block: #FFFFFF;
+    --evt-fixed: #FFFFFF;
+    --evt-fixed-line: #9BA0A7;
+    --evt-buffer: #F3F4F6;
+    --btn: #0B0B0C;        /* primary buttons: black */
+    --btn-ink: #FFFFFF;    /* white text on black */
+    --pill-bg: rgba(255,255,255,0.86);
+    --shadow: rgba(21,23,27,0.10);
+    --card-shadow: 0 1px 2px rgba(20,22,26,0.04), 0 8px 26px rgba(20,22,26,0.05);
+    --radius: 28px;
 
     --font-display: 'Archivo', sans-serif;
     --font-black: 'Archivo Black', 'Archivo', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --font-body: 'Archivo', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    --font-title: 'Poppins', sans-serif;
+    --font-title: 'Archivo', sans-serif;
   }
-  /* the sanctuary screens are the same one dark ground as everywhere else now */
+  /* DARK SANCTUARY (permanent) + panes not yet converted to the light system (transitional, removed page by page).
+     Keeps every screen coherent while the redesign rolls out one page at a time. */
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
     --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #FFFFFF; --muted: #A4A099; --faint: #6F6B64;
-    --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
-    color: var(--ink);
+    --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
+    --teal: #3FB7A6; --teal-soft: #7FD0C4; --teal-deep: #2C8578; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
+    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(63,183,166,0.22); --hg2: rgba(44,133,120,0.12);
+    --evt-block: #1E1E1E; --evt-fixed: #151515; --evt-fixed-line: #7A7A75; --evt-buffer: #1A1A1A;
+    background: #0A0A0A; color: var(--ink);
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -752,6 +763,405 @@
     .friction-card { width: 92vw; }
     .voice-hint { bottom: calc(18px + var(--sab)); max-width: 92vw; text-align: center; }
   }
+  /* ================= NENEMI light system v2 — Home · conversation · bottom nav ================= */
+  body, .app { background: var(--paper); }
+  body { color: var(--ink); font-family: var(--font-body); }
+
+  /* the bottom tab bar is the nav now: retire the desktop pill + phone drawer */
+  #topnav, .topnav, #hamburgerBtn, .hamburger-btn, #navOverlay, .nav-overlay { display: none !important; }
+
+  /* top chrome */
+  .wordmark { top: 20px; left: 22px; gap: 0; }
+  .wordmark .wm-mark { display: none; }
+  .wordmark .wm-text { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.26em; color: var(--ink); }
+  .app.dark-pane .wordmark .wm-text { color: #F4F1EA; }
+  .app.dark-pane .wordmark .wm-mark { display: none; }
+  .account-wrap { position: absolute; top: 15px; right: 18px; z-index: 30; }
+  .account-slot img, .account-slot .avatar { width: 42px; height: 42px; border-radius: 50%; }
+  .account-slot button, .account-slot .acct-btn { background: var(--card); border: 1px solid var(--line); box-shadow: var(--card-shadow); color: var(--ink); }
+  .app.dark-pane .account-slot button, .app.dark-pane .account-slot .acct-btn { background: #161618; border-color: #26262A; color: #F4F1EA; }
+
+  /* ---------- HOME ---------- */
+  #pane-home { align-items: stretch; justify-content: flex-start; background: var(--paper); padding: 82px 20px 128px; }
+  #pane-home::before { display: none; }
+  .home-center { width: 100%; max-width: 540px; margin: 0 auto; align-items: stretch; }
+
+  .greeting-big { font-family: var(--font-black); font-weight: 900; text-transform: none; letter-spacing: -0.03em; line-height: 0.96; font-size: clamp(40px, 12.5vw, 60px); color: var(--ink); text-align: left; margin: 4px 0 26px; }
+  .greeting-big .hello { display: block; font-family: var(--font-body); font-weight: 600; font-size: clamp(19px, 5.5vw, 24px); letter-spacing: -0.01em; color: var(--muted); text-transform: none; margin-bottom: 12px; }
+  .greeting-big .ready { display: none; }
+  .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
+
+  /* capture card */
+  .composer-pill { background: var(--card); border: 1px solid var(--line); border-radius: 26px; box-shadow: var(--card-shadow); padding: 21px 20px 17px; display: block; }
+  .composer-pill textarea { min-height: 26px; max-height: 40vh; font-family: var(--font-body); font-size: 15.5px; letter-spacing: -0.005em; line-height: 1.5; color: var(--ink); caret-color: var(--teal); margin: 0; }
+  .app.talking .composer-pill textarea { font-size: 16px; }
+  .composer-pill textarea::placeholder { color: var(--faint); }
+  .capture-cta { display: flex; gap: 12px; margin-top: 18px; }
+  .cap-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 54px; border-radius: 999px; font-family: var(--font-body); font-weight: 700; font-size: 16px; cursor: pointer; border: 1.5px solid var(--line2); transition: background .15s, color .15s, border-color .15s; }
+  .cap-btn svg { stroke: currentColor; }
+  .cap-btn.write { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+  .cap-btn.write:hover { background: #000; }
+  .cap-btn.talk { background: var(--card); color: var(--ink); }
+  .cap-btn.talk:hover { border-color: var(--ink); }
+
+  /* which control row shows: Write/Talk at rest, full composer once typing/talking */
+  .composer-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: none; padding-top: 14px; }
+  .app:not(.talking) .composer-pill:not(.has-text) .composer-bar { display: none; }
+  .composer-pill.has-text .capture-cta, .app.talking .capture-cta { display: none; }
+  .send-btn { width: 46px; height: 46px; border-radius: 50%; background: var(--btn); color: var(--btn-ink); display: none; align-items: center; justify-content: center; flex-shrink: 0; }
+  .send-btn svg { stroke: currentColor; }
+  .composer-pill.has-text .send-btn, .app.talking .send-btn { display: flex; }
+  .mic-btn { color: var(--ink); }
+  .plus-btn { color: var(--muted); }
+
+  /* where are you right now */
+  .where-now { margin-top: 34px; }
+  .where-h { font-family: var(--font-black); font-weight: 900; font-size: clamp(20px, 6vw, 24px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 14px; }
+  .where-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .where-card { display: flex; align-items: center; gap: 11px; text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 15px 13px; cursor: pointer; font-family: var(--font-body); }
+  .where-card .wc-ic { color: var(--ink); flex-shrink: 0; display: flex; }
+  .where-card .wc-tx { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .where-card .wc-tx b { font-weight: 800; font-size: 14.5px; color: var(--ink); }
+  .where-card .wc-tx i { font-style: normal; font-size: 12px; color: var(--muted); line-height: 1.22; }
+  .where-card .wc-arrow { color: var(--faint); flex-shrink: 0; display: flex; }
+  .where-card:hover { border-color: var(--line2); }
+
+  /* ---------- CONVERSATION STATE ---------- */
+  .app.talking #pane-home { padding-bottom: 176px; }
+  .app.talking .where-now { display: none; }
+  .app.talking .greeting-big { font-size: clamp(32px, 9.5vw, 46px); margin-bottom: 16px; }
+  .app.talking .greeting-big .hello { display: none; }
+  .app.talking .home-center { flex: 1; }
+  .app.talking .chat-log { order: 0; flex: none; justify-content: flex-start; min-height: 0; }
+  .chat-log { display: flex; flex-direction: column; gap: 16px; margin-top: 6px; width: 100%; max-height: none; overflow: visible; }
+  .bubble { max-width: 100%; align-self: stretch; border-radius: 22px; font-size: 16px; line-height: 1.5; padding: 16px 18px; position: relative; }
+  .bubble.user { background: #E4E5E8; color: var(--ink); border-bottom-right-radius: 22px; }
+  .bubble.dos { background: var(--card); border: 1px solid var(--line); box-shadow: var(--card-shadow); color: var(--ink); padding: 28px 18px 16px; }
+  .bubble.dos::before { content: ''; position: absolute; top: 16px; left: 18px; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+  .bubble.dos.confirm { background: var(--card); border-color: var(--line); color: var(--ink); font-family: var(--font-body); font-size: 16px; }
+  .b-time { display: block; margin-top: 8px; font-size: 12.5px; color: var(--faint); text-align: right; }
+  .bubble.dos .b-time { text-align: left; }
+
+  /* action pills under a Nenemi reply */
+  .bubble .mini-btn { display: inline-flex; align-items: center; justify-content: center; margin-top: 14px; font-family: var(--font-body); font-weight: 700; font-size: 15px; padding: 13px 20px; border-radius: 999px; border: 1.5px solid var(--line2); color: var(--ink); background: var(--card); cursor: pointer; }
+  .bubble .mini-btn:hover { border-color: var(--ink); }
+  .bubble .mini-btn + .mini-btn { margin-left: 10px; }
+
+  /* bottom composer while talking */
+  .app.talking .composer-pill { position: fixed; left: 50%; right: auto; transform: translateX(-50%); width: calc(100% - 32px); max-width: 540px; bottom: calc(94px + var(--sab)); z-index: 45; margin: 0; padding: 7px 8px 7px 20px; border-radius: 999px; display: flex; flex-direction: row; align-items: center; gap: 8px; box-sizing: border-box; }
+  .app.talking .composer-pill textarea { flex: 1; min-height: 24px; max-height: 120px; padding: 10px 0; margin: 0; }
+  .app.talking .composer-bar { display: flex; border: none; padding: 0; flex-shrink: 0; gap: 6px; }
+  .app.talking .composer-actions { display: flex; align-items: center; gap: 6px; }
+
+  /* + menu (attach + voice) */
+  .composer-actions { display: flex; align-items: center; gap: 6px; }
+  .home-plus-wrap { position: relative; display: flex; }
+  .plus-btn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
+  .plus-btn:hover, .plus-btn.open { background: var(--sage-fill); color: var(--ink); }
+  .plus-menu { position: absolute; bottom: calc(100% + 10px); right: 0; left: auto; min-width: 200px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 10px 34px rgba(20,22,26,0.16); padding: 6px; display: none; z-index: 60; }
+  .plus-menu.open { display: block; }
+  .plus-menu .menu-item { display: flex; align-items: center; gap: 11px; padding: 12px 12px; border-radius: 13px; font-family: var(--font-body); font-size: 14.5px; font-weight: 500; color: var(--ink); cursor: pointer; }
+  .plus-menu .menu-item:hover { background: var(--surface); }
+  .plus-menu .menu-item svg { stroke: currentColor; }
+  .plus-menu .menu-sep { height: 1px; background: var(--line); margin: 5px 6px; }
+
+  /* action pills below a Nenemi reply, side by side like the mockup */
+  .chat-actions { display: flex; gap: 10px; margin-top: 2px; }
+  .chat-actions .mini-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-body); font-weight: 700; font-size: 15px; padding: 15px 12px; border-radius: 999px; border: 1.5px solid var(--line2); color: var(--ink); background: var(--card); cursor: pointer; box-shadow: var(--card-shadow); }
+  .chat-actions .mini-btn:hover { border-color: var(--ink); }
+
+  /* ---------- BOTTOM TAB BAR ---------- */
+  .tabbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(12px + var(--sab)); z-index: 50; display: flex; align-items: center; gap: 4px; width: min(540px, calc(100% - 24px)); background: var(--card); border: 1px solid var(--line); border-radius: 30px; box-shadow: 0 6px 26px rgba(20,22,26,0.12); padding: 8px; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 4px; border-radius: 20px; background: none; border: none; cursor: pointer; font-family: var(--font-body); }
+  .tab .tab-ic { color: var(--muted); display: flex; }
+  .tab .tab-lb { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .tab.active { background: var(--sage-fill); }
+  .tab.active .tab-ic, .tab.active .tab-lb { color: var(--ink); }
+  .tab.active .tab-ic svg { stroke-width: 2.4; }
+  .tab-stuck { }
+  .tab-stuck .stuck-tile { width: 42px; height: 42px; border-radius: 13px; background: var(--ink); display: flex; align-items: center; justify-content: center; }
+  .tab-stuck .stuck-tile svg { stroke: #fff; }
+  .tab-stuck .tab-lb { color: var(--ink); font-weight: 700; }
+  .tab-stuck.active { background: none; }
+  /* keep the sanctuary quiet: the bright bar recedes on dark panes */
+  .app.dark-pane .tabbar { background: #131315; border-color: #26262A; }
+  .app.dark-pane .tab-stuck .stuck-tile { background: #F4F1EA; }
+  .app.dark-pane .tab-stuck .stuck-tile svg { stroke: #0A0A0A; }
+  .app.dark-pane .tab-stuck .tab-lb { color: #F4F1EA; }
+  .app.dark-pane .tab.active { background: rgba(255,255,255,0.08); }
+  .app.dark-pane .tab.active .tab-ic, .app.dark-pane .tab.active .tab-lb { color: #F4F1EA; }
+
+  /* ================= ROOMS index (light) ================= */
+  #pane-rooms { background: var(--paper); overflow-y: auto; padding: 76px 20px 128px; }
+  #pane-rooms::before { display: none; }
+  #pane-rooms > * { position: relative; z-index: 1; }
+  #pane-rooms .hub-header { max-width: 560px; margin: 0 auto; }
+  #pane-rooms .back-home, #pane-rooms .hub-section-row, #pane-rooms .sync-badge { display: none; }
+  #pane-rooms .kicker { font-family: var(--font-body); font-weight: 600; font-size: clamp(19px,5.5vw,24px); letter-spacing: -0.01em; color: var(--muted); text-transform: none; margin: 0 0 2px; }
+  #pane-rooms .hub-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,16vw,74px); letter-spacing: -0.04em; line-height: 0.9; color: var(--ink); margin: 0; text-transform: none; }
+  #pane-rooms .hub-sub { font-family: var(--font-body); font-weight: 600; font-size: clamp(18px,5.2vw,23px); letter-spacing: -0.01em; color: var(--muted); margin: 8px 0 0; }
+  .room-grid { display: flex; flex-direction: column; gap: 12px; max-width: 560px; margin: 22px auto 0; padding: 0; border: none; overflow: visible; }
+  .room-card { display: flex; flex-direction: row; align-items: center; gap: 15px; min-height: 0; background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--card-shadow); padding: 18px 20px; cursor: pointer; text-align: left; }
+  .room-card:hover { border-color: var(--line2); }
+  .rc-icon { width: 60px; height: 60px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--ink); font-size: 34px; line-height: 1; }
+  .rc-icon svg { width: 42px; height: 42px; }
+  .rc-icon.nr { background: var(--surface); border-radius: 50%; }
+  .rc-icon.nr svg { width: 22px; height: 22px; }
+  .rc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .rc-name-row { display: flex; align-items: center; gap: 9px; }
+  .rc-name { font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -0.015em; color: var(--ink); }
+  .rc-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .rc-oneliner { font-family: var(--font-body); font-size: 15px; line-height: 1.32; color: var(--muted); }
+  .rc-quiet { font-size: 13px; color: var(--faint); margin-top: 2px; }
+  .rc-chev { color: var(--faint); flex-shrink: 0; }
+  .new-room-card.limit { max-width: 560px; margin: 4px auto 0; background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 20px; color: var(--muted); font-size: 14px; box-shadow: var(--card-shadow); }
+  /* loose shelf */
+  .loose-shelf { max-width: 560px; margin: 20px auto 0; }
+  .loose-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-bottom: 9px; }
+  .loose-row { display: flex; flex-direction: column; gap: 8px; }
+  .loose-chip { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 13px 15px; font-size: 14.5px; color: var(--ink); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; box-shadow: var(--card-shadow); }
+  .loose-chip .lt { color: var(--ink); text-decoration: none; flex: 1; min-width: 120px; }
+  .loose-chip .lb { font-family: var(--font-body); font-weight: 700; font-size: 12.5px; color: var(--ink); cursor: pointer; }
+  .loose-chip .lb.quiet { color: var(--faint); font-weight: 500; }
+
+  /* ================= ROOM detail (light) ================= */
+  #pane-roomview { background: var(--paper); overflow-y: auto; padding: 70px 20px 128px; }
+  #pane-roomview.active { display: block; }
+  #pane-roomview::before { display: none; }
+  #pane-roomview .rv-header { position: relative; max-width: 560px; margin: 0 auto; display: block; padding: 0; border: none; background: none; }
+  .rv-back { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink); cursor: pointer; margin-bottom: 16px; }
+  .rv-head-main { display: flex; align-items: flex-start; gap: 16px; }
+  #pane-roomview .rv-icon { width: 68px; height: 68px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--ink); font-size: 40px; background: none; border: none; border-radius: 0; cursor: pointer; }
+  #pane-roomview .rv-icon svg { width: 60px; height: 60px; }
+  .rv-head-text { flex: 1; min-width: 0; }
+  #pane-roomview .rv-name { font-family: var(--font-black); font-weight: 900; font-size: clamp(34px, 10vw, 46px); line-height: 0.92; letter-spacing: -0.03em; color: var(--ink); margin: 2px 0 0; text-transform: none; }
+  #pane-roomview .rv-name::after, #pane-roomview .rv-name::before { content: none !important; }
+  .rv-status-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-top: 12px; }
+  #pane-roomview .rv-status { display: block; text-align: left; }
+  .rv-status-label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-body); font-weight: 700; font-size: 16px; color: var(--ink); text-transform: none; letter-spacing: 0; }
+  .rv-status-label::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--faint); flex-shrink: 0; }
+  .rv-status-label.open::before { background: var(--teal); }
+  .rv-status-sub { display: block; font-family: var(--font-body); font-size: 14px; color: var(--muted); margin-top: 4px; }
+  #pane-roomview .rv-actions { display: flex; gap: 10px; flex-shrink: 0; }
+  #pane-roomview .rv-action-btn { width: 46px; height: 46px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); box-shadow: var(--card-shadow); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  #pane-roomview .rv-action-btn:hover { border-color: var(--ink); }
+  .wrapup-status { display: block; max-width: 560px; margin: 10px auto 0; font-size: 13px; color: var(--muted); }
+
+  #pane-roomview .rv-body { display: flex; flex-direction: column; gap: 12px; max-width: 560px; margin: 22px auto 0; padding: 0; background: none; border: none; }
+  .rv-card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--card-shadow); padding: 22px; }
+  #pane-roomview .anchor-label { font-family: var(--font-black); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); text-transform: none; margin: 0 0 10px; }
+  #pane-roomview .anchor-label .al-sub { font-family: var(--font-body); font-weight: 500; font-size: 14px; letter-spacing: 0; color: var(--muted); }
+  #pane-roomview .anchor-block { padding: 0; background: none; border: none; }
+  #pane-roomview .anchor-text { font-family: var(--font-body); font-size: 16px; line-height: 1.5; color: var(--muted); }
+  #pane-roomview .anchor-highlight { color: var(--ink); font-weight: 600; }
+  #pane-roomview .re-next { display: block; cursor: pointer; }
+  #pane-roomview .re-next-text { font-family: var(--font-body); font-weight: 400; font-size: 16px; color: var(--muted); margin-bottom: 16px; text-transform: none; letter-spacing: 0; }
+  #pane-roomview .re-btn { display: block; width: 100%; text-align: center; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 17px; border-radius: 999px; text-transform: none; letter-spacing: 0; }
+  #pane-roomview .shrink-row { text-align: center; margin-top: 12px; }
+  #pane-roomview .shrink-link { font-family: var(--font-body); font-size: 14px; color: var(--muted); cursor: pointer; text-transform: none; letter-spacing: 0; }
+  #pane-roomview .shrink-status { display: block; font-size: 13px; color: var(--faint); margin-top: 6px; }
+  #pane-roomview .room-link-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; color: var(--ink); font-size: 14px; cursor: pointer; }
+
+  #pane-roomview .toggle-row { display: flex; align-items: center; gap: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--card-shadow); padding: 18px 20px; cursor: pointer; }
+  #pane-roomview .toggle-row .tr-ic { display: flex; color: var(--ink); flex-shrink: 0; }
+  #pane-roomview .toggle-row .tr-label { flex: 1; font-family: var(--font-display); font-weight: 800; font-size: 16.5px; color: var(--ink); text-transform: none; letter-spacing: 0; }
+  #pane-roomview .toggle-row .expand-label { display: none; }
+  #pane-roomview .toggle-row .tr-chev { color: var(--faint); flex-shrink: 0; transition: transform .18s; }
+  #pane-roomview .toggle-row.open .tr-chev { transform: rotate(90deg); }
+  #pane-roomview #rvLoops, #pane-roomview #rvLog { padding: 4px 6px 2px; }
+  #pane-roomview .loop-row { display: flex; align-items: center; gap: 10px; padding: 11px 6px; border-bottom: 1px solid var(--line); }
+  #pane-roomview .loop-check { width: 22px; height: 22px; border: 1.5px solid var(--line2); border-radius: 7px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: transparent; }
+  #pane-roomview .loop-row.resolved .loop-check { background: var(--ink); border-color: var(--ink); color: #fff; }
+  #pane-roomview .loop-check svg { width: 13px; height: 13px; stroke: currentColor; }
+  #pane-roomview .loop-text { flex: 1; font-size: 15px; color: var(--ink); }
+  #pane-roomview .loop-row.resolved .loop-text { color: var(--faint); text-decoration: line-through; }
+  #pane-roomview .loop-focus { font-size: 12.5px; color: var(--muted); display: inline-flex; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; }
+  #pane-roomview .log-entry { padding: 11px 6px; border-bottom: 1px solid var(--line); }
+  #pane-roomview .log-time { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em; color: var(--faint); text-transform: uppercase; display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+  #pane-roomview .log-text { font-size: 15px; color: var(--ink); line-height: 1.45; }
+  #pane-roomview .log-thumb { max-width: 140px; border-radius: 12px; }
+
+  .rv-capture-panel { background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--card-shadow); padding: 22px; display: block; }
+  .rv-capture-panel h4 { font-family: var(--font-black); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 8px; text-transform: none; }
+  .rv-capture-panel .dp-sub { font-family: var(--font-body); font-size: 15px; color: var(--muted); line-height: 1.4; margin-bottom: 16px; }
+  .rv-capture-panel textarea { width: 100%; box-sizing: border-box; min-height: 58px; max-height: 40vh; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 14px 16px; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); outline: none; }
+  .rv-capture-panel textarea::placeholder { color: var(--faint); }
+  .dp-tools { display: flex; gap: 10px; margin: 14px 0 16px; }
+  .dp-tool { width: 46px; height: 46px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink); cursor: pointer; }
+  .dp-tool:hover { border-color: var(--ink); }
+  .dp-tool svg { stroke: currentColor; }
+  .rv-capture-panel .dp-btn { display: block; width: 100%; text-align: center; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 17px; border-radius: 999px; border: none; cursor: pointer; }
+  #pane-roomview .quickadd-note { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+
+  /* ================= MY DAY (light) ================= */
+  #pane-calendar { background: var(--paper); overflow-y: auto; padding: 76px 20px 128px; }
+  #pane-calendar.active { display: block; }
+  #pane-calendar::before { display: none; }
+  #pane-calendar .cal-topbar, #pane-calendar .cal-col-head, #pane-calendar .regroup-row, #pane-calendar .agenda-actions, #pane-calendar .cal-sub { display: none; }
+  #pane-calendar .cal-body { padding: 0; overflow: visible; background: none; }
+  #pane-calendar .cal-inner { max-width: 560px; margin: 0 auto; width: 100%; }
+  #pane-calendar .cal-columns { display: block; gap: 0; }
+  #pane-calendar .cal-left, #pane-calendar .smart-cal { width: 100%; max-width: none; }
+  #pane-calendar .cal-head { margin-bottom: 2px; }
+  #pane-calendar .cal-eyebrow { font-family: var(--font-body); font-weight: 600; font-size: clamp(18px,5.2vw,23px); color: var(--muted); text-transform: none; letter-spacing: -0.01em; margin: 0 0 2px; }
+  #pane-calendar .cal-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(50px,16vw,76px); line-height: 0.88; letter-spacing: -0.04em; color: var(--ink); }
+  #pane-calendar .cal-date { font-family: var(--font-black); font-weight: 900; font-size: clamp(23px,6.5vw,31px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-top: 8px; text-transform: none; }
+  #pane-calendar .cal-subhead { font-family: var(--font-body); font-weight: 600; font-size: clamp(17px,5vw,22px); color: var(--muted); margin-top: 8px; letter-spacing: -0.01em; }
+  .week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin: 22px 0 4px; }
+  .ws-day { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0 15px; border: none; background: none; border-radius: 16px; cursor: pointer; }
+  .ws-day .ws-dow { font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--muted); }
+  .ws-day .ws-num { font-family: var(--font-body); font-size: 18px; font-weight: 700; color: var(--ink); }
+  .ws-day.sel { background: rgba(11,11,12,0.05); }
+  .ws-dot { position: absolute; bottom: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); }
+  .agenda { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .ag-empty { color: var(--muted); font-size: 15px; padding: 20px 4px; }
+  .ag-row { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 17px 18px; cursor: pointer; }
+  .ag-row.past { background: var(--surface); box-shadow: none; border-color: transparent; }
+  .ag-row.past .ag-title, .ag-row.past .ag-time, .ag-row.done .ag-title { color: var(--muted); }
+  .ag-time { font-family: var(--font-body); font-weight: 600; font-size: 14px; color: var(--muted); width: 76px; flex-shrink: 0; letter-spacing: -0.01em; }
+  .ag-body { flex: 1; min-width: 0; }
+  .ag-title { font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -0.01em; color: var(--ink); }
+  .ag-desc { font-family: var(--font-body); font-size: 14px; color: var(--muted); margin-top: 2px; }
+  .ag-tag { flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-body); font-weight: 700; font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; padding: 8px 13px; border-radius: 999px; background: rgba(11,11,12,0.05); color: var(--ink); border: 1px solid transparent; }
+  .ag-tag.passed { background: transparent; color: var(--faint); border-color: var(--line); }
+  .ag-tag.done { background: var(--ink); color: #fff; }
+  .ag-tag .ag-check { stroke: currentColor; }
+  .now-divider { display: flex; align-items: center; gap: 10px; margin: 6px 2px; }
+  .now-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .now-label { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+  .now-line { flex: 1; height: 1px; background: var(--line2); }
+  .day-entry { display: flex; align-items: center; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 16px 18px; cursor: pointer; margin-top: 10px; }
+  .day-entry:first-of-type { margin-top: 18px; }
+  .day-entry .de-ic { width: 46px; height: 46px; border-radius: 50%; background: var(--surface); display: flex; align-items: center; justify-content: center; color: var(--ink); flex-shrink: 0; }
+  .day-entry .de-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .day-entry .de-tx b { font-family: var(--font-display); font-weight: 800; font-size: 17px; color: var(--ink); }
+  .day-entry .de-tx i { font-style: normal; font-size: 14px; color: var(--muted); }
+  .day-entry .de-chev { color: var(--faint); flex-shrink: 0; }
+  .ag-passed-prompt { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .ag-passed-prompt .app-title { font-family: var(--font-body); font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+  .ag-passed-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ag-passed-btn { font-family: var(--font-body); font-weight: 600; font-size: 13px; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line2); background: var(--card); color: var(--ink); cursor: pointer; }
+  .ag-passed-btn:first-child { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #pane-calendar .smart-cal { display: none; margin-top: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 22px; }
+  #pane-calendar.dump-open .smart-cal { display: block; }
+  #pane-calendar .sc-title { font-family: var(--font-black); font-weight: 900; font-size: 20px; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 6px; text-transform: none; }
+  #pane-calendar .sc-desc { font-family: var(--font-body); font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+  #pane-calendar .sc-dump-wrap { position: relative; }
+  #pane-calendar .sc-dump { width: 100%; box-sizing: border-box; min-height: 90px; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 14px 16px; font-family: var(--font-body); font-size: 15px; color: var(--ink); caret-color: var(--teal); outline: none; }
+  #pane-calendar .sc-dump::placeholder { color: var(--faint); }
+  #pane-calendar .sc-dump-wrap .mic-btn { position: absolute; right: 12px; bottom: 12px; color: var(--muted); }
+  #pane-calendar .sc-build { display: block; width: 100%; margin-top: 14px; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 16px; border-radius: 999px; border: none; cursor: pointer; }
+  #pane-calendar .sc-note { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+  #pane-calendar .sc-chip { display: inline-block; font-size: 13px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line2); color: var(--ink); cursor: pointer; margin: 4px 6px 0 0; }
+  #pane-calendar .sc-chip.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  #pane-calendar .sc-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--faint); margin: 14px 0 6px; }
+  #pane-calendar .sc-ro-text { font-size: 14px; color: var(--muted); }
+
+  /* ================= JOURNAL / RECAP (light) ================= */
+  #pane-notes { background: var(--paper); overflow-y: auto; padding: 66px 20px 128px; }
+  #pane-notes::before { display: none; }
+  #pane-notes .notes-body { padding: 0; overflow: visible; background: none; display: block; }
+  #pane-notes .notes-wrap { max-width: 560px; margin: 0 auto; width: 100%; }
+  .nt-back { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; margin-bottom: 20px; color: var(--muted); font-family: var(--font-body); font-weight: 600; font-size: 17px; cursor: pointer; }
+  .nt-back svg { stroke: currentColor; }
+  .nt-eyebrow { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }
+  .nt-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  #pane-notes .notes-date { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .nt-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,15vw,72px); line-height: 0.9; letter-spacing: -0.04em; color: var(--ink); }
+  .nt-sub { font-family: var(--font-body); font-weight: 600; font-size: clamp(18px,5.2vw,23px); color: var(--muted); margin-top: 10px; letter-spacing: -0.01em; }
+  .nt-card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--card-shadow); padding: 22px; margin-top: 22px; }
+  .nt-card-h { font-family: var(--font-black); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 14px; }
+  #pane-notes .notes-box { position: relative; }
+  #pane-notes .notes-box textarea { width: 100%; box-sizing: border-box; min-height: 120px; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 16px 46px 16px 16px; font-family: var(--font-body); font-size: 16px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); outline: none; }
+  #pane-notes .notes-box textarea::placeholder { color: var(--faint); }
+  #pane-notes .nt-mic { position: absolute; right: 12px; bottom: 12px; color: var(--muted); cursor: pointer; }
+  .nt-hold { display: block; width: 100%; margin-top: 16px; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 17px; border-radius: 999px; border: none; cursor: pointer; }
+  #pane-notes .notes-saved { text-align: center; font-size: 13px; color: var(--teal-deep); margin-top: 10px; }
+  .nt-carry .carry-name { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--ink); }
+  .nt-carry .carry-desc { font-family: var(--font-body); font-size: 14px; color: var(--muted); margin-top: 3px; }
+  .carry-actions { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .carry-btn { font-family: var(--font-body); font-weight: 700; font-size: 15px; padding: 13px 22px; border-radius: 999px; border: 1.5px solid var(--line2); background: var(--card); color: var(--ink); cursor: pointer; white-space: nowrap; }
+  .carry-btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .carry-btn.ghost { border: none; background: none; color: var(--muted); padding: 13px 6px; margin-left: auto; }
+  .carry-note { font-size: 13px; color: var(--faint); margin-top: 12px; }
+  .nt-earlier-h { font-family: var(--font-black); font-weight: 900; font-size: 26px; letter-spacing: -0.02em; color: var(--ink); margin: 30px 0 14px; }
+  .notes-earlier { display: flex; flex-direction: column; gap: 10px; }
+  #pane-notes .ne { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--card-shadow); padding: 18px 20px; cursor: pointer; }
+  #pane-notes .ne-date { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+  #pane-notes .ne-row { display: flex; align-items: center; gap: 12px; }
+  #pane-notes .ne-text { flex: 1; font-family: var(--font-body); font-size: 16px; color: var(--ink); line-height: 1.4; }
+  #pane-notes .ne-chev { color: var(--faint); flex-shrink: 0; }
+  #pane-notes .ne-empty { color: var(--muted); font-size: 15px; padding: 6px 2px; }
+  .nt-seeall { display: flex; align-items: center; gap: 6px; margin-top: 16px; color: var(--muted); font-family: var(--font-body); font-weight: 600; font-size: 15px; cursor: pointer; }
+  .nt-seeall svg { stroke: currentColor; }
+
+  /* ================= I'M STUCK — dark sanctuary ================= */
+  #pane-stuck { background: #050506; overflow-y: auto; padding: 66px 22px 128px; color: #F4F1EA; }
+  #pane-stuck::before { display: none; }
+  #pane-stuck .doors, #pane-stuck .stuck-inner { max-width: 620px; margin: 0 auto; width: 100%; }
+  .app.sanctuary-move .account-wrap { display: none; }
+  .doors-eyebrow { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A8A85; margin-bottom: 8px; }
+  #pane-stuck .doors-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,15vw,74px); line-height: 0.9; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; text-transform: none; }
+  #pane-stuck .doors-sub { font-family: var(--font-body); font-size: clamp(16px,4.6vw,20px); color: #9B9C98; margin-top: 12px; }
+  #pane-stuck .doors-mark { width: 12px; height: 12px; border-radius: 50%; background: var(--teal); margin: 30px auto 24px; }
+  #pane-stuck .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  #pane-stuck .door { position: relative; background: #141416; border: 1px solid #232326; border-radius: 22px; padding: 22px 20px 48px; cursor: pointer; min-height: 186px; display: block; }
+  #pane-stuck .door:hover { border-color: #3a3a40; }
+  #pane-stuck .door-icon { color: #FFFFFF; margin: 0 0 22px; width: 26px; height: 26px; }
+  #pane-stuck .door-label { font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; color: #FFFFFF; margin-bottom: 8px; }
+  #pane-stuck .door-sub { font-family: var(--font-body); font-size: 15px; line-height: 1.35; color: #9B9C98; }
+  #pane-stuck .door-why { display: none; }
+  #pane-stuck .door::after { content: ''; position: absolute; right: 22px; bottom: 20px; width: 9px; height: 9px; border-right: 2px solid #6F6B64; border-top: 2px solid #6F6B64; transform: rotate(45deg); }
+  /* one small move */
+  #pane-stuck .stuck-inner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #pane-stuck .stuck-topbar { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 10px; }
+  .stuck-back { display: inline-flex; align-items: center; gap: 7px; background: none; border: none; padding: 0; color: #9B9C98; font-family: var(--font-body); font-weight: 500; font-size: 16px; cursor: pointer; }
+  .stuck-back svg { stroke: currentColor; }
+  .stuck-x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #34343A; background: none; color: #C9C9C4; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  #pane-stuck .stuck-mark { width: 96px; height: 96px; border-radius: 50%; border: 1px solid #34343A; display: flex; align-items: center; justify-content: center; margin: 34px auto 22px; }
+  #pane-stuck .stuck-mark::after { content: ''; width: 12px; height: 12px; border-radius: 50%; background: var(--teal); }
+  .stuck-eyebrow { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: #8A8A85; margin-bottom: 20px; }
+  #pane-stuck .stuck-nudge { font-family: var(--font-black); font-weight: 900; font-size: clamp(34px,10vw,50px); line-height: 0.95; letter-spacing: -0.03em; color: #FFFFFF; max-width: 560px; }
+  #pane-stuck .stuck-sub { font-family: var(--font-body); font-size: clamp(16px,4.6vw,20px); color: #9B9C98; margin-top: 18px; max-width: 500px; }
+  #pane-stuck .stuck-tag { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #6F6B64; margin-top: 22px; }
+  #pane-stuck .stuck-quote { font-family: var(--font-body); font-style: italic; color: #9B9C98; margin-top: 14px; max-width: 500px; }
+  #pane-stuck .stuck-inner { width: 100%; box-sizing: border-box; }
+  #pane-stuck .stuck-actions { width: 100%; max-width: 560px; box-sizing: border-box; margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
+  .stuck-actions-row { display: flex; gap: 12px; width: 100%; }
+  #pane-stuck .stuck-btn { box-sizing: border-box; font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 18px 14px; border-radius: 16px; cursor: pointer; border: 1px solid #34343A; background: none; color: #F4F1EA; white-space: nowrap; }
+  #pane-stuck .stuck-btn.primary { background: #FFFFFF; color: #0A0A0A; border-color: #FFFFFF; }
+  #pane-stuck .stuck-actions-row .stuck-btn { flex: 1 1 0; min-width: 0; }
+  #pane-stuck .stuck-note { color: #9B9C98; font-size: 14px; margin-top: 16px; max-width: 500px; }
+  .why-works { width: 100%; max-width: 560px; margin-top: 30px; border-top: 1px solid #232326; border-bottom: 1px solid #232326; padding: 18px 2px; cursor: pointer; }
+  .why-works .why-head { display: flex; align-items: center; justify-content: space-between; color: #C9C9C4; font-family: var(--font-body); font-weight: 500; font-size: 16px; }
+  .why-works .why-plus { color: #8A8A85; font-size: 22px; line-height: 1; transition: transform .18s; }
+  .why-works .why-body { display: none; color: #9B9C98; font-size: 15px; line-height: 1.5; margin-top: 12px; text-align: left; }
+  .why-works.open .why-body { display: block; }
+  .why-works.open .why-plus { transform: rotate(45deg); }
+  .leave-sanctuary { margin: 34px auto 0; color: #8A8A85; font-size: 15px; text-decoration: underline; cursor: pointer; }
+  #pane-stuck .doors-back { display: none; }
+  /* put-it-down dump keeps the same dark ground */
+  #pane-stuck .stuck-dump .stuck-box textarea, #pane-stuck #stuckInput { width: 100%; box-sizing: border-box; min-height: 100px; resize: none; border: 1px solid #232326; background: #141416; border-radius: 16px; padding: 14px 16px; font-family: var(--font-body); font-size: 15px; color: #F4F1EA; caret-color: var(--teal); outline: none; }
+  .doors-talk { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; color: #C9C9C4; font-family: var(--font-body); font-weight: 600; font-size: 16px; cursor: pointer; }
+  .doors-talk svg { stroke: currentColor; }
+
+  /* ================= HUMAN SUPPORT — dark, like the sanctuary ================= */
+  #pane-humans { background: #050506; overflow-y: auto; padding: 66px 22px 128px; color: #F4F1EA; }
+  #pane-humans::before { display: none; }
+  #pane-humans .humans-inner { max-width: 620px; margin: 0 auto; width: 100%; }
+  #pane-humans .doors-eyebrow { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A8A85; margin-bottom: 8px; }
+  #pane-humans .doors-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,15vw,74px); line-height: 0.9; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; text-transform: none; }
+  #pane-humans .doors-sub { font-family: var(--font-body); font-size: clamp(16px,4.6vw,20px); color: #9B9C98; margin-top: 12px; }
+  #pane-humans .doors-mark { width: 12px; height: 12px; border-radius: 50%; background: var(--teal); margin: 30px 0 26px; }
+  #pane-humans .support-list { display: flex; flex-direction: column; gap: 14px; }
+  #pane-humans .support-card { background: #141416; border: 1px solid #232326; border-radius: 22px; padding: 22px; }
+  #pane-humans .support-card.urgent { border-color: #2b3a37; }
+  #pane-humans .support-name { font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; color: #FFFFFF; margin-bottom: 6px; }
+  #pane-humans .support-for { font-family: var(--font-body); font-size: 15px; line-height: 1.4; color: #9B9C98; margin-bottom: 16px; }
+  #pane-humans .support-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  #pane-humans .support-links a { font-family: var(--font-body); font-weight: 700; font-size: 14px; padding: 12px 20px; border-radius: 999px; border: 1px solid #34343A; color: #F4F1EA; text-decoration: none; }
+  #pane-humans .support-links a:hover { border-color: #FFFFFF; }
+  #pane-humans .support-card.urgent .support-links a { background: #FFFFFF; color: #0A0A0A; border-color: #FFFFFF; }
 </style>
 </head>
 <body>
@@ -849,47 +1259,46 @@
     <!-- HOME -->
     <div class="pane active" id="pane-home">
       <div class="home-center">
-        <div class="greeting-big" id="greetingText">Hey there,<br><span class="accent">what's on your mind?</span></div>
+        <div class="greeting-big" id="greetingText"><span class="hello">Morning</span><span class="accent">Whatever's in your head, put it here.</span></div>
 
         <div class="composer-pill" id="composerPill">
-          <textarea id="composerInput" rows="1" placeholder="Start anywhere…"></textarea>
+          <textarea id="composerInput" rows="1" placeholder="Start typing, or tell me what's going on."></textarea>
+          <div class="capture-cta" id="captureCta">
+            <button type="button" class="cap-btn write" onclick="focusWrite()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Write
+            </button>
+            <button type="button" class="cap-btn talk" onclick="startTalk()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9v6M10 5.5v13M14 8v8M18 10.5v3"/></svg>
+              Talk
+            </button>
+          </div>
           <div class="composer-bar">
-            <div class="home-plus-wrap">
-              <div class="plus-menu" id="plusMenu">
-                <div class="menu-item" onclick="pickHomeUpload('image/*')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
-                  Add a photo
-                </div>
-                <div class="menu-item" onclick="pickHomeUpload('application/pdf')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
-                  Add a file
-                </div>
-                <div class="menu-sep"></div>
-                <div class="menu-item" onclick="closeMenuAnd('calendar')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
-                  My day
-                </div>
-                <div class="menu-item" onclick="closeMenuAnd('notes')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 2.5h10v11H3z" stroke-linejoin="round"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke-linecap="round"/></svg>
-                  Write about it
-                </div>
-                <div class="menu-item" onclick="closeMenuAnd('rooms')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2"/></svg>
-                  Rooms
-                </div>
-                <div class="menu-item" onclick="closeMenuAnd('stuck')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
-                  I'm stuck
-                </div>
-              </div>
-              <div class="plus-btn" id="plusBtn" onclick="toggleMenu()">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
-              </div>
-            </div>
             <input type="file" id="homeUploadFile" accept="image/*,application/pdf" hidden onchange="handleHomeUploadFile(this.files)" />
+            <!-- kept for the speech wiring; the visible control is the + menu below -->
+            <div class="mic-btn" id="homeMic" title="Say it instead" hidden>
+              <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
+            </div>
             <div class="composer-actions">
-              <div class="mic-btn" id="homeMic" title="Say it instead">
-                <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
+              <div class="home-plus-wrap">
+                <div class="plus-menu" id="plusMenu">
+                  <div class="menu-item" onclick="pickHomeUpload('image/*')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+                    Add a photo
+                  </div>
+                  <div class="menu-item" onclick="pickHomeUpload('application/pdf')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
+                    Add a file
+                  </div>
+                  <div class="menu-sep"></div>
+                  <div class="menu-item" onclick="menuTalk()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5"/></svg>
+                    Talk
+                  </div>
+                </div>
+                <div class="plus-btn" id="plusBtn" onclick="toggleMenu()" title="Add">
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
+                </div>
               </div>
               <div class="send-btn" onclick="sendCapture()">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -899,6 +1308,32 @@
         </div>
 
         <div class="chat-log" id="chatLog"></div>
+
+        <div class="where-now" id="whereNow">
+          <div class="where-h">Where are you right now?</div>
+          <div class="where-grid">
+            <button type="button" class="where-card" onclick="go('rooms')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/><rect x="4" y="8" width="16" height="1.6" fill="#fff"/><rect x="4" y="11.2" width="16" height="1.6" fill="#fff"/><rect x="4" y="14.4" width="16" height="1.6" fill="#fff"/></svg></span>
+              <span class="wc-tx"><b>Rooms</b><i>Pick up where you left</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+            <button type="button" class="where-card" onclick="go('calendar')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="14" width="4" height="7" rx="1"/><rect x="10" y="9" width="4" height="12" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg></span>
+              <span class="wc-tx"><b>My day</b><i>Dump it all here. Get a day back</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+            <button type="button" class="where-card" onclick="go('stuck')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="12" r="7" fill="currentColor"/><circle cx="15" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span>
+              <span class="wc-tx"><b>Feeling stuck?</b><i>Been there. Let's get you unstuck</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+            <button type="button" class="where-card" onclick="go('humans')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7Z"/></svg></span>
+              <span class="wc-tx"><b>Human support</b><i>Additional support is here for you</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -910,16 +1345,12 @@
       <div class="cal-body">
         <div class="cal-inner">
           <div class="cal-head">
-            <div class="cal-eyebrow">Plan my day / Today only</div>
-            <div class="cal-head-main">
-              <div class="cal-date" id="calDate">Today</div>
-              <div class="cal-nav">
-                <div class="nav-btn" onclick="shiftDay(-1)" title="Previous day"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M3 8l4-4M3 8l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                <div class="nav-pill" onclick="goToday()" title="Back to today">Today</div>
-                <div class="nav-btn" onclick="shiftDay(1)" title="Next day"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M13 8L9 4M13 8l-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-              </div>
-            </div>
-            <div class="cal-sub" id="calSub" hidden>TUE · SEP 15</div>
+            <div class="cal-eyebrow">Today only</div>
+            <div class="cal-title">My day</div>
+            <div class="cal-date" id="calDate">Today</div>
+            <div class="cal-subhead">Your day, with room to move.</div>
+            <div class="cal-sub" id="calSub" hidden></div>
+            <div class="week-strip" id="weekStrip"></div>
           </div>
 
           <div class="cal-columns">
@@ -951,6 +1382,16 @@
                 <div class="cal-blocks-count" id="calCount">0 BLOCKS</div>
               </div>
               <div class="agenda" id="agenda"></div>
+              <div class="day-entry" onclick="addToToday()">
+                <span class="de-ic"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg></span>
+                <span class="de-tx"><b>Add to today</b><i>Keep it realistic.</i></span>
+                <svg class="de-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
+              <div class="day-entry" onclick="go('notes')">
+                <span class="de-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+                <span class="de-tx"><b>Recap my day</b><i>Write about it when you're ready.</i></span>
+                <svg class="de-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+              </div>
               <div class="regroup-row">
                 <span>Day changed? Rebuild only what remains.</span>
                 <span class="regroup-btn" onclick="regroupDay()">Regroup my day</span>
@@ -967,25 +1408,30 @@
 
     <!-- WRITE ABOUT IT: one page per day, yours only -->
     <div class="pane" id="pane-notes">
-      <div class="hub-header">
-        <span class="kicker">My day · Write about it</span>
-        <div class="hub-title">Write about it.</div>
-        <div class="hub-sub">Nobody reads this but you. The day, the feelings, the stuff with nowhere else to go.</div>
-      </div>
       <div class="notes-body">
         <div class="notes-wrap">
-          <div class="notes-top"><div class="notes-date" id="notesDate">Monday · September 7</div><div class="notes-saved" id="notesSaved"></div></div>
-          <div class="notes-box">
-            <textarea id="notesInput" placeholder="Today…"></textarea>
-            <div class="composer-row">
-              <div class="spacer"></div>
-              <div class="mic-btn" id="notesMic" title="Say it instead"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
-              <button class="notes-hold" onclick="holdNotes()">Hold what matters →</button>
+          <button type="button" class="nt-back" onclick="go('calendar')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg><span>My day</span></button>
+          <div class="nt-eyebrow"><span class="nt-dot"></span><span class="notes-date" id="notesDate">Today</span></div>
+          <div class="nt-title">Close the day.</div>
+          <div class="nt-sub">No report. Just put down what mattered.</div>
+
+          <div class="nt-card">
+            <div class="nt-card-h">What happened today?</div>
+            <div class="notes-box">
+              <textarea id="notesInput" placeholder="Say it however it comes out…"></textarea>
+              <div class="mic-btn nt-mic" id="notesMic" title="Say it instead"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
             </div>
+            <button type="button" class="nt-hold" onclick="holdNotes()">Hold what matters</button>
+            <div class="notes-saved" id="notesSaved"></div>
           </div>
+
+          <div class="nt-card nt-carry" id="notesCarry" hidden></div>
+
           <div class="chat-log notes-log" id="notesLog"></div>
-          <div class="section-label" style="margin-top:34px;">Earlier</div>
+
+          <div class="nt-earlier-h">Earlier</div>
           <div class="notes-earlier" id="notesEarlier"></div>
+          <div class="nt-seeall" id="notesSeeAll" hidden onclick="notesToggleAll()"><span>See all entries</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
         </div>
       </div>
     </div>
@@ -996,7 +1442,7 @@
         <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
         <div class="kicker">Your spaces</div>
         <div class="hub-title">Rooms</div>
-        <div class="hub-sub">The ones that have gone quiet float up. No red badges here.</div>
+        <div class="hub-sub">Pick up where you left off.</div>
         <div class="sync-badge" id="syncBadge" onclick="changeSync()" title="Click to change your sync code">Saved on this device</div>
       </div>
       <div class="hub-section-row"><h2>All rooms</h2><span class="mono" id="roomCount">0 rooms · ordered by recency</span></div>
@@ -1007,89 +1453,81 @@
     <!-- ROOM VIEW -->
     <div class="pane" id="pane-roomview">
       <div class="rv-header">
-        <div class="icon-btn" onclick="go('rooms')" style="width:34px;height:34px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted)">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="rv-head-row">
-          <div class="rv-title-wrap">
-            <div class="rv-label">You are in this room</div>
-            <div class="rv-name-row">
-              <div class="rv-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
-              <div class="rv-name" id="rvName">Memory App</div>
+        <button type="button" class="rv-back" onclick="go('rooms')" title="Back to rooms">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
+        <div class="rv-head-main">
+          <div class="rv-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
+          <div class="rv-head-text">
+            <div class="rv-name" id="rvName">Memory App</div>
+            <div class="rv-status-row">
+              <div class="rv-status">
+                <div class="rv-status-label" id="rvStatusLabel">caught up</div>
+                <div class="rv-status-sub" id="rvStatusSub">Last updated today</div>
+              </div>
+              <div class="rv-actions">
+                <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="4.2" height="6.5" rx="2.1"/><rect x="17.3" y="13" width="4.2" height="6.5" rx="2.1"/></svg></button>
+                <button type="button" class="rv-action-btn" id="btnWrapUp" onclick="wrapUpDay()" title="Wrap up today's progress"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 5-5"/></svg></button>
+              </div>
             </div>
           </div>
-          <div class="rv-header-actions">
-            <div class="rv-status">
-              <span class="rv-status-label" id="rvStatusLabel">caught up</span>
-              <span class="rv-status-sub" id="rvStatusSub">Last updated today</span>
-            </div>
-            <div class="rv-actions">
-              <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H3v-7a9 9 0 1 1 18 0v7h-3a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></button>
-              <button type="button" class="rv-action-btn" id="btnWrapUp" onclick="wrapUpDay()" title="Wrap up today's progress"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></button>
-            </div>
-            <span class="wrapup-status" id="wrapUpStatus" hidden></span>
-          </div>
         </div>
+        <span class="wrapup-status" id="wrapUpStatus" hidden></span>
       </div>
       <div class="rv-body">
-        <div class="rv-main">
-          <div class="anchor-label">Where you left off</div>
+        <div class="rv-card">
+          <div class="anchor-label">Where you left off<span class="al-sub"> · Nenemi summary</span></div>
           <div class="anchor-block" id="rvSummary"></div>
-          <div class="anchor-label">What's next</div>
+        </div>
+        <div class="rv-card">
+          <div class="anchor-label">What's next<span class="al-sub"> · Suggested next move</span></div>
           <div class="reentry-next" id="rvNext"></div>
           <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6.5 9.5L9.5 6.5M7 5L8.2 3.8a2.3 2.3 0 0 1 3.3 3.3L10 8.5M9 11l-1.2 1.2a2.3 2.3 0 0 1-3.3-3.3L6 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span id="rvLinkLabel">Continue in Claude</span>
           </div>
-          <div class="rv-cols">
-            <div class="rv-col">
-              <div class="toggle-row" id="rvLoopsToggle" onclick="toggleLoopsRow()">
-                <span id="rvLoopsToggleLabel">Still open</span>
-                <span class="expand-label" id="rvLoopsExpandLabel">Expand +</span>
-              </div>
-              <div id="rvLoops" hidden></div>
-            </div>
-            <div class="rv-col">
-              <div class="toggle-row" id="rvLogToggle" onclick="toggleLogRow()">
-                <span id="rvLogToggleLabel">Progress log</span>
-                <span class="expand-label" id="rvLogExpandLabel">Expand +</span>
-              </div>
-              <div id="rvLog" hidden></div>
-            </div>
+        </div>
+        <div class="rv-col">
+          <div class="toggle-row" id="rvLoopsToggle" onclick="toggleLoopsRow()">
+            <span class="tr-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>
+            <span class="tr-label" id="rvLoopsToggleLabel">Still open</span>
+            <span class="expand-label" id="rvLoopsExpandLabel">Expand +</span>
+            <svg class="tr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
           </div>
+          <div id="rvLoops" hidden></div>
+        </div>
+        <div class="rv-col">
+          <div class="toggle-row" id="rvLogToggle" onclick="toggleLogRow()">
+            <span class="tr-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+            <span class="tr-label" id="rvLogToggleLabel">Progress log</span>
+            <span class="expand-label" id="rvLogExpandLabel">Expand +</span>
+            <svg class="tr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+          <div id="rvLog" hidden></div>
         </div>
         <div class="rv-capture-panel">
           <h4 id="dpHeading">Add to this room</h4>
           <div class="dp-sub">Say what happened however it comes out. NENEMI will update this room.</div>
-          <div class="dp-box-wrap">
-            <textarea id="quickAddInput" rows="3" placeholder="I finished the login flow, fixed the menu, and still need to…"></textarea>
-            <div class="mic-btn dp-mic" id="roomMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
-          </div>
+          <textarea id="quickAddInput" rows="2" placeholder="I finished the login flow, fixed the menu, and still need to…"></textarea>
           <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
           <div class="quickadd-note" id="quickAddNote" hidden></div>
-          <div class="dp-actions">
-            <span class="dp-hint">⌘ + Enter</span>
-            <button type="button" class="dp-attach" onclick="pickRoomUpload('image/*')" title="Add a photo">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
-            </button>
-            <button type="button" class="dp-attach" onclick="pickRoomUpload('application/pdf')" title="Add a file">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
-            </button>
-            <button type="button" class="dp-btn" onclick="quickAdd()">Update room</button>
+          <div class="dp-tools">
+            <button type="button" class="mic-btn dp-tool" id="roomMic" title="Say it instead"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></button>
+            <button type="button" class="dp-tool" onclick="pickRoomUpload('image/*')" title="Add a photo"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg></button>
+            <button type="button" class="dp-tool" onclick="pickRoomUpload('application/pdf')" title="Add a file"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5l-8.5 8.5a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5l-8.5 8.5a2 2 0 0 1-3-3l7.8-7.8"/></svg></button>
           </div>
+          <button type="button" class="dp-btn" onclick="quickAdd()">Update room</button>
         </div>
       </div>
     </div>
 
     <!-- STUCK SANCTUARY -->
     <div class="pane" id="pane-stuck">
-      <div class="stuck-close" onclick="go('home')">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
-      </div>
       <div class="doors" id="doors">
-        <div class="doors-mark"></div>
+        <div class="doors-eyebrow">A way back in</div>
         <div class="doors-title">Where are you right now?</div>
         <div class="doors-sub">You don't need a new plan. You just need a way back in.</div>
+        <div class="doors-mark"></div>
         <div class="doors-grid">
           <div class="door" onclick="openDoor('start')">
             <svg class="door-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6v7a2 2 0 0 0 2 2h8M13 11l4 4-4 4"/></svg>
@@ -1116,21 +1554,32 @@
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Shame is a productivity killer. We pick up exactly where you left off.</span></div>
           </div>
         </div>
+        <div class="doors-talk" onclick="go('humans')"><span>Talk to a person</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       </div>
       <div class="stuck-inner" id="stuckMove" hidden>
+        <div class="stuck-topbar">
+          <button type="button" class="stuck-back" onclick="showDoors()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg><span>Sanctuary</span></button>
+          <button type="button" class="stuck-x" onclick="go('home')" title="Close"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg></button>
+        </div>
         <div class="stuck-mark"></div>
-        <div class="stuck-eyebrow">[ ONE SMALL MOVE ]</div>
+        <div class="stuck-eyebrow">One small move</div>
         <div class="stuck-nudge" id="nudgeText">Stand up. Shake it out for 15 seconds. That's the whole task.</div>
         <div class="stuck-quote" id="nudgeQuote" hidden></div>
-        <div class="stuck-tag" id="nudgeTag">movement · body &amp; energy</div>
         <div class="stuck-sub">No pressure to do anything after. Just this.</div>
+        <div class="stuck-tag" id="nudgeTag">movement · body &amp; energy</div>
         <div class="stuck-actions">
-          <button class="stuck-btn primary" onclick="stuckDone()">Did it</button>
-          <button class="stuck-btn ghost" onclick="nextNudge()">Give me another</button>
-          <button class="stuck-btn ghost" onclick="go('home')">Just breathe with me</button>
+          <button class="stuck-btn primary" onclick="stuckDone()">I did it</button>
+          <div class="stuck-actions-row">
+            <button class="stuck-btn ghost" onclick="nextNudge()">Give me another</button>
+            <button class="stuck-btn ghost" onclick="go('home')">Breathe with me</button>
+          </div>
         </div>
         <div class="stuck-note" id="stuckNote"></div>
-        <div class="doors-back" onclick="showDoors()">← the doors</div>
+        <div class="why-works" onclick="this.classList.toggle('open')">
+          <div class="why-head"><span>Why this works</span><span class="why-plus">+</span></div>
+          <div class="why-body">A tiny, specific action gets you moving before the resistance catches up. Momentum does the rest.</div>
+        </div>
+        <div class="leave-sanctuary" onclick="go('home')">Leave the sanctuary</div>
       </div>
       <div class="stuck-inner stuck-dump" id="stuckDump" hidden>
         <div class="stuck-mark"></div>
@@ -1152,13 +1601,11 @@
 
     <!-- HUMAN SUPPORT -->
     <div class="pane" id="pane-humans">
-      <div class="stuck-close" onclick="go('home')">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
-      </div>
       <div class="humans-inner">
-        <div class="doors-mark"></div>
+        <div class="doors-eyebrow">Humans heal</div>
         <div class="doors-title">Real people help.</div>
         <div class="doors-sub">The support that isn't an app.</div>
+        <div class="doors-mark"></div>
         <div class="support-list">
           <div class="support-card">
             <div class="support-name">ADHD coach</div>
@@ -1178,7 +1625,7 @@
             <div class="support-for">Medication. A real, valid option. They help you decide.</div>
             <div class="support-links"><a href="https://www.psychologytoday.com/us/psychiatrists/adhd" target="_blank" rel="noopener">Psychology Today</a></div>
           </div>
-          <div class="support-card">
+          <div class="support-card urgent">
             <div class="support-name">Right now</div>
             <div class="support-for">Heavy right now. Free, 24/7, a human answers.</div>
             <div class="support-links"><a href="tel:988">Call 988</a><a href="sms:988">Text 988</a></div>
@@ -1197,6 +1644,26 @@
       </div>
       <button class="lockdown-exit" onclick="confirmExit()">[ step away ]</button>
     </div>
+
+    <!-- SHARED BOTTOM NAV -->
+    <nav class="tabbar" id="tabbar" aria-label="Main">
+      <button type="button" class="tab active" id="nav-home" onclick="go('home')">
+        <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h12v-9.5"/></svg></span>
+        <span class="tab-lb">Home</span>
+      </button>
+      <button type="button" class="tab" id="nav-calendar" onclick="go('calendar')">
+        <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 9.5h16M8 3v4M16 3v4"/></svg></span>
+        <span class="tab-lb">Day</span>
+      </button>
+      <button type="button" class="tab" id="nav-rooms" onclick="go('rooms')">
+        <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="2.4"/><circle cx="15.5" cy="8.5" r="2.4"/><circle cx="8.5" cy="15.5" r="2.4"/><circle cx="15.5" cy="15.5" r="2.4"/></svg></span>
+        <span class="tab-lb">Rooms</span>
+      </button>
+      <button type="button" class="tab tab-stuck" id="nav-stuck" onclick="go('stuck')">
+        <span class="stuck-tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8.5 6 12.5l4 4"/><path d="M6 12.5h8.5a4.5 4.5 0 0 0 4.5-4.5V6"/></svg></span>
+        <span class="tab-lb">I'm stuck</span>
+      </button>
+    </nav>
 
   </div>
 </div>
@@ -1268,8 +1735,9 @@
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const nav = document.getElementById('nav-' + id);
+    document.querySelectorAll('.nav-item, .tabbar .tab').forEach(n => n.classList.remove('active'));
+    const tabMap = { roomview: 'rooms', notes: 'calendar', lockdown: 'stuck', humans: 'stuck' };
+    const nav = document.getElementById('nav-' + id) || document.getElementById('nav-' + (tabMap[id] || ''));
     if (nav) nav.classList.add('active');
     closeDayMenu();
     closeRoomsMegaSoon();
@@ -1281,6 +1749,9 @@
     if (id === 'calendar') scrollCalToNow();
     if (id === 'home') renderHomeReturn();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
+    // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
+    const darkPanes = ['stuck','lockdown','humans'];
+    document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
     if (id === 'stuck') showDoors();
     stopVoice();
   }
@@ -1311,8 +1782,12 @@
     const line = g.line.replace(/\*/g, '');
     const timeWord = g.hello.split(' · ')[0];
     const small = name ? `${timeWord}, ${name}` : timeWord;
-    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="ready">A quiet place is ready</span><span class="accent">${escapeHtml(line)}</span>`;
+    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="accent">Whatever's in your head, put it here.</span>`;
   }
+  // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
+  function focusWrite() { const i = document.getElementById('composerInput'); if (i) i.focus(); }
+  function startTalk() { const m = document.getElementById('homeMic'); if (m) m.click(); }
+  function menuTalk() { closeMenu(); startTalk(); }
 
   // phone-only nav drawer: the pill nav slides in from the left instead of scrolling sideways
   function toggleNavDrawer() {
@@ -1400,25 +1875,19 @@
       const resume = i === 0 && openCount > 0 ? `<div class="room-resume-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div>` : '';
       return `
       <div class="room-card${isDormant ? ' card-dormant' : ''}${resume ? ' card-resume' : ''}" onclick="openRoom('${r.id}')"${roomStyleAttr(r)}>
-        <div class="room-card-top">
-          <div class="room-card-icons">
-            <span class="room-index">${String(i + 1).padStart(2, '0')}</span>
-            <div class="room-icon">${roomIconHtml(r)}</div>
-            <div class="room-rewind" title="Hear it" onclick="event.stopPropagation(); speakRoom('${r.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7M2.5 2.5v3.7h3.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          </div>
-          <span class="room-status">${status}</span>
+        <div class="rc-icon">${roomIconHtml(r)}</div>
+        <div class="rc-body">
+          <div class="rc-name-row"><span class="rc-name">${escapeHtml(r.name)}</span>${openCount > 0 ? `<span class="rc-dot" title="${status}"></span>` : ''}</div>
+          <div class="rc-oneliner">${escapeHtml(r.one_liner)}</div>
+          ${isDormant ? `<div class="rc-quiet">Quiet for ${quietDays} days — it's all still here.</div>` : ''}
         </div>
-        ${resume}
-        <div class="room-name">${escapeHtml(r.name)}</div>
-        <div class="room-oneliner">${escapeHtml(r.one_liner)}</div>
-        ${next}
-        ${quiet}
-        <div class="room-card-foot"><span>${escapeHtml(relTime(lastTouch(r) || r.log[0]?.ts || Date.now()))}</span><b>Enter →</b></div>
+        <svg class="rc-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </div>`;
     }).join('') + (canAddRoom() ? `
-      <div class="new-room-card" onclick="go('home')">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
-        New room — or just say it on Home
+      <div class="room-card new-room-card" onclick="go('home')">
+        <div class="rc-icon nr"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg></div>
+        <div class="rc-body"><div class="rc-name">New room</div><div class="rc-oneliner">Create a space for what's next</div></div>
+        <svg class="rc-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </div>` : `
       <div class="new-room-card limit">
         <div>That's your <b>${auth.roomLimit} free rooms</b>. ${fullAccessLine()}<br>The calendar is always free.${auth.billing ? `<br><span class="mini-btn" onclick="event.stopPropagation(); openFullAccess()">Open full access</span>` : ''}</div>
@@ -1556,7 +2025,7 @@
     renderReentry(r);
     const openCount = r.loops.filter(l => !l.resolved).length;
     const statusLabel = document.getElementById('rvStatusLabel'), statusSub = document.getElementById('rvStatusSub');
-    if (statusLabel) statusLabel.textContent = openCount > 0 ? `${openCount} still open` : 'caught up';
+    if (statusLabel) { statusLabel.textContent = openCount > 0 ? `${openCount} still open` : 'caught up'; statusLabel.classList.toggle('open', openCount > 0); }
     const touch = lastTouch(r);
     if (statusSub) statusSub.textContent = touch ? `Last updated ${relTime(touch)}` : 'Nothing here yet';
 
@@ -1624,14 +2093,49 @@
   // ---------- write about it: one page per day ----------
   let notesDay = null, notesTimer = null;
   function notesLabel(k) { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).replace(', ', ' · '); }
+  let notesShowAll = false;
+  function notesToggleAll() { notesShowAll = !notesShowAll; renderNotes(); }
   function renderNotes(day) {
     notesDay = day || notesDay || dkey(today);
-    document.getElementById('notesDate').textContent = notesLabel(notesDay) + (notesDay === dkey(today) ? ' · today' : '');
+    document.getElementById('notesDate').textContent = notesLabel(notesDay);
     document.getElementById('notesInput').value = notes[notesDay] || '';
     document.getElementById('notesSaved').textContent = '';
-    const keys = Object.keys(notes).filter(k => k !== notesDay && (notes[k] || '').trim()).sort().reverse().slice(0, 30);
-    document.getElementById('notesEarlier').innerHTML = keys.length ? keys.map(k => `<div class="ne" onclick="renderNotes('${k}')"><div class="ne-date">${escapeHtml(notesLabel(k))}</div><div class="ne-text">${escapeHtml((notes[k] || '').trim().split('\n')[0])}</div></div>`).join('') : `<div class="ne-empty">Nothing yet. Whatever gets written today lands here tomorrow.</div>`;
+    const all = Object.keys(notes).filter(k => k !== notesDay && (notes[k] || '').trim()).sort().reverse();
+    const limit = notesShowAll ? 60 : 2;
+    const keys = all.slice(0, limit);
+    document.getElementById('notesEarlier').innerHTML = keys.length ? keys.map(k => `<div class="ne" onclick="renderNotes('${k}')"><div class="ne-date">${escapeHtml(notesLabel(k))}</div><div class="ne-row"><div class="ne-text">${escapeHtml((notes[k] || '').trim().split('\n')[0])}</div><svg class="ne-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>`).join('') : `<div class="ne-empty">Nothing yet. Whatever gets written today lands here tomorrow.</div>`;
+    const seeAll = document.getElementById('notesSeeAll');
+    if (seeAll) { seeAll.hidden = all.length <= 2; seeAll.querySelector('span').textContent = notesShowAll ? 'Show fewer' : 'See all entries'; }
     document.getElementById('notesLog').innerHTML = '';
+    renderRecapCarryover();
+  }
+  // one leftover block from today, offered a home at day's close
+  function renderRecapCarryover() {
+    const el = document.getElementById('notesCarry'); if (!el) return;
+    const list = dayList(today).slice().sort((a, b) => a.start - b.start);
+    const undone = list.find(e => !e.done);
+    if (!undone) { el.hidden = true; el.innerHTML = ''; return; }
+    const i = dayList(today).indexOf(undone);
+    const desc = `${fmtClockCaps(undone.start)} · ${kindLabel(undone.kind)} · ${Math.round((undone.end - undone.start) * 60)} min`;
+    el.hidden = false;
+    el.innerHTML = `
+      <div class="nt-card-h">One thing still needs a home</div>
+      <div class="carry-name">${escapeHtml(undone.name)}</div>
+      <div class="carry-desc">${escapeHtml(desc)}</div>
+      <div class="carry-actions">
+        <button type="button" class="carry-btn primary" onclick="recapDone(${i})">Done</button>
+        <button type="button" class="carry-btn" onclick="recapTomorrow(${i})">Tomorrow</button>
+        <button type="button" class="carry-btn ghost" onclick="recapLetGo(${i})">Let it go</button>
+      </div>
+      <div class="carry-note">It only comes back if you choose Tomorrow.</div>`;
+  }
+  function recapDone(i) { const e = dayList(today)[i]; if (e) { e.done = true; e.acked = true; save(); } renderNotes(); }
+  function recapLetGo(i) { const l = dayList(today); if (l[i]) { l.splice(i, 1); save(); } renderNotes(); }
+  function recapTomorrow(i) {
+    const l = dayList(today); const e = l[i]; if (!e) { renderNotes(); return; }
+    l.splice(i, 1);
+    const tmr = new Date(today); tmr.setDate(today.getDate() + 1);
+    e.acked = false; e.done = false; dayList(tmr).push(e); save(); renderNotes();
   }
   function saveNotes() {
     const v = document.getElementById('notesInput').value;
@@ -1950,9 +2454,14 @@
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
     captureText(text, source, document.getElementById('stuckLog'));
   }
+  function nowTime() { try { return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); } catch (e) { return ''; } }
   function captureText(text, source, log, mode) {
-    if (log.id === 'chatLog') { const a = document.querySelector('.app'); if (a) a.classList.add('talking'); }
-    log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
+    if (log.id === 'chatLog') {
+      const a = document.querySelector('.app'); if (a) a.classList.add('talking');
+      const g = document.getElementById('greetingText'); if (g) g.innerHTML = `<span class="accent">Let’s sort through it.</span>`;
+      const ci = document.getElementById('composerInput'); if (ci) ci.placeholder = 'Say whatever comes next';
+    }
+    log.innerHTML += `<div class="bubble user">${escapeHtml(text)}<span class="b-time">${nowTime()}</span></div>`;
     log.scrollTop = log.scrollHeight;
 
     const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
@@ -1997,7 +2506,7 @@
         log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${escapeHtml(match.name)}.</div>`;
       } else {
         pendingCapture = { text, source };
-        log.innerHTML += `<div class="bubble dos">Noted. Want a new room for this, or keep it loose for now?<br><span class="mini-btn" onclick="createRoomFromCapture(this)">Make a room</span><span class="mini-btn" onclick="keepLoose(this)">Keep it loose</span></div>`;
+        log.innerHTML += `<div class="bubble dos">Okay. I've got it. Want to plan it into your day, or tuck it in a room?<span class="b-time">${nowTime()}</span></div><div class="chat-actions"><span class="mini-btn" onclick="closeMenuAnd('calendar')">Plan my day</span><span class="mini-btn" onclick="createRoomFromCapture(this)">Save to a room</span></div>`;
       }
       log.scrollTop = log.scrollHeight;
     }, 450);
@@ -2161,9 +2670,10 @@
   }
 
   // ---------- the Way Back In: four doors (docs/nenemi-way-back-in.md) ----------
-  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = true; document.getElementById('stuckNote').textContent = ''; }
+  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = true; document.getElementById('stuckNote').textContent = ''; const a = document.querySelector('.app'); if (a) a.classList.remove('sanctuary-move'); }
   function openDoor(state) {
     document.getElementById('doors').hidden = true;
+    const a = document.querySelector('.app'); if (a) a.classList.add('sanctuary-move');
     if (state === 'full') {
       // door 2: putting it down is the move, and it happens right here in the dark
       document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = false;
@@ -2270,8 +2780,30 @@
   function shiftDay(n) { const d = new Date(selectedDay); d.setDate(d.getDate() + n); selectedDay = d; renderCal(); scrollCalToNow(); }
   function goToday() { selectedDay = new Date(today); renderCal(); }
 
+  function renderWeekStrip() {
+    const el = document.getElementById('weekStrip'); if (!el) return;
+    const sunday = new Date(selectedDay); sunday.setDate(selectedDay.getDate() - selectedDay.getDay());
+    const todayK = dkey(today), selK = dkey(selectedDay);
+    let html = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(sunday); d.setDate(sunday.getDate() + i); const k = dkey(d);
+      const dow = d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 2);
+      html += `<button type="button" class="ws-day${k === selK ? ' sel' : ''}" onclick="goDay('${k}')">
+        <span class="ws-dow">${dow}</span><span class="ws-num">${d.getDate()}</span>
+        ${k === todayK ? '<span class="ws-dot"></span>' : ''}</button>`;
+    }
+    el.innerHTML = html;
+  }
+  function goDay(k) { const [y, m, d] = k.split('-').map(Number); selectedDay = new Date(y, m - 1, d); renderCal(); }
+  // reveal the plan-my-day dump (kept out of the way until asked for)
+  function addToToday() {
+    const p = document.getElementById('pane-calendar'); if (p) p.classList.add('dump-open');
+    const sc = document.querySelector('#pane-calendar .smart-cal');
+    if (sc) { sc.scrollIntoView({ behavior: 'smooth', block: 'center' }); const t = document.getElementById('calDump'); if (t) setTimeout(() => t.focus(), 300); }
+  }
   function renderCal() {
     const isToday = dkey(selectedDay) === dkey(today);
+    renderWeekStrip();
     document.getElementById('calDate').textContent = selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
     const calSub = document.getElementById('calSub');
     if (calSub) calSub.textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'short' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
@@ -2283,36 +2815,45 @@
       el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the left, or add one block.' : 'Nothing here yet.'}</div>`;
       renderRollover(); renderCalSummary(); return;
     }
-    el.innerHTML = list.map(e => {
+    let html = '', nowShown = false;
+    list.forEach(e => {
       const i = dayList(selectedDay).indexOf(e);
       const room = e.room ? rooms.find(r => r.id === e.room) : null;
-      const past = isToday && e.end <= nowH;
+      const done = !!e.done;
+      const past = isToday && e.end <= nowH && !done;
+      if (isToday && !nowShown && !past && !done) {
+        html += `<div class="now-divider"><span class="now-dot"></span><span class="now-label">Now · ${fmtClockCaps(nowH)}</span><span class="now-line"></span></div>`;
+        nowShown = true;
+      }
       const unacked = past && !e.acked;
-      const tag = unacked ? 'passed' : e.kind === 'fixed' ? 'fixed' : room ? 'room' : e.kind === 'buffer' ? 'protected' : 'focus';
-      const tagLabel = unacked ? 'Time passed' : e.kind === 'fixed' ? 'Fixed' : room ? 'From room' : e.kind === 'buffer' ? 'Protected' : 'Focus';
+      let tag, tagLabel;
+      if (done) { tag = 'done'; tagLabel = 'Done'; }
+      else if (past) { tag = 'passed'; tagLabel = e.kind === 'buffer' ? 'Ended' : 'Passed'; }
+      else if (e.kind === 'fixed') { tag = 'fixed'; tagLabel = 'Fixed'; }
+      else if (room) { tag = 'room'; tagLabel = 'From room'; }
+      else if (e.kind === 'buffer') { tag = 'protected'; tagLabel = 'Protected'; }
+      else { tag = 'focus'; tagLabel = 'Focus'; }
       const desc = e.notes || `${kindLabel(e.kind)} · ${Math.round((e.end - e.start) * 60)} min${room ? ' · ' + escapeHtml(room.name) : ''}`;
       const prompt = unacked ? `
         <div class="ag-passed-prompt" onclick="event.stopPropagation()">
-          <div>
-            <div class="app-title">This time has passed. What happened?</div>
-            <div class="app-sub">Your answer updates ${room ? escapeHtml(room.name) : 'the day'} and the rest of today.</div>
-          </div>
+          <div class="app-title">This time has passed. What happened?</div>
           <div class="ag-passed-actions">
             <button type="button" class="ag-passed-btn" onclick="markBlockDone(${i})">Done</button>
             <button type="button" class="ag-passed-btn" onclick="keepBlockToday(${i})">Keep today</button>
             <button type="button" class="ag-passed-btn" onclick="puntRowTomorrow(${i})">Move tomorrow</button>
           </div>
         </div>` : '';
-      return `<div class="ag-row${past ? ' past' : ''}" onclick="editEvent(${i})">
+      html += `<div class="ag-row${past ? ' past' : ''}${done ? ' done' : ''}" onclick="editEvent(${i})">
           <div class="ag-time">${fmtClockCaps(e.start)}</div>
           <div class="ag-body">
             <div class="ag-title">${escapeHtml(e.name)}</div>
             <div class="ag-desc">${escapeHtml(desc)}</div>
             ${prompt}
           </div>
-          <div class="ag-tag ${tag}">${tagLabel}</div>
+          <div class="ag-tag ${tag}">${done ? '<svg class="ag-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ''}${tagLabel}</div>
         </div>`;
-    }).join('');
+    });
+    el.innerHTML = html;
     renderRollover();
     renderCalSummary();
   }
@@ -2364,7 +2905,7 @@
   function puntRowTomorrow(i) { if (applyPunt('tomorrow', i)) renderCal(); }
   function markBlockDone(i) {
     const list = dayList(selectedDay); const e = list[i]; if (!e) return;
-    list.splice(i, 1); calNote(`${e.name} is done. Nice.`); save(); renderCal();
+    e.done = true; e.acked = true; calNote(`${e.name} is done. Nice.`); save(); renderCal();
   }
   function keepBlockToday(i) {
     const list = dayList(selectedDay); const e = list[i]; if (!e) return;
