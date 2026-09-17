@@ -21,17 +21,17 @@
     .pill:hover{transform:translateY(-2px);filter:brightness(1.08)}.pill.alt{background:transparent;color:var(--ink);border-color:#3a3b3b}
     .pill.invert{background:var(--ink);color:#06100f;border-color:var(--ink)}
     .pill.invert:hover{background:var(--signal);border-color:var(--signal);color:#06100f;filter:none}
-    .hero{min-height:calc(100vh - 70px);display:grid;align-items:center;padding:70px 0;position:relative;overflow:hidden}
-    .hero:after{content:"";position:absolute;width:620px;height:620px;right:-240px;top:-220px;border:1px solid #1f302f;border-radius:50%;box-shadow:0 0 140px rgba(80,201,191,.06);pointer-events:none}
-    .hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:clamp(32px,5vw,76px);align-items:center}.hero-copy{position:relative;z-index:1}
+    .hero{position:relative;min-height:calc(100vh - 70px);display:flex;align-items:center;overflow:hidden}
+    .hero-media{position:absolute;inset:0;z-index:0}
+    .hero-media img{width:100%;height:100%;object-fit:cover;object-position:72% center;filter:saturate(.85) contrast(1.05)}
+    .hero-media:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,9,9,.95) 0%,rgba(8,9,9,.86) 30%,rgba(8,9,9,.5) 60%,rgba(8,9,9,.12) 100%),linear-gradient(to top,rgba(8,9,9,.55) 0%,rgba(8,9,9,0) 42%)}
+    .hero-cap{position:absolute;right:22px;bottom:20px;z-index:2;font:400 .62rem "Space Mono";letter-spacing:.11em;color:#eee;background:rgba(8,9,9,.7);padding:9px 11px}
+    .hero-copy{position:relative;z-index:2;padding:70px 0;max-width:920px}
     .eyebrow{margin:0 0 30px;display:inline-flex;align-items:center;gap:12px}.eyebrow:before{content:"";width:26px;height:1px;background:var(--signal)}
-    .hero h1{font-size:clamp(2.6rem,6vw,5.6rem);line-height:.96;letter-spacing:-.055em;margin:0;font-weight:900}
+    .hero h1{font-size:clamp(2.7rem,6.4vw,6rem);line-height:.95;letter-spacing:-.055em;margin:0;font-weight:900}
     .hero h1 .line{display:block;white-space:nowrap}.hero h1 .line.teal{color:var(--signal)}
-    .hero-sub{max-width:540px;font-size:clamp(1.08rem,1.5vw,1.28rem);color:#c9cac6;margin:32px 0 0;line-height:1.5}
-    .hero-photo{position:relative;height:min(68vh,690px);min-height:520px;overflow:hidden;border:1px solid var(--line);border-radius:2px}
-    .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:63% center;filter:saturate(.8) contrast(1.04)}
-    .hero-photo:after{content:"MID-PROCESS // STILL HERE";position:absolute;left:20px;bottom:18px;font:400 .62rem "Space Mono";letter-spacing:.11em;color:#eee;background:rgba(8,9,9,.75);padding:9px 11px}
-    .actions{display:flex;gap:12px;margin-top:38px}.proof{margin-top:34px;color:#777;font-size:.65rem}
+    .hero-sub{max-width:520px;font-size:clamp(1.08rem,1.5vw,1.28rem);color:#dcdcd9;margin:32px 0 0;line-height:1.5}
+    .actions{display:flex;gap:12px;margin-top:38px}.proof{margin-top:34px;color:#999;font-size:.65rem}
     section{padding:120px 0;border-top:1px solid var(--line)}.section-head{display:grid;grid-template-columns:1fr 2fr;gap:50px;align-items:start;margin-bottom:70px}
     h2{font-size:clamp(2.5rem,5vw,5.2rem);line-height:.98;letter-spacing:-.055em;margin:0;font-weight:900}.lead{font-size:clamp(1.15rem,2vw,1.45rem);color:#c8c8c4;max-width:690px;margin:0}
     .belief{padding:94px 0}.belief-line{font-size:clamp(2.1rem,4.5vw,4.8rem);font-weight:900;letter-spacing:-.05em;line-height:1.02;max-width:1000px}.belief-line .dim{color:#555}
@@ -88,7 +88,11 @@
 
   <main id="top">
     <header class="hero">
-      <div class="wrap hero-grid">
+      <div class="hero-media">
+        <img src="/photos/landing-hero.png" alt="A woman pausing beside her laptop in the middle of an ordinary day">
+        <span class="hero-cap">MID-PROCESS // STILL HERE</span>
+      </div>
+      <div class="wrap">
         <div class="hero-copy">
           <p class="mono eyebrow">Nenemi · built for ADHD brains</p>
           <h1><span class="line">Made for your brain.</span><span class="line teal">Not their expectations.</span></h1>
@@ -96,7 +100,6 @@
           <div class="actions"><a class="pill invert" href="https://www.mynenemi.com/?open=1">Open Nenemi</a></div>
           <p class="mono proof">No account required · A working version, not a mockup</p>
         </div>
-        <div class="hero-photo"><img src="/photos/landing-hero.png" alt="A woman pausing beside her laptop in the middle of an ordinary day"></div>
       </div>
     </header>
 
