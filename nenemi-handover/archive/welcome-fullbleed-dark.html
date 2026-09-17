@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nenemi · Made for your brain</title>
+  <meta name="description" content="Nenemi turns mental clutter into clear next steps—without streaks, shame, or another impossible system.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%23090909'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%234dc7bd' stroke-width='3'/%3E%3Cpath d='M12 16h8' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E">
+  <style>
+    :root{--bg:#080909;--ink:#f5f5f2;--muted:#9b9c98;--line:#272929;--signal:#50c9bf;--panel:#101111;--soft:#171818}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Archivo,Arial,sans-serif;line-height:1.45}
+    a{color:inherit}.wrap{width:min(1180px,calc(100% - 48px));margin:auto}.mono{font:400 .72rem/1.4 "Space Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .nav{height:70px;border-bottom:1px solid var(--line);display:flex;align-items:center;position:sticky;top:0;background:rgba(8,9,9,.9);backdrop-filter:blur(16px);z-index:20}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between}.brand{display:flex;gap:12px;align-items:center;text-decoration:none;font-weight:600;letter-spacing:.16em;font-size:.78rem}
+    .mark{width:15px;height:15px;border:2px solid var(--signal);border-radius:50%;box-shadow:inset 0 0 0 3px var(--bg)}
+    .nav-links{display:flex;gap:30px;align-items:center}.nav-links a{text-decoration:none;font:400 .65rem "Space Mono";letter-spacing:.1em;color:#aaa}
+    .pill{display:inline-flex;justify-content:center;align-items:center;min-height:48px;padding:0 28px;border-radius:999px;text-decoration:none;font-weight:700;background:var(--signal);color:#06100f;border:1px solid var(--signal);transition:.2s}
+    .pill:hover{transform:translateY(-2px);filter:brightness(1.08)}.pill.alt{background:transparent;color:var(--ink);border-color:#3a3b3b}
+    .pill.invert{background:var(--ink);color:#06100f;border-color:var(--ink)}
+    .pill.invert:hover{background:var(--signal);border-color:var(--signal);color:#06100f;filter:none}
+    .pill.clear{background:transparent;color:var(--ink);border-color:rgba(245,245,242,.55)}
+    .pill.clear:hover{background:transparent;border-color:var(--signal);color:var(--signal);filter:none}
+    .hero{position:relative;min-height:calc(100vh - 70px);display:flex;align-items:center;overflow:hidden}
+    .hero-media{position:absolute;inset:0;z-index:0}
+    .hero-media img{width:100%;height:100%;object-fit:cover;object-position:72% center;filter:saturate(.85) contrast(1.05)}
+    .hero-media:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,9,9,.95) 0%,rgba(8,9,9,.86) 30%,rgba(8,9,9,.5) 60%,rgba(8,9,9,.12) 100%),linear-gradient(to top,rgba(8,9,9,.55) 0%,rgba(8,9,9,0) 42%)}
+    .hero-cap{position:absolute;right:22px;bottom:20px;z-index:2;font:400 .62rem "Space Mono";letter-spacing:.11em;color:#eee;background:rgba(8,9,9,.7);padding:9px 11px}
+    .hero-copy{position:relative;z-index:2;padding:70px 0;max-width:920px}
+    .eyebrow{margin:0 0 30px;display:inline-flex;align-items:center;gap:12px}.eyebrow:before{content:"";width:26px;height:1px;background:var(--signal)}
+    .hero h1{font-size:clamp(2.7rem,6.4vw,6rem);line-height:.95;letter-spacing:-.055em;margin:0;font-weight:900}
+    .hero h1 .line{display:block;white-space:nowrap}.hero h1 .line.teal{color:var(--signal)}
+    .hero-sub{max-width:520px;font-size:clamp(1.08rem,1.5vw,1.28rem);color:#dcdcd9;margin:32px 0 0;line-height:1.5}
+    .actions{display:flex;gap:22px;align-items:center;margin-top:38px}.proof{margin-top:34px;color:#999;font-size:.65rem}
+    .hero-link{display:inline-flex;align-items:center;color:#dcdcd9;text-decoration:none;font-weight:600;font-size:.98rem;transition:.2s}.hero-link:hover{color:var(--signal)}
+    @keyframes heroFloat{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+    @keyframes heroMedia{from{opacity:0;transform:scale(1.06)}to{opacity:1;transform:none}}
+    .hero-media img{animation:heroMedia 1.3s cubic-bezier(.16,1,.3,1) both}
+    .hero-copy .eyebrow,.hero-copy h1 .line,.hero-copy .hero-sub,.hero-copy .actions,.hero-copy .proof{opacity:0;animation:heroFloat .85s cubic-bezier(.16,1,.3,1) both}
+    .hero-copy .eyebrow{animation-delay:.15s}
+    .hero-copy h1 .line:nth-child(1){animation-delay:.24s}
+    .hero-copy h1 .line:nth-child(2){animation-delay:.33s}
+    .hero-copy .hero-sub{animation-delay:.46s}
+    .hero-copy .actions{animation-delay:.57s}
+    .hero-copy .proof{animation-delay:.66s}
+    @media(prefers-reduced-motion:reduce){.hero-media img,.hero-copy .eyebrow,.hero-copy h1 .line,.hero-copy .hero-sub,.hero-copy .actions,.hero-copy .proof{animation:none;opacity:1;transform:none}}
+    section{padding:120px 0;border-top:1px solid var(--line)}.section-head{display:grid;grid-template-columns:1fr 2fr;gap:50px;align-items:start;margin-bottom:70px}
+    h2{font-size:clamp(2.5rem,5vw,5.2rem);line-height:.98;letter-spacing:-.055em;margin:0;font-weight:900}.lead{font-size:clamp(1.15rem,2vw,1.45rem);color:#c8c8c4;max-width:690px;margin:0}
+    .belief{padding:94px 0}.belief-line{font-size:clamp(2.1rem,4.5vw,4.8rem);font-weight:900;letter-spacing:-.05em;line-height:1.02;max-width:1000px}.belief-line .dim{color:#555}
+    .recognition{background:var(--panel);border:1px solid var(--line)}
+    .recognition-copy{padding:clamp(46px,8vw,110px);display:flex;flex-direction:column;justify-content:center}
+    .recognition h2{font-size:clamp(2.35rem,4.25vw,4.7rem);line-height:1.02}
+    .same{font-size:clamp(1.8rem,3vw,3.3rem);font-weight:900;color:var(--signal);margin:36px 0 0;letter-spacing:-.04em}
+    .walkthrough{display:grid;grid-template-columns:.85fr 1.15fr;border:1px solid var(--line);background:var(--panel);min-height:600px}
+    .steps{border-right:1px solid var(--line)}.step{width:100%;display:grid;grid-template-columns:42px 1fr;gap:10px;text-align:left;padding:27px;border:0;border-bottom:1px solid var(--line);background:transparent;color:#777;cursor:pointer}
+    .step strong{display:block;font-size:1.05rem;color:inherit}.step small{display:block;margin-top:7px;line-height:1.45}.step.active{background:#151717;color:var(--ink)}.step.active .num{color:var(--signal)}
+    .phone-stage{display:grid;place-items:center;padding:44px;background:radial-gradient(circle at 50% 40%,#17201f 0,transparent 60%)}
+    .phone{width:min(100%,360px);min-height:500px;border:1px solid #323535;border-radius:34px;background:#0b0c0c;padding:28px;box-shadow:0 35px 90px #000}
+    .phone-top{display:flex;justify-content:space-between}.screen{display:none;padding-top:65px}.screen.active{display:block}.screen h3{font-size:2.2rem;line-height:1;margin:0 0 18px;letter-spacing:-.04em}.screen p{color:#aaa;margin:0 0 22px}.capture{border:1px solid #303232;border-radius:18px;padding:18px;min-height:120px;color:#b8b9b6;background:#111}
+    .mini-row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #292a2a}.mini-row span:last-child{color:#777}.one-move{font-size:1.9rem;font-weight:800;border-left:3px solid var(--signal);padding:18px 20px;background:#121716}
+    .rooms-showcase{display:grid;grid-template-columns:.78fr 1.22fr;border:1px solid var(--line);background:var(--panel);min-height:650px}
+    .rooms-index{border-right:1px solid var(--line);padding:24px}.rooms-index-head{display:flex;justify-content:space-between;align-items:center;padding:8px 6px 24px;border-bottom:1px solid var(--line)}.rooms-index-head strong{font-size:1.1rem}
+    .room-card{width:100%;padding:22px 10px;border:0;border-bottom:1px solid var(--line);background:transparent;color:#92938f;text-align:left;cursor:pointer;display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:start}.room-card:hover{color:#ddd}.room-card.active{color:var(--ink)}.room-card .room-num{color:#555}.room-card.active .room-num{color:var(--signal)}.room-card strong{display:block;font-size:1rem;margin-bottom:5px}.room-card small{display:block;line-height:1.35;color:#70716e}.room-card .enter{font:400 .6rem "Space Mono";letter-spacing:.08em;color:inherit;padding-top:3px}
+    .room-view{padding:clamp(30px,5vw,70px);display:flex;flex-direction:column}.room-view-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;padding-bottom:34px;border-bottom:1px solid var(--line)}.room-view h3{font-size:clamp(2.4rem,4vw,4.8rem);line-height:.95;letter-spacing:-.055em;margin:12px 0 0}.room-status{width:9px;height:9px;border-radius:50%;background:var(--signal);box-shadow:0 0 18px rgba(80,201,191,.55);margin-top:8px}
+    .room-block{padding:28px 0;border-bottom:1px solid var(--line)}.room-block-label{font:400 .62rem "Space Mono";letter-spacing:.12em;text-transform:uppercase;color:#6d6e6b;margin-bottom:11px}.room-brief{font-size:1.18rem;line-height:1.55;color:#d1d2ce;max-width:690px}.room-next{display:inline-flex;align-items:center;gap:12px;font-size:1.35rem;font-weight:800;color:#07100f;background:var(--signal);padding:15px 19px;margin-top:4px}.room-capture{margin-top:auto;padding-top:30px}.room-input{border:1px solid #343636;border-radius:16px;padding:18px 20px;color:#777;display:flex;justify-content:space-between;background:#0d0e0e}.room-input span:last-child{color:var(--signal)}
+    .rooms-loop{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-top:0}.loop-step{padding:22px;border-right:1px solid var(--line);font-size:.9rem;color:#9b9c98}.loop-step:last-child{border-right:0}.loop-step b{display:block;color:var(--ink);margin-bottom:7px}.loop-step .mono{color:var(--signal);margin-bottom:10px;display:block}
+    .midprocess-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:70px;align-items:end}.midprocess-kicker{font-size:clamp(2.6rem,5vw,5.8rem);font-weight:900;line-height:.93;letter-spacing:-.06em}.midprocess-kicker span{color:#555}.midprocess-question{padding:clamp(34px,5vw,70px);border:1px solid var(--line);background:var(--panel)}.midprocess-question h2{font-size:clamp(2rem,3.6vw,4rem)}.midprocess-question .same{margin-top:28px}
+    .system-capture{border:1px solid var(--line);border-bottom:0;background:#0d0e0e;padding:28px}.system-capture-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.system-capture-box{border:1px solid #353737;border-radius:18px;padding:20px;display:flex;justify-content:space-between;gap:20px;color:#b7b8b5;font-size:1.05rem}.system-capture-box span:last-child{color:var(--signal)}
+    .day-act{margin-top:70px}.day-act-head{display:grid;grid-template-columns:110px 1fr;gap:35px;align-items:end;margin-bottom:28px}.day-act-num{font-size:clamp(3rem,7vw,7rem);line-height:.8;font-weight:900;color:#292b2b;letter-spacing:-.08em}.day-act h3{font-size:clamp(2.3rem,4.5vw,5rem);line-height:.96;letter-spacing:-.055em;margin:8px 0 0}.day-act-copy{color:#aaa;font-size:1.15rem;max-width:680px;margin-top:18px}
+    .dump-act{display:grid;grid-template-columns:.9fr 1.1fr;border:1px solid var(--line);background:var(--panel);min-height:610px}.dump-copy{padding:clamp(30px,5vw,64px);display:flex;flex-direction:column;justify-content:center}.dump-copy .system-capture{border:0;padding:0;margin-top:34px;background:transparent}.dump-phone{display:grid;place-items:center;padding:42px;background:radial-gradient(circle at 50% 45%,#192321 0,transparent 62%);border-left:1px solid var(--line)}.phone-plan-title{font-size:2.25rem;line-height:1;margin:60px 0 18px;letter-spacing:-.04em}
+    .stuck-card{display:grid;grid-template-columns:.92fr 1.08fr;border:1px solid var(--line);border-top:0;background:#0d0e0e}.stuck-image{min-height:380px;overflow:hidden}.stuck-image img{width:100%;height:100%;object-fit:cover;filter:saturate(.72) contrast(1.08)}.stuck-copy{padding:clamp(32px,5vw,65px);display:flex;flex-direction:column;justify-content:center}.stuck-copy h3{font-size:clamp(2rem,4vw,4.4rem);line-height:.96;letter-spacing:-.05em;margin:18px 0}.stuck-copy p{color:#aaa;font-size:1.08rem}.stuck-move{margin-top:22px;border-left:3px solid var(--signal);padding:14px 18px;background:#121716;font-size:1.25rem;font-weight:800}
+    .ways-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-top:0}.way{padding:26px 22px;border-right:1px solid var(--line);min-height:150px;background:#101111}.way:last-child{border-right:0}.way .mono{color:var(--signal)}.way strong{display:block;font-size:1.05rem;margin-top:26px}.way span{display:block;color:#777;font-size:.87rem;margin-top:7px}
+    .recovery{display:grid;grid-template-columns:1fr 1fr;gap:22px}.moment{padding:44px;border:1px solid var(--line);background:var(--panel);min-height:370px;display:flex;flex-direction:column;justify-content:space-between}
+    .wall-photo{height:clamp(380px,54vw,680px);overflow:hidden;border:1px solid var(--line);margin-bottom:22px;position:relative}.wall-photo img{width:100%;height:100%;object-fit:cover;object-position:center 42%;filter:saturate(.72) contrast(1.08)}.wall-photo:after{content:"1:07 PM // THE PAUSE";position:absolute;left:24px;bottom:22px;font:400 .68rem "Space Mono";letter-spacing:.12em;color:#fff;background:rgba(8,9,9,.76);padding:10px 12px}
+    .moment h3{font-size:clamp(2rem,4vw,4.2rem);line-height:1;letter-spacing:-.05em;margin:18px 0}.moment p{color:#aaa;max-width:480px;font-size:1.05rem}.moment.signal{background:var(--signal);color:#07100f}.moment.signal .mono,.moment.signal p{color:#173f3b}
+    .support{display:grid;grid-template-columns:1.25fr .75fr;gap:70px;align-items:end}.support-links{border-top:1px solid var(--line)}.support-links a{display:flex;justify-content:space-between;padding:21px 0;border-bottom:1px solid var(--line);text-decoration:none;font-weight:600}.support-links a:hover{color:var(--signal)}
+    .support-photo{height:390px;overflow:hidden;border:1px solid var(--line);margin-bottom:30px}.support-photo img{width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.78) contrast(1.04)}
+    .feature-showcase{display:grid;grid-template-columns:.34fr .66fr;border:1px solid var(--line);background:var(--panel);min-height:760px}
+    .feature-block{border:1px solid var(--line);background:var(--panel)}
+    .feature-tabs-row{display:flex;border-bottom:1px solid var(--line)}
+    .ftab{flex:1 1 0;min-width:0;text-align:center;appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;color:#8a8b88;font-family:Archivo,sans-serif;font-weight:600;font-size:1.02rem;letter-spacing:-.01em;padding:22px 20px;margin-bottom:-1px;cursor:pointer;transition:color .2s,border-color .2s}
+    .ftab + .ftab{border-left:1px solid var(--line)}
+    .ftab:hover{color:#dcdcd9}
+    .ftab.active{color:var(--ink);border-bottom-color:var(--signal)}
+    .feature-index{border-right:1px solid var(--line);display:flex;flex-direction:column}.feature-index-head{display:flex;justify-content:space-between;align-items:center;padding:30px;border-bottom:1px solid var(--line)}
+    .feature-tab{width:100%;display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:28px 30px;border:0;border-bottom:1px solid var(--line);background:transparent;color:#777;text-align:left;cursor:pointer;transition:.2s}
+    .feature-tab:hover{color:#ddd;background:#121313}.feature-tab.active{color:var(--ink);background:#151717;box-shadow:inset 3px 0 var(--signal)}.feature-tab .feature-num{color:#555}.feature-tab.active .feature-num{color:var(--signal)}.feature-tab strong{display:block;font-size:1rem;margin-bottom:6px}.feature-tab small{display:block;color:#747572;line-height:1.4}.feature-tab .enter{font:400 .58rem "Space Mono";letter-spacing:.08em;color:inherit;padding-top:4px}
+    .feature-stage{position:relative;min-width:0}.feature-panel{display:none;height:100%;animation:featureIn .28s ease}.feature-panel.active{display:flex;flex-direction:column}@keyframes featureIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .feature-intro{padding:clamp(30px,4.5vw,62px);border-bottom:1px solid var(--line)}.feature-intro-top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start}.feature-intro h3{font-size:clamp(2.55rem,4.5vw,5.2rem);line-height:.93;letter-spacing:-.06em;margin:16px 0 0}.feature-intro p{color:#aaa;font-size:1.08rem;max-width:650px;margin:24px 0 0}.feature-signal{width:9px;height:9px;border-radius:50%;background:var(--signal);box-shadow:0 0 18px rgba(80,201,191,.55);flex:0 0 auto;margin-top:8px}
+    .feature-body{flex:1;min-height:0}.dump-panel-body{display:grid;grid-template-columns:.88fr 1.12fr;min-height:470px}.dump-panel-copy{padding:clamp(28px,4vw,52px);display:flex;flex-direction:column;justify-content:center}.dump-panel-phone{display:grid;place-items:center;padding:34px;background:radial-gradient(circle at 50% 45%,#192321 0,transparent 62%);border-left:1px solid var(--line)}.dump-panel-phone .phone{min-height:430px}.dump-panel-phone .phone-plan-title{margin-top:44px}
+    .feature-rooms{display:grid;grid-template-columns:.43fr .57fr;min-height:500px}.feature-rooms .rooms-index{padding:20px}.feature-rooms .room-view{padding:clamp(26px,3.5vw,48px)}.feature-rooms .room-view h3{font-size:clamp(2.2rem,3.6vw,4.2rem)}
+    .rooms-phone-stage{display:grid;place-items:center;padding:44px;background:radial-gradient(circle at 50% 40%,#17201f 0,transparent 60%)}
+    .room-phone{width:min(100%,360px);min-height:560px;display:flex;flex-direction:column}
+    .room-phone .phone-top{display:flex;justify-content:space-between}
+    .feature-rooms .room-phone .room-view{padding:20px 0 0;border:0;min-height:0;flex:1}
+    .room-phone .room-view-top{padding-bottom:20px}
+    .feature-rooms .room-phone .room-view h3{font-size:1.95rem;margin-top:8px}
+    .room-phone .room-block{padding:18px 0}.room-phone .room-block-label{font-size:.58rem;margin-bottom:8px}
+    .room-phone .room-brief{font-size:.98rem;line-height:1.5}
+    .room-phone .room-next{font-size:1rem;padding:12px 15px}
+    .room-phone .room-capture{padding-top:20px}.room-phone .room-input{padding:14px 16px;font-size:.9rem}
+    .tough-panel-body{display:grid;grid-template-columns:.88fr 1.12fr;min-height:350px}.tough-panel-body .stuck-image{min-height:350px}.tough-panel-body .stuck-copy{padding:clamp(28px,4vw,52px)}.tough-panel-body .stuck-copy h4{font-size:clamp(2rem,3.5vw,3.8rem);line-height:.96;letter-spacing:-.05em;margin:16px 0}.feature-panel .ways-grid{grid-template-columns:1fr 1fr;border-left:0;border-right:0;border-bottom:0}.feature-panel .way:nth-child(2){border-right:0}.feature-panel .way:nth-child(-n+2){border-bottom:1px solid var(--line)}
+    .people-panel-body{display:grid;grid-template-columns:1.1fr .9fr;min-height:480px}.people-panel-body .support-photo{height:100%;min-height:480px;margin:0;border:0;border-right:1px solid var(--line)}.people-panel-copy{padding:clamp(30px,4vw,56px);display:flex;flex-direction:column;justify-content:center}.people-panel-copy h4{font-size:clamp(2rem,3.7vw,4rem);line-height:.98;letter-spacing:-.05em;margin:0 0 22px}.people-panel-copy p{color:#aaa}.people-panel-copy .support-links{margin-top:28px}
+    .final{text-align:center;padding:145px 0}.final h2{max-width:900px;margin:0 auto 28px}.final p{color:#aaa;font-size:1.15rem;margin:0 auto 36px;max-width:570px}
+    footer{border-top:1px solid var(--line);padding:34px 0}.foot{display:flex;justify-content:space-between;gap:30px;color:#777}
+    .page-scroll{position:relative;z-index:2;background:var(--bg)}
+    .reveal-footer{position:sticky;bottom:0;z-index:1;display:flex;align-items:center;height:100vh;padding:90px 0;background:var(--panel);border-top:1px solid var(--line);overflow:hidden}
+    .reveal-footer:before{content:"";position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:min(120vw,1100px);height:620px;background:radial-gradient(ellipse 42% 46% at 50% 50%,rgba(80,201,191,.16) 0%,transparent 70%);pointer-events:none;filter:blur(20px)}
+    .reveal-inner{position:relative;width:min(1180px,calc(100% - 48px));margin:auto;text-align:center}
+    .reveal-footer .r-eyebrow{display:block;margin-bottom:24px}
+    .reveal-footer h2{font-size:clamp(2.8rem,7.4vw,6.4rem);line-height:.94;letter-spacing:-.055em;margin:0}
+    .reveal-sub{color:#b7b8b4;font-size:1.16rem;line-height:1.5;max-width:540px;margin:26px auto 38px}
+    .reveal-meta{display:flex;justify-content:space-between;align-items:center;gap:30px;margin-top:74px;padding-top:28px;border-top:1px solid var(--line);color:#777}
+    @media(max-width:780px){.wrap{width:min(100% - 28px,1180px)}.nav{height:62px}.nav-links a:not(.nav-cta){display:none}.nav-cta{font-size:.58rem!important}.hero{min-height:calc(100svh - 62px);display:flex;flex-direction:column;justify-content:flex-end}.hero .wrap{margin-top:auto;margin-bottom:0}.hero-media img{object-position:64% 20%}.hero-media:after{background:linear-gradient(to top,rgba(8,9,9,.96) 0%,rgba(8,9,9,.84) 30%,rgba(8,9,9,.4) 56%,rgba(8,9,9,.06) 100%)}.hero-copy{padding:0 0 38px;max-width:none}.eyebrow{margin-bottom:16px}.hero h1{font-size:clamp(1.7rem,7.9vw,3rem);line-height:1;letter-spacing:-.06em}.hero h1 .line{white-space:nowrap}.hero-sub{font-size:1.02rem;margin-top:16px}.actions{flex-direction:column;align-items:flex-start;gap:14px;margin-top:26px}.actions .pill{width:auto;padding:0 32px}.proof{margin-top:18px}.section-head,.walkthrough,.recovery,.support,.rooms-showcase,.midprocess-grid,.stuck-card,.dump-act{grid-template-columns:1fr}.section-head{gap:24px;margin-bottom:40px}section{padding:82px 0}.midprocess-grid{gap:36px}.midprocess-question{padding:34px 25px}.day-act{margin-top:0}.day-act-head{grid-template-columns:70px 1fr;gap:18px}.dump-phone{border-left:0;border-top:1px solid var(--line);padding:34px 14px}.recognition-copy{padding:42px 26px}.rooms-index{border-right:0;border-bottom:1px solid var(--line)}.room-card{padding:18px 6px}.room-view{min-height:540px}.rooms-loop,.ways-grid{grid-template-columns:1fr 1fr}.loop-step:nth-child(2),.way:nth-child(2){border-right:0}.loop-step:nth-child(-n+2),.way:nth-child(-n+2){border-bottom:1px solid var(--line)}.stuck-image{min-height:350px}.steps{border-right:0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 1fr}.step{padding:18px;display:block}.step .num{display:block;margin-bottom:8px}.step small{display:none}.phone-stage{padding:28px 14px}.phone{min-height:470px}.wall-photo{height:450px}.wall-photo img{object-position:44% center}.moment{min-height:310px;padding:30px}.support{gap:45px}.support-photo{height:360px}.final{padding:100px 0}.foot{flex-direction:column}.proof{line-height:1.6}.feature-showcase{grid-template-columns:1fr;min-height:0}.feature-index{border-right:0}.feature-index-head{padding:22px}.feature-tabs{display:grid;grid-template-columns:1fr 1fr}.feature-tab{padding:18px 16px;grid-template-columns:28px 1fr;border-right:1px solid var(--line)}.feature-tab:nth-child(even){border-right:0}.feature-tab .enter,.feature-tab small{display:none}.feature-tab.active{box-shadow:inset 0 -3px var(--signal)}.dump-panel-body,.feature-rooms,.tough-panel-body,.people-panel-body{grid-template-columns:1fr}.dump-panel-phone{border-left:0;border-top:1px solid var(--line);padding:30px 14px}.feature-rooms .rooms-index{border-right:0}.feature-rooms .room-view{min-height:500px}.rooms-phone-stage{padding:30px 14px}.feature-rooms .room-phone .room-view{min-height:0}.people-panel-body .support-photo{border-right:0;border-bottom:1px solid var(--line);min-height:360px;height:360px}.feature-intro{padding:30px 24px}.feature-panel .ways-grid{grid-template-columns:1fr 1fr}.ftab{padding:15px 8px;font-size:.9rem;line-height:1.15}.reveal-footer{height:100svh;padding:64px 0}.reveal-meta{flex-direction:column;gap:14px;text-align:center}}
+  </style>
+</head>
+<body>
+  <div class="page-scroll">
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top"><span class="mark"></span>NENEMI</a>
+      <div class="nav-links"><a href="#system">[ THE SYSTEM ]</a><a href="#system" data-open-feature="people">[ PEOPLE HEAL PEOPLE ]</a><a class="nav-cta pill" href="https://www.mynenemi.com/?open=1">OPEN NOW</a></div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <header class="hero">
+      <div class="hero-media">
+        <img src="/photos/landing-hero.png" alt="A woman pausing beside her laptop in the middle of an ordinary day">
+        <span class="hero-cap">MID-PROCESS // STILL HERE</span>
+      </div>
+      <div class="wrap">
+        <div class="hero-copy">
+          <p class="mono eyebrow">Nenemi · pick up where you left off</p>
+          <h1><span class="line">Made for your brain.</span><span class="line teal">Not their expectations.</span></h1>
+          <p class="hero-sub">Not another productivity app. Just dump your thoughts, walk away, and never lose your place again.</p>
+          <div class="actions"><a class="pill clear" href="https://www.mynenemi.com/?open=1">Open Nenemi</a></div>
+          <p class="mono proof">Try it now. An account keeps the record. Private and secure.</p>
+        </div>
+      </div>
+    </header>
+
+    <section id="mid-process">
+      <div class="wrap">
+        <div class="midprocess-grid">
+          <div>
+            <p class="mono">[ MID-PROCESS ]</p>
+            <div class="midprocess-kicker">You’re not behind.<br><span>You’re mid-process.</span></div>
+          </div>
+          <div class="midprocess-question">
+            <h2>Ever lose your to-do list by 10:10 AM, hit a wall by 1 PM, and feel exhausted and burnt out by 5 PM?</h2>
+            <p class="same">Yeah. Same.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="system">
+      <div class="wrap">
+        <div class="feature-block">
+          <div class="feature-tabs-row" role="tablist" aria-label="Nenemi features">
+            <button class="ftab active" data-feature="dump" role="tab" aria-selected="true">Dump</button>
+            <button class="ftab" data-feature="rooms" role="tab" aria-selected="false">Rooms</button>
+            <button class="ftab" data-feature="tough" role="tab" aria-selected="false">When you freeze</button>
+            <button class="ftab" data-feature="people" role="tab" aria-selected="false">People</button>
+          </div>
+
+          <div class="feature-stage">
+            <article class="feature-panel active" data-panel="dump" role="tabpanel">
+              <div class="feature-intro"><div class="feature-intro-top"><div><span class="mono">01 · Morning brain dump</span><h3>Get the noise out.<br>Get a day back.</h3></div><span class="feature-signal"></span></div><p>Type it, say it, start in the middle. You don’t have to organize anything before Nenemi helps turn the mess into a day you can actually follow.</p></div>
+              <div class="feature-body dump-panel-body">
+                <div class="dump-panel-copy"><div class="system-capture"><div class="system-capture-label"><span class="mono">What does today need to hold?</span><span class="mono">Type or talk</span></div><div class="system-capture-box"><span>I have a call at 2. Need to fix the Test App empty state, get groceries, and a break before dinner...</span><span>＋</span></div></div></div>
+                <div class="dump-panel-phone"><div class="phone"><div class="phone-top"><span class="mono">9:07</span><span class="mono">NENEMI</span></div><p class="mono" style="margin-top:42px">Plan my day · Today</p><div class="phone-plan-title">Your day, with room to move.</div><p style="color:#999">Built from your appointments and what you just said.</p><div class="mini-row"><span>Keep improving the app</span><span>9:00</span></div><div class="mini-row"><span>Reach out to Mat at ProCare HR</span><span>9:45</span></div><div class="mini-row"><span>Reach out to the Ollin folks</span><span>10:15</span></div></div></div>
+              </div>
+            </article>
+
+            <article class="feature-panel" data-panel="rooms" role="tabpanel" hidden>
+              <div class="feature-intro"><div class="feature-intro-top"><div><span class="mono">02 · Rooms</span><h3>Never pretend<br>you remembered.</h3></div><span class="feature-signal"></span></div><p>Nenemi remembers where you left off, what mattered, and the next small move—so you don’t restart from zero.</p></div>
+              <div class="feature-body feature-rooms">
+                <div class="rooms-index" role="tablist" aria-label="Example rooms"><div class="rooms-index-head"><strong>Your rooms</strong><span class="mono">3 rooms</span></div><button class="room-card active" data-room="test" role="tab" aria-selected="true"><span class="mono room-num">01</span><span><strong>Test App</strong><small>Built, just needs to ship</small></span><span class="enter">ENTER →</span></button><button class="room-card" data-room="mom" role="tab" aria-selected="false"><span class="mono room-num">02</span><span><strong>Mom’s bday!</strong><small>Plan it before it sneaks up</small></span><span class="enter">ENTER →</span></button><button class="room-card" data-room="demo" role="tab" aria-selected="false"><span class="mono room-num">03</span><span><strong>How Rooms Work</strong><small>An example room — yours go next to it</small></span><span class="enter">ENTER →</span></button></div>
+                <div class="rooms-phone-stage"><div class="phone room-phone"><div class="phone-top"><span class="mono">9:41</span><span class="mono">NENEMI</span></div><div class="room-view" aria-live="polite"><div class="room-view-top"><div><span class="mono">Room · active</span><h3 id="room-title">Test App</h3></div><span class="room-status"></span></div><div class="room-block"><div class="room-block-label">Where you left off</div><div class="room-brief" id="room-brief">The exam-study app is built — it just needs a final pass before it ships.</div></div><div class="room-block"><div class="room-block-label">Next small move</div><div class="room-next" id="room-next">Push the test app to production →</div></div><div class="room-capture"><div class="room-block-label">Whatever’s in your head, put it here.</div><div class="room-input"><span>Add to this room. Messy is fine.</span><span>＋</span></div></div></div></div></div>
+              </div>
+            </article>
+
+            <article class="feature-panel" data-panel="tough" role="tabpanel" hidden>
+              <div class="feature-intro"><div class="feature-intro-top"><div><span class="mono">03 · A tough ADHD day</span><h3>Four ways<br>back in.</h3></div><span class="feature-signal"></span></div><p>A plan can be good at 9 AM and impossible by 1 PM. Nenemi meets you where the day actually went.</p></div>
+              <div class="feature-body tough-panel-body"><div class="stuck-image"><img src="/photos/landing-stuck.png" alt="A man pausing at his desk beside an open laptop"></div><div class="stuck-copy"><p class="mono">[ WHERE ARE YOU RIGHT NOW? ]</p><h4>You had a plan.<br>Then the day happened.</h4><p>No new list. No lecture. Nenemi makes the next move small enough to begin.</p><div class="stuck-move">Open the doc.</div><p class="mono" style="margin-top:24px;color:var(--signal)">NENEMI MEANS TO RETURN.</p></div></div>
+              <div class="ways-grid"><div class="way"><span class="mono">01</span><strong>I can’t start</strong><span>Make the first move smaller.</span></div><div class="way"><span class="mono">02</span><strong>My head is too full</strong><span>Hold the noise for me.</span></div><div class="way"><span class="mono">03</span><strong>I have no energy</strong><span>Find the lightest way in.</span></div><div class="way"><span class="mono">04</span><strong>I fell off</strong><span>Take me back to where I was.</span></div></div>
+            </article>
+
+            <article class="feature-panel" data-panel="people" role="tabpanel" hidden>
+              <div class="feature-intro"><div class="feature-intro-top"><div><span class="mono">04 · When the app isn’t enough</span><h3>People heal people.</h3></div><span class="feature-signal"></span></div><p>Nenemi can hold the day. Some things need another person.</p></div>
+              <div class="feature-body people-panel-body"><div class="support-photo"><img src="/photos/landing-support.png" alt="Two people having a quiet and supportive conversation at home"></div><div class="people-panel-copy"><h4>Real support stays one tap away.</h4><p>Coaches, therapists, psychiatrists, and people who understand what you’re carrying.</p><div class="support-links"><a href="https://chadd.org/professional-directory/">Find an ADHD coach <span>↗</span></a><a href="https://www.psychologytoday.com/us/therapists/adhd">Find a therapist <span>↗</span></a><a href="https://findtreatment.gov">Substance-use support <span>↗</span></a></div></div></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  </div>
+
+  <footer class="reveal-footer">
+    <div class="reveal-inner">
+      <p class="mono r-eyebrow">[ OPEN NOW ]</p>
+      <h2>It’s okay.<br>Nenemi has it.</h2>
+      <p class="reveal-sub">Open the working version. Put down whatever is taking up space. Start wherever you are.</p>
+      <a class="pill" href="https://www.mynenemi.com/?open=1">Open now</a>
+      <div class="reveal-meta"><span class="brand"><span class="mark"></span>NENEMI</span><span class="mono">For neurodivergent · from a neurodivergent · 2026</span></div>
+    </div>
+  </footer>
+  <script>
+    const steps=[...document.querySelectorAll('.step')], screens=[...document.querySelectorAll('.screen')];
+    steps.forEach(step=>step.addEventListener('click',()=>{
+      steps.forEach(s=>{s.classList.remove('active');s.setAttribute('aria-selected','false')});
+      screens.forEach(s=>s.classList.remove('active'));
+      step.classList.add('active');step.setAttribute('aria-selected','true');
+      document.getElementById(step.dataset.screen).classList.add('active');
+    }));
+    const featureTabs=[...document.querySelectorAll('.ftab')];
+    const featurePanels=[...document.querySelectorAll('.feature-panel')];
+    function openFeature(name){
+      featureTabs.forEach(tab=>{const active=tab.dataset.feature===name;tab.classList.toggle('active',active);tab.setAttribute('aria-selected',String(active));});
+      featurePanels.forEach(panel=>{const active=panel.dataset.panel===name;panel.classList.toggle('active',active);panel.hidden=!active;});
+    }
+    featureTabs.forEach(tab=>tab.addEventListener('click',()=>openFeature(tab.dataset.feature)));
+    document.querySelectorAll('[data-open-feature]').forEach(link=>link.addEventListener('click',()=>openFeature(link.dataset.openFeature)));
+    document.querySelector('.feature-tabs-row')?.addEventListener('keydown',event=>{
+      if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;
+      const current=featureTabs.findIndex(tab=>tab.classList.contains('active'));
+      const next=(current+(event.key==='ArrowRight'?1:-1)+featureTabs.length)%featureTabs.length;
+      openFeature(featureTabs[next].dataset.feature);featureTabs[next].focus();
+    });
+    const roomData={
+      test:{title:'Test App',brief:'The exam-study app is built — it just needs a final pass before it ships.',next:'Push the test app to production →'},
+      mom:{title:'Mom’s bday!',brief:'Dinner’s booked for the 24th. Still need a gift and to text her sister about the cake.',next:'Pick the gift →'},
+      demo:{title:'How Rooms Work',brief:'An example room — yours go right next to it. Nothing to do here; it just shows the shape.',next:'Make your first room →'}
+    };
+    document.querySelectorAll('.room-card').forEach(card=>card.addEventListener('click',()=>{
+      document.querySelectorAll('.room-card').forEach(c=>{c.classList.remove('active');c.setAttribute('aria-selected','false')});
+      card.classList.add('active');card.setAttribute('aria-selected','true');
+      const room=roomData[card.dataset.room];
+      document.getElementById('room-title').textContent=room.title;
+      document.getElementById('room-brief').textContent=room.brief;
+      document.getElementById('room-next').textContent=room.next;
+    }));
+  </script>
+</body>
+</html>
