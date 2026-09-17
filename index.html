@@ -793,8 +793,9 @@
   .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
 
   /* capture card */
-  .composer-pill { background: var(--card); border: 1px solid var(--line); border-radius: 26px; box-shadow: var(--card-shadow); padding: 22px 22px 18px; display: block; }
-  .composer-pill textarea { min-height: 26px; max-height: 40vh; font-family: var(--font-body); font-size: 17px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); margin: 0; }
+  .composer-pill { background: var(--card); border: 1px solid var(--line); border-radius: 26px; box-shadow: var(--card-shadow); padding: 21px 20px 17px; display: block; }
+  .composer-pill textarea { min-height: 26px; max-height: 40vh; font-family: var(--font-body); font-size: 15.5px; letter-spacing: -0.005em; line-height: 1.5; color: var(--ink); caret-color: var(--teal); margin: 0; }
+  .app.talking .composer-pill textarea { font-size: 16px; }
   .composer-pill textarea::placeholder { color: var(--faint); }
   .capture-cta { display: flex; gap: 12px; margin-top: 18px; }
   .cap-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 54px; border-radius: 999px; font-family: var(--font-body); font-weight: 700; font-size: 16px; cursor: pointer; border: 1.5px solid var(--line2); transition: background .15s, color .15s, border-color .15s; }
@@ -851,8 +852,24 @@
   .app.talking .composer-pill { position: fixed; left: 50%; right: auto; transform: translateX(-50%); width: calc(100% - 32px); max-width: 540px; bottom: calc(94px + var(--sab)); z-index: 45; margin: 0; padding: 7px 8px 7px 20px; border-radius: 999px; display: flex; flex-direction: row; align-items: center; gap: 8px; box-sizing: border-box; }
   .app.talking .composer-pill textarea { flex: 1; min-height: 24px; max-height: 120px; padding: 10px 0; margin: 0; }
   .app.talking .composer-bar { display: flex; border: none; padding: 0; flex-shrink: 0; gap: 6px; }
-  .app.talking .home-plus-wrap { display: none; }
-  .app.talking .composer-actions { display: flex; align-items: center; gap: 8px; }
+  .app.talking .composer-actions { display: flex; align-items: center; gap: 6px; }
+
+  /* + menu (attach + voice) */
+  .composer-actions { display: flex; align-items: center; gap: 6px; }
+  .home-plus-wrap { position: relative; display: flex; }
+  .plus-btn { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--muted); cursor: pointer; }
+  .plus-btn:hover, .plus-btn.open { background: var(--sage-fill); color: var(--ink); }
+  .plus-menu { position: absolute; bottom: calc(100% + 10px); right: 0; left: auto; min-width: 200px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 10px 34px rgba(20,22,26,0.16); padding: 6px; display: none; z-index: 60; }
+  .plus-menu.open { display: block; }
+  .plus-menu .menu-item { display: flex; align-items: center; gap: 11px; padding: 12px 12px; border-radius: 13px; font-family: var(--font-body); font-size: 14.5px; font-weight: 500; color: var(--ink); cursor: pointer; }
+  .plus-menu .menu-item:hover { background: var(--surface); }
+  .plus-menu .menu-item svg { stroke: currentColor; }
+  .plus-menu .menu-sep { height: 1px; background: var(--line); margin: 5px 6px; }
+
+  /* action pills below a Nenemi reply, side by side like the mockup */
+  .chat-actions { display: flex; gap: 10px; margin-top: 2px; }
+  .chat-actions .mini-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-body); font-weight: 700; font-size: 15px; padding: 15px 12px; border-radius: 999px; border: 1.5px solid var(--line2); color: var(--ink); background: var(--card); cursor: pointer; box-shadow: var(--card-shadow); }
+  .chat-actions .mini-btn:hover { border-color: var(--ink); }
 
   /* ---------- BOTTOM TAB BAR ---------- */
   .tabbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(12px + var(--sab)); z-index: 50; display: flex; align-items: center; gap: 4px; width: min(540px, calc(100% - 24px)); background: var(--card); border: 1px solid var(--line); border-radius: 30px; box-shadow: 0 6px 26px rgba(20,22,26,0.12); padding: 8px; }
@@ -986,42 +1003,31 @@
             </button>
           </div>
           <div class="composer-bar">
-            <div class="home-plus-wrap">
-              <div class="plus-menu" id="plusMenu">
-                <div class="menu-item" onclick="pickHomeUpload('image/*')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
-                  Add a photo
-                </div>
-                <div class="menu-item" onclick="pickHomeUpload('application/pdf')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
-                  Add a file
-                </div>
-                <div class="menu-sep"></div>
-                <div class="menu-item" onclick="closeMenuAnd('calendar')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke-linecap="round"/></svg>
-                  My day
-                </div>
-                <div class="menu-item" onclick="closeMenuAnd('notes')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><path d="M3 2.5h10v11H3z" stroke-linejoin="round"/><path d="M5.5 6h5M5.5 8.5h5M5.5 11h3" stroke-linecap="round"/></svg>
-                  Write about it
-                </div>
-                <div class="menu-item" onclick="closeMenuAnd('rooms')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.2"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.2"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.2"/></svg>
-                  Rooms
-                </div>
-                <div class="menu-item" onclick="closeMenuAnd('stuck')">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke-width="1.3"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg>
-                  I'm stuck
-                </div>
-              </div>
-              <div class="plus-btn" id="plusBtn" onclick="toggleMenu()">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
-              </div>
-            </div>
             <input type="file" id="homeUploadFile" accept="image/*,application/pdf" hidden onchange="handleHomeUploadFile(this.files)" />
+            <!-- kept for the speech wiring; the visible control is the + menu below -->
+            <div class="mic-btn" id="homeMic" title="Say it instead" hidden>
+              <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
+            </div>
             <div class="composer-actions">
-              <div class="mic-btn" id="homeMic" title="Say it instead">
-                <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
+              <div class="home-plus-wrap">
+                <div class="plus-menu" id="plusMenu">
+                  <div class="menu-item" onclick="pickHomeUpload('image/*')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
+                    Add a photo
+                  </div>
+                  <div class="menu-item" onclick="pickHomeUpload('application/pdf')">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.5h7l3 3v10h-10z" stroke-linejoin="round"/><path d="M10 1.5v3h3"/></svg>
+                    Add a file
+                  </div>
+                  <div class="menu-sep"></div>
+                  <div class="menu-item" onclick="menuTalk()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5"/></svg>
+                    Talk
+                  </div>
+                </div>
+                <div class="plus-btn" id="plusBtn" onclick="toggleMenu()" title="Add">
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
+                </div>
               </div>
               <div class="send-btn" onclick="sendCapture()">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1037,22 +1043,22 @@
           <div class="where-grid">
             <button type="button" class="where-card" onclick="go('rooms')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/><rect x="4" y="8" width="16" height="1.6" fill="#fff"/><rect x="4" y="11.2" width="16" height="1.6" fill="#fff"/><rect x="4" y="14.4" width="16" height="1.6" fill="#fff"/></svg></span>
-              <span class="wc-tx"><b>Rooms</b><i>Tools for real life</i></span>
+              <span class="wc-tx"><b>Rooms</b><i>Pick up where you left</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </button>
             <button type="button" class="where-card" onclick="go('calendar')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="14" width="4" height="7" rx="1"/><rect x="10" y="9" width="4" height="12" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg></span>
-              <span class="wc-tx"><b>My day</b><i>Plan, focus and follow through</i></span>
+              <span class="wc-tx"><b>My day</b><i>Dump it all here. Get a day back</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </button>
             <button type="button" class="where-card" onclick="go('stuck')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="12" r="7" fill="currentColor"/><circle cx="15" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span>
-              <span class="wc-tx"><b>Feeling stuck?</b><i>Get unstuck with support</i></span>
+              <span class="wc-tx"><b>Feeling stuck?</b><i>Been there. Let's get you unstuck</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </button>
             <button type="button" class="where-card" onclick="go('humans')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7Z"/></svg></span>
-              <span class="wc-tx"><b>Human support</b><i>Real people who get it</i></span>
+              <span class="wc-tx"><b>Human support</b><i>Additional support is here for you</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </button>
           </div>
@@ -1497,6 +1503,7 @@
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
   function focusWrite() { const i = document.getElementById('composerInput'); if (i) i.focus(); }
   function startTalk() { const m = document.getElementById('homeMic'); if (m) m.click(); }
+  function menuTalk() { closeMenu(); startTalk(); }
 
   // phone-only nav drawer: the pill nav slides in from the left instead of scrolling sideways
   function toggleNavDrawer() {
@@ -2186,7 +2193,7 @@
         log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${escapeHtml(match.name)}.</div>`;
       } else {
         pendingCapture = { text, source };
-        log.innerHTML += `<div class="bubble dos">Okay. I've got it. Want to plan it into your day, or tuck it in a room?<span class="b-time">${nowTime()}</span><br><span class="mini-btn" onclick="closeMenuAnd('calendar')">Plan my day</span><span class="mini-btn" onclick="createRoomFromCapture(this)">Save to a room</span></div>`;
+        log.innerHTML += `<div class="bubble dos">Okay. I've got it. Want to plan it into your day, or tuck it in a room?<span class="b-time">${nowTime()}</span></div><div class="chat-actions"><span class="mini-btn" onclick="closeMenuAnd('calendar')">Plan my day</span><span class="mini-btn" onclick="createRoomFromCapture(this)">Save to a room</span></div>`;
       }
       log.scrollTop = log.scrollHeight;
     }, 450);
