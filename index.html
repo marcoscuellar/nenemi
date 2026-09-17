@@ -14,52 +14,64 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Nenemi" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Archivo+Black&family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Black&family=Poppins:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* NENEMI brand system v1.0: ink black, warm white, one signature teal. dark only — the calm is the brand. */
+  /* NENEMI brand system v2.0: mist white, pure-white cards, ink black, warm gray. one restrained teal, semantic only.
+     The dark sanctuary (I'm stuck / lockdown) is the deliberate exception — see the dark-scope rule below. */
   :root {
-    --sanctuary: #0A0A0A;
-    --surface: #111113;
-    --surface2: #161618;
-    --card: #111113;
-    --ink: #FFFFFF;
-    --muted: #A4A099;
-    --faint: #6F6B64;
-    --line: #26262A;
-    --line2: #34343A;
-    --sage: #3FB7A6;
-    --sage-text: #3FB7A6;
-    --sage-fill: rgba(63,183,166,0.14);
-    --on-sage: #06201C;
-    --teal: #3FB7A6;
-    --teal-soft: #7FD0C4;
-    --teal-deep: #2C8578;
+    --paper: #EBECEE;      /* app ground: bright cool mist */
+    --sanctuary: #EBECEE;  /* home + light panes sit on the mist */
+    --surface: #F3F4F6;
+    --surface2: #FFFFFF;
+    --card: #FFFFFF;
+    --ink: #0B0B0C;
+    --ink-2: #17181B;
+    --muted: #6C7176;      /* warm-gray secondary text */
+    --faint: #9BA0A7;      /* placeholders / tertiary */
+    --line: #E7E8EB;       /* hairlines */
+    --line2: #DDDFE3;
+    /* sage/selected: neutral now. Selected nav = light-gray bg + black text, not teal. */
+    --sage: #12BAAA;
+    --sage-text: #0B0B0C;
+    --sage-fill: rgba(11,11,12,0.055);
+    --on-sage: #FFFFFF;
+    /* the one semantic teal: typing cursor, today marker, live/update dot, a short word from Nenemi */
+    --teal: #10B7A7;
+    --teal-soft: #7FD8CD;
+    --teal-deep: #0E9C8F;
 
-    --glow: #161618;
+    --glow: transparent;
     --glow-stop: 62%;
-    --hg1: rgba(63, 183, 166, 0.22);
-    --hg2: rgba(44, 133, 120, 0.12);
-    --glow2: #161618;
-    --evt-block: #1E1E1E;
-    --evt-fixed: #151515;
-    --evt-fixed-line: #7A7A75;
-    --evt-buffer: #1A1A1A;
-    --btn: #3FB7A6;
-    --btn-ink: #06201C;
-    --pill-bg: rgba(17,17,19,0.8);
-    --shadow: rgba(0,0,0,0.5);
+    --hg1: rgba(16,183,167,0.05);
+    --hg2: rgba(16,183,167,0.02);
+    --glow2: #F3F4F6;
+    --evt-block: #FFFFFF;
+    --evt-fixed: #FFFFFF;
+    --evt-fixed-line: #9BA0A7;
+    --evt-buffer: #F3F4F6;
+    --btn: #0B0B0C;        /* primary buttons: black */
+    --btn-ink: #FFFFFF;    /* white text on black */
+    --pill-bg: rgba(255,255,255,0.86);
+    --shadow: rgba(21,23,27,0.10);
+    --card-shadow: 0 1px 2px rgba(20,22,26,0.04), 0 8px 26px rgba(20,22,26,0.05);
+    --radius: 28px;
 
     --font-display: 'Archivo', sans-serif;
     --font-black: 'Archivo Black', 'Archivo', sans-serif;
-    --font-body: 'Inter', sans-serif;
+    --font-body: 'Archivo', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    --font-title: 'Poppins', sans-serif;
+    --font-title: 'Archivo', sans-serif;
   }
-  /* the sanctuary screens are the same one dark ground as everywhere else now */
+  /* DARK SANCTUARY (permanent) + panes not yet converted to the light system (transitional, removed page by page).
+     Keeps every screen coherent while the redesign rolls out one page at a time. */
+  #pane-calendar, #pane-rooms, #pane-roomview, #pane-notes,
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
     --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #FFFFFF; --muted: #A4A099; --faint: #6F6B64;
-    --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
-    color: var(--ink);
+    --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
+    --teal: #3FB7A6; --teal-soft: #7FD0C4; --teal-deep: #2C8578; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
+    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(63,183,166,0.22); --hg2: rgba(44,133,120,0.12);
+    --evt-block: #1E1E1E; --evt-fixed: #151515; --evt-fixed-line: #7A7A75; --evt-buffer: #1A1A1A;
+    background: #0A0A0A; color: var(--ink);
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
@@ -752,6 +764,116 @@
     .friction-card { width: 92vw; }
     .voice-hint { bottom: calc(18px + var(--sab)); max-width: 92vw; text-align: center; }
   }
+  /* ================= NENEMI light system v2 — Home · conversation · bottom nav ================= */
+  body, .app { background: var(--paper); }
+  body { color: var(--ink); font-family: var(--font-body); }
+
+  /* the bottom tab bar is the nav now: retire the desktop pill + phone drawer */
+  #topnav, .topnav, #hamburgerBtn, .hamburger-btn, #navOverlay, .nav-overlay { display: none !important; }
+
+  /* top chrome */
+  .wordmark { top: 20px; left: 22px; gap: 0; }
+  .wordmark .wm-mark { display: none; }
+  .wordmark .wm-text { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.26em; color: var(--ink); }
+  .app.dark-pane .wordmark .wm-text { color: #F4F1EA; }
+  .app.dark-pane .wordmark .wm-mark { display: inline-block; }
+  .account-wrap { position: absolute; top: 15px; right: 18px; z-index: 30; }
+  .account-slot img, .account-slot .avatar { width: 42px; height: 42px; border-radius: 50%; }
+  .account-slot button, .account-slot .acct-btn { background: var(--card); border: 1px solid var(--line); box-shadow: var(--card-shadow); color: var(--ink); }
+  .app.dark-pane .account-slot button, .app.dark-pane .account-slot .acct-btn { background: #161618; border-color: #26262A; color: #F4F1EA; }
+
+  /* ---------- HOME ---------- */
+  #pane-home { align-items: stretch; justify-content: flex-start; background: var(--paper); padding: 82px 20px 128px; }
+  #pane-home::before { display: none; }
+  .home-center { width: 100%; max-width: 540px; margin: 0 auto; align-items: stretch; }
+
+  .greeting-big { font-family: var(--font-black); font-weight: 900; text-transform: none; letter-spacing: -0.03em; line-height: 0.96; font-size: clamp(40px, 12.5vw, 60px); color: var(--ink); text-align: left; margin: 4px 0 26px; }
+  .greeting-big .hello { display: block; font-family: var(--font-body); font-weight: 600; font-size: clamp(19px, 5.5vw, 24px); letter-spacing: -0.01em; color: var(--muted); text-transform: none; margin-bottom: 12px; }
+  .greeting-big .ready { display: none; }
+  .greeting-big .accent { display: inline; color: var(--ink); font: inherit; }
+
+  /* capture card */
+  .composer-pill { background: var(--card); border: 1px solid var(--line); border-radius: 26px; box-shadow: var(--card-shadow); padding: 22px 22px 18px; display: block; }
+  .composer-pill textarea { min-height: 26px; max-height: 40vh; font-family: var(--font-body); font-size: 17px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); margin: 0; }
+  .composer-pill textarea::placeholder { color: var(--faint); }
+  .capture-cta { display: flex; gap: 12px; margin-top: 18px; }
+  .cap-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 54px; border-radius: 999px; font-family: var(--font-body); font-weight: 700; font-size: 16px; cursor: pointer; border: 1.5px solid var(--line2); transition: background .15s, color .15s, border-color .15s; }
+  .cap-btn svg { stroke: currentColor; }
+  .cap-btn.write { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); }
+  .cap-btn.write:hover { background: #000; }
+  .cap-btn.talk { background: var(--card); color: var(--ink); }
+  .cap-btn.talk:hover { border-color: var(--ink); }
+
+  /* which control row shows: Write/Talk at rest, full composer once typing/talking */
+  .composer-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: none; padding-top: 14px; }
+  .app:not(.talking) .composer-pill:not(.has-text) .composer-bar { display: none; }
+  .composer-pill.has-text .capture-cta, .app.talking .capture-cta { display: none; }
+  .send-btn { width: 46px; height: 46px; border-radius: 50%; background: var(--btn); color: var(--btn-ink); display: none; align-items: center; justify-content: center; flex-shrink: 0; }
+  .send-btn svg { stroke: currentColor; }
+  .composer-pill.has-text .send-btn, .app.talking .send-btn { display: flex; }
+  .mic-btn { color: var(--ink); }
+  .plus-btn { color: var(--muted); }
+
+  /* where are you right now */
+  .where-now { margin-top: 34px; }
+  .where-h { font-family: var(--font-black); font-weight: 900; font-size: clamp(20px, 6vw, 24px); letter-spacing: -0.02em; color: var(--ink); margin-bottom: 14px; }
+  .where-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .where-card { display: flex; align-items: center; gap: 11px; text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--card-shadow); padding: 15px 13px; cursor: pointer; font-family: var(--font-body); }
+  .where-card .wc-ic { color: var(--ink); flex-shrink: 0; display: flex; }
+  .where-card .wc-tx { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+  .where-card .wc-tx b { font-weight: 800; font-size: 14.5px; color: var(--ink); }
+  .where-card .wc-tx i { font-style: normal; font-size: 12px; color: var(--muted); line-height: 1.22; }
+  .where-card .wc-arrow { color: var(--faint); flex-shrink: 0; display: flex; }
+  .where-card:hover { border-color: var(--line2); }
+
+  /* ---------- CONVERSATION STATE ---------- */
+  .app.talking #pane-home { padding-bottom: 176px; }
+  .app.talking .where-now { display: none; }
+  .app.talking .greeting-big { font-size: clamp(32px, 9.5vw, 46px); margin-bottom: 16px; }
+  .app.talking .greeting-big .hello { display: none; }
+  .app.talking .home-center { flex: 1; }
+  .app.talking .chat-log { order: 0; flex: none; justify-content: flex-start; min-height: 0; }
+  .chat-log { display: flex; flex-direction: column; gap: 16px; margin-top: 6px; width: 100%; max-height: none; overflow: visible; }
+  .bubble { max-width: 100%; align-self: stretch; border-radius: 22px; font-size: 16px; line-height: 1.5; padding: 16px 18px; position: relative; }
+  .bubble.user { background: #E4E5E8; color: var(--ink); border-bottom-right-radius: 22px; }
+  .bubble.dos { background: var(--card); border: 1px solid var(--line); box-shadow: var(--card-shadow); color: var(--ink); padding: 28px 18px 16px; }
+  .bubble.dos::before { content: ''; position: absolute; top: 16px; left: 18px; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+  .bubble.dos.confirm { background: var(--card); border-color: var(--line); color: var(--ink); font-family: var(--font-body); font-size: 16px; }
+  .b-time { display: block; margin-top: 8px; font-size: 12.5px; color: var(--faint); text-align: right; }
+  .bubble.dos .b-time { text-align: left; }
+
+  /* action pills under a Nenemi reply */
+  .bubble .mini-btn { display: inline-flex; align-items: center; justify-content: center; margin-top: 14px; font-family: var(--font-body); font-weight: 700; font-size: 15px; padding: 13px 20px; border-radius: 999px; border: 1.5px solid var(--line2); color: var(--ink); background: var(--card); cursor: pointer; }
+  .bubble .mini-btn:hover { border-color: var(--ink); }
+  .bubble .mini-btn + .mini-btn { margin-left: 10px; }
+
+  /* bottom composer while talking */
+  .app.talking .composer-pill { position: fixed; left: 50%; right: auto; transform: translateX(-50%); width: calc(100% - 32px); max-width: 540px; bottom: calc(94px + var(--sab)); z-index: 45; margin: 0; padding: 7px 8px 7px 20px; border-radius: 999px; display: flex; flex-direction: row; align-items: center; gap: 8px; box-sizing: border-box; }
+  .app.talking .composer-pill textarea { flex: 1; min-height: 24px; max-height: 120px; padding: 10px 0; margin: 0; }
+  .app.talking .composer-bar { display: flex; border: none; padding: 0; flex-shrink: 0; gap: 6px; }
+  .app.talking .home-plus-wrap { display: none; }
+  .app.talking .composer-actions { display: flex; align-items: center; gap: 8px; }
+
+  /* ---------- BOTTOM TAB BAR ---------- */
+  .tabbar { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(12px + var(--sab)); z-index: 50; display: flex; align-items: center; gap: 4px; width: min(540px, calc(100% - 24px)); background: var(--card); border: 1px solid var(--line); border-radius: 30px; box-shadow: 0 6px 26px rgba(20,22,26,0.12); padding: 8px; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 4px; border-radius: 20px; background: none; border: none; cursor: pointer; font-family: var(--font-body); }
+  .tab .tab-ic { color: var(--muted); display: flex; }
+  .tab .tab-lb { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .tab.active { background: var(--sage-fill); }
+  .tab.active .tab-ic, .tab.active .tab-lb { color: var(--ink); }
+  .tab.active .tab-ic svg { stroke-width: 2.4; }
+  .tab-stuck { }
+  .tab-stuck .stuck-tile { width: 42px; height: 42px; border-radius: 13px; background: var(--ink); display: flex; align-items: center; justify-content: center; }
+  .tab-stuck .stuck-tile svg { stroke: #fff; }
+  .tab-stuck .tab-lb { color: var(--ink); font-weight: 700; }
+  .tab-stuck.active { background: none; }
+  /* keep the sanctuary quiet: the bright bar recedes on dark panes */
+  .app.dark-pane .tabbar { background: #131315; border-color: #26262A; }
+  .app.dark-pane .tab-stuck .stuck-tile { background: #F4F1EA; }
+  .app.dark-pane .tab-stuck .stuck-tile svg { stroke: #0A0A0A; }
+  .app.dark-pane .tab-stuck .tab-lb { color: #F4F1EA; }
+  .app.dark-pane .tab.active { background: rgba(255,255,255,0.08); }
+  .app.dark-pane .tab.active .tab-ic, .app.dark-pane .tab.active .tab-lb { color: #F4F1EA; }
 </style>
 </head>
 <body>
@@ -849,10 +971,20 @@
     <!-- HOME -->
     <div class="pane active" id="pane-home">
       <div class="home-center">
-        <div class="greeting-big" id="greetingText">Hey there,<br><span class="accent">what's on your mind?</span></div>
+        <div class="greeting-big" id="greetingText"><span class="hello">Morning</span><span class="accent">Whatever's in your head, put it here.</span></div>
 
         <div class="composer-pill" id="composerPill">
-          <textarea id="composerInput" rows="1" placeholder="Start anywhere…"></textarea>
+          <textarea id="composerInput" rows="1" placeholder="Start typing, or tell me what's going on."></textarea>
+          <div class="capture-cta" id="captureCta">
+            <button type="button" class="cap-btn write" onclick="focusWrite()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              Write
+            </button>
+            <button type="button" class="cap-btn talk" onclick="startTalk()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9v6M10 5.5v13M14 8v8M18 10.5v3"/></svg>
+              Talk
+            </button>
+          </div>
           <div class="composer-bar">
             <div class="home-plus-wrap">
               <div class="plus-menu" id="plusMenu">
@@ -899,6 +1031,32 @@
         </div>
 
         <div class="chat-log" id="chatLog"></div>
+
+        <div class="where-now" id="whereNow">
+          <div class="where-h">Where are you right now?</div>
+          <div class="where-grid">
+            <button type="button" class="where-card" onclick="go('rooms')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/><rect x="4" y="8" width="16" height="1.6" fill="#fff"/><rect x="4" y="11.2" width="16" height="1.6" fill="#fff"/><rect x="4" y="14.4" width="16" height="1.6" fill="#fff"/></svg></span>
+              <span class="wc-tx"><b>Rooms</b><i>Tools for real life</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+            <button type="button" class="where-card" onclick="go('calendar')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="14" width="4" height="7" rx="1"/><rect x="10" y="9" width="4" height="12" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg></span>
+              <span class="wc-tx"><b>My day</b><i>Plan, focus and follow through</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+            <button type="button" class="where-card" onclick="go('stuck')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="12" r="7" fill="currentColor"/><circle cx="15" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span>
+              <span class="wc-tx"><b>Feeling stuck?</b><i>Get unstuck with support</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+            <button type="button" class="where-card" onclick="go('humans')">
+              <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7Z"/></svg></span>
+              <span class="wc-tx"><b>Human support</b><i>Real people who get it</i></span>
+              <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1198,6 +1356,26 @@
       <button class="lockdown-exit" onclick="confirmExit()">[ step away ]</button>
     </div>
 
+    <!-- SHARED BOTTOM NAV -->
+    <nav class="tabbar" id="tabbar" aria-label="Main">
+      <button type="button" class="tab active" id="nav-home" onclick="go('home')">
+        <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h12v-9.5"/></svg></span>
+        <span class="tab-lb">Home</span>
+      </button>
+      <button type="button" class="tab" id="nav-calendar" onclick="go('calendar')">
+        <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 9.5h16M8 3v4M16 3v4"/></svg></span>
+        <span class="tab-lb">Day</span>
+      </button>
+      <button type="button" class="tab" id="nav-rooms" onclick="go('rooms')">
+        <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="2.4"/><circle cx="15.5" cy="8.5" r="2.4"/><circle cx="8.5" cy="15.5" r="2.4"/><circle cx="15.5" cy="15.5" r="2.4"/></svg></span>
+        <span class="tab-lb">Rooms</span>
+      </button>
+      <button type="button" class="tab tab-stuck" id="nav-stuck" onclick="go('stuck')">
+        <span class="stuck-tile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 8.5 6 12.5l4 4"/><path d="M6 12.5h8.5a4.5 4.5 0 0 0 4.5-4.5V6"/></svg></span>
+        <span class="tab-lb">I'm stuck</span>
+      </button>
+    </nav>
+
   </div>
 </div>
 
@@ -1281,6 +1459,9 @@
     if (id === 'calendar') scrollCalToNow();
     if (id === 'home') renderHomeReturn();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
+    // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
+    const darkPanes = ['calendar','rooms','roomview','notes','stuck','lockdown','humans'];
+    document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
     if (id === 'stuck') showDoors();
     stopVoice();
   }
@@ -1311,8 +1492,11 @@
     const line = g.line.replace(/\*/g, '');
     const timeWord = g.hello.split(' · ')[0];
     const small = name ? `${timeWord}, ${name}` : timeWord;
-    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="ready">A quiet place is ready</span><span class="accent">${escapeHtml(line)}</span>`;
+    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="accent">Whatever's in your head, put it here.</span>`;
   }
+  // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
+  function focusWrite() { const i = document.getElementById('composerInput'); if (i) i.focus(); }
+  function startTalk() { const m = document.getElementById('homeMic'); if (m) m.click(); }
 
   // phone-only nav drawer: the pill nav slides in from the left instead of scrolling sideways
   function toggleNavDrawer() {
@@ -1950,9 +2134,14 @@
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
     captureText(text, source, document.getElementById('stuckLog'));
   }
+  function nowTime() { try { return new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); } catch (e) { return ''; } }
   function captureText(text, source, log, mode) {
-    if (log.id === 'chatLog') { const a = document.querySelector('.app'); if (a) a.classList.add('talking'); }
-    log.innerHTML += `<div class="bubble user">${escapeHtml(text)}</div>`;
+    if (log.id === 'chatLog') {
+      const a = document.querySelector('.app'); if (a) a.classList.add('talking');
+      const g = document.getElementById('greetingText'); if (g) g.innerHTML = `<span class="accent">Let’s sort through it.</span>`;
+      const ci = document.getElementById('composerInput'); if (ci) ci.placeholder = 'Say whatever comes next';
+    }
+    log.innerHTML += `<div class="bubble user">${escapeHtml(text)}<span class="b-time">${nowTime()}</span></div>`;
     log.scrollTop = log.scrollHeight;
 
     const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
@@ -1997,7 +2186,7 @@
         log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${escapeHtml(match.name)}.</div>`;
       } else {
         pendingCapture = { text, source };
-        log.innerHTML += `<div class="bubble dos">Noted. Want a new room for this, or keep it loose for now?<br><span class="mini-btn" onclick="createRoomFromCapture(this)">Make a room</span><span class="mini-btn" onclick="keepLoose(this)">Keep it loose</span></div>`;
+        log.innerHTML += `<div class="bubble dos">Okay. I've got it. Want to plan it into your day, or tuck it in a room?<span class="b-time">${nowTime()}</span><br><span class="mini-btn" onclick="closeMenuAnd('calendar')">Plan my day</span><span class="mini-btn" onclick="createRoomFromCapture(this)">Save to a room</span></div>`;
       }
       log.scrollTop = log.scrollHeight;
     }, 450);
