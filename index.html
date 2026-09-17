@@ -775,7 +775,7 @@
   .wordmark .wm-mark { display: none; }
   .wordmark .wm-text { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.26em; color: var(--ink); }
   .app.dark-pane .wordmark .wm-text { color: #F4F1EA; }
-  .app.dark-pane .wordmark .wm-mark { display: inline-block; }
+  .app.dark-pane .wordmark .wm-mark { display: none; }
   .account-wrap { position: absolute; top: 15px; right: 18px; z-index: 30; }
   .account-slot img, .account-slot .avatar { width: 42px; height: 42px; border-radius: 50%; }
   .account-slot button, .account-slot .acct-btn { background: var(--card); border: 1px solid var(--line); box-shadow: var(--card-shadow); color: var(--ink); }
@@ -1094,6 +1094,54 @@
   #pane-notes .ne-empty { color: var(--muted); font-size: 15px; padding: 6px 2px; }
   .nt-seeall { display: flex; align-items: center; gap: 6px; margin-top: 16px; color: var(--muted); font-family: var(--font-body); font-weight: 600; font-size: 15px; cursor: pointer; }
   .nt-seeall svg { stroke: currentColor; }
+
+  /* ================= I'M STUCK — dark sanctuary ================= */
+  #pane-stuck { background: #050506; overflow-y: auto; padding: 66px 22px 128px; color: #F4F1EA; }
+  #pane-stuck::before { display: none; }
+  #pane-stuck .doors, #pane-stuck .stuck-inner { max-width: 620px; margin: 0 auto; width: 100%; }
+  .app.sanctuary-move .account-wrap { display: none; }
+  .doors-eyebrow { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A8A85; margin-bottom: 8px; }
+  #pane-stuck .doors-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,15vw,74px); line-height: 0.9; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; text-transform: none; }
+  #pane-stuck .doors-sub { font-family: var(--font-body); font-size: clamp(16px,4.6vw,20px); color: #9B9C98; margin-top: 12px; }
+  #pane-stuck .doors-mark { width: 12px; height: 12px; border-radius: 50%; background: var(--teal); margin: 30px auto 24px; }
+  #pane-stuck .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  #pane-stuck .door { position: relative; background: #141416; border: 1px solid #232326; border-radius: 22px; padding: 22px 20px 48px; cursor: pointer; min-height: 186px; display: block; }
+  #pane-stuck .door:hover { border-color: #3a3a40; }
+  #pane-stuck .door-icon { color: #FFFFFF; margin: 0 0 22px; width: 26px; height: 26px; }
+  #pane-stuck .door-label { font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; color: #FFFFFF; margin-bottom: 8px; }
+  #pane-stuck .door-sub { font-family: var(--font-body); font-size: 15px; line-height: 1.35; color: #9B9C98; }
+  #pane-stuck .door-why { display: none; }
+  #pane-stuck .door::after { content: ''; position: absolute; right: 22px; bottom: 20px; width: 9px; height: 9px; border-right: 2px solid #6F6B64; border-top: 2px solid #6F6B64; transform: rotate(45deg); }
+  /* one small move */
+  #pane-stuck .stuck-inner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #pane-stuck .stuck-topbar { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 10px; }
+  .stuck-back { display: inline-flex; align-items: center; gap: 7px; background: none; border: none; padding: 0; color: #9B9C98; font-family: var(--font-body); font-weight: 500; font-size: 16px; cursor: pointer; }
+  .stuck-back svg { stroke: currentColor; }
+  .stuck-x { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #34343A; background: none; color: #C9C9C4; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  #pane-stuck .stuck-mark { width: 96px; height: 96px; border-radius: 50%; border: 1px solid #34343A; display: flex; align-items: center; justify-content: center; margin: 34px auto 22px; }
+  #pane-stuck .stuck-mark::after { content: ''; width: 12px; height: 12px; border-radius: 50%; background: var(--teal); }
+  .stuck-eyebrow { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase; color: #8A8A85; margin-bottom: 20px; }
+  #pane-stuck .stuck-nudge { font-family: var(--font-black); font-weight: 900; font-size: clamp(34px,10vw,50px); line-height: 0.95; letter-spacing: -0.03em; color: #FFFFFF; max-width: 560px; }
+  #pane-stuck .stuck-sub { font-family: var(--font-body); font-size: clamp(16px,4.6vw,20px); color: #9B9C98; margin-top: 18px; max-width: 500px; }
+  #pane-stuck .stuck-tag { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: #6F6B64; margin-top: 22px; }
+  #pane-stuck .stuck-quote { font-family: var(--font-body); font-style: italic; color: #9B9C98; margin-top: 14px; max-width: 500px; }
+  #pane-stuck .stuck-inner { width: 100%; box-sizing: border-box; }
+  #pane-stuck .stuck-actions { width: 100%; max-width: 560px; box-sizing: border-box; margin-top: 30px; display: flex; flex-direction: column; gap: 12px; }
+  .stuck-actions-row { display: flex; gap: 12px; width: 100%; }
+  #pane-stuck .stuck-btn { box-sizing: border-box; font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 18px 14px; border-radius: 16px; cursor: pointer; border: 1px solid #34343A; background: none; color: #F4F1EA; white-space: nowrap; }
+  #pane-stuck .stuck-btn.primary { background: #FFFFFF; color: #0A0A0A; border-color: #FFFFFF; }
+  #pane-stuck .stuck-actions-row .stuck-btn { flex: 1 1 0; min-width: 0; }
+  #pane-stuck .stuck-note { color: #9B9C98; font-size: 14px; margin-top: 16px; max-width: 500px; }
+  .why-works { width: 100%; max-width: 560px; margin-top: 30px; border-top: 1px solid #232326; border-bottom: 1px solid #232326; padding: 18px 2px; cursor: pointer; }
+  .why-works .why-head { display: flex; align-items: center; justify-content: space-between; color: #C9C9C4; font-family: var(--font-body); font-weight: 500; font-size: 16px; }
+  .why-works .why-plus { color: #8A8A85; font-size: 22px; line-height: 1; transition: transform .18s; }
+  .why-works .why-body { display: none; color: #9B9C98; font-size: 15px; line-height: 1.5; margin-top: 12px; text-align: left; }
+  .why-works.open .why-body { display: block; }
+  .why-works.open .why-plus { transform: rotate(45deg); }
+  .leave-sanctuary { margin: 34px auto 0; color: #8A8A85; font-size: 15px; text-decoration: underline; cursor: pointer; }
+  #pane-stuck .doors-back { display: none; }
+  /* put-it-down dump keeps the same dark ground */
+  #pane-stuck .stuck-dump .stuck-box textarea, #pane-stuck #stuckInput { width: 100%; box-sizing: border-box; min-height: 100px; resize: none; border: 1px solid #232326; background: #141416; border-radius: 16px; padding: 14px 16px; font-family: var(--font-body); font-size: 15px; color: #F4F1EA; caret-color: var(--teal); outline: none; }
 </style>
 </head>
 <body>
@@ -1455,13 +1503,11 @@
 
     <!-- STUCK SANCTUARY -->
     <div class="pane" id="pane-stuck">
-      <div class="stuck-close" onclick="go('home')">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
-      </div>
       <div class="doors" id="doors">
-        <div class="doors-mark"></div>
+        <div class="doors-eyebrow">A way back in</div>
         <div class="doors-title">Where are you right now?</div>
         <div class="doors-sub">You don't need a new plan. You just need a way back in.</div>
+        <div class="doors-mark"></div>
         <div class="doors-grid">
           <div class="door" onclick="openDoor('start')">
             <svg class="door-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6v7a2 2 0 0 0 2 2h8M13 11l4 4-4 4"/></svg>
@@ -1490,19 +1536,29 @@
         </div>
       </div>
       <div class="stuck-inner" id="stuckMove" hidden>
+        <div class="stuck-topbar">
+          <button type="button" class="stuck-back" onclick="showDoors()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg><span>Sanctuary</span></button>
+          <button type="button" class="stuck-x" onclick="go('home')" title="Close"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg></button>
+        </div>
         <div class="stuck-mark"></div>
-        <div class="stuck-eyebrow">[ ONE SMALL MOVE ]</div>
+        <div class="stuck-eyebrow">One small move</div>
         <div class="stuck-nudge" id="nudgeText">Stand up. Shake it out for 15 seconds. That's the whole task.</div>
         <div class="stuck-quote" id="nudgeQuote" hidden></div>
-        <div class="stuck-tag" id="nudgeTag">movement · body &amp; energy</div>
         <div class="stuck-sub">No pressure to do anything after. Just this.</div>
+        <div class="stuck-tag" id="nudgeTag">movement · body &amp; energy</div>
         <div class="stuck-actions">
-          <button class="stuck-btn primary" onclick="stuckDone()">Did it</button>
-          <button class="stuck-btn ghost" onclick="nextNudge()">Give me another</button>
-          <button class="stuck-btn ghost" onclick="go('home')">Just breathe with me</button>
+          <button class="stuck-btn primary" onclick="stuckDone()">I did it</button>
+          <div class="stuck-actions-row">
+            <button class="stuck-btn ghost" onclick="nextNudge()">Give me another</button>
+            <button class="stuck-btn ghost" onclick="go('home')">Breathe with me</button>
+          </div>
         </div>
         <div class="stuck-note" id="stuckNote"></div>
-        <div class="doors-back" onclick="showDoors()">← the doors</div>
+        <div class="why-works" onclick="this.classList.toggle('open')">
+          <div class="why-head"><span>Why this works</span><span class="why-plus">+</span></div>
+          <div class="why-body">A tiny, specific action gets you moving before the resistance catches up. Momentum does the rest.</div>
+        </div>
+        <div class="leave-sanctuary" onclick="go('home')">Leave the sanctuary</div>
       </div>
       <div class="stuck-inner stuck-dump" id="stuckDump" hidden>
         <div class="stuck-mark"></div>
@@ -2595,9 +2651,10 @@
   }
 
   // ---------- the Way Back In: four doors (docs/nenemi-way-back-in.md) ----------
-  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = true; document.getElementById('stuckNote').textContent = ''; }
+  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = true; document.getElementById('stuckNote').textContent = ''; const a = document.querySelector('.app'); if (a) a.classList.remove('sanctuary-move'); }
   function openDoor(state) {
     document.getElementById('doors').hidden = true;
+    const a = document.querySelector('.app'); if (a) a.classList.add('sanctuary-move');
     if (state === 'full') {
       // door 2: putting it down is the move, and it happens right here in the dark
       document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = false;
