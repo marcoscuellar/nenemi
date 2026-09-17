@@ -111,6 +111,16 @@
     #shift .mono.teal{color:var(--teal)}
     #shift h3{color:#fff}
     #shift p{color:#c2c6c8}
+    /* Four ways back in — head on the left, 2x2 door cards on the right */
+    .ways{display:grid;grid-template-columns:.82fr 1.18fr;gap:56px;align-items:center}
+    .ways-head h2{margin:14px 0 0}
+    .ways-head .lead{margin-top:20px}
+    .ways-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .door{display:flex;align-items:flex-start;gap:18px;padding:26px 22px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+    .door:hover{border-color:var(--ink)}
+    .door-ic{flex-shrink:0;color:var(--ink);display:flex}
+    .door-tx b{display:block;font-weight:800;font-size:1.2rem;letter-spacing:-.01em}
+    .door-tx i{display:block;font-style:normal;color:var(--dim);font-size:.98rem;margin-top:8px;line-height:1.4}
     .feat-media{display:flex;justify-content:center}
     /* device frame */
     .device{width:min(300px,78vw);border-radius:46px;padding:9px;background:#0a0a0a;box-shadow:0 40px 80px -30px rgba(10,10,10,.5);position:relative}
@@ -167,7 +177,8 @@
       .hero-inner{padding-bottom:46px}
       .hero h1{font-size:clamp(2.05rem,8.8vw,3rem)}
       .hero-bg{object-position:66% center}
-      .mid-grid,.feat,.people-grid{grid-template-columns:1fr;gap:34px}
+      .mid-grid,.feat,.people-grid,.ways{grid-template-columns:1fr;gap:34px}
+      .ways-grid{grid-template-columns:1fr;gap:12px}
       .feat.rev .feat-copy{order:1}.feat.rev .feat-media{order:2}
       .sys-cols{grid-template-columns:1fr 1fr;gap:26px 20px}
       .hero-cta,.close .row{flex-wrap:wrap}
@@ -240,7 +251,7 @@
         <b>When it shifts</b><span>The day breaks, you don't.</span></a>
       <a class="sys-col textlink" href="#freeze"><div class="n">04</div>
         <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10 5 14l4 4"/><path d="M5 14h9a5 5 0 0 0 5-5V6"/></svg></div>
-        <b>Four ways out</b><span>Find a way back in.</span></a>
+        <b>Four ways back in</b><span>Pick the one that's true right now.</span></a>
     </div>
   </div></section>
 
@@ -274,15 +285,31 @@
     <div class="feat-media"><div class="device"><span class="scr"><img src="/photos/landing/app-home.png" alt="Nenemi Home — whatever's in your head, put it here"></span></div></div>
   </div></section>
 
-  <!-- 04 FOUR WAYS OUT (dark) -->
-  <section id="freeze" class="dark"><div class="wrap feat rev">
-    <div class="feat-copy">
-      <p class="mono teal">04 · Four ways out</p>
-      <h3>When you freeze,<br>four ways out.</h3>
-      <p>No new list. No lecture. Four small doors, and each one is a way back in.</p>
-      <div class="hero-cta"><a class="pill light" href="https://www.mynenemi.com/?open=1">Find a way back in</a></div>
+  <!-- FOUR WAYS BACK IN -->
+  <section id="freeze"><div class="wrap ways">
+    <div class="ways-head">
+      <p class="mono teal">03 · When the plan stops working</p>
+      <h2>Four ways<br>back in.</h2>
+      <p class="lead">Pick the sentence that feels most true right now. Nenemi meets you there.</p>
     </div>
-    <div class="feat-media"><div class="device"><span class="scr"><img src="/photos/landing/app-stuck.png" alt="Nenemi sanctuary — where are you right now, four ways back in"></span></div></div>
+    <div class="ways-grid">
+      <div class="door">
+        <span class="door-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M7 5.5v13l11-6.5z"/></svg></span>
+        <span class="door-tx"><b>I can't start.</b><i>Find the smallest possible first step.</i></span>
+      </div>
+      <div class="door">
+        <span class="door-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5a3 3 0 0 0-6 .3 3 3 0 0 0-1.8 5A3 3 0 0 0 6 15.6 3 3 0 0 0 12 16zM12 4.5a3 3 0 0 1 6 .3 3 3 0 0 1 1.8 5A3 3 0 0 1 18 15.6 3 3 0 0 1 12 16z"/></svg></span>
+        <span class="door-tx"><b>My head is too full.</b><i>Put it down. Nenemi has it.</i></span>
+      </div>
+      <div class="door">
+        <span class="door-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="2.5" y="8" width="16" height="8" rx="2.5"/><path d="M21 11v2" stroke-linecap="round"/><rect x="5" y="10.5" width="3.5" height="3" rx="1" fill="currentColor" stroke="none"/></svg></span>
+        <span class="door-tx"><b>I have no energy.</b><i>Shrink the day to match you.</i></span>
+      </div>
+      <div class="door">
+        <span class="door-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8 8 0 1 1-2.3-5.1"/><path d="M20 3.5v4h-4"/></svg></span>
+        <span class="door-tx"><b>I fell off.</b><i>You didn't fail. You paused.</i></span>
+      </div>
+    </div>
   </div></section>
 
   <!-- PEOPLE -->
