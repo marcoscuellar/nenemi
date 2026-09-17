@@ -1142,6 +1142,26 @@
   #pane-stuck .doors-back { display: none; }
   /* put-it-down dump keeps the same dark ground */
   #pane-stuck .stuck-dump .stuck-box textarea, #pane-stuck #stuckInput { width: 100%; box-sizing: border-box; min-height: 100px; resize: none; border: 1px solid #232326; background: #141416; border-radius: 16px; padding: 14px 16px; font-family: var(--font-body); font-size: 15px; color: #F4F1EA; caret-color: var(--teal); outline: none; }
+  .doors-talk { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; color: #C9C9C4; font-family: var(--font-body); font-weight: 600; font-size: 16px; cursor: pointer; }
+  .doors-talk svg { stroke: currentColor; }
+
+  /* ================= HUMAN SUPPORT — dark, like the sanctuary ================= */
+  #pane-humans { background: #050506; overflow-y: auto; padding: 66px 22px 128px; color: #F4F1EA; }
+  #pane-humans::before { display: none; }
+  #pane-humans .humans-inner { max-width: 620px; margin: 0 auto; width: 100%; }
+  #pane-humans .doors-eyebrow { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A8A85; margin-bottom: 8px; }
+  #pane-humans .doors-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,15vw,74px); line-height: 0.9; letter-spacing: -0.03em; color: #FFFFFF; margin: 0; text-transform: none; }
+  #pane-humans .doors-sub { font-family: var(--font-body); font-size: clamp(16px,4.6vw,20px); color: #9B9C98; margin-top: 12px; }
+  #pane-humans .doors-mark { width: 12px; height: 12px; border-radius: 50%; background: var(--teal); margin: 30px 0 26px; }
+  #pane-humans .support-list { display: flex; flex-direction: column; gap: 14px; }
+  #pane-humans .support-card { background: #141416; border: 1px solid #232326; border-radius: 22px; padding: 22px; }
+  #pane-humans .support-card.urgent { border-color: #2b3a37; }
+  #pane-humans .support-name { font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -0.01em; color: #FFFFFF; margin-bottom: 6px; }
+  #pane-humans .support-for { font-family: var(--font-body); font-size: 15px; line-height: 1.4; color: #9B9C98; margin-bottom: 16px; }
+  #pane-humans .support-links { display: flex; gap: 10px; flex-wrap: wrap; }
+  #pane-humans .support-links a { font-family: var(--font-body); font-weight: 700; font-size: 14px; padding: 12px 20px; border-radius: 999px; border: 1px solid #34343A; color: #F4F1EA; text-decoration: none; }
+  #pane-humans .support-links a:hover { border-color: #FFFFFF; }
+  #pane-humans .support-card.urgent .support-links a { background: #FFFFFF; color: #0A0A0A; border-color: #FFFFFF; }
 </style>
 </head>
 <body>
@@ -1534,6 +1554,7 @@
             <div class="door-why" onclick="event.stopPropagation(); this.classList.toggle('open')"><span class="q">why?</span><span class="a">Shame is a productivity killer. We pick up exactly where you left off.</span></div>
           </div>
         </div>
+        <div class="doors-talk" onclick="go('humans')"><span>Talk to a person</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
       </div>
       <div class="stuck-inner" id="stuckMove" hidden>
         <div class="stuck-topbar">
@@ -1580,13 +1601,11 @@
 
     <!-- HUMAN SUPPORT -->
     <div class="pane" id="pane-humans">
-      <div class="stuck-close" onclick="go('home')">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg>
-      </div>
       <div class="humans-inner">
-        <div class="doors-mark"></div>
+        <div class="doors-eyebrow">Humans heal</div>
         <div class="doors-title">Real people help.</div>
         <div class="doors-sub">The support that isn't an app.</div>
+        <div class="doors-mark"></div>
         <div class="support-list">
           <div class="support-card">
             <div class="support-name">ADHD coach</div>
@@ -1606,7 +1625,7 @@
             <div class="support-for">Medication. A real, valid option. They help you decide.</div>
             <div class="support-links"><a href="https://www.psychologytoday.com/us/psychiatrists/adhd" target="_blank" rel="noopener">Psychology Today</a></div>
           </div>
-          <div class="support-card">
+          <div class="support-card urgent">
             <div class="support-name">Right now</div>
             <div class="support-for">Heavy right now. Free, 24/7, a human answers.</div>
             <div class="support-links"><a href="tel:988">Call 988</a><a href="sms:988">Text 988</a></div>
