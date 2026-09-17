@@ -64,7 +64,7 @@
   }
   /* DARK SANCTUARY (permanent) + panes not yet converted to the light system (transitional, removed page by page).
      Keeps every screen coherent while the redesign rolls out one page at a time. */
-  #pane-calendar, #pane-rooms, #pane-roomview, #pane-notes,
+  #pane-calendar, #pane-roomview, #pane-notes,
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
     --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #FFFFFF; --muted: #A4A099; --faint: #6F6B64;
     --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
@@ -891,6 +891,39 @@
   .app.dark-pane .tab-stuck .tab-lb { color: #F4F1EA; }
   .app.dark-pane .tab.active { background: rgba(255,255,255,0.08); }
   .app.dark-pane .tab.active .tab-ic, .app.dark-pane .tab.active .tab-lb { color: #F4F1EA; }
+
+  /* ================= ROOMS index (light) ================= */
+  #pane-rooms { background: var(--paper); overflow-y: auto; padding: 76px 20px 128px; }
+  #pane-rooms::before { display: none; }
+  #pane-rooms > * { position: relative; z-index: 1; }
+  #pane-rooms .hub-header { max-width: 560px; margin: 0 auto; }
+  #pane-rooms .back-home, #pane-rooms .hub-section-row, #pane-rooms .sync-badge { display: none; }
+  #pane-rooms .kicker { font-family: var(--font-body); font-weight: 600; font-size: clamp(19px,5.5vw,24px); letter-spacing: -0.01em; color: var(--muted); text-transform: none; margin: 0 0 2px; }
+  #pane-rooms .hub-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,16vw,74px); letter-spacing: -0.04em; line-height: 0.9; color: var(--ink); margin: 0; text-transform: none; }
+  #pane-rooms .hub-sub { font-family: var(--font-body); font-weight: 600; font-size: clamp(18px,5.2vw,23px); letter-spacing: -0.01em; color: var(--muted); margin: 8px 0 0; }
+  .room-grid { display: flex; flex-direction: column; gap: 12px; max-width: 560px; margin: 22px auto 0; padding: 0; border: none; overflow: visible; }
+  .room-card { display: flex; flex-direction: row; align-items: center; gap: 15px; min-height: 0; background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--card-shadow); padding: 18px 20px; cursor: pointer; text-align: left; }
+  .room-card:hover { border-color: var(--line2); }
+  .rc-icon { width: 60px; height: 60px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--ink); font-size: 34px; line-height: 1; }
+  .rc-icon svg { width: 42px; height: 42px; }
+  .rc-icon.nr { background: var(--surface); border-radius: 50%; }
+  .rc-icon.nr svg { width: 22px; height: 22px; }
+  .rc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .rc-name-row { display: flex; align-items: center; gap: 9px; }
+  .rc-name { font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -0.015em; color: var(--ink); }
+  .rc-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  .rc-oneliner { font-family: var(--font-body); font-size: 15px; line-height: 1.32; color: var(--muted); }
+  .rc-quiet { font-size: 13px; color: var(--faint); margin-top: 2px; }
+  .rc-chev { color: var(--faint); flex-shrink: 0; }
+  .new-room-card.limit { max-width: 560px; margin: 4px auto 0; background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 20px; color: var(--muted); font-size: 14px; box-shadow: var(--card-shadow); }
+  /* loose shelf */
+  .loose-shelf { max-width: 560px; margin: 20px auto 0; }
+  .loose-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-bottom: 9px; }
+  .loose-row { display: flex; flex-direction: column; gap: 8px; }
+  .loose-chip { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 13px 15px; font-size: 14.5px; color: var(--ink); display: flex; flex-wrap: wrap; align-items: center; gap: 10px; box-shadow: var(--card-shadow); }
+  .loose-chip .lt { color: var(--ink); text-decoration: none; flex: 1; min-width: 120px; }
+  .loose-chip .lb { font-family: var(--font-body); font-weight: 700; font-size: 12.5px; color: var(--ink); cursor: pointer; }
+  .loose-chip .lb.quiet { color: var(--faint); font-weight: 500; }
 </style>
 </head>
 <body>
@@ -1160,7 +1193,7 @@
         <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
         <div class="kicker">Your spaces</div>
         <div class="hub-title">Rooms</div>
-        <div class="hub-sub">The ones that have gone quiet float up. No red badges here.</div>
+        <div class="hub-sub">Pick up where you left off.</div>
         <div class="sync-badge" id="syncBadge" onclick="changeSync()" title="Click to change your sync code">Saved on this device</div>
       </div>
       <div class="hub-section-row"><h2>All rooms</h2><span class="mono" id="roomCount">0 rooms · ordered by recency</span></div>
@@ -1452,7 +1485,7 @@
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.nav-item, .tabbar .tab').forEach(n => n.classList.remove('active'));
     const nav = document.getElementById('nav-' + id);
     if (nav) nav.classList.add('active');
     closeDayMenu();
@@ -1466,7 +1499,7 @@
     if (id === 'home') renderHomeReturn();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
     // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
-    const darkPanes = ['calendar','rooms','roomview','notes','stuck','lockdown','humans'];
+    const darkPanes = ['calendar','roomview','notes','stuck','lockdown','humans'];
     document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
     if (id === 'stuck') showDoors();
     stopVoice();
@@ -1591,25 +1624,19 @@
       const resume = i === 0 && openCount > 0 ? `<div class="room-resume-kicker">Where you left off · ${escapeHtml(awayLine(r))}</div>` : '';
       return `
       <div class="room-card${isDormant ? ' card-dormant' : ''}${resume ? ' card-resume' : ''}" onclick="openRoom('${r.id}')"${roomStyleAttr(r)}>
-        <div class="room-card-top">
-          <div class="room-card-icons">
-            <span class="room-index">${String(i + 1).padStart(2, '0')}</span>
-            <div class="room-icon">${roomIconHtml(r)}</div>
-            <div class="room-rewind" title="Hear it" onclick="event.stopPropagation(); speakRoom('${r.id}')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7M2.5 2.5v3.7h3.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          </div>
-          <span class="room-status">${status}</span>
+        <div class="rc-icon">${roomIconHtml(r)}</div>
+        <div class="rc-body">
+          <div class="rc-name-row"><span class="rc-name">${escapeHtml(r.name)}</span>${openCount > 0 ? `<span class="rc-dot" title="${status}"></span>` : ''}</div>
+          <div class="rc-oneliner">${escapeHtml(r.one_liner)}</div>
+          ${isDormant ? `<div class="rc-quiet">Quiet for ${quietDays} days — it's all still here.</div>` : ''}
         </div>
-        ${resume}
-        <div class="room-name">${escapeHtml(r.name)}</div>
-        <div class="room-oneliner">${escapeHtml(r.one_liner)}</div>
-        ${next}
-        ${quiet}
-        <div class="room-card-foot"><span>${escapeHtml(relTime(lastTouch(r) || r.log[0]?.ts || Date.now()))}</span><b>Enter →</b></div>
+        <svg class="rc-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </div>`;
     }).join('') + (canAddRoom() ? `
-      <div class="new-room-card" onclick="go('home')">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
-        New room — or just say it on Home
+      <div class="room-card new-room-card" onclick="go('home')">
+        <div class="rc-icon nr"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg></div>
+        <div class="rc-body"><div class="rc-name">New room</div><div class="rc-oneliner">Create a space for what's next</div></div>
+        <svg class="rc-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </div>` : `
       <div class="new-room-card limit">
         <div>That's your <b>${auth.roomLimit} free rooms</b>. ${fullAccessLine()}<br>The calendar is always free.${auth.billing ? `<br><span class="mini-btn" onclick="event.stopPropagation(); openFullAccess()">Open full access</span>` : ''}</div>
