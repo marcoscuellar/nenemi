@@ -64,7 +64,6 @@
   }
   /* DARK SANCTUARY (permanent) + panes not yet converted to the light system (transitional, removed page by page).
      Keeps every screen coherent while the redesign rolls out one page at a time. */
-  #pane-notes,
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
     --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #FFFFFF; --muted: #A4A099; --faint: #6F6B64;
     --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
@@ -1057,6 +1056,44 @@
   #pane-calendar .sc-chip.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
   #pane-calendar .sc-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--faint); margin: 14px 0 6px; }
   #pane-calendar .sc-ro-text { font-size: 14px; color: var(--muted); }
+
+  /* ================= JOURNAL / RECAP (light) ================= */
+  #pane-notes { background: var(--paper); overflow-y: auto; padding: 66px 20px 128px; }
+  #pane-notes::before { display: none; }
+  #pane-notes .notes-body { padding: 0; overflow: visible; background: none; display: block; }
+  #pane-notes .notes-wrap { max-width: 560px; margin: 0 auto; width: 100%; }
+  .nt-back { display: inline-flex; align-items: center; gap: 6px; background: none; border: none; padding: 0; margin-bottom: 20px; color: var(--muted); font-family: var(--font-body); font-weight: 600; font-size: 17px; cursor: pointer; }
+  .nt-back svg { stroke: currentColor; }
+  .nt-eyebrow { display: flex; align-items: center; gap: 9px; margin-bottom: 6px; }
+  .nt-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  #pane-notes .notes-date { font-family: var(--font-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .nt-title { font-family: var(--font-black); font-weight: 900; font-size: clamp(46px,15vw,72px); line-height: 0.9; letter-spacing: -0.04em; color: var(--ink); }
+  .nt-sub { font-family: var(--font-body); font-weight: 600; font-size: clamp(18px,5.2vw,23px); color: var(--muted); margin-top: 10px; letter-spacing: -0.01em; }
+  .nt-card { background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--card-shadow); padding: 22px; margin-top: 22px; }
+  .nt-card-h { font-family: var(--font-black); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 14px; }
+  #pane-notes .notes-box { position: relative; }
+  #pane-notes .notes-box textarea { width: 100%; box-sizing: border-box; min-height: 120px; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: 16px; padding: 16px 46px 16px 16px; font-family: var(--font-body); font-size: 16px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); outline: none; }
+  #pane-notes .notes-box textarea::placeholder { color: var(--faint); }
+  #pane-notes .nt-mic { position: absolute; right: 12px; bottom: 12px; color: var(--muted); cursor: pointer; }
+  .nt-hold { display: block; width: 100%; margin-top: 16px; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 17px; border-radius: 999px; border: none; cursor: pointer; }
+  #pane-notes .notes-saved { text-align: center; font-size: 13px; color: var(--teal-deep); margin-top: 10px; }
+  .nt-carry .carry-name { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--ink); }
+  .nt-carry .carry-desc { font-family: var(--font-body); font-size: 14px; color: var(--muted); margin-top: 3px; }
+  .carry-actions { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  .carry-btn { font-family: var(--font-body); font-weight: 700; font-size: 15px; padding: 13px 22px; border-radius: 999px; border: 1.5px solid var(--line2); background: var(--card); color: var(--ink); cursor: pointer; white-space: nowrap; }
+  .carry-btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .carry-btn.ghost { border: none; background: none; color: var(--muted); padding: 13px 6px; margin-left: auto; }
+  .carry-note { font-size: 13px; color: var(--faint); margin-top: 12px; }
+  .nt-earlier-h { font-family: var(--font-black); font-weight: 900; font-size: 26px; letter-spacing: -0.02em; color: var(--ink); margin: 30px 0 14px; }
+  .notes-earlier { display: flex; flex-direction: column; gap: 10px; }
+  #pane-notes .ne { display: block; background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--card-shadow); padding: 18px 20px; cursor: pointer; }
+  #pane-notes .ne-date { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-bottom: 8px; }
+  #pane-notes .ne-row { display: flex; align-items: center; gap: 12px; }
+  #pane-notes .ne-text { flex: 1; font-family: var(--font-body); font-size: 16px; color: var(--ink); line-height: 1.4; }
+  #pane-notes .ne-chev { color: var(--faint); flex-shrink: 0; }
+  #pane-notes .ne-empty { color: var(--muted); font-size: 15px; padding: 6px 2px; }
+  .nt-seeall { display: flex; align-items: center; gap: 6px; margin-top: 16px; color: var(--muted); font-family: var(--font-body); font-weight: 600; font-size: 15px; cursor: pointer; }
+  .nt-seeall svg { stroke: currentColor; }
 </style>
 </head>
 <body>
@@ -1303,25 +1340,30 @@
 
     <!-- WRITE ABOUT IT: one page per day, yours only -->
     <div class="pane" id="pane-notes">
-      <div class="hub-header">
-        <span class="kicker">My day · Write about it</span>
-        <div class="hub-title">Write about it.</div>
-        <div class="hub-sub">Nobody reads this but you. The day, the feelings, the stuff with nowhere else to go.</div>
-      </div>
       <div class="notes-body">
         <div class="notes-wrap">
-          <div class="notes-top"><div class="notes-date" id="notesDate">Monday · September 7</div><div class="notes-saved" id="notesSaved"></div></div>
-          <div class="notes-box">
-            <textarea id="notesInput" placeholder="Today…"></textarea>
-            <div class="composer-row">
-              <div class="spacer"></div>
-              <div class="mic-btn" id="notesMic" title="Say it instead"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
-              <button class="notes-hold" onclick="holdNotes()">Hold what matters →</button>
+          <button type="button" class="nt-back" onclick="go('calendar')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg><span>My day</span></button>
+          <div class="nt-eyebrow"><span class="nt-dot"></span><span class="notes-date" id="notesDate">Today</span></div>
+          <div class="nt-title">Close the day.</div>
+          <div class="nt-sub">No report. Just put down what mattered.</div>
+
+          <div class="nt-card">
+            <div class="nt-card-h">What happened today?</div>
+            <div class="notes-box">
+              <textarea id="notesInput" placeholder="Say it however it comes out…"></textarea>
+              <div class="mic-btn nt-mic" id="notesMic" title="Say it instead"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
             </div>
+            <button type="button" class="nt-hold" onclick="holdNotes()">Hold what matters</button>
+            <div class="notes-saved" id="notesSaved"></div>
           </div>
+
+          <div class="nt-card nt-carry" id="notesCarry" hidden></div>
+
           <div class="chat-log notes-log" id="notesLog"></div>
-          <div class="section-label" style="margin-top:34px;">Earlier</div>
+
+          <div class="nt-earlier-h">Earlier</div>
           <div class="notes-earlier" id="notesEarlier"></div>
+          <div class="nt-seeall" id="notesSeeAll" hidden onclick="notesToggleAll()"><span>See all entries</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div>
         </div>
       </div>
     </div>
@@ -1619,7 +1661,8 @@
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
     document.querySelectorAll('.nav-item, .tabbar .tab').forEach(n => n.classList.remove('active'));
-    const nav = document.getElementById('nav-' + id);
+    const tabMap = { roomview: 'rooms', notes: 'calendar', lockdown: 'stuck', humans: 'stuck' };
+    const nav = document.getElementById('nav-' + id) || document.getElementById('nav-' + (tabMap[id] || ''));
     if (nav) nav.classList.add('active');
     closeDayMenu();
     closeRoomsMegaSoon();
@@ -1632,7 +1675,7 @@
     if (id === 'home') renderHomeReturn();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
     // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
-    const darkPanes = ['notes','stuck','lockdown','humans'];
+    const darkPanes = ['stuck','lockdown','humans'];
     document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
     if (id === 'stuck') showDoors();
     stopVoice();
@@ -1975,14 +2018,49 @@
   // ---------- write about it: one page per day ----------
   let notesDay = null, notesTimer = null;
   function notesLabel(k) { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).replace(', ', ' · '); }
+  let notesShowAll = false;
+  function notesToggleAll() { notesShowAll = !notesShowAll; renderNotes(); }
   function renderNotes(day) {
     notesDay = day || notesDay || dkey(today);
-    document.getElementById('notesDate').textContent = notesLabel(notesDay) + (notesDay === dkey(today) ? ' · today' : '');
+    document.getElementById('notesDate').textContent = notesLabel(notesDay);
     document.getElementById('notesInput').value = notes[notesDay] || '';
     document.getElementById('notesSaved').textContent = '';
-    const keys = Object.keys(notes).filter(k => k !== notesDay && (notes[k] || '').trim()).sort().reverse().slice(0, 30);
-    document.getElementById('notesEarlier').innerHTML = keys.length ? keys.map(k => `<div class="ne" onclick="renderNotes('${k}')"><div class="ne-date">${escapeHtml(notesLabel(k))}</div><div class="ne-text">${escapeHtml((notes[k] || '').trim().split('\n')[0])}</div></div>`).join('') : `<div class="ne-empty">Nothing yet. Whatever gets written today lands here tomorrow.</div>`;
+    const all = Object.keys(notes).filter(k => k !== notesDay && (notes[k] || '').trim()).sort().reverse();
+    const limit = notesShowAll ? 60 : 2;
+    const keys = all.slice(0, limit);
+    document.getElementById('notesEarlier').innerHTML = keys.length ? keys.map(k => `<div class="ne" onclick="renderNotes('${k}')"><div class="ne-date">${escapeHtml(notesLabel(k))}</div><div class="ne-row"><div class="ne-text">${escapeHtml((notes[k] || '').trim().split('\n')[0])}</div><svg class="ne-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></div></div>`).join('') : `<div class="ne-empty">Nothing yet. Whatever gets written today lands here tomorrow.</div>`;
+    const seeAll = document.getElementById('notesSeeAll');
+    if (seeAll) { seeAll.hidden = all.length <= 2; seeAll.querySelector('span').textContent = notesShowAll ? 'Show fewer' : 'See all entries'; }
     document.getElementById('notesLog').innerHTML = '';
+    renderRecapCarryover();
+  }
+  // one leftover block from today, offered a home at day's close
+  function renderRecapCarryover() {
+    const el = document.getElementById('notesCarry'); if (!el) return;
+    const list = dayList(today).slice().sort((a, b) => a.start - b.start);
+    const undone = list.find(e => !e.done);
+    if (!undone) { el.hidden = true; el.innerHTML = ''; return; }
+    const i = dayList(today).indexOf(undone);
+    const desc = `${fmtClockCaps(undone.start)} · ${kindLabel(undone.kind)} · ${Math.round((undone.end - undone.start) * 60)} min`;
+    el.hidden = false;
+    el.innerHTML = `
+      <div class="nt-card-h">One thing still needs a home</div>
+      <div class="carry-name">${escapeHtml(undone.name)}</div>
+      <div class="carry-desc">${escapeHtml(desc)}</div>
+      <div class="carry-actions">
+        <button type="button" class="carry-btn primary" onclick="recapDone(${i})">Done</button>
+        <button type="button" class="carry-btn" onclick="recapTomorrow(${i})">Tomorrow</button>
+        <button type="button" class="carry-btn ghost" onclick="recapLetGo(${i})">Let it go</button>
+      </div>
+      <div class="carry-note">It only comes back if you choose Tomorrow.</div>`;
+  }
+  function recapDone(i) { const e = dayList(today)[i]; if (e) { e.done = true; e.acked = true; save(); } renderNotes(); }
+  function recapLetGo(i) { const l = dayList(today); if (l[i]) { l.splice(i, 1); save(); } renderNotes(); }
+  function recapTomorrow(i) {
+    const l = dayList(today); const e = l[i]; if (!e) { renderNotes(); return; }
+    l.splice(i, 1);
+    const tmr = new Date(today); tmr.setDate(today.getDate() + 1);
+    e.acked = false; e.done = false; dayList(tmr).push(e); save(); renderNotes();
   }
   function saveNotes() {
     const v = document.getElementById('notesInput').value;
