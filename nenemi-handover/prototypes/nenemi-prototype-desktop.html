@@ -1167,7 +1167,19 @@
   @media (max-width: 899px) {
     .main::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 66px; z-index: 25; pointer-events: none; background: linear-gradient(to bottom, var(--paper) 58%, rgba(235,236,238,0)); }
     .app.dark-pane .main::before { background: linear-gradient(to bottom, #050506 58%, rgba(5,5,6,0)); }
+    /* every top-level screen starts its header at the same height */
+    #pane-home, #pane-rooms, #pane-calendar, #pane-notes, #pane-stuck, #pane-humans { padding-top: 78px; }
   }
+  /* ---- one consistent header system across every screen (left-aligned, same rhythm) ---- */
+  #pane-rooms .hub-header { padding: 0; }
+  #pane-calendar .cal-head { border-bottom: none; padding-bottom: 0; }
+  #pane-stuck .doors { padding: 0; align-items: stretch; text-align: left; }
+  #pane-stuck .doors-eyebrow, #pane-stuck .doors-title, #pane-stuck .doors-sub { text-align: left; }
+  #pane-stuck .doors-mark { margin: 28px 0 24px; }
+  #pane-humans .humans-inner { padding: 0; align-items: stretch; text-align: left; }
+  #pane-humans .doors-eyebrow, #pane-humans .doors-title, #pane-humans .doors-sub { text-align: left; }
+  /* calendar event titles: never taller than 2 lines (tap the event for the full text) */
+  .ag-title { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
   /* ===================== DESKTOP (>=900px): left sidebar + wide content ===================== */
   @media (min-width: 900px) {
