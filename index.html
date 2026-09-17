@@ -761,7 +761,7 @@
     /* focus + friction */
     .lockdown-task { font-size: 20px; padding: 0 16px; }
     .friction-card { width: 92vw; }
-    .voice-hint { bottom: calc(18px + var(--sab)); max-width: 92vw; text-align: center; }
+    .voice-hint { bottom: calc(92px + var(--sab)); max-width: 92vw; text-align: center; }
   }
   /* ================= NENEMI light system v2 — Home · conversation · bottom nav ================= */
   body, .app { background: var(--paper); }
@@ -1162,6 +1162,12 @@
   #pane-humans .support-links a { font-family: var(--font-body); font-weight: 700; font-size: 14px; padding: 12px 20px; border-radius: 999px; border: 1px solid #34343A; color: #F4F1EA; text-decoration: none; }
   #pane-humans .support-links a:hover { border-color: #FFFFFF; }
   #pane-humans .support-card.urgent .support-links a { background: #FFFFFF; color: #0A0A0A; border-color: #FFFFFF; }
+
+  /* top scrim: keep the wordmark + account legible as content scrolls under them (phone) */
+  @media (max-width: 899px) {
+    .main::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 66px; z-index: 25; pointer-events: none; background: linear-gradient(to bottom, var(--paper) 58%, rgba(235,236,238,0)); }
+    .app.dark-pane .main::before { background: linear-gradient(to bottom, #050506 58%, rgba(5,5,6,0)); }
+  }
 
   /* ===================== DESKTOP (>=900px): left sidebar + wide content ===================== */
   @media (min-width: 900px) {
@@ -2870,7 +2876,6 @@
         html += `<div class="now-divider"><span class="now-dot"></span><span class="now-label">Now · ${fmtClockCaps(nowH)}</span><span class="now-line"></span></div>`;
         nowShown = true;
       }
-      const unacked = past && !e.acked;
       let tag, tagLabel;
       if (done) { tag = 'done'; tagLabel = 'Done'; }
       else if (past) { tag = 'passed'; tagLabel = e.kind === 'buffer' ? 'Ended' : 'Passed'; }
@@ -2879,21 +2884,11 @@
       else if (e.kind === 'buffer') { tag = 'protected'; tagLabel = 'Protected'; }
       else { tag = 'focus'; tagLabel = 'Focus'; }
       const desc = e.notes || `${kindLabel(e.kind)} · ${Math.round((e.end - e.start) * 60)} min${room ? ' · ' + escapeHtml(room.name) : ''}`;
-      const prompt = unacked ? `
-        <div class="ag-passed-prompt" onclick="event.stopPropagation()">
-          <div class="app-title">This time has passed. What happened?</div>
-          <div class="ag-passed-actions">
-            <button type="button" class="ag-passed-btn" onclick="markBlockDone(${i})">Done</button>
-            <button type="button" class="ag-passed-btn" onclick="keepBlockToday(${i})">Keep today</button>
-            <button type="button" class="ag-passed-btn" onclick="puntRowTomorrow(${i})">Move tomorrow</button>
-          </div>
-        </div>` : '';
       html += `<div class="ag-row${past ? ' past' : ''}${done ? ' done' : ''}" onclick="editEvent(${i})">
           <div class="ag-time">${fmtClockCaps(e.start)}</div>
           <div class="ag-body">
             <div class="ag-title">${escapeHtml(e.name)}</div>
             <div class="ag-desc">${escapeHtml(desc)}</div>
-            ${prompt}
           </div>
           <div class="ag-tag ${tag}">${done ? '<svg class="ag-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ''}${tagLabel}</div>
         </div>`;
