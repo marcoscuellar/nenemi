@@ -19,38 +19,41 @@
   /* NENEMI brand system v2.0: mist white, pure-white cards, ink black, warm gray. one restrained teal, semantic only.
      The dark sanctuary (I'm stuck / lockdown) is the deliberate exception — see the dark-scope rule below. */
   :root {
-    --paper: #EBECEE;      /* app ground: bright cool mist */
-    --sanctuary: #EBECEE;  /* home + light panes sit on the mist */
-    --surface: #F3F4F6;
+    --paper: #F5F6F5;      /* app ground: soft, never stark white */
+    --sanctuary: #F5F6F5;  /* home + light panes sit on the soft ground */
+    --surface: #EFF1F0;
     --surface2: #FFFFFF;
     --card: #FFFFFF;
-    --ink: #0B0B0C;
-    --ink-2: #17181B;
-    --muted: #6C7176;      /* warm-gray secondary text */
-    --faint: #9BA0A7;      /* placeholders / tertiary */
-    --line: #E7E8EB;       /* hairlines */
-    --line2: #DDDFE3;
-    /* sage/selected: neutral now. Selected nav = light-gray bg + black text, not teal. */
-    --sage: #12BAAA;
-    --sage-text: #0B0B0C;
-    --sage-fill: rgba(11,11,12,0.055);
-    --on-sage: #FFFFFF;
-    /* the one semantic teal: typing cursor, today marker, live/update dot, a short word from Nenemi */
-    --teal: #10B7A7;
-    --teal-soft: #7FD8CD;
-    --teal-deep: #0E9C8F;
+    --ink: #111312;
+    --ink-2: #2A2D2C;
+    --muted: #63696A;      /* Dim: secondary copy, meta */
+    --faint: #9AA0A0;      /* placeholders / tertiary */
+    --line: #E5E7E6;       /* hairlines */
+    --line2: #DADDDC;
+    /* sage/selected: neutral. Selected nav = light-gray bg + ink text, not teal. */
+    --sage: #3C8692;
+    --sage-text: #111312;
+    --sage-fill: rgba(17,19,18,0.055);
+    --on-sage: #FAF8F3;
+    /* the calm slate-teal signal: typing cursor, today marker, live/update dot, a short word from Nenemi */
+    --teal: #3C8692;
+    --teal-soft: #A9CDD2;
+    --teal-deep: #2C6670;
+    /* maíz — warmth & wins (returning, never completing). Use sparingly. */
+    --maiz: #E9BE55;
+    --maiz-deep: #B98F2A;
 
     --glow: transparent;
     --glow-stop: 62%;
-    --hg1: rgba(16,183,167,0.05);
-    --hg2: rgba(16,183,167,0.02);
-    --glow2: #F3F4F6;
+    --hg1: rgba(60,134,146,0.05);
+    --hg2: rgba(60,134,146,0.02);
+    --glow2: #EFF1F0;
     --evt-block: #FFFFFF;
     --evt-fixed: #FFFFFF;
-    --evt-fixed-line: #9BA0A7;
-    --evt-buffer: #F3F4F6;
-    --btn: #0B0B0C;        /* primary buttons: black */
-    --btn-ink: #FFFFFF;    /* white text on black */
+    --evt-fixed-line: #9AA0A0;
+    --evt-buffer: #EFF1F0;
+    --btn: #111312;        /* primary buttons: ink */
+    --btn-ink: #FAF8F3;    /* warm-white on ink */
     --pill-bg: rgba(255,255,255,0.86);
     --shadow: rgba(21,23,27,0.10);
     --card-shadow: 0 1px 2px rgba(20,22,26,0.04), 0 8px 26px rgba(20,22,26,0.05);
@@ -65,10 +68,10 @@
   /* DARK SANCTUARY (permanent) + panes not yet converted to the light system (transitional, removed page by page).
      Keeps every screen coherent while the redesign rolls out one page at a time. */
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
-    --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #FFFFFF; --muted: #A4A099; --faint: #6F6B64;
-    --line: #26262A; --line2: #34343A; --sage: #3FB7A6; --sage-text: #3FB7A6; --sage-fill: rgba(63,183,166,0.14); --on-sage: #06201C;
-    --teal: #3FB7A6; --teal-soft: #7FD0C4; --teal-deep: #2C8578; --glow2: #161618; --btn: #3FB7A6; --btn-ink: #06201C;
-    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(63,183,166,0.22); --hg2: rgba(44,133,120,0.12);
+    --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #F4F1EA; --muted: #A4A099; --faint: #6F6B64;
+    --line: #26262A; --line2: #34343A; --sage: #5AA6B0; --sage-text: #5AA6B0; --sage-fill: rgba(90,166,176,0.14); --on-sage: #06201C;
+    --teal: #5AA6B0; --teal-soft: #A9CDD2; --teal-deep: #2C6670; --maiz: #E9BE55; --maiz-deep: #B98F2A; --glow2: #161618; --btn: #5AA6B0; --btn-ink: #06201C;
+    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(90,166,176,0.22); --hg2: rgba(44,102,112,0.12);
     --evt-block: #1E1E1E; --evt-fixed: #151515; --evt-fixed-line: #7A7A75; --evt-buffer: #1A1A1A;
     background: #0A0A0A; color: var(--ink);
   }
@@ -534,15 +537,15 @@
   #pane-stuck .doors, #pane-stuck .stuck-inner { margin: auto; padding-top: 48px; padding-bottom: 40px; }
   .stuck-close { position: absolute; top: 24px; right: 32px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .stuck-inner { display: flex; flex-direction: column; align-items: center; }
-  .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(63,183,166,0.28); }
+  .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(90,166,176,0.28); }
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
   .doors { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; padding: 0 20px; }
-  .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(63,183,166,0.45); margin-bottom: 28px; }
+  .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(90,166,176,0.45); margin-bottom: 28px; }
   .doors-title { font-family: var(--font-black); font-weight: 900; font-size: 34px; text-align: center; letter-spacing: -0.015em; line-height: 1.05; }
   .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
   .door { border-radius: 4px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(255,255,255,0.08); transition: transform 140ms ease, border-color 140ms ease; }
-  .door:hover { transform: translateY(-2px); border-color: rgba(63,183,166,0.4); }
+  .door:hover { transform: translateY(-2px); border-color: rgba(90,166,176,0.4); }
   .door-icon { display: block; color: var(--faint); margin-bottom: 10px; }
   .door-label { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
   .door-sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
@@ -561,7 +564,7 @@
   .support-for { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
   .support-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
   .support-links a { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--muted); text-decoration: none; padding: 9px 14px; border-radius: 4px; border: 1px solid var(--line2); }
-  .support-links a:hover { color: var(--ink); border-color: rgba(63,183,166,0.4); }
+  .support-links a:hover { color: var(--ink); border-color: rgba(90,166,176,0.4); }
   .doors-back:hover { color: var(--sage-text); }
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
@@ -570,7 +573,7 @@
   .stuck-quote { max-width: 440px; margin: 18px auto 0; padding: 2px 0 2px 16px; border-left: 1px solid var(--line2); color: var(--muted); font-size: 14px; line-height: 1.55; text-align: left; }
   .stuck-quote .where { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .stuck-sub { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 12px; max-width: 340px; }
-  .stuck-box { width: 560px; max-width: 92vw; margin-top: 26px; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 4px; padding: 18px 16px 12px; box-shadow: 0 0 70px rgba(63,183,166,0.14); }
+  .stuck-box { width: 560px; max-width: 92vw; margin-top: 26px; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 4px; padding: 18px 16px 12px; box-shadow: 0 0 70px rgba(90,166,176,0.14); }
   .stuck-box textarea { width: 100%; box-sizing: border-box; min-height: 84px; max-height: 40vh; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0; }
   .stuck-box textarea::placeholder { color: var(--faint); }
   .stuck-log { width: 560px; max-width: 92vw; margin-top: 16px; }
