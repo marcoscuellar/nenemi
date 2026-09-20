@@ -110,6 +110,36 @@
       .nav button:hover,.task:hover{transform:translateX(2px)}
       .check,.check.done{transition:background .3s ease,border-color .3s ease,transform .3s cubic-bezier(.22,.61,.36,1)}
     }
+    /* Today's checklist (home) */
+    .checklist{margin-top:30px;border-top:3px solid var(--ink);padding-top:16px}
+    .cl-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .cl-kicker{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-strong);font-weight:700;margin-bottom:6px}
+    .cl-title{font:22px/1 'Archivo Black','Arial Black',sans-serif;letter-spacing:-.02em;margin:0}
+    .cl-sub{font-size:12px;color:var(--muted);margin-top:5px}
+    .cl-count{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+    .cl-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+    .cl-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);background:#fff;border-radius:4px;transition:transform .28s cubic-bezier(.22,.61,.36,1),opacity .28s ease,border-color .2s ease,box-shadow .2s ease}
+    .cl-item:hover{box-shadow:0 6px 18px rgba(15,18,16,.05)}
+    .cl-item.dragging{opacity:.5}
+    .cl-item.drop-target{border-color:var(--teal-strong)}
+    .cl-grip{color:#bfc3bd;cursor:grab;font-size:13px;line-height:1;user-select:none}
+    .cl-check{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:2px solid #c8ccc6;background:#fff;cursor:pointer;position:relative;transition:background .25s ease,border-color .25s ease}
+    .cl-check:after{content:"";position:absolute;left:6px;top:3px;width:6px;height:11px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);opacity:0;transition:transform .25s cubic-bezier(.34,1.4,.5,1),opacity .2s ease}
+    .cl-text{flex:1;min-width:0;font-size:15px;color:var(--ink);position:relative;transition:color .25s ease}
+    .cl-text:after{content:"";position:absolute;left:0;top:54%;height:1.5px;width:0;background:var(--muted);transition:width .3s ease}
+    .cl-x{flex:0 0 auto;border:0;background:transparent;color:#c2c6c0;font-size:18px;line-height:1;cursor:pointer;padding:2px 4px;transition:color .2s ease}
+    .cl-x:hover{color:var(--ink)}
+    .cl-item.done .cl-check{background:var(--teal-strong);border-color:var(--teal-strong)}
+    .cl-item.done .cl-check:after{transform:rotate(45deg) scale(1);opacity:1}
+    .cl-item.done .cl-text{color:var(--muted)}
+    .cl-item.done .cl-text:after{width:100%}
+    .cl-add{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 14px;border:1px dashed var(--line);border-radius:4px}
+    .cl-add-ic{color:var(--muted);font-size:18px;line-height:1}
+    .cl-add input{flex:1;border:0;outline:0;background:transparent;font-size:15px;color:var(--ink)}
+    .cl-add input::placeholder{color:#9aa0a0}
+    .cl-add button{border:0;background:var(--ink);color:#fff;font-weight:700;font-size:13px;padding:9px 16px;border-radius:100px;cursor:pointer}
+    .cl-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .cl-return{color:var(--teal-strong);font-style:italic;text-transform:none;letter-spacing:0;font-family:Archivo,system-ui,sans-serif}
   </style>
 </head>
 <body>
@@ -168,6 +198,15 @@
       </div>
       <button class="add" id="addTask"><svg class="line-icon"><use href="#i-plus"/></svg>Add to today <span>quickly add a task, time, or reminder</span></button>
       <section class="mobile-glance" aria-label="Today at a glance"><div class="mobile-glance-head"><h2>Today at a glance</h2><span>Keep only what helps</span></div><div class="mobile-insights"><article class="mobile-insight"><div class="insight-icon"><svg class="line-icon"><use href="#i-progress"/></svg></div><strong>3 of 5 tasks completed</strong><p>You’ve already moved the day forward.</p></article><article class="mobile-insight"><div class="insight-icon"><svg class="line-icon"><use href="#i-next"/></svg></div><strong>Next up: Client meeting</strong><p>Two notes are waiting in the room.</p></article><article class="mobile-insight"><div class="insight-icon"><svg class="line-icon"><use href="#i-flex"/></svg></div><strong>Flexible time later</strong><p>About 1h 45m open after 4:30.</p></article></div></section>
+      <section class="checklist" aria-label="Today's checklist">
+        <div class="cl-head">
+          <div><div class="cl-kicker">Checklist</div><h2 class="cl-title">Today’s checklist</h2><div class="cl-sub">Drag to reorder · check when it’s done</div></div>
+          <div class="cl-count"><span id="clDone">0</span> of <span id="clTotal">0</span> done</div>
+        </div>
+        <ul class="cl-list" id="clList"></ul>
+        <div class="cl-add"><span class="cl-add-ic">+</span><input id="clInput" type="text" placeholder="Add a task…" autocomplete="off"><button id="clAdd" type="button">Add</button></div>
+        <div class="cl-foot"><span id="clFootCount">0 of 0 done</span><span class="cl-return">Come back anytime →</span></div>
+      </section>
       <div class="reflection"><div><h3>Before you close the day.</h3><p>Capture what moved, what didn’t, and what tomorrow needs.</p></div><button>Recap my day</button></div>
       <div class="mobile-capture"><label>WHATEVER’S IN YOUR HEAD</label><textarea class="capture-field" placeholder="Put it here…"></textarea><button class="capture-submit">Keep this safe</button></div>
     </section>
@@ -228,5 +267,51 @@
   document.querySelectorAll('.room-start,.room-row,.room-action,.listen-button,.capture-tools button').forEach(button=>button.addEventListener('click',()=>showToast('Nenemi kept your place.')));
   document.querySelector('.update-room').addEventListener('click',()=>{const field=document.getElementById('roomCapture');if(field.value.trim()){showToast('Room updated. Nenemi kept the thread.');field.value=''}else{field.focus();showToast('Add anything that is on your mind.')}});
   if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+  /* ===== Today's checklist ===== */
+  (function(){
+    var KEY='nenemi-checklist-v1';
+    var seed=[{t:"Review today's AI draft",d:false},{t:"Add a personal hook",d:false},{t:"Schedule Friday's post",d:false},{t:"Reply to 3 comments",d:false},{t:"Check in on a room",d:false}];
+    var data;
+    try{ data=JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+    if(!Array.isArray(data)) data=seed.slice();
+    function save(){ try{ localStorage.setItem(KEY, JSON.stringify(data)); }catch(e){} }
+    var list=function(){ return document.getElementById('clList'); };
+    function counts(){
+      var done=data.filter(function(x){return x.d;}).length, n=data.length;
+      var a=document.getElementById('clDone'), b=document.getElementById('clTotal'), f=document.getElementById('clFootCount');
+      if(a)a.textContent=done; if(b)b.textContent=n; if(f)f.textContent=done+' of '+n+' done';
+    }
+    var dragI=null;
+    function wireDrag(li){
+      li.addEventListener('dragstart',function(){ dragI=+li.dataset.i; li.classList.add('dragging'); });
+      li.addEventListener('dragend',function(){ li.classList.remove('dragging'); [].forEach.call(document.querySelectorAll('.cl-item.drop-target'),function(x){x.classList.remove('drop-target');}); });
+      li.addEventListener('dragover',function(e){ e.preventDefault(); li.classList.add('drop-target'); });
+      li.addEventListener('dragleave',function(){ li.classList.remove('drop-target'); });
+      li.addEventListener('drop',function(e){ e.preventDefault(); var to=+li.dataset.i; if(dragI===null||dragI===to){return;} var moved=data.splice(dragI,1)[0]; data.splice(to,0,moved); dragI=null; save(); render(); });
+    }
+    function render(){
+      var ul=list(); if(!ul) return; ul.innerHTML='';
+      data.forEach(function(item,i){
+        var li=document.createElement('li'); li.className='cl-item'+(item.d?' done':''); li.draggable=true; li.dataset.i=i;
+        li.innerHTML='<span class="cl-grip" aria-hidden="true">⋮⋮</span><button class="cl-check" aria-label="Complete"></button><span class="cl-text"></span><button class="cl-x" aria-label="Remove">×</button>';
+        li.querySelector('.cl-text').textContent=item.t;
+        li.querySelector('.cl-check').addEventListener('click', function(){ toggle(i); });
+        li.querySelector('.cl-x').addEventListener('click', function(){ data.splice(i,1); save(); render(); });
+        wireDrag(li); ul.appendChild(li);
+      });
+      counts();
+    }
+    function toggle(i){
+      if(!data[i]) return; data[i].d=!data[i].d; save();
+      var ul=list(); if(ul&&ul.children[i]) ul.children[i].classList.toggle('done', data[i].d);
+      counts();
+      setTimeout(function(){ data.sort(function(a,b){ return (a.d===b.d)?0:(a.d?1:-1); }); save(); render(); }, 430);
+    }
+    function add(){ var inp=document.getElementById('clInput'); if(!inp) return; var v=inp.value.trim(); if(!v) return; data.push({t:v,d:false}); inp.value=''; save(); render(); }
+    var addBtn=document.getElementById('clAdd'), inp2=document.getElementById('clInput');
+    if(addBtn) addBtn.addEventListener('click', add);
+    if(inp2) inp2.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); add(); } });
+    render();
+  })();
 </script>
 </body></html>
