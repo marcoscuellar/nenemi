@@ -72,6 +72,40 @@
       .room-workspace{grid-template-columns:1fr;gap:12px}.room-module,.room-module.full{grid-column:1;border-radius:4px;padding:22px}.room-baton strong{font-size:25px}.room-baton .room-start{min-height:55px}.room-row{min-height:94px}.capture-box textarea{min-height:130px}.catch-up{min-height:190px}.room-actions{grid-template-columns:1fr;margin:12px 0 0}.room-action{min-height:50px}.room-action:not(.primary){background:#fff}.rooms-heading h1{font-size:50px}
       .support-resources{margin-top:28px}.resource-grid{grid-template-columns:1fr}.resource-card{min-height:136px}.support-library{margin-bottom:12px}.task-edit{position:absolute;right:2px;top:12px;opacity:1;background:#fff}.task{padding-right:32px}.modal-backdrop{align-items:flex-end;padding:0}.edit-sheet{border-radius:4px 4px 0 0;padding:25px 20px 28px}.edit-sheet h2{font-size:27px}.review-item{grid-template-columns:1fr}.review-actions{display:grid;grid-template-columns:1fr 1fr}.modal-primary,.modal-secondary{min-height:48px}
     }
+    /* ===== Calm motion — returning, not loading ===== */
+    @media (prefers-reduced-motion: no-preference){
+      @keyframes nRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+      @keyframes nFade{from{opacity:0}to{opacity:1}}
+      @keyframes nBreathe{0%,100%{opacity:.5}50%{opacity:1}}
+      .view.active{animation:nFade .45s ease both}
+      .view.active .eyebrow,.view.active h1,.view.active .sub,.view.active .date-row,
+      .view.active .section-head,.view.active .mobile-glance,.view.active .reflection,
+      .view.active .rooms-heading,.view.active .room-detail-head{animation:nRise .5s cubic-bezier(.22,.61,.36,1) both}
+      .view.active .tasks .task,.view.active .cards .room-card,.view.active .room-module,
+      .view.active .support-person,.view.active .resource-card{animation:nRise .55s cubic-bezier(.22,.61,.36,1) both}
+      .view.active .tasks .task:nth-child(2){animation-delay:.05s}
+      .view.active .tasks .task:nth-child(3){animation-delay:.1s}
+      .view.active .tasks .task:nth-child(4){animation-delay:.15s}
+      .view.active .tasks .task:nth-child(5){animation-delay:.2s}
+      .view.active .tasks .task:nth-child(6){animation-delay:.25s}
+      .view.active .cards .room-card:nth-child(2){animation-delay:.06s}
+      .view.active .cards .room-card:nth-child(3){animation-delay:.12s}
+      .view.active .cards .room-card:nth-child(4){animation-delay:.18s}
+      .view.active .room-module:nth-child(2){animation-delay:.05s}
+      .view.active .room-module:nth-child(3){animation-delay:.1s}
+      .view.active .room-module:nth-child(4){animation-delay:.15s}
+      .view.active .room-module:nth-child(5){animation-delay:.2s}
+      .view.active .room-module:nth-child(6){animation-delay:.25s}
+      .rail .insight,.rail .quote,.rail .quick-capture{animation:nRise .5s cubic-bezier(.22,.61,.36,1) both}
+      .rail .insight:nth-of-type(2){animation-delay:.06s}
+      .rail .insight:nth-of-type(3){animation-delay:.12s}
+      .rail .quote{animation-delay:.16s}
+      .rail .quick-capture{animation-delay:.2s}
+      .pill.now{animation:nBreathe 3.4s ease-in-out infinite}
+      .nav button,.task,.date,.choice,.support-person,.room-card,.resource-card,button,a{transition:background .25s ease,color .25s ease,transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s ease,border-color .25s ease}
+      .nav button:hover,.task:hover{transform:translateX(2px)}
+      .check,.check.done{transition:background .3s ease,border-color .3s ease,transform .3s cubic-bezier(.22,.61,.36,1)}
+    }
   </style>
 </head>
 <body>
