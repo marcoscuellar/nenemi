@@ -146,6 +146,13 @@
 
     /* people */
     .people-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+    .founder{display:grid;grid-template-columns:.82fr 1.18fr;gap:60px;align-items:center}
+    .founder-photo{border-radius:24px;overflow:hidden;box-shadow:var(--shadow);max-width:420px;aspect-ratio:4/5}
+    .founder-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 28%;display:block}
+    .founder-copy h2{margin:14px 0 0}
+    .founder-copy .lead{margin-top:20px}
+    .founder-sign{font-family:"Archivo Black","Arial Black",sans-serif;font-weight:900;letter-spacing:-.01em;font-size:1.15rem;margin:24px 0 0;color:var(--ink)}
+    @media(max-width:820px){.founder{grid-template-columns:1fr;gap:34px}.founder-photo{max-width:none}}
     .people-photo{border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);aspect-ratio:1.3/1}
     .people-photo img{width:100%;height:100%;object-fit:cover;display:block}
     .support-links{margin-top:26px;border-top:1px solid var(--line)}
@@ -315,6 +322,17 @@
           <a href="https://988lifeline.org">Immediate human support <span class="ar">↗</span></a>
         </div>
       </div>
+    </div>
+  </div></section>
+
+  <!-- FOUNDER -->
+  <section id="founder"><div class="wrap founder">
+    <div class="founder-photo"><img src="/photos/landing/founder.jpg" alt="Marcos, the founder of Nenemi"></div>
+    <div class="founder-copy">
+      <p class="mono teal">From a neurodivergent founder</p>
+      <h2>I built the room<br>I needed.</h2>
+      <p class="lead">Nenemi is the room I wished I had — somewhere to set things down and come back to without starting over.</p>
+      <p class="founder-sign">— Marcos</p>
     </div>
   </div></section>
 
