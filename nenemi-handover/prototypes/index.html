@@ -185,6 +185,8 @@
   /* desktop-only home furniture: hidden until the >=900px layout turns it on */
   .home-side { display: none; }
   .side-rooms { display: none; }
+  .tabbar .tab-desktop-only { display: none; }
+  .cal-glance { display: none; }
 
   .composer-pill {
     position: relative; width: 100%; box-sizing: border-box;
@@ -1199,6 +1201,7 @@
     }
     .tab { flex: 0 0 auto; flex-direction: row; justify-content: flex-start; gap: 14px; padding: 13px 16px; border-radius: 4px; }
     .tab .tab-lb { font-size: 15px; }
+    .tabbar .tab-desktop-only { display: flex; }
     .tab-stuck { margin-top: auto; }
     .tab-stuck .stuck-tile { width: 34px; height: 34px; border-radius: 4px; }
     .tab-stuck .stuck-tile svg { width: 17px; height: 17px; }
@@ -1227,7 +1230,9 @@
     .app:not(.talking) .composer-pill { grid-column: 1; grid-row: 2; margin: 0; }
     .app:not(.talking) .chat-log { display: none; }
     .app:not(.talking) .home-side { display: flex; flex-direction: column; gap: 16px; grid-column: 2; grid-row: 1 / span 2; }
-    .app:not(.talking) .where-now { grid-column: 1 / -1; grid-row: 3; margin-top: 10px; }
+    /* the four doors already live in the left sidebar on desktop, so Home rests as
+       the dump composer + the rooms rail — no stretched full-width card row. */
+    .app:not(.talking) .where-now { display: none; }
     .app:not(.talking) .where-h { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
     .app:not(.talking) .where-grid { grid-template-columns: repeat(4, 1fr); }
     .app:not(.talking) .where-card { flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px 16px; border-radius: 4px; }
@@ -1255,9 +1260,9 @@
     .app.dark-pane .side-room { color: #9aa0a2; }
     .app.dark-pane .side-room:hover { background: #1a1a1d; color: #fff; }
 
-    /* Rooms: two-column card grid */
-    #pane-rooms .hub-header, #pane-rooms .loose-shelf { max-width: 920px; }
-    .room-grid { max-width: 920px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+    /* Rooms: a wide card grid that fills the content width */
+    #pane-rooms .hub-header, #pane-rooms .loose-shelf { max-width: 1180px; }
+    .room-grid { max-width: 1180px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; border: none; }
 
     /* Room detail: cards/rows on the left, capture panel sticky on the right */
     #pane-roomview .rv-header { max-width: 960px; }
@@ -1269,8 +1274,42 @@
     #pane-calendar .cal-inner { max-width: 700px; }
     #pane-notes .notes-wrap { max-width: 700px; }
 
-    /* sanctuary + humans: wider centered */
-    #pane-stuck .doors, #pane-stuck .stuck-inner, #pane-humans .humans-inner { max-width: 720px; }
+    /* sanctuary: wider centered */
+    #pane-stuck .doors, #pane-stuck .stuck-inner { max-width: 720px; }
+    /* human support: a full people + resources screen that fills the width */
+    #pane-humans .humans-inner { max-width: 1080px; }
+    #pane-humans .support-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; align-items: start; }
+    #pane-humans .support-card { margin: 0; }
+    #pane-humans .support-card.urgent { grid-column: 1 / -1; }
+  }
+
+  /* ===================== WIDE DESKTOP (>=1100px): My Day plan + glance rail ===================== */
+  @media (min-width: 1100px) {
+    #pane-calendar .cal-inner { max-width: 1200px; }
+    /* at rest the dump stays tucked (re-entry over planning): plan in the center,
+       Today at a glance on the right. Opening the dump makes it a true three-column. */
+    #pane-calendar .cal-columns { display: grid; grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.8fr); gap: 30px; align-items: start; }
+    #pane-calendar.dump-open .cal-columns { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.18fr) minmax(0, 0.82fr); }
+    .cal-glance { display: block; align-self: start; position: sticky; top: 30px;
+      border: 1px solid var(--line2); border-radius: 4px; background: var(--card);
+      box-shadow: var(--card-shadow); padding: 20px 18px; }
+    .glance-head { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+    .glance-empty { font-size: 13.5px; color: var(--muted); }
+    .glance-stat { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;
+      padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+    .glance-stat .gs-num { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1; color: var(--ink); }
+    .glance-stat .gs-lb { font-size: 13px; color: var(--muted); }
+    .glance-cell { margin-bottom: 14px; }
+    .glance-cell .gc-lb { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+    .glance-cell .gc-val { font-size: 13.5px; color: var(--ink); line-height: 1.4; }
+    .glance-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px;
+      padding-top: 14px; border-top: 1px solid var(--line); }
+    .glance-chip { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 4px 8px; border-radius: 4px;
+      background: var(--surface); color: var(--muted); }
+    .glance-chip.focus { background: var(--sage-fill); color: var(--sage-text); }
   }
 </style>
 </head>
@@ -1519,6 +1558,8 @@
                 <button class="ag-btn" onclick="addDayToCalendar()">Add to my calendar</button>
               </div>
             </div>
+
+            <aside class="cal-glance" id="calGlance" aria-label="Today at a glance"></aside>
           </div>
         </div>
       </div>
@@ -1776,6 +1817,10 @@
       <button type="button" class="tab" id="nav-rooms" onclick="go('rooms')">
         <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="2.4"/><circle cx="15.5" cy="8.5" r="2.4"/><circle cx="8.5" cy="15.5" r="2.4"/><circle cx="15.5" cy="15.5" r="2.4"/></svg></span>
         <span class="tab-lb">Rooms</span>
+      </button>
+      <button type="button" class="tab tab-desktop-only" id="nav-humans" onclick="go('humans')">
+        <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/></svg></span>
+        <span class="tab-lb">Human support</span>
       </button>
       <div class="side-rooms" id="sideRooms" aria-hidden="true"></div>
       <button type="button" class="tab tab-stuck" id="nav-stuck" onclick="go('stuck')">
@@ -2943,7 +2988,7 @@
     const el = document.getElementById('agenda');
     if (!list.length) {
       el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the left, or add one block.' : 'Nothing here yet.'}</div>`;
-      renderRollover(); renderCalSummary(); return;
+      renderRollover(); renderCalSummary(); renderCalGlance(); return;
     }
     let html = '', nowShown = false;
     list.forEach(e => {
@@ -2975,6 +3020,41 @@
     el.innerHTML = html;
     renderRollover();
     renderCalSummary();
+    renderCalGlance();
+  }
+
+  // Right rail on desktop My-Day: a quiet read of the real day, never a to-do list.
+  function renderCalGlance() {
+    const el = document.getElementById('calGlance'); if (!el) return;
+    const isToday = dkey(selectedDay) === dkey(today);
+    const nowH = today.getHours() + today.getMinutes() / 60;
+    const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
+    if (!list.length) {
+      el.innerHTML = `<div class="glance-head">Today at a glance</div>
+        <div class="glance-empty">Nothing on the day yet.</div>`;
+      return;
+    }
+    const done = list.filter(e => e.done);
+    const fixed = list.filter(e => e.kind === 'fixed' && !e.done);
+    const focus = list.filter(e => e.kind === 'focus' && !e.done);
+    const buffer = list.filter(e => e.kind === 'buffer' && !e.done);
+    const next = isToday ? list.find(e => e.end > nowH && !e.done) : list.find(e => !e.done);
+    const lastEnd = list[list.length - 1] ? list[list.length - 1].end : null;
+    const rows = [];
+    rows.push(`<div class="glance-stat"><span class="gs-num">${list.length}</span><span class="gs-lb">block${list.length === 1 ? '' : 's'} on the day</span></div>`);
+    if (next) rows.push(`<div class="glance-cell"><div class="gc-lb">Next up</div><div class="gc-val">${fmtAmPm(next.start)} · ${escapeHtml(next.name)}</div></div>`);
+    else if (isToday) rows.push(`<div class="glance-cell"><div class="gc-lb">Next up</div><div class="gc-val">The day is done. Nothing left on it.</div></div>`);
+    const firstFixed = fixed[0];
+    if (firstFixed && firstFixed !== next) rows.push(`<div class="glance-cell"><div class="gc-lb">Fixed appointment</div><div class="gc-val">${fmtAmPm(firstFixed.start)} · ${escapeHtml(firstFixed.name)}</div></div>`);
+    if (lastEnd != null) rows.push(`<div class="glance-cell"><div class="gc-lb">Wraps by</div><div class="gc-val">${fmtAmPm(lastEnd)}</div></div>`);
+    const chips = [];
+    if (focus.length) chips.push(`<span class="glance-chip focus">${focus.length} focus</span>`);
+    if (fixed.length) chips.push(`<span class="glance-chip fixed">${fixed.length} fixed</span>`);
+    if (buffer.length) chips.push(`<span class="glance-chip protected">${buffer.length} protected</span>`);
+    if (done.length) chips.push(`<span class="glance-chip done">${done.length} done</span>`);
+    el.innerHTML = `<div class="glance-head">Today at a glance</div>
+      ${rows.join('')}
+      ${chips.length ? `<div class="glance-chips">${chips.join('')}</div>` : ''}`;
   }
 
   function renderCalSummary() {
