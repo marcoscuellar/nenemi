@@ -8,7 +8,7 @@ One screen at a time. Do the step, come back, say "done". Nothing here needs to 
 - **iOS shell:** ready in `app/`. Build **1.0 (2)**, iPhone only, portrait, minimum iOS 15. Loads the live site in a Capacitor WebView, so shipping web updates needs no new review.
 - **Assets in the repo:** app icon + splash (in Xcode project), store screenshots for the 6.7" and 6.5" slots — 5 each — in `nenemi-handover/store/screenshots/`, privacy / terms / support pages live.
 - **One real blocker left:** Clerk must be switched to its production instance on mynenemi.com, and **Sign in with Apple** added (Apple requires it because Google sign-in is offered). ~20 minutes, with you at the keyboard. See "Still to do" at the bottom.
-- **Heads-up:** the store screenshots were captured before the recent visual refresh (black/white reskin, composed desktop, the My Day checklist). They still read fine, but if you want them to match the current look exactly, ask and they can be regenerated before you upload.
+- **Store screenshots refreshed 2026-09-21** to match the current look (black/white reskin, the My Day checklist). Five screens each for the 6.7" and 6.5" slots, at exact App Store sizes (1290×2796 and 1242×2688), in `nenemi-handover/store/screenshots/`.
 
 ### Money: the iOS app ships **free** — do not add in-app purchase
 Full access ($10/mo) is **web only**, through Stripe. The iPhone app offers **no purchase at all**, so Apple's in-app-purchase rule (3.1.1) does not apply and there is nothing to build for review. **Never wire Stripe checkout or a "Full access" buy button into the app** — that is an automatic rejection. If you ever want the subscription available inside the app, it has to go through Apple's own in-app purchase, which is a separate, larger piece of work.
@@ -126,5 +126,5 @@ No account is needed. Open the app and type or speak into the box on the first s
 
 ## Still to do before submission
 
-- **Clerk → production + Sign in with Apple** (the real blocker). Move Clerk from the development instance to a production instance on mynenemi.com, and add Sign in with Apple. Apple requires it whenever Google sign-in is offered. Guided setup with you at the keyboard, about twenty minutes.
-- **Optional: refresh the store screenshots.** The five in `nenemi-handover/store/screenshots/` predate the recent visual refresh (black/white reskin, composed desktop, the My Day checklist). They still read fine, but if you want them to match the current look before uploading, ask and they can be regenerated from the live app.
+- **Clerk → production + Sign in with Apple — verify it's live.** The plan is: Clerk on its production instance on mynenemi.com, with Sign in with Apple enabled (Apple requires it whenever Google sign-in is offered). Marcos believes this is already done; it couldn't be confirmed from the build environment. 10-second check: open the sign-in sheet on https://www.mynenemi.com — "Continue with Apple" should be one of the options, and the account should be a production Clerk instance (not a `*.clerk.accounts.dev` dev one).
+- Store screenshots: **done** (refreshed 2026-09-21, both slots, exact sizes).
