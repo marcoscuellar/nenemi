@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nenemi · Onboarding mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111312; --paper:#FAF8F3; --ground:#F5F6F5; --card:#ffffff;
+    --line:#E5E7E6; --dim:#63696A; --teal:#2C6670; --maiz:#E9BE55; --maiz-deep:#B98F2A;
+    --font:'Archivo',system-ui,sans-serif; --black:'Archivo Black','Archivo',sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--font);background:#dfe2e1;color:var(--ink);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:0}
+  .frame{width:100%;min-height:100vh;background:var(--card);display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+
+  /* LEFT dark brand panel */
+  .left{position:relative;background:var(--ink);color:#fff;padding:40px 46px;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh}
+  .brand{display:flex;align-items:center;gap:9px}
+  .brand img{width:22px;height:22px;filter:invert(1)}
+  .brand span{font-family:var(--black);font-size:15px;letter-spacing:.14em}
+  .left-mid{max-width:420px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--maiz)}
+  h1.big{font-family:var(--black);font-size:clamp(34px,4vw,52px);line-height:1.02;letter-spacing:-.02em;margin:0}
+  h1.big .m{color:var(--maiz)}
+  .lede{color:rgba(255,255,255,.72);font-size:16px;line-height:1.6;max-width:400px;margin:22px 0 0}
+  .foot{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+
+  /* RIGHT action panel */
+  .right{background:var(--card);padding:40px 46px;display:flex;flex-direction:column;justify-content:center;min-height:100vh}
+  .right-inner{width:100%;max-width:400px;margin:0 auto}
+  .dots{display:flex;gap:7px;margin-bottom:30px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .dots i.on{background:var(--ink);width:22px;border-radius:4px}
+  h2{font-family:var(--black);font-size:30px;letter-spacing:-.01em;margin:0 0 6px}
+  .sub{color:var(--dim);font-size:15px;line-height:1.5;margin:0 0 26px}
+  label.f{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:16px 0 7px}
+  .in{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:8px;background:var(--ground);font-family:var(--font);font-size:15px;color:var(--ink)}
+  .in::placeholder{color:#9aa0a2}
+  .row2{display:flex;gap:12px}.row2>div{flex:1}
+  .btn{width:100%;margin-top:22px;padding:15px;border:none;border-radius:8px;background:var(--ink);color:#fff;font-family:var(--font);font-weight:700;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);margin-top:12px}
+  .oauth{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+  .oauth button{padding:12px;border:1px solid var(--line);border-radius:8px;background:#fff;font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;color:var(--ink)}
+  .divider{display:flex;align-items:center;gap:12px;color:#b7bcbc;font-size:12px;margin:18px 0}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+  .fine{font-size:12.5px;color:var(--dim);margin-top:18px}
+  .fine a,.link{color:var(--teal);text-decoration:none;font-weight:600;cursor:pointer}
+  .mini{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#9aa0a2;margin-top:8px}
+
+  /* plan card (step 3) */
+  .plan{border:1px solid var(--line);border-radius:12px;padding:22px;background:var(--ground)}
+  .plan .price{display:flex;align-items:baseline;gap:8px}
+  .plan .price b{font-family:var(--black);font-size:30px}
+  .plan ul{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-direction:column;gap:10px}
+  .plan li{display:flex;gap:10px;font-size:14.5px;color:var(--ink)}
+  .plan li .tick{color:var(--teal);font-weight:800}
+  .upsell{margin-top:16px;padding:14px 16px;border:1px dashed var(--line);border-radius:10px;font-size:13.5px;color:var(--dim)}
+  .upsell b{color:var(--ink)}
+
+  /* welcome cards (step 4) */
+  .wcards{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+  .wcard{display:flex;gap:14px;align-items:flex-start;padding:15px 16px;border:1px solid var(--line);border-radius:10px}
+  .wcard .n{font-family:var(--mono);font-size:11px;color:var(--maiz-deep);font-weight:700;margin-top:2px}
+  .wcard b{font-size:15px}.wcard p{margin:3px 0 0;font-size:13.5px;color:var(--dim);line-height:1.45}
+
+  .steplabel{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9;background:rgba(17,19,18,.9);color:#fff;font-family:var(--mono);font-size:11px;letter-spacing:.12em;padding:6px 14px;border-radius:20px}
+  .step{display:none}.step.active{display:contents}
+
+  @media(max-width:820px){
+    .frame{grid-template-columns:1fr}
+    .left{min-height:auto;padding:30px 24px 40px}
+    .left-mid{margin:26px 0}
+    .right{min-height:auto;padding:32px 24px 44px}
+    h1.big{font-size:34px}
+  }
+</style>
+</head>
+<body>
+<div class="steplabel" id="steplabel">STEP 1 OF 4 — SIGN UP</div>
+<div class="frame">
+
+  <!-- LEFT (changes per step) -->
+  <div class="left">
+    <div class="brand"><img src="/photos/icon/nenemi-mark-ink.png" alt=""><span>NENEMI</span></div>
+    <div class="left-mid">
+      <div class="eyebrow" id="lEye">Your space, kept</div>
+      <h1 class="big" id="lHead">A quieter place for a <span class="m">busy</span> brain.</h1>
+      <p class="lede" id="lSub">Say it messy, in any order. Nenemi files it, holds it, and hands it back when you come looking. Nothing to organize first.</p>
+    </div>
+    <div class="foot">NENEMI — WHERE YOUR HEAD GETS QUIET</div>
+  </div>
+
+  <!-- RIGHT (the action, swapped by step) -->
+  <div class="right"><div class="right-inner">
+    <div class="dots"><i class="on" id="d1"></i><i id="d2"></i><i id="d3"></i><i id="d4"></i></div>
+
+    <!-- STEP 1: create account -->
+    <div class="step active" id="s1">
+      <h2>Create your account</h2>
+      <p class="sub">Free to start — 2 rooms, no card. Your space, private to you.</p>
+      <div class="oauth">
+        <button>Continue with Apple</button>
+        <button>Continue with Google</button>
+      </div>
+      <div class="divider">or</div>
+      <label class="f">Email</label>
+      <input class="in" placeholder="you@email.com">
+      <label class="f">Password</label>
+      <input class="in" type="password" placeholder="8+ characters">
+      <button class="btn" onclick="go(2)">Start free →</button>
+      <div class="fine">Already have an account? <span class="link" onclick="go(1)">Sign in</span></div>
+      <div class="mini">Free forever for 2 rooms · no card to start</div>
+    </div>
+
+    <!-- STEP 2: name -->
+    <div class="step" id="s2">
+      <h2>Nice to meet you.</h2>
+      <p class="sub">What should we call you? Just so it feels like yours.</p>
+      <div class="row2">
+        <div><label class="f">First name</label><input class="in" placeholder="Marcos"></div>
+        <div><label class="f">Last name</label><input class="in" placeholder="Cuellar"></div>
+      </div>
+      <button class="btn" onclick="go(3)">Continue →</button>
+    </div>
+
+    <!-- STEP 3: your place + plan -->
+    <div class="step" id="s3">
+      <h2>Free, starting now.</h2>
+      <p class="sub">A quiet place only you can open. Here's what's yours.</p>
+      <div class="plan">
+        <div class="price"><b>Free</b><span style="color:var(--dim)">— for as long as you like</span></div>
+        <ul>
+          <li><span class="tick">✓</span> 2 rooms of your own, plus the example room</li>
+          <li><span class="tick">✓</span> Calendar, voice, and your way back in — always</li>
+          <li><span class="tick">✓</span> Saved to your device first, synced across them</li>
+        </ul>
+      </div>
+      <div class="upsell">Filling up? <b>Full access</b> opens more rooms — $10/mo, whenever you want it.</div>
+      <button class="btn" onclick="go(4)">Continue free →</button>
+      <button class="btn ghost" onclick="go(4)">See full access</button>
+    </div>
+
+    <!-- STEP 4: quiet welcome -->
+    <div class="step" id="s4">
+      <h2>Welcome in, Marcos.</h2>
+      <p class="sub">Your place is ready. A quick look at what's inside — then it's yours.</p>
+      <div class="wcards">
+        <div class="wcard"><span class="n">01</span><div><b>Home</b><p>Say what's in your head. It lands where it belongs.</p></div></div>
+        <div class="wcard"><span class="n">02</span><div><b>Rooms</b><p>One thing each. Held between visits, so you never restart from zero.</p></div></div>
+        <div class="wcard"><span class="n">03</span><div><b>A way back in</b><p>Stuck or scattered? A calm screen and one small move.</p></div></div>
+      </div>
+      <button class="btn" onclick="alert('→ lands in the app with the example room')">Take me in →</button>
+      <div class="fine" style="text-align:center"><span class="link" onclick="alert('→ straight to the app')">Skip the look</span></div>
+    </div>
+
+  </div></div>
+</div>
+
+<script>
+  const L = {
+    1:{eye:'Your space, kept', head:'A quieter place for a <span class="m">busy</span> brain.', sub:"Say it messy, in any order. Nenemi files it, holds it, and hands it back when you come looking. Nothing to organize first."},
+    2:{eye:'Just so it feels like yours', head:'First, <span class="m">your</span> name.', sub:"A name on the door. That's all we need to get you in."},
+    3:{eye:'Yours, and only yours', head:'This is all <span class="m">yours</span>.', sub:"A quiet room no one else can open. Free to keep, for as long as you like."},
+    4:{eye:'A quick look inside', head:'Welcome to your <span class="m">place</span>.', sub:"Three rooms in the house. Then the door is yours."}
+  };
+  const labels={1:'STEP 1 OF 4 — SIGN UP',2:'STEP 2 OF 4 — YOUR NAME',3:'STEP 3 OF 4 — YOUR PLACE',4:'STEP 4 OF 4 — WELCOME'};
+  function go(n){
+    for(let i=1;i<=4;i++){document.getElementById('s'+i).classList.toggle('active',i===n);document.getElementById('d'+i).classList.toggle('on',i===n);}
+    document.getElementById('lEye').innerHTML=L[n].eye;
+    document.getElementById('lHead').innerHTML=L[n].head;
+    document.getElementById('lSub').innerHTML=L[n].sub;
+    document.getElementById('steplabel').textContent=labels[n];
+    window.scrollTo(0,0);
+  }
+</script>
+</body>
+</html>
