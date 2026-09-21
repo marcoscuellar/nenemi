@@ -782,7 +782,7 @@
   .wordmark .wm-mark path { fill: var(--ink); stroke: var(--ink); }
   .wordmark .wm-text { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: 0.26em; color: var(--ink); }
   .app.dark-pane .wordmark .wm-text { color: #F4F1EA; }
-  .app.dark-pane .wordmark .wm-mark path { fill: #F4F1EA; stroke: #F4F1EA; }
+  .app.dark-pane .wordmark .wm-mark { filter: invert(1); }
   .account-wrap { position: absolute; top: 15px; right: 18px; z-index: 30; }
   .account-slot img, .account-slot .avatar { width: 42px; height: 42px; border-radius: 50%; }
   .account-slot button, .account-slot .acct-btn { background: var(--card); border: 1px solid var(--line); box-shadow: var(--card-shadow); color: var(--ink); }
@@ -892,9 +892,9 @@
   .tab-stuck.active { background: none; }
   /* keep the sanctuary quiet: the bright bar recedes on dark panes */
   .app.dark-pane .tabbar { background: #131315; border-color: #26262A; }
-  .app.dark-pane .tab-stuck .stuck-tile { background: #F4F1EA; }
-  .app.dark-pane .tab-stuck .stuck-tile svg { stroke: #0A0A0A; }
-  .app.dark-pane .tab-stuck .tab-lb { color: #F4F1EA; }
+  .app.dark-pane .tab-stuck .stuck-tile { background: transparent; }
+  .app.dark-pane .tab-stuck .stuck-tile svg { stroke: #10B7A7; }
+  .app.dark-pane .tab-stuck .tab-lb { color: #10B7A7; }
   .app.dark-pane .tab.active { background: rgba(255,255,255,0.08); }
   .app.dark-pane .tab.active .tab-ic, .app.dark-pane .tab.active .tab-lb { color: #F4F1EA; }
 
