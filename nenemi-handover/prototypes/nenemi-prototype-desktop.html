@@ -186,7 +186,37 @@
   .home-side { display: none; }
   .side-rooms { display: none; }
   .tabbar .tab-desktop-only { display: none; }
-  .cal-glance { display: none; }
+  /* My Day to-do checklist (a stacked section on phone/tablet; the sticky right rail at >=1100) */
+  .cal-checklist { display: block; margin-top: 22px; border: 1px solid var(--line2); border-radius: 4px; background: var(--card); box-shadow: var(--card-shadow); padding: 20px 18px; }
+  .cl-eyebrow { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sage-text); margin-bottom: 6px; }
+  .cl-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: -0.01em; color: var(--ink); margin: 0 0 4px; }
+  .cl-sub-row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 14px; }
+  .cl-sub { font-size: 12.5px; color: var(--muted); }
+  .cl-count { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .cl-rows { display: flex; flex-direction: column; gap: 8px; }
+  .cl-row { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--line2); border-radius: 4px; background: var(--card); }
+  .cl-row.done { background: var(--surface); }
+  .cl-row.cl-dragover { border-color: var(--ink); }
+  .cl-handle { flex-shrink: 0; display: flex; color: var(--faint); cursor: grab; }
+  .cl-handle:active { cursor: grabbing; }
+  .cl-check { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; border: 1.7px solid var(--line2); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; padding: 0; }
+  .cl-row.done .cl-check { background: var(--ink); border-color: var(--ink); }
+  .cl-text { flex: 1; min-width: 0; font-family: var(--font-body); font-size: 15px; color: var(--ink); line-height: 1.35; word-break: break-word; }
+  .cl-row.done .cl-text { color: var(--muted); text-decoration: line-through; }
+  .cl-remove { flex-shrink: 0; background: none; border: none; color: var(--faint); cursor: pointer; padding: 4px; display: flex; }
+  .cl-remove:hover { color: var(--ink); }
+  .cl-add { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 10px 12px; border: 1px dashed var(--line2); border-radius: 4px; }
+  .cl-add-ic { flex-shrink: 0; display: flex; color: var(--faint); }
+  .cl-add input { flex: 1; min-width: 0; border: none; background: none; outline: none; font-family: var(--font-body); font-size: 15px; color: var(--ink); padding: 4px 0; }
+  .cl-add input::placeholder { color: var(--faint); }
+  .cl-add-btn { flex-shrink: 0; background: var(--btn); color: var(--btn-ink); border: none; border-radius: 999px; padding: 8px 18px; font-family: var(--font-body); font-weight: 600; font-size: 13.5px; cursor: pointer; }
+  .cl-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 14px; }
+  .cl-back { font-size: 13px; color: var(--sage-text); cursor: pointer; }
+  .cl-close { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: #000; border-radius: 4px; padding: 20px; }
+  .cl-close-text { flex: 1; min-width: 180px; }
+  .cl-close-h { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: #fff; margin-bottom: 4px; }
+  .cl-close-sub { font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.4; }
+  .cl-close-btn { flex: 0 0 auto; background: #fff; color: #000; border: none; border-radius: 4px; padding: 12px 18px; font-family: var(--font-display); font-weight: 700; font-size: 14px; cursor: pointer; }
 
   .composer-pill {
     position: relative; width: 100%; box-sizing: border-box;
@@ -1283,33 +1313,15 @@
     #pane-humans .support-card.urgent { grid-column: 1 / -1; }
   }
 
-  /* ===================== WIDE DESKTOP (>=1100px): My Day plan + glance rail ===================== */
+  /* ===================== WIDE DESKTOP (>=1100px): My Day plan + checklist rail ===================== */
   @media (min-width: 1100px) {
     #pane-calendar .cal-inner { max-width: 1200px; }
     /* at rest the dump stays tucked (re-entry over planning): plan in the center,
-       Today at a glance on the right. Opening the dump makes it a true three-column. */
-    #pane-calendar .cal-columns { display: grid; grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.8fr); gap: 30px; align-items: start; }
-    #pane-calendar.dump-open .cal-columns { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.18fr) minmax(0, 0.82fr); }
-    .cal-glance { display: block; align-self: start; position: sticky; top: 30px;
-      border: 1px solid var(--line2); border-radius: 4px; background: var(--card);
-      box-shadow: var(--card-shadow); padding: 20px 18px; }
-    .glance-head { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
-    .glance-empty { font-size: 13.5px; color: var(--muted); }
-    .glance-stat { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px;
-      padding-bottom: 16px; border-bottom: 1px solid var(--line); }
-    .glance-stat .gs-num { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1; color: var(--ink); }
-    .glance-stat .gs-lb { font-size: 13px; color: var(--muted); }
-    .glance-cell { margin-bottom: 14px; }
-    .glance-cell .gc-lb { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
-    .glance-cell .gc-val { font-size: 13.5px; color: var(--ink); line-height: 1.4; }
-    .glance-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px;
-      padding-top: 14px; border-top: 1px solid var(--line); }
-    .glance-chip { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em;
-      text-transform: uppercase; padding: 4px 8px; border-radius: 4px;
-      background: var(--surface); color: var(--muted); }
-    .glance-chip.focus { background: var(--sage-fill); color: var(--sage-text); }
+       the checklist on the right. Opening the dump makes it a true three-column. */
+    #pane-calendar .cal-columns { display: grid; grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.84fr); gap: 30px; align-items: start; }
+    #pane-calendar.dump-open .cal-columns { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.12fr) minmax(0, 0.86fr); }
+    /* the checklist becomes the sticky right rail (it is a normal stacked section below 1100) */
+    .cal-checklist { align-self: start; position: sticky; top: 30px; margin-top: 0; }
   }
 </style>
 </head>
@@ -1559,7 +1571,7 @@
               </div>
             </div>
 
-            <aside class="cal-glance" id="calGlance" aria-label="Today at a glance"></aside>
+            <aside class="cal-checklist" id="calChecklist" aria-label="Today's checklist"></aside>
           </div>
         </div>
       </div>
@@ -2928,6 +2940,7 @@
   let carried = [ { name: 'Confirm Q3 estimate amount' }, { name: 'Send invite text to siblings' } ];
   let loose = []; // thoughts you chose not to put in a room yet
   let notes = {}; // yyyy-mm-dd -> what they wrote about that day. theirs only.
+  let checklist = []; // one ongoing to-do list on My Day: [{ id, text, done }]
   function dkey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   function dayList(d) { const k = dkey(d); return events[k] || (events[k] = []); }
   (function seed() {
@@ -2988,7 +3001,7 @@
     const el = document.getElementById('agenda');
     if (!list.length) {
       el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the left, or add one block.' : 'Nothing here yet.'}</div>`;
-      renderRollover(); renderCalSummary(); renderCalGlance(); return;
+      renderRollover(); renderCalSummary(); renderChecklist(); return;
     }
     let html = '', nowShown = false;
     list.forEach(e => {
@@ -3020,41 +3033,72 @@
     el.innerHTML = html;
     renderRollover();
     renderCalSummary();
-    renderCalGlance();
+    renderChecklist();
   }
 
-  // Right rail on desktop My-Day: a quiet read of the real day, never a to-do list.
-  function renderCalGlance() {
-    const el = document.getElementById('calGlance'); if (!el) return;
-    const isToday = dkey(selectedDay) === dkey(today);
-    const nowH = today.getHours() + today.getMinutes() / 60;
-    const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
-    if (!list.length) {
-      el.innerHTML = `<div class="glance-head">Today at a glance</div>
-        <div class="glance-empty">Nothing on the day yet.</div>`;
-      return;
-    }
-    const done = list.filter(e => e.done);
-    const fixed = list.filter(e => e.kind === 'fixed' && !e.done);
-    const focus = list.filter(e => e.kind === 'focus' && !e.done);
-    const buffer = list.filter(e => e.kind === 'buffer' && !e.done);
-    const next = isToday ? list.find(e => e.end > nowH && !e.done) : list.find(e => !e.done);
-    const lastEnd = list[list.length - 1] ? list[list.length - 1].end : null;
-    const rows = [];
-    rows.push(`<div class="glance-stat"><span class="gs-num">${list.length}</span><span class="gs-lb">block${list.length === 1 ? '' : 's'} on the day</span></div>`);
-    if (next) rows.push(`<div class="glance-cell"><div class="gc-lb">Next up</div><div class="gc-val">${fmtAmPm(next.start)} · ${escapeHtml(next.name)}</div></div>`);
-    else if (isToday) rows.push(`<div class="glance-cell"><div class="gc-lb">Next up</div><div class="gc-val">The day is done. Nothing left on it.</div></div>`);
-    const firstFixed = fixed[0];
-    if (firstFixed && firstFixed !== next) rows.push(`<div class="glance-cell"><div class="gc-lb">Fixed appointment</div><div class="gc-val">${fmtAmPm(firstFixed.start)} · ${escapeHtml(firstFixed.name)}</div></div>`);
-    if (lastEnd != null) rows.push(`<div class="glance-cell"><div class="gc-lb">Wraps by</div><div class="gc-val">${fmtAmPm(lastEnd)}</div></div>`);
-    const chips = [];
-    if (focus.length) chips.push(`<span class="glance-chip focus">${focus.length} focus</span>`);
-    if (fixed.length) chips.push(`<span class="glance-chip fixed">${fixed.length} fixed</span>`);
-    if (buffer.length) chips.push(`<span class="glance-chip protected">${buffer.length} protected</span>`);
-    if (done.length) chips.push(`<span class="glance-chip done">${done.length} done</span>`);
-    el.innerHTML = `<div class="glance-head">Today at a glance</div>
-      ${rows.join('')}
-      ${chips.length ? `<div class="glance-chips">${chips.join('')}</div>` : ''}`;
+  // ---------- My Day to-do checklist: one ongoing list, held until you check or clear it ----------
+  let checklistDragId = null;
+  function renderChecklist() {
+    const el = document.getElementById('calChecklist'); if (!el) return;
+    const total = checklist.length;
+    const done = checklist.filter(t => t.done).length;
+    const count = `${done} of ${total} done`;
+    const rows = checklist.map(t => `
+      <div class="cl-row${t.done ? ' done' : ''}" draggable="true" data-id="${t.id}"
+           ondragstart="checklistDragStart(event,'${t.id}')" ondragover="checklistDragOver(event)"
+           ondragleave="event.currentTarget.classList.remove('cl-dragover')"
+           ondrop="checklistDrop(event,'${t.id}')" ondragend="checklistDragEnd(event)">
+        <span class="cl-handle" title="Drag to reorder" aria-hidden="true"><svg width="10" height="16" viewBox="0 0 10 16" fill="currentColor"><circle cx="2.5" cy="3" r="1.3"/><circle cx="7.5" cy="3" r="1.3"/><circle cx="2.5" cy="8" r="1.3"/><circle cx="7.5" cy="8" r="1.3"/><circle cx="2.5" cy="13" r="1.3"/><circle cx="7.5" cy="13" r="1.3"/></svg></span>
+        <button type="button" class="cl-check" onclick="toggleChecklistItem('${t.id}')" aria-label="${t.done ? 'Mark not done' : 'Mark done'}">${t.done ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ''}</button>
+        <span class="cl-text">${escapeHtml(t.text)}</span>
+        <button type="button" class="cl-remove" onclick="removeChecklistItem('${t.id}')" aria-label="Remove" title="Remove"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3l10 10M13 3L3 13" stroke-linecap="round"/></svg></button>
+      </div>`).join('');
+    el.innerHTML = `
+      <div class="cl-eyebrow">Checklist</div>
+      <div class="cl-title">Today's checklist</div>
+      <div class="cl-sub-row"><span class="cl-sub">Drag to reorder</span><span class="cl-count" id="clCountTop">${count}</span></div>
+      <div class="cl-rows" id="clRows">${rows}</div>
+      <div class="cl-add">
+        <span class="cl-add-ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg></span>
+        <input type="text" id="clInput" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addChecklistItem()" />
+        <button type="button" class="cl-add-btn" onclick="addChecklistItem()">Add</button>
+      </div>
+      <div class="cl-foot"><span class="cl-count">${count}</span><span class="cl-back" onclick="go('home')">Come back anytime →</span></div>
+      <div class="cl-close">
+        <div class="cl-close-text">
+          <div class="cl-close-h">Before you close the day.</div>
+          <div class="cl-close-sub">A place to put down what moved, what didn't, and what tomorrow needs.</div>
+        </div>
+        <button type="button" class="cl-close-btn" onclick="go('notes')">Recap my day</button>
+      </div>`;
+  }
+  function addChecklistItem() {
+    const inp = document.getElementById('clInput'); if (!inp) return;
+    const text = inp.value.trim(); if (!text) { inp.focus(); return; }
+    checklist.push({ id: 'c' + Date.now().toString(36) + Math.floor(Math.random() * 1000), text, done: false });
+    save(); renderChecklist();
+    const again = document.getElementById('clInput'); if (again) again.focus();
+  }
+  function toggleChecklistItem(id) {
+    const t = checklist.find(x => x.id === id); if (!t) return;
+    t.done = !t.done; save(); renderChecklist();
+  }
+  function removeChecklistItem(id) {
+    const i = checklist.findIndex(x => x.id === id); if (i < 0) return;
+    checklist.splice(i, 1); save(); renderChecklist();
+  }
+  function checklistDragStart(e, id) { checklistDragId = id; try { e.dataTransfer.effectAllowed = 'move'; } catch (x) {} }
+  function checklistDragOver(e) { e.preventDefault(); try { e.dataTransfer.dropEffect = 'move'; } catch (x) {} if (e.currentTarget && e.currentTarget.dataset.id !== checklistDragId) e.currentTarget.classList.add('cl-dragover'); }
+  function checklistDragEnd() { checklistDragId = null; document.querySelectorAll('.cl-row.cl-dragover').forEach(r => r.classList.remove('cl-dragover')); }
+  function checklistDrop(e, targetId) {
+    e.preventDefault();
+    if (!checklistDragId || checklistDragId === targetId) return;
+    const from = checklist.findIndex(x => x.id === checklistDragId);
+    const to = checklist.findIndex(x => x.id === targetId);
+    if (from < 0 || to < 0) return;
+    const [moved] = checklist.splice(from, 1);
+    checklist.splice(to, 0, moved);
+    checklistDragId = null; save(); renderChecklist();
   }
 
   function renderCalSummary() {
@@ -3373,7 +3417,7 @@
   // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
   const STORE_KEY = 'nenemi.v1';
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, savedAt: Date.now() })); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, checklist, savedAt: Date.now() })); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     clearTimeout(syncTimer); syncTimer = setTimeout(pushState, 800);
   }
   function restore() {
@@ -3386,6 +3430,7 @@
       if (Array.isArray(d.carried)) carried = d.carried;
       loose = Array.isArray(d.loose) ? d.loose : [];
       notes = d.notes && typeof d.notes === 'object' ? d.notes : {};
+      checklist = Array.isArray(d.checklist) ? d.checklist : [];
       return true;
     } catch (e) { return false; }
   }
@@ -3545,7 +3590,7 @@
   function closeSyncSheet() { document.getElementById('syncSheet').hidden = true; }
   function exportRooms() {
     try {
-      const data = JSON.stringify({ exported: new Date().toISOString(), rooms, loose, events, carried, notes }, null, 2);
+      const data = JSON.stringify({ exported: new Date().toISOString(), rooms, loose, events, carried, notes, checklist }, null, 2);
       const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type: 'application/json' })); a.download = `nenemi-${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); a.remove();
     } catch (e) { alert('Could not export right now.'); }
   }
