@@ -1428,7 +1428,7 @@
         <div class="greeting-big" id="greetingText"><span class="hello">Morning</span><span class="accent">Whatever's in your head, put it here.</span></div>
 
         <div class="composer-pill" id="composerPill">
-          <textarea id="composerInput" rows="1" placeholder="Start typing, or tell me what's going on."></textarea>
+          <textarea id="composerInput" rows="1" placeholder="Doesn't have to be organized. Just dump it here — we take care of the rest."></textarea>
           <div class="capture-cta" id="captureCta">
             <button type="button" class="cap-btn write" onclick="focusWrite()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
@@ -1974,7 +1974,14 @@
     const line = g.line.replace(/\*/g, '');
     const timeWord = g.hello.split(' · ')[0];
     const small = name ? `${timeWord}, ${name}` : timeWord;
-    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="accent">Whatever's in your head, put it here.</span>`;
+    const sublines = {
+      Morning: "Let's get the day started on the right foot.",
+      Afternoon: "How's the day been treating you?",
+      Evening: "Almost done with the day — let's recap it together.",
+      Hey: "No rush. Put it down whenever."
+    };
+    const sub = sublines[timeWord] || "Whatever's in your head, put it here.";
+    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="accent">${escapeHtml(sub)}</span>`;
   }
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
   function focusWrite() { const i = document.getElementById('composerInput'); if (i) i.focus(); }
