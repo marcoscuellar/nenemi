@@ -1326,11 +1326,192 @@
     /* the checklist becomes the sticky right rail (it is a normal stacked section below 1100) */
     .cal-checklist { align-self: start; position: sticky; top: 30px; margin-top: 0; }
   }
+
+  /* ===== Onboarding wall — self-contained, #onboard-scoped with its own --ob-* tokens so nothing
+     leaks to or from the app's global CSS. Shown only when Clerk auth is available and unsigned. ===== */
+  body.onboarding { overflow: hidden; }
+  #onboard {
+    --ob-ink:#111312; --ob-card:#ffffff; --ob-ground:#F5F6F5; --ob-line:#E5E7E6; --ob-dim:#63696A;
+    --ob-teal:#2C6670; --ob-turq:#3C8692; --ob-turq-deep:#2C6670;
+    --ob-font:'Archivo',system-ui,sans-serif; --ob-black:'Archivo Black','Archivo',sans-serif; --ob-mono:'IBM Plex Mono',ui-monospace,monospace;
+    position:fixed; inset:0; z-index:9999; background:var(--ob-card); color:var(--ob-ink);
+    font-family:var(--ob-font); overflow-y:auto; -webkit-font-smoothing:antialiased;
+  }
+  #onboard[hidden] { display:none; }
+  #onboard * { box-sizing:border-box; }
+  #onboard .ob-frame { width:100%; min-height:100%; display:grid; grid-template-columns:1fr 1fr; background:var(--ob-card); }
+  #onboard .ob-left { position:relative; overflow:hidden; background:#0a0b0c center 28%/cover no-repeat; color:#fff; padding:40px 46px; display:flex; flex-direction:column; justify-content:space-between; min-height:100vh; transition:background-image .3s ease; }
+  #onboard .ob-left::before { content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(100deg,rgba(8,10,12,.95),rgba(8,10,12,.66) 44%,rgba(8,10,12,.30)),linear-gradient(0deg,rgba(8,10,12,.82),transparent 46%); }
+  #onboard .ob-left > * { position:relative; z-index:1; }
+  #onboard .ob-brand { display:flex; align-items:center; gap:9px; }
+  #onboard .ob-brand img { width:22px; height:22px; filter:invert(1); }
+  #onboard .ob-brand span { font-family:var(--ob-black); font-size:15px; letter-spacing:.14em; }
+  #onboard .ob-mid { max-width:420px; }
+  #onboard .ob-eyebrow { font-family:var(--ob-mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.55); display:flex; align-items:center; gap:12px; margin-bottom:22px; }
+  #onboard .ob-eyebrow::before { content:""; width:26px; height:2px; background:var(--ob-turq); }
+  #onboard .ob-big { font-family:var(--ob-black); font-size:clamp(34px,4vw,52px); line-height:1.02; letter-spacing:-.02em; margin:0; }
+  #onboard .ob-big .m { color:var(--ob-turq); }
+  #onboard .ob-lede { color:rgba(255,255,255,.72); font-size:16px; line-height:1.6; max-width:400px; margin:22px 0 0; }
+  #onboard .ob-foot { font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.4); }
+  #onboard .ob-right { background:var(--ob-card); padding:40px 46px; display:flex; flex-direction:column; justify-content:center; min-height:100vh; }
+  #onboard .ob-inner { width:100%; max-width:400px; margin:0 auto; }
+  #onboard .ob-dots { display:flex; gap:7px; margin-bottom:30px; }
+  #onboard .ob-dots i { width:7px; height:7px; border-radius:50%; background:var(--ob-line); }
+  #onboard .ob-dots i.on { background:var(--ob-ink); width:22px; border-radius:4px; }
+  #onboard h2 { font-family:var(--ob-black); font-size:30px; letter-spacing:-.01em; margin:0 0 6px; color:var(--ob-ink); }
+  #onboard .ob-sub { color:var(--ob-dim); font-size:15px; line-height:1.5; margin:0 0 26px; }
+  #onboard label.ob-f { display:block; font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ob-dim); margin:16px 0 7px; }
+  #onboard .ob-in { width:100%; padding:13px 14px; border:1px solid var(--ob-line); border-radius:8px; background:var(--ob-ground); font-family:var(--ob-font); font-size:15px; color:var(--ob-ink); }
+  #onboard .ob-in::placeholder { color:#9aa0a2; }
+  #onboard .ob-row2 { display:flex; gap:12px; }
+  #onboard .ob-row2 > div { flex:1; }
+  #onboard .ob-btn { width:100%; margin-top:22px; padding:15px; border:none; border-radius:8px; background:var(--ob-ink); color:#fff; font-family:var(--ob-font); font-weight:700; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+  #onboard .ob-btn:disabled { opacity:.55; cursor:default; }
+  #onboard .ob-btn.ghost { background:#fff; color:var(--ob-ink); border:1px solid var(--ob-line); margin-top:12px; }
+  #onboard .ob-oauth { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+  #onboard .ob-oauth button { padding:12px; border:1px solid var(--ob-line); border-radius:8px; background:#fff; font-family:var(--ob-font); font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; color:var(--ob-ink); }
+  #onboard .ob-oauth button svg { width:15px; height:15px; }
+  #onboard .ob-divider { display:flex; align-items:center; gap:12px; color:#b7bcbc; font-size:12px; margin:18px 0; }
+  #onboard .ob-divider::before, #onboard .ob-divider::after { content:""; flex:1; height:1px; background:var(--ob-line); }
+  #onboard .ob-fine { font-size:12.5px; color:var(--ob-dim); margin-top:18px; }
+  #onboard .ob-fine a, #onboard .ob-link { color:var(--ob-teal); text-decoration:none; font-weight:600; cursor:pointer; }
+  #onboard .ob-mini { font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#9aa0a2; margin-top:8px; }
+  #onboard .ob-err { color:#b4342b; font-size:13px; line-height:1.4; margin-top:10px; }
+  #onboard .ob-err:empty { margin-top:0; }
+  #onboard .ob-plan { border:1px solid var(--ob-line); border-radius:12px; padding:22px; background:var(--ob-ground); }
+  #onboard .ob-price { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
+  #onboard .ob-price b { font-family:var(--ob-black); font-size:28px; }
+  #onboard .ob-plan ul { list-style:none; padding:0; margin:16px 0 0; display:flex; flex-direction:column; gap:10px; }
+  #onboard .ob-plan li { display:flex; gap:10px; font-size:14.5px; color:var(--ob-ink); }
+  #onboard .ob-plan li .tick { color:var(--ob-teal); font-weight:800; }
+  #onboard .ob-paid { margin-top:16px; padding:16px 18px; border:1px dashed var(--ob-line); border-radius:10px; }
+  #onboard .ob-paidhead { font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ob-dim); margin-bottom:10px; }
+  #onboard .ob-paid ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
+  #onboard .ob-paid li { display:flex; gap:10px; font-size:14px; color:var(--ob-ink); }
+  #onboard .ob-paid li .tick { color:var(--ob-turq-deep); font-weight:800; }
+  #onboard .ob-price2 { font-size:13px; color:var(--ob-dim); margin-top:12px; }
+  #onboard .ob-price2 b { color:var(--ob-ink); }
+  #onboard .ob-wcards { display:flex; flex-direction:column; gap:12px; margin-top:4px; }
+  #onboard .ob-wcard { display:flex; gap:14px; align-items:flex-start; padding:15px 16px; border:1px solid var(--ob-line); border-radius:10px; }
+  #onboard .ob-wcard .n { font-family:var(--ob-mono); font-size:11px; color:var(--ob-turq-deep); font-weight:700; margin-top:2px; }
+  #onboard .ob-wcard b { font-size:15px; }
+  #onboard .ob-wcard p { margin:3px 0 0; font-size:13.5px; color:var(--ob-dim); line-height:1.45; }
+  #onboard .ob-steplabel { position:fixed; top:calc(10px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:2; background:rgba(17,19,18,.9); color:#fff; font-family:var(--ob-mono); font-size:11px; letter-spacing:.12em; padding:6px 14px; border-radius:20px; }
+  #onboard .ob-step { display:none; }
+  #onboard .ob-step.active { display:block; }
+  @media (max-width: 720px) {
+    #onboard .ob-frame { grid-template-columns:1fr; }
+    #onboard .ob-left { min-height:auto; padding:calc(30px + env(safe-area-inset-top,0px)) 24px 40px; }
+    #onboard .ob-mid { margin:26px 0; }
+    #onboard .ob-right { min-height:auto; padding:32px 24px calc(44px + env(safe-area-inset-bottom,0px)); }
+    #onboard .ob-big { font-size:34px; }
+    #onboard .ob-steplabel { display:none; } /* the dots carry the step here; the pill would collide with the wordmark */
+  }
 </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <h1 class="sr-only">Nenemi</h1>
+
+<!-- ============ ONBOARDING WALL (hidden until the gate shows it) ============ -->
+<div id="onboard" hidden aria-label="Create your Nenemi space">
+  <div class="ob-steplabel" id="obStepLabel">STEP 1 OF 4 — SIGN UP</div>
+  <div class="ob-frame">
+    <div class="ob-left">
+      <div class="ob-brand"><img src="/photos/icon/nenemi-mark-ink.png" alt=""><span>NENEMI</span></div>
+      <div class="ob-mid">
+        <div class="ob-eyebrow" id="obEye">Your space, kept</div>
+        <h2 class="ob-big" id="obHead">A quieter place for a <span class="m">busy</span> brain.</h2>
+        <p class="ob-lede" id="obSub">Say it messy, in any order. Nenemi files it, holds it, and hands it back when you come looking. Nothing to organize first.</p>
+      </div>
+      <div class="ob-foot">NENEMI — WHERE YOUR HEAD GETS QUIET</div>
+    </div>
+    <div class="ob-right"><div class="ob-inner">
+      <div class="ob-dots"><i class="on" id="obd1"></i><i id="obd2"></i><i id="obd3"></i><i id="obd4"></i></div>
+
+      <!-- STEP 1: create account -->
+      <div class="ob-step active" id="obs1">
+        <h2>Create your account</h2>
+        <p class="ob-sub">Free to start — 2 rooms, no card. Your space, private to you.</p>
+        <div class="ob-oauth">
+          <button type="button" onclick="obOAuth('oauth_apple')">Continue with Apple</button>
+          <button type="button" onclick="obOAuth('oauth_google')">Continue with Google</button>
+        </div>
+        <div class="ob-divider">or</div>
+        <label class="ob-f" for="obEmail">Email</label>
+        <input class="ob-in" id="obEmail" type="email" autocomplete="email" placeholder="you@email.com">
+        <label class="ob-f" for="obPass">Password</label>
+        <input class="ob-in" id="obPass" type="password" autocomplete="new-password" placeholder="8+ characters">
+        <button class="ob-btn" id="obStartBtn" type="button" onclick="obCreate()">Start free →</button>
+        <div class="ob-err" id="obErr1"></div>
+        <div class="ob-fine">Already have a space? <span class="ob-link" onclick="obSignIn()">Sign in</span></div>
+        <div class="ob-mini">Free for 2 rooms · no card to start</div>
+      </div>
+
+      <!-- STEP 1a: confirm email -->
+      <div class="ob-step" id="obsCode">
+        <h2>Check your email.</h2>
+        <p class="ob-sub">We sent a 6-digit code to <b id="obCodeEmail">your email</b>. Enter it to confirm it's you.</p>
+        <label class="ob-f" for="obCode">Code</label>
+        <input class="ob-in" id="obCode" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
+        <button class="ob-btn" id="obCodeBtn" type="button" onclick="obVerify()">Confirm →</button>
+        <div class="ob-err" id="obErrCode"></div>
+        <div class="ob-fine"><span class="ob-link" onclick="obResend()">Resend the code</span></div>
+      </div>
+
+      <!-- STEP 2: name -->
+      <div class="ob-step" id="obs2">
+        <h2>Nice to meet you.</h2>
+        <p class="ob-sub">What should we call you? Just so it feels like yours.</p>
+        <div class="ob-row2">
+          <div><label class="ob-f" for="obFirst">First name</label><input class="ob-in" id="obFirst" autocomplete="given-name" placeholder="Marcos"></div>
+          <div><label class="ob-f" for="obLast">Last name</label><input class="ob-in" id="obLast" autocomplete="family-name" placeholder="Cuellar"></div>
+        </div>
+        <button class="ob-btn" id="obNameBtn" type="button" onclick="obSaveName()">Continue →</button>
+        <div class="ob-err" id="obErr2"></div>
+      </div>
+
+      <!-- STEP 3: your place + plan -->
+      <div class="ob-step" id="obs3">
+        <h2>Free, starting now.</h2>
+        <p class="ob-sub">A quiet place only you can open. Here's what's yours.</p>
+        <div class="ob-plan">
+          <div class="ob-price"><b>Free</b><span style="color:var(--ob-dim)">— for as long as you like</span></div>
+          <ul>
+            <li><span class="tick">✓</span> 2 rooms of your own, with 5 document downloads per room</li>
+            <li><span class="tick">✓</span> Calendar, voice, and your way back in — always</li>
+            <li><span class="tick">✓</span> Saved to your device first, synced across them</li>
+          </ul>
+        </div>
+        <div class="ob-paid">
+          <div class="ob-paidhead">Everything you get for paying</div>
+          <ul>
+            <li><span class="tick">✓</span> Everything in Free</li>
+            <li><span class="tick">✓</span> Rooms without a cap — as many as the day needs</li>
+            <li><span class="tick">✓</span> More document downloads in every room</li>
+          </ul>
+          <div class="ob-price2"><b>Full access</b> — $10/mo, whenever you want it.</div>
+        </div>
+        <button class="ob-btn" type="button" onclick="obStep(4)">Continue free →</button>
+        <button class="ob-btn ghost" type="button" onclick="obSeeFullAccess()">See full access</button>
+      </div>
+
+      <!-- STEP 4: quiet welcome -->
+      <div class="ob-step" id="obs4">
+        <h2 id="obWelcomeHead">Welcome in.</h2>
+        <p class="ob-sub">Your place is ready. A quick look at what's inside — then it's yours.</p>
+        <div class="ob-wcards">
+          <div class="ob-wcard"><span class="n">01</span><div><b>Home</b><p>Say what's in your head. It lands where it belongs.</p></div></div>
+          <div class="ob-wcard"><span class="n">02</span><div><b>Rooms</b><p>One thing each. Held between visits, so you never restart from zero.</p></div></div>
+          <div class="ob-wcard"><span class="n">03</span><div><b>A way back in</b><p>Stuck or scattered? A calm screen and one small move.</p></div></div>
+        </div>
+        <button class="ob-btn" type="button" onclick="obFinish()">Take me in →</button>
+        <div class="ob-fine" style="text-align:center"><span class="ob-link" onclick="obFinish()">Skip the look</span></div>
+      </div>
+
+    </div></div>
+  </div>
+</div>
 
 <div class="app">
 
@@ -3470,18 +3651,23 @@
   }
   function clerkHost(pk) { try { return atob(pk.split('_').slice(2).join('_')).replace(/\$$/, ''); } catch (e) { return null; } }
   async function initAuth() {
-    if (location.protocol === 'file:') return;
+    if (location.protocol === 'file:') { hideOnboard(); return; }
     try {
       const cfg = await (await fetch('/api/config')).json();
       if (cfg.freeRooms) auth.roomLimit = cfg.freeRooms;
       auth.smart = Boolean(cfg.smartRouting);
       auth.billing = Boolean(cfg.billing); if (cfg.price && cfg.price.monthly) auth.price = cfg.price.monthly;
-      if (!cfg.clerkPublishableKey || !cfg.authEnabled) { renderAccount(); return; }
+      if (!cfg.clerkPublishableKey || !cfg.authEnabled) { hideOnboard(); renderAccount(); return; } // no Clerk → no wall
       auth.pk = cfg.clerkPublishableKey;
       const host = clerkHost(auth.pk);
       await loadScript(`https://${host}/npm/@clerk/clerk-js@5/dist/clerk.browser.js`, { 'data-clerk-publishable-key': auth.pk });
       if (typeof window.Clerk === 'function') window.Clerk = new window.Clerk(auth.pk);
       await Clerk.load();
+      // returning from an Apple/Google redirect: finish the handshake so the session is live
+      if (/__clerk|clerk_/.test(location.search + location.hash)) {
+        try { if (Clerk.handleRedirectCallback) await Clerk.handleRedirectCallback({}); } catch (e) {}
+        try { history.replaceState(null, '', '/'); } catch (e) {}
+      }
       auth.ready = true; auth.loadedAt = Date.now();
       auth.signedIn = Boolean(Clerk.user);
       Clerk.addListener(({ user }) => {
@@ -3490,8 +3676,10 @@
         auth.signedIn = now;
         if (!now) { if (Date.now() - auth.loadedAt > 3000) { try { localStorage.removeItem(STORE_KEY); } catch (e) {} location.reload(); } return; }
         renderAccount(); pullState();
+        if (!obFlow) gateOnboarding(); // sign-in via the modal (not our custom flow) → re-decide the wall
       });
-    } catch (e) { console.warn('sign-in unavailable', e); }
+      gateOnboarding(); // authoritative: now that Clerk state is known, show/hide/advance the wall
+    } catch (e) { console.warn('sign-in unavailable', e); hideOnboard(); }
     renderAccount();
   }
   function initialsOf(u) {
@@ -3790,16 +3978,157 @@
   document.getElementById('stuckInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); stuckSend(); } });
   document.getElementById('stuckInput').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.max(84, Math.min(this.scrollHeight, window.innerHeight * 0.4)) + 'px'; });
 
+  // ===== Onboarding wall: a hard sign-up gate wired to Clerk (custom, headless flow). The
+  //       localStorage + /api/state engine underneath is untouched — this only gates the UI. =====
+  const obL = {
+    1:{photo:'/photos/landing-hero.png', eye:'Your space, kept', head:'A quieter place for a <span class="m">busy</span> brain.', sub:"Say it messy, in any order. Nenemi files it, holds it, and hands it back when you come looking. Nothing to organize first."},
+    code:{photo:'/photos/landing-hero.png', eye:'One quick check', head:'Check your <span class="m">email</span>.', sub:"A six-digit code, just to be sure it's you. Then you're in."},
+    2:{photo:'/photos/originals/desk-eyes-closed.png', eye:'Just so it feels like yours', head:'First, <span class="m">your</span> name.', sub:"A name on the door. That's all we need to get you in."},
+    3:{photo:'/photos/landing-support.png', eye:'Yours, and only yours', head:'This is all <span class="m">yours</span>.', sub:"A quiet room no one else can open. Free to keep, for as long as you like."},
+    4:{photo:'/photos/originals/garden-phone.png', eye:'A quick look inside', head:'Welcome to your <span class="m">place</span>.', sub:"A few rooms in the house. Then the door is yours."}
+  };
+  const obLabels = { 1:'STEP 1 OF 4 — SIGN UP', code:'STEP 1 OF 4 — CONFIRM', 2:'STEP 2 OF 4 — YOUR NAME', 3:'STEP 3 OF 4 — YOUR PLACE', 4:'STEP 4 OF 4 — WELCOME' };
+  const obDotFor = { 1:1, code:1, 2:2, 3:3, 4:4 };
+  const obStepEl = { 1:'obs1', code:'obsCode', 2:'obs2', 3:'obs3', 4:'obs4' };
+  let obFlow = false; // true while our custom sign-up flow is driving, so the auth listener doesn't override it
+  function obEl(id) { return document.getElementById(id); }
+  function obStep(n) {
+    Object.values(obStepEl).forEach(id => { const el = obEl(id); if (el) el.classList.remove('active'); });
+    const el = obEl(obStepEl[n]); if (el) el.classList.add('active');
+    const dot = obDotFor[n] || 1;
+    for (let i = 1; i <= 4; i++) { const d = obEl('obd' + i); if (d) d.classList.toggle('on', i === dot); }
+    const L = obL[n] || obL[1];
+    if (obEl('obEye')) obEl('obEye').innerHTML = L.eye;
+    if (obEl('obHead')) obEl('obHead').innerHTML = L.head;
+    if (obEl('obSub')) obEl('obSub').innerHTML = L.sub;
+    if (obEl('obStepLabel')) obEl('obStepLabel').textContent = obLabels[n] || '';
+    const left = document.querySelector('#onboard .ob-left'); if (left) left.style.backgroundImage = 'url("' + L.photo + '")';
+    const o = obEl('onboard'); if (o) o.scrollTop = 0;
+    if (n === 4) { const fn = (typeof userFirstName === 'function' && userFirstName()) || ''; const h = obEl('obWelcomeHead'); if (h) h.textContent = fn ? ('Welcome in, ' + fn + '.') : 'Welcome in.'; }
+  }
+  function showOnboard(step) { const o = obEl('onboard'); if (!o) return; o.hidden = false; document.body.classList.add('onboarding'); obStep(step || 1); }
+  function hideOnboard() { const o = obEl('onboard'); if (!o) return; o.hidden = true; document.body.classList.remove('onboarding'); }
+  function obDone() { try { return localStorage.getItem('nenemi.onboarded') === '1'; } catch (e) { return false; } }
+  function obPriorUser() { try { return !!(localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY)); } catch (e) { return false; } }
+  // authoritative decision, run once Clerk's real state is known
+  function gateOnboarding() {
+    if (location.protocol === 'file:') { hideOnboard(); return; }   // dev / no server: never wall
+    if (!auth.pk) { hideOnboard(); return; }                        // auth unavailable: can't (and won't) wall
+    if (auth.signedIn) {
+      if (obDone() || obPriorUser()) { hideOnboard(); return; }      // existing user: never disrupt
+      showOnboard((typeof userFirstName === 'function' && userFirstName()) ? 3 : 2); return; // fresh sign-up
+    }
+    showOnboard(1);                                                  // auth on, not signed in
+  }
+  function obShowErr(id, e) {
+    const el = obEl(id); if (!el) return;
+    const m = (e && e.errors && e.errors[0] && (e.errors[0].longMessage || e.errors[0].message)) || (e && e.message) || 'Something went wrong. Try again in a moment.';
+    el.textContent = m;
+  }
+  function obClearErr(id) { const el = obEl(id); if (el) el.textContent = ''; }
+  function obBusy(id, on, label) { const b = obEl(id); if (!b) return; b.disabled = on; if (label != null) b.textContent = label; }
+  function obReady() { return !!(window.Clerk && Clerk.client && Clerk.client.signUp); }
+  async function obCreate() {
+    obClearErr('obErr1');
+    const email = (obEl('obEmail').value || '').trim();
+    const pass = obEl('obPass').value || '';
+    if (!email || !pass) { obShowErr('obErr1', { message: 'Enter an email and a password to start.' }); return; }
+    if (!obReady()) { obShowErr('obErr1', { message: 'Sign-up is waking up — one moment, then try again.' }); return; }
+    obBusy('obStartBtn', true, 'One moment…');
+    try {
+      obFlow = true;
+      await Clerk.client.signUp.create({ emailAddress: email, password: pass });
+      await Clerk.client.signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
+      if (obEl('obCodeEmail')) obEl('obCodeEmail').textContent = email;
+      obBusy('obStartBtn', false, 'Start free →');
+      obStep('code');
+      const c = obEl('obCode'); if (c) c.focus();
+    } catch (e) {
+      obBusy('obStartBtn', false, 'Start free →');
+      obFlow = false;
+      const code = e && e.errors && e.errors[0] && e.errors[0].code;
+      if (code === 'form_identifier_exists') obShowErr('obErr1', { message: 'That email already has a space. Use Sign in, just below.' });
+      else obShowErr('obErr1', e);
+    }
+  }
+  async function obVerify() {
+    obClearErr('obErrCode');
+    const code = (obEl('obCode').value || '').trim();
+    if (!code) { obShowErr('obErrCode', { message: 'Enter the code from your email.' }); return; }
+    if (!obReady()) { obShowErr('obErrCode', { message: 'One moment, then try again.' }); return; }
+    obBusy('obCodeBtn', true, 'Confirming…');
+    try {
+      const su = Clerk.client.signUp;
+      await su.attemptEmailAddressVerification({ code });
+      if (su.status === 'complete') { await Clerk.setActive({ session: su.createdSessionId }); }
+      obBusy('obCodeBtn', false, 'Confirm →');
+      obStep(2);
+      const f = obEl('obFirst'); if (f) f.focus();
+    } catch (e) { obBusy('obCodeBtn', false, 'Confirm →'); obShowErr('obErrCode', e); }
+  }
+  async function obResend() {
+    if (!obReady()) return;
+    try { await Clerk.client.signUp.prepareEmailAddressVerification({ strategy: 'email_code' }); obShowErr('obErrCode', { message: 'Sent again — check your email.' }); }
+    catch (e) { obShowErr('obErrCode', e); }
+  }
+  async function obSaveName() {
+    obClearErr('obErr2');
+    const f = (obEl('obFirst').value || '').trim(), l = (obEl('obLast').value || '').trim();
+    if (!f) { obShowErr('obErr2', { message: 'A first name is all we need.' }); return; }
+    obBusy('obNameBtn', true, 'One moment…');
+    try {
+      const su = window.Clerk && Clerk.client && Clerk.client.signUp;
+      if (su && su.status && su.status !== 'complete') {
+        await su.update({ firstName: f, lastName: l });
+        if (su.status === 'complete') { await Clerk.setActive({ session: su.createdSessionId }); }
+      } else if (window.Clerk && Clerk.user) {
+        await Clerk.user.update({ firstName: f, lastName: l });
+      }
+      try { if (typeof renderAccount === 'function') renderAccount(); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
+      obBusy('obNameBtn', false, 'Continue →');
+      obStep(3);
+    } catch (e) { obBusy('obNameBtn', false, 'Continue →'); obShowErr('obErr2', e); }
+  }
+  async function obOAuth(strategy) {
+    if (!obReady()) { obShowErr('obErr1', { message: 'Sign-up is waking up — one moment, then try again.' }); return; }
+    try {
+      obFlow = true;
+      await Clerk.client.signUp.authenticateWithRedirect({ strategy, redirectUrl: '/?start=1', redirectUrlComplete: '/?start=1' });
+    } catch (e) { obFlow = false; obShowErr('obErr1', e); }
+  }
+  function obSignIn() { try { if (window.Clerk && auth.pk) Clerk.openSignIn(); } catch (e) {} }
+  function obSeeFullAccess() { if (auth.billing) { try { openFullAccess(); return; } catch (e) {} } obStep(4); }
+  function obFinish() {
+    try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    obFlow = false;
+    hideOnboard();
+    try { if (typeof go === 'function') go('home'); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
+  }
+
   // first-time visitors on the open web see the landing page. anyone with anything saved, an installed app, or a sign-in goes straight in.
   (function landing() {
     if (location.protocol === 'file:' || location.pathname !== '/') return;
     const q = new URLSearchParams(location.search);
     let seen = null; try { seen = localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY); } catch (e) {}
     const standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    const uat = (document.cookie.match(/(?:^|;)\s*__client_uat=([^;]*)/) || [])[1];
+    const signedInHint = uat && Number(uat) > 0;
     if (q.has('paid')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); window.__afterCheckout = true; return; }
     if (q.has('open')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); return; }
-    if (seen || standalone || /__clerk|clerk_/.test(location.search + location.hash)) return;
+    if (q.has('start')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); return; } // arrived from a welcome.html CTA → into the app, where the wall gates it
+    if (seen || standalone || signedInHint || /__clerk|clerk_/.test(location.search + location.hash)) return;
     location.replace('/welcome.html');
+  })();
+
+  // Anti-flash pre-gate: show the wall right away for anyone not already through it, before Clerk
+  // finishes loading. initAuth()/gateOnboarding() then corrects it (auth-off hides it; a live session advances it).
+  (function preGate() {
+    if (location.protocol === 'file:' || location.pathname !== '/') return;
+    if (obDone()) return; // already through onboarding → straight to the app
+    const uat = (document.cookie.match(/(?:^|;)\s*__client_uat=([^;]*)/) || [])[1];
+    const signedInHint = uat && Number(uat) > 0;
+    if (signedInHint && obPriorUser()) return; // returning, signed-in user → no wall flash
+    showOnboard(signedInHint ? 3 : 1);
   })();
   restore();
   renderCal();
