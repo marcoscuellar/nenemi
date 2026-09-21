@@ -19,7 +19,9 @@
   .frame{width:100%;min-height:100vh;background:var(--card);display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
 
   /* LEFT dark brand panel */
-  .left{position:relative;background-color:var(--ink);background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px),radial-gradient(130% 90% at 12% 4%,rgba(60,134,146,.20),transparent 55%);background-size:22px 22px,100% 100%;color:#fff;padding:40px 46px;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh}
+  .left{position:relative;overflow:hidden;background:#0a0b0c center 28%/cover no-repeat;color:#fff;padding:40px 46px;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh;transition:background-image .3s ease}
+  .left::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(100deg,rgba(8,10,12,.95),rgba(8,10,12,.66) 44%,rgba(8,10,12,.30)),linear-gradient(0deg,rgba(8,10,12,.82),transparent 46%)}
+  .left>*{position:relative;z-index:1}
   .brand{display:flex;align-items:center;gap:9px}
   .brand img{width:22px;height:22px;filter:invert(1)}
   .brand span{font-family:var(--black);font-size:15px;letter-spacing:.14em}
@@ -164,10 +166,10 @@
 
 <script>
   const L = {
-    1:{eye:'Your space, kept', head:'A quieter place for a <span class="m">busy</span> brain.', sub:"Say it messy, in any order. Nenemi files it, holds it, and hands it back when you come looking. Nothing to organize first."},
-    2:{eye:'Just so it feels like yours', head:'First, <span class="m">your</span> name.', sub:"A name on the door. That's all we need to get you in."},
-    3:{eye:'Yours, and only yours', head:'This is all <span class="m">yours</span>.', sub:"A quiet room no one else can open. Free to keep, for as long as you like."},
-    4:{eye:'A quick look inside', head:'Welcome to your <span class="m">place</span>.', sub:"Three rooms in the house. Then the door is yours."}
+    1:{photo:'/photos/landing-hero.png', eye:'Your space, kept', head:'A quieter place for a <span class="m">busy</span> brain.', sub:"Say it messy, in any order. Nenemi files it, holds it, and hands it back when you come looking. Nothing to organize first."},
+    2:{photo:'/photos/originals/desk-eyes-closed.png', eye:'Just so it feels like yours', head:'First, <span class="m">your</span> name.', sub:"A name on the door. That's all we need to get you in."},
+    3:{photo:'/photos/landing-support.png', eye:'Yours, and only yours', head:'This is all <span class="m">yours</span>.', sub:"A quiet room no one else can open. Free to keep, for as long as you like."},
+    4:{photo:'/photos/originals/garden-phone.png', eye:'A quick look inside', head:'Welcome to your <span class="m">place</span>.', sub:"Three rooms in the house. Then the door is yours."}
   };
   const labels={1:'STEP 1 OF 4 — SIGN UP',2:'STEP 2 OF 4 — YOUR NAME',3:'STEP 3 OF 4 — YOUR PLACE',4:'STEP 4 OF 4 — WELCOME'};
   function go(n){
@@ -176,8 +178,10 @@
     document.getElementById('lHead').innerHTML=L[n].head;
     document.getElementById('lSub').innerHTML=L[n].sub;
     document.getElementById('steplabel').textContent=labels[n];
+    document.querySelector('.left').style.backgroundImage='url("'+L[n].photo+'")';
     window.scrollTo(0,0);
   }
+  go(1);
 </script>
 </body>
 </html>
