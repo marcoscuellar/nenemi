@@ -19,13 +19,13 @@
   /* NENEMI brand system v2.0: mist white, pure-white cards, ink black, warm gray. one restrained teal, semantic only.
      The dark sanctuary (I'm stuck / lockdown) is the deliberate exception — see the dark-scope rule below. */
   :root {
-    --paper: #F5F6F5;      /* app ground: soft, never stark white */
-    --sanctuary: #F5F6F5;  /* home + light panes sit on the soft ground */
-    --surface: #EFF1F0;
+    --paper: #FFFFFF;      /* app ground: pure white */
+    --sanctuary: #FFFFFF;  /* home + light panes sit on pure white */
+    --surface: #F4F4F4;
     --surface2: #FFFFFF;
     --card: #FFFFFF;
-    --ink: #111312;
-    --ink-2: #2A2D2C;
+    --ink: #000000;
+    --ink-2: #000000;
     --muted: #63696A;      /* Dim: secondary copy, meta */
     --faint: #9AA0A0;      /* placeholders / tertiary */
     --line: #E5E7E6;       /* hairlines */
@@ -47,13 +47,13 @@
     --glow-stop: 62%;
     --hg1: rgba(60,134,146,0.05);
     --hg2: rgba(60,134,146,0.02);
-    --glow2: #EFF1F0;
+    --glow2: #F4F4F4;
     --evt-block: #FFFFFF;
     --evt-fixed: #FFFFFF;
     --evt-fixed-line: #9AA0A0;
-    --evt-buffer: #EFF1F0;
-    --btn: #111312;        /* primary buttons: ink */
-    --btn-ink: #FAF8F3;    /* warm-white on ink */
+    --evt-buffer: #F4F4F4;
+    --btn: #000000;        /* primary buttons: black */
+    --btn-ink: #FFFFFF;    /* white on black */
     --pill-bg: rgba(255,255,255,0.86);
     --shadow: rgba(21,23,27,0.10);
     --card-shadow: 0 1px 2px rgba(20,22,26,0.04), 0 8px 26px rgba(20,22,26,0.05);
@@ -886,9 +886,9 @@
   .tab.active .tab-ic, .tab.active .tab-lb { color: var(--ink); }
   .tab.active .tab-ic svg { stroke-width: 2.4; }
   .tab-stuck { }
-  .tab-stuck .stuck-tile { width: 42px; height: 42px; border-radius: 4px; background: var(--ink); display: flex; align-items: center; justify-content: center; }
-  .tab-stuck .stuck-tile svg { stroke: #fff; }
-  .tab-stuck .tab-lb { color: var(--ink); font-weight: 700; }
+  .tab-stuck .stuck-tile { width: 42px; height: 42px; border-radius: 4px; background: transparent; display: flex; align-items: center; justify-content: center; }
+  .tab-stuck .stuck-tile svg { stroke: #10B7A7; }
+  .tab-stuck .tab-lb { color: #10B7A7; font-weight: 700; }
   .tab-stuck.active { background: none; }
   /* keep the sanctuary quiet: the bright bar recedes on dark panes */
   .app.dark-pane .tabbar { background: #131315; border-color: #26262A; }
@@ -1340,7 +1340,7 @@
       </div>
     </div>
     <div class="wordmark" aria-label="Nenemi" onclick="goSanctuary()">
-      <svg class="wm-mark" width="17" height="17" viewBox="0 0 140 140" aria-hidden="true"><path d="M25 115 V25 H42 V47 H63 V69 H85 V47 H63 V25 H115 V115 H99 V93 H77 V71 H55 V93 H77 V115 Z" stroke-width="6" stroke-linejoin="round"/></svg>
+      <img class="wm-mark" src="data:image/png;base64,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" alt="NENEMI" width="20" height="20" style="display:block"/>
       <span class="wm-text">NENEMI</span>
     </div>
     <div class="nav-overlay" id="navOverlay" onclick="closeNavDrawer()"></div>
