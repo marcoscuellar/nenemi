@@ -2179,7 +2179,7 @@
     document.querySelectorAll('#rvLoops .loop-text').forEach((el, idx) => makeEditable(el, { set: (t) => { r.loops[visibleLoops[idx].index].text = t; } }));
 
     const loopsToggle = document.getElementById('rvLoopsToggle');
-    loopsToggle.parentElement.hidden = r.loops.length === 0;
+    loopsToggle.parentElement.hidden = false;
     loopsToggle.classList.toggle('open', loopsExpanded);
     document.getElementById('rvLoopsToggleLabel').textContent = openLoops.length > 0
       ? `Still open · ${openLoops.length}`
@@ -2188,9 +2188,9 @@
 
     const logExpanded = showAllLogFor === r.id;
     const logToggle = document.getElementById('rvLogToggle');
-    logToggle.parentElement.hidden = r.log.length === 0;
+    logToggle.parentElement.hidden = false;
     logToggle.classList.toggle('open', logExpanded);
-    document.getElementById('rvLogToggleLabel').textContent = `Progress log · ${r.log.length} major update${r.log.length === 1 ? '' : 's'}`;
+    document.getElementById('rvLogToggleLabel').textContent = r.log.length ? `Progress log · ${r.log.length} major update${r.log.length === 1 ? '' : 's'}` : 'Progress log';
     document.getElementById('rvLogExpandLabel').textContent = logExpanded ? 'Collapse –' : 'Expand +';
     document.getElementById('rvLog').hidden = !logExpanded;
     const shown = logExpanded ? r.log : [];
@@ -3530,7 +3530,7 @@
       const body = localStorage.getItem(STORE_KEY); if (!body) return;
       const r = await fetch(apiUrl(), { method: 'PUT', headers: await authHeaders({ 'content-type': 'application/json' }), body });
       syncOn = r.ok;
-      if (r.ok) applyPlan(await r.json().catch(() => null));
+      if (r.ok) { applyPlan(await r.json().catch(() => null)); const rvPane = document.getElementById('pane-roomview'); if (currentRoom && rvPane && rvPane.classList.contains('active')) renderRoomView(); }
       else if (r.status === 402) { const j = await r.json().catch(() => ({})); auth.roomLimit = j.limit ?? auth.roomLimit; syncOn = true; noteRoomLimit(); }
     } catch (e) { syncOn = false; }
     renderSyncBadge();
