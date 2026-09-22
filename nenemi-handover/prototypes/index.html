@@ -1340,8 +1340,8 @@
   #onboard[hidden] { display:none; }
   #onboard * { box-sizing:border-box; }
   #onboard .ob-frame { width:100%; min-height:100%; display:grid; grid-template-columns:1fr 1fr; background:var(--ob-card); }
-  #onboard .ob-left { position:relative; overflow:hidden; background:#0a0b0c center 28%/cover no-repeat; color:#fff; padding:40px 46px; display:flex; flex-direction:column; justify-content:space-between; min-height:100vh; transition:background-image .3s ease; }
-  #onboard .ob-left::before { content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(100deg,rgba(8,10,12,.95),rgba(8,10,12,.66) 44%,rgba(8,10,12,.30)),linear-gradient(0deg,rgba(8,10,12,.82),transparent 46%); }
+  #onboard .ob-left { position:relative; overflow:hidden; background-color:#0b0b0c; background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='58'%20height='58'%3E%3Cpath%20d='M9%2049V21H21V9H49'%20fill='none'%20stroke='%23ffffff'%20stroke-opacity='0.06'%20stroke-width='2'/%3E%3C/svg%3E"); color:#fff; padding:40px 46px; display:flex; flex-direction:column; justify-content:space-between; min-height:100vh; }
+  #onboard .ob-left::before { content:""; position:absolute; inset:0; z-index:0; background:radial-gradient(120% 85% at 16% 28%, rgba(60,134,146,0.10), transparent 60%); }
   #onboard .ob-left > * { position:relative; z-index:1; }
   #onboard .ob-brand { display:flex; align-items:center; gap:9px; }
   #onboard .ob-brand img { width:22px; height:22px; filter:invert(1); }
@@ -1349,7 +1349,7 @@
   #onboard .ob-mid { max-width:420px; }
   #onboard .ob-eyebrow { font-family:var(--ob-mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.55); display:flex; align-items:center; gap:12px; margin-bottom:22px; }
   #onboard .ob-eyebrow::before { content:""; width:26px; height:2px; background:var(--ob-turq); }
-  #onboard .ob-big { font-family:var(--ob-black); font-size:clamp(34px,4vw,52px); line-height:1.02; letter-spacing:-.02em; margin:0; }
+  #onboard .ob-big { font-family:var(--ob-black); font-size:clamp(34px,4vw,52px); line-height:1.02; letter-spacing:-.02em; margin:0; color:#fff; }
   #onboard .ob-big .m { color:var(--ob-turq); }
   #onboard .ob-lede { color:rgba(255,255,255,.72); font-size:16px; line-height:1.6; max-width:400px; margin:22px 0 0; }
   #onboard .ob-foot { font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.4); }
@@ -4002,7 +4002,6 @@
     if (obEl('obHead')) obEl('obHead').innerHTML = L.head;
     if (obEl('obSub')) obEl('obSub').innerHTML = L.sub;
     if (obEl('obStepLabel')) obEl('obStepLabel').textContent = obLabels[n] || '';
-    const left = document.querySelector('#onboard .ob-left'); if (left) left.style.backgroundImage = 'url("' + L.photo + '")';
     const o = obEl('onboard'); if (o) o.scrollTop = 0;
     if (n === 4) { const fn = (typeof userFirstName === 'function' && userFirstName()) || ''; const h = obEl('obWelcomeHead'); if (h) h.textContent = fn ? ('Welcome in, ' + fn + '.') : 'Welcome in.'; }
   }
