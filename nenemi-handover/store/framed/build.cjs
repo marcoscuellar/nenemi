@@ -10,6 +10,7 @@ const P=[
 ];
 const W=414,H=896;
 const card=(x,y,w,h,src,pos)=>`<div class="card" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background-image:url('file://${R}${src}');background-position:${pos}"></div>`;
+const wave=()=>{let d='';for(let x=-20;x<=W*10+20;x+=12){const y=610+46*Math.sin(x/W*Math.PI*1.1)+18*Math.sin(x/W*Math.PI*0.37);d+=(d?'L':'M')+x+' '+y.toFixed(1)+' ';}return `<svg class="wave" width="${W*10}" height="${H}" viewBox="0 0 ${W*10} ${H}"><path d="${d}" fill="none" stroke="#3C8692" stroke-width="3.2" stroke-linecap="round"/></svg>`;};
 const page=slot=>{let out='';P.forEach((p,i)=>{const o=i*2*W;
  if(p.dark) out+=`<div class="night" style="left:${o}px;width:${2*W}px"></div>`;
  out+=`<div class="eb${p.dark?' dk':''}" style="left:${o+24}px">${MARK}NENEMI</div>`;
@@ -24,11 +25,12 @@ return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2
 .eb{position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
 .copy{position:absolute;top:72px;width:370px}h1{font-family:'Archivo Black',sans-serif;font-weight:400;line-height:1;letter-spacing:-.02em;color:#111312}h1 b{color:#3C8692}
 .sub{margin-top:10px;font:500 15.5px/1.35 Archivo,sans-serif;color:#63696A}
-.night{position:absolute;top:0;bottom:0;background:#111312}.eb.dk{color:#F5F6F5}.eb.dk path{fill:#F5F6F5}.dk h1{color:#F5F6F5}.dk h1 b{color:#5AA6B0}.dk .sub{color:#B9BEBD}
-.card{position:absolute;border-radius:26px;background-size:cover;box-shadow:0 14px 34px rgba(17,19,18,.16)}
-.phone{position:absolute;top:268px;width:262px;padding:7px;background:#0b0b0b;border-radius:44px;box-shadow:0 22px 50px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.08);z-index:2}
+.night{position:absolute;top:0;bottom:0;background:#111312;z-index:0}.eb.dk{color:#F5F6F5}.eb.dk path{fill:#F5F6F5}.dk h1{color:#F5F6F5}.dk h1 b{color:#5AA6B0}.dk .sub{color:#B9BEBD}
+.wave{position:absolute;left:0;top:0;z-index:2;pointer-events:none}
+.card{position:absolute;z-index:1;border-radius:26px;background-size:cover;box-shadow:0 14px 34px rgba(17,19,18,.16)}
+.phone{position:absolute;top:268px;width:262px;padding:7px;background:#0b0b0b;border-radius:44px;box-shadow:0 22px 50px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.08);z-index:3}
 .phone img{display:block;width:100%;border-radius:37px}
-</style></head><body>${out}</body></html>`;};
+</style></head><body>${out}${wave()}</body></html>`;};
 (async()=>{const b=await chromium.launch();
 for(const [slot,sc] of [['6.5',1],['6.7',430/414]]){
  const p=await b.newPage({viewport:{width:Math.round(W*10*sc),height:slot==='6.5'?896:932},deviceScaleFactor:3});
