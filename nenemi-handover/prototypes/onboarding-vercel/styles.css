@@ -21,7 +21,7 @@ button { cursor: pointer; }
 .brand {
   min-height: 100vh; padding: 44px 46px; color: white; display: flex; flex-direction: column;
   /* deep black carved-stone texture */
-  background-color: #060706;
+  background-color: #030403;
   background-image: linear-gradient(rgba(6,7,6,.25),rgba(6,7,6,.25)), url('./stone-tall.jpg');
   background-size: cover, cover;
   background-position: 0 0, 70% 62%;
