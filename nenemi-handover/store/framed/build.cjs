@@ -5,14 +5,15 @@ const P=[
  {shot:'01-home', h:'Made for your<br>brain. Not their<br>expectations<b>.</b>', fs:34, sub:'You&rsquo;re not behind. You&rsquo;re paused.<br>There&rsquo;s a big difference.', a:'photos/originals/kitchen-table.png', ap:'62% 40%', b1:'photos/originals/jacket-messy-bed.jpg', b1p:'50% 30%', b2:'photos/prove-workbench.jpg', b2p:'75% 40%'},
  {shot:'02-room', h:'Never lose<br>your place<b>.</b>', sub:'Built for the day you get pulled away.<br>Your room remembers where you were.', a:'photos/originals/fabric-wall-designer.png', ap:'64% 30%', b1:'photos/originals/desk-stretch.png', b1p:'52% 30%', b2:'photos/contact-team.jpg', b2p:'55% 30%'},
  {shot:'03-day', h:'Get a day<br>back<b>.</b>', sub:'Built for the day that got away from you.<br>Nenemi makes room to move.', a:'photos/originals/hallway-tote.png', ap:'52% 30%', b1:'photos/reality-market.jpeg', b1p:'55% 40%', b2:'photos/originals/garden-phone.png', b2p:'70% 30%'},
- {shot:'04-stuck', h:'Four ways<br>back in<b>.</b>', sub:'Built for the moment you freeze.<br>One small move, when you&rsquo;re ready.', a:'photos/originals/floor-mms.png', ap:'72% 40%', b1:'photos/originals/desk-eyes-closed.png', b1p:'72% 30%', b2:'photos/originals/man-late.png', b2p:'50% 35%'},
+ {shot:'04-stuck', dark:true, h:'Four ways<br>back in<b>.</b>', sub:'Built for the moment you freeze.<br>One small move, when you&rsquo;re ready.', a:'photos/originals/floor-mms.png', ap:'72% 40%', b1:'photos/originals/desk-eyes-closed.png', b1p:'72% 30%', b2:'photos/originals/man-late.png', b2p:'50% 35%'},
  {shot:'05-rooms', h:'People heal<br>people<b>.</b>', sub:'Built for the days an app isn&rsquo;t enough.<br>Real people, one tap away.', a:'photos/originals/living-room-two.png', ap:'78% 40%', b1:'photos/conversation-human.jpg', b1p:'55% 30%', b2:'photos/originals/couch-laundry.png', b2p:'25% 35%'},
 ];
 const W=414,H=896;
 const card=(x,y,w,h,src,pos)=>`<div class="card" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background-image:url('file://${R}${src}');background-position:${pos}"></div>`;
 const page=slot=>{let out='';P.forEach((p,i)=>{const o=i*2*W;
- out+=`<div class="eb" style="left:${o+24}px">${MARK}NENEMI</div>`;
- out+=`<div class="copy" style="left:${o+24}px"><h1 style="font-size:${p.fs||45}px">${p.h}</h1><p class="sub">${p.sub}</p></div>`;
+ if(p.dark) out+=`<div class="night" style="left:${o}px;width:${2*W}px"></div>`;
+ out+=`<div class="eb${p.dark?' dk':''}" style="left:${o+24}px">${MARK}NENEMI</div>`;
+ out+=`<div class="copy${p.dark?' dk':''}" style="left:${o+24}px"><h1 style="font-size:${p.fs||45}px">${p.h}</h1><p class="sub">${p.sub}</p></div>`;
  out+=card(o+18,330,250,470,p.a,p.ap);
  out+=card(o+W+150,48,246,360,p.b1,p.b1p);
  out+=card(o+W+150,428,246,420,p.b2,p.b2p);
@@ -23,6 +24,7 @@ return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2
 .eb{position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
 .copy{position:absolute;top:72px;width:370px}h1{font-family:'Archivo Black',sans-serif;font-weight:400;line-height:1;letter-spacing:-.02em;color:#111312}h1 b{color:#3C8692}
 .sub{margin-top:10px;font:500 15.5px/1.35 Archivo,sans-serif;color:#63696A}
+.night{position:absolute;top:0;bottom:0;background:#111312}.eb.dk{color:#F5F6F5}.eb.dk path{fill:#F5F6F5}.dk h1{color:#F5F6F5}.dk h1 b{color:#5AA6B0}.dk .sub{color:#B9BEBD}
 .card{position:absolute;border-radius:26px;background-size:cover;box-shadow:0 14px 34px rgba(17,19,18,.16)}
 .phone{position:absolute;top:268px;width:262px;padding:7px;background:#0b0b0b;border-radius:44px;box-shadow:0 22px 50px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.08);z-index:2}
 .phone img{display:block;width:100%;border-radius:37px}
