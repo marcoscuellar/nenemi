@@ -10,11 +10,11 @@ const P=[
 ];
 const W=414,H=896;
 const LAY=[
- {py:250, rot:-4, a:[16,330,236,250,0], b1:[578,36,176,300,0], b2:[610,362,250,380,0]},
- {py:242, rot:0, a:[-18,560,250,300,0], b1:[572,150,238,240,0], b2:[578,410,160,250,0]},
- {py:272, rot:5, a:[18,262,200,340,0], b1:[586,40,244,300,0], b2:[604,370,270,250,0]},
- {py:248, rot:0, a:[-30,500,270,330,0], b1:[572,60,170,250,0], b2:[586,340,236,400,0]},
- {py:262, rot:-3, a:[16,320,236,270,0], b1:[586,40,230,340,0], b2:[570,400,184,300,0]},
+ {py:262, rot:-4, a:[16,330,236,250,0], b1:[578,36,176,300,0], b2:[610,362,250,380,0]},
+ {py:250, rot:0, a:[-18,560,250,300,0], b1:[572,150,238,240,0], b2:[578,410,160,250,0]},
+ {py:282, rot:5, a:[18,262,200,340,0], b1:[586,40,244,300,0], b2:[604,370,270,250,0]},
+ {py:256, rot:0, a:[-30,500,270,330,0], b1:[572,60,170,250,0], b2:[586,340,236,400,0]},
+ {py:268, rot:-3, a:[16,320,236,270,0], b1:[586,40,230,340,0], b2:[570,400,184,300,0]},
 ];
 const card=(x,y,w,h,src,pos,r)=>`<div class="card" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:rotate(${r||0}deg);background-image:url('file://${R}${src}');background-position:${pos}"></div>`;
 const wave=()=>{let d='';for(let x=-20;x<=W*10+20;x+=12){const y=610+46*Math.sin(x/W*Math.PI*1.1)+18*Math.sin(x/W*Math.PI*0.37);d+=(d?'L':'M')+x+' '+y.toFixed(1)+' ';}return `<svg class="wave" width="${W*10}" height="${H}" viewBox="0 0 ${W*10} ${H}"><path d="${d}" fill="none" stroke="#3C8692" stroke-width="3.2" stroke-linecap="round"/></svg>`;};
@@ -26,7 +26,7 @@ const page=slot=>{let out='';P.forEach((p,i)=>{const o=i*2*W;
  out+=card(o+L.a[0],L.a[1],L.a[2],L.a[3],p.a,p.ap,L.a[4]);
  out+=card(o+L.b1[0],L.b1[1],L.b1[2],L.b1[3],p.b1,p.b1p,L.b1[4]);
  out+=card(o+L.b2[0],L.b2[1],L.b2[2],L.b2[3],p.b2,p.b2p,L.b2[4]);
- out+=`<div class="phone" style="left:${o+W-150}px;top:${LAY[i].py}px;transform:rotate(${LAY[i].rot}deg)"><img src="file://${S}/store/${slot}/${p.shot}.png"></div>`;
+ out+=`<div class="phone" style="left:${o+W-175}px;top:${LAY[i].py}px;transform:rotate(${LAY[i].rot}deg)"><img src="file://${S}/store/${slot}/${p.shot}.png"></div>`;
 });
 return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}body{width:${W*10}px;height:${H}px;background:#F5F6F5;position:relative;overflow:hidden;font-family:Archivo,sans-serif}
@@ -36,8 +36,8 @@ return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2
 .night{position:absolute;top:0;bottom:0;background:#111312;z-index:0}.eb.dk{color:#F5F6F5}.eb.dk path{fill:#F5F6F5}.dk h1{color:#F5F6F5}.dk h1 b{color:#5AA6B0}.dk .sub{color:#B9BEBD}
 .wave{position:absolute;left:0;top:0;z-index:2;pointer-events:none}
 .card{position:absolute;z-index:1;border-radius:24px;background-size:cover;box-shadow:0 14px 34px rgba(17,19,18,.16)}
-.phone{position:absolute;top:268px;width:300px;padding:8px;background:#0b0b0b;border-radius:50px;box-shadow:0 40px 70px -10px rgba(17,19,18,.45),0 14px 28px rgba(17,19,18,.25),0 0 0 2px rgba(255,255,255,.08);z-index:3}
-.phone img{display:block;width:100%;border-radius:42px}
+.phone{position:absolute;top:268px;width:350px;padding:9px;background:#0b0b0b;border-radius:58px;box-shadow:0 40px 70px -10px rgba(17,19,18,.45),0 14px 28px rgba(17,19,18,.25),0 0 0 2px rgba(255,255,255,.08);z-index:3}
+.phone img{display:block;width:100%;border-radius:49px}
 </style></head><body>${out}${wave()}</body></html>`;};
 (async()=>{const b=await chromium.launch();
 for(const [slot,sc] of [['6.5',1],['6.7',430/414]]){
