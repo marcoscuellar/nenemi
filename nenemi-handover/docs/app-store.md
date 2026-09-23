@@ -8,7 +8,7 @@ One screen at a time. Do the step, come back, say "done". Nothing here needs to 
 - **iOS shell:** ready in `app/`. Build **1.0 (2)**, iPhone only, portrait, minimum iOS 15. Loads the live site in a Capacitor WebView, so shipping web updates needs no new review.
 - **Assets in the repo:** app icon + splash (in Xcode project), store screenshots for the 6.7" and 6.5" slots — 5 each — in `nenemi-handover/store/screenshots/`, privacy / terms / support pages live.
 - **One real blocker left:** Clerk must be switched to its production instance on mynenemi.com, and **Sign in with Apple** added (Apple requires it because Google sign-in is offered). ~20 minutes, with you at the keyboard. See "Still to do" at the bottom.
-- **Store screenshots refreshed 2026-09-21** to match the current look (black/white reskin, the My Day checklist). Five screens each for the 6.7" and 6.5" slots, at exact App Store sizes (1290×2796 and 1242×2688), in `nenemi-handover/store/screenshots/`.
+- **Store screenshots refreshed 2026-09-23** to match the current look (reference restyle, time-of-day greeting, My Day). Five screens each for the 6.7" and 6.5" slots, at exact App Store sizes (1290×2796 and 1242×2688), in `nenemi-handover/store/screenshots/`.
 
 ### Money: the iOS app ships **free** — do not add in-app purchase
 Full access ($10/mo) is **web only**, through Stripe. The iPhone app offers **no purchase at all**, so Apple's in-app-purchase rule (3.1.1) does not apply and there is nothing to build for review. **Never wire Stripe checkout or a "Full access" buy button into the app** — that is an automatic rejection. If you ever want the subscription available inside the app, it has to go through Apple's own in-app purchase, which is a separate, larger piece of work.
@@ -122,9 +122,10 @@ Everything below is ready to paste. Screenshots are in `nenemi-handover/store/sc
 
 ## Review notes, paste into "Notes" for the reviewer
 
-No account is needed. Open the app and type or speak into the box on the first screen. Sign-in is optional and only syncs data across devices. Speech is handled on device by Apple's recognizer. The app is a native shell around our web app so updates ship without a resubmission; all features are usable inside the app.
+Sign in with the demo account below (email and password). Then type or speak into the box on the first screen. Your data is saved on the device and synced to your account. Speech is handled on device by Apple's recognizer. The app is a native shell around our web app so updates ship without a resubmission; all features are usable inside the app.
 
 ## Still to do before submission
 
 - **Clerk → production + Sign in with Apple — verify it's live.** The plan is: Clerk on its production instance on mynenemi.com, with Sign in with Apple enabled (Apple requires it whenever Google sign-in is offered). Marcos believes this is already done; it couldn't be confirmed from the build environment. 10-second check: open the sign-in sheet on https://www.mynenemi.com — "Continue with Apple" should be one of the options, and the account should be a production Clerk instance (not a `*.clerk.accounts.dev` dev one).
-- Store screenshots: **done** (refreshed 2026-09-21, both slots, exact sizes).
+- Store screenshots: **done** (refreshed 2026-09-23, both slots, exact sizes).
+- **Demo account for Apple's reviewer.** The app now opens on the sign-up screen, so the reviewer needs a login. Create one account (e.g. a spare email + password) and paste both into App Store Connect → App Review Information → Sign-in required.
