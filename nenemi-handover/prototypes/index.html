@@ -4255,6 +4255,7 @@
       showOnboard((typeof userFirstName === 'function' && userFirstName()) ? 3 : 2); return; // fresh sign-up
     }
     showOnboard(1);                                                  // auth on, not signed in
+    if (window.__openSignIn) { window.__openSignIn = false; obSignIn(); } // arrived from a Log In link
   }
   function obShowErr(id, e) {
     const el = obEl(id); if (!el) return;
@@ -4351,6 +4352,7 @@
     const signedInHint = uat && Number(uat) > 0;
     if (q.has('paid')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); window.__afterCheckout = true; return; }
     if (q.has('open')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); return; }
+    if (q.has('login')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); window.__openSignIn = true; return; } // welcome.html Log In → straight to sign-in
     if (q.has('start')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); return; } // arrived from a welcome.html CTA → into the app, where the wall gates it
     if (seen || standalone || signedInHint || /__clerk|clerk_/.test(location.search + location.hash)) return;
     location.replace('/welcome.html');
