@@ -39,13 +39,13 @@
     .textlink:hover{color:var(--teal-deep)}
 
     /* nav */
-    .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.68);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);border-bottom:1px solid rgba(17,19,18,.07)}
     .nav-in{display:flex;align-items:center;justify-content:space-between;height:74px}
     .brand{display:flex;align-items:center;gap:11px;text-decoration:none}
     .brand{gap:13px}
     .brand .wm-txt{font-size:.94rem;color:var(--ink)}
     .nav-r{display:flex;align-items:center;gap:26px}
-    .nav-r .lk{text-decoration:none;color:var(--dim);font-size:.95rem;font-weight:500}
+    .nav-r .lk{text-decoration:none;color:#2f3433;font-size:.95rem;font-weight:500}
     .nav-r .lk:hover{color:var(--ink)}
     .nav-sep{width:1px;height:20px;background:var(--line)}
     .nav-r .login{text-decoration:none;color:var(--ink);font-size:.95rem;font-weight:700}
@@ -288,6 +288,13 @@
     #day .feat-copy{padding-bottom:130px}
     #rooms .feat-copy{padding-bottom:200px}
     @media(max-width:820px){.recog .same{margin:30px 0 26px}#promise{padding:72px 0}#day .feat-copy,#rooms .feat-copy{padding-bottom:0}}
+
+    /* rolling text: each letter rolls up and a copy rolls in from below, staggered (Motion-style rolling text button) */
+    .roll{display:inline-flex;overflow:hidden;line-height:1.25;height:1.25em;vertical-align:middle}
+    .roll .ch{display:inline-block;position:relative;white-space:pre;transition:transform .5s cubic-bezier(.7,0,.25,1);transition-delay:calc(var(--i) * 22ms)}
+    .roll .ch:after{content:attr(data-c);position:absolute;left:0;top:100%}
+    a:hover>.roll .ch,a:focus-visible>.roll .ch{transform:translateY(-100%)}
+    @media(prefers-reduced-motion:reduce){.roll .ch{transition:none}a:hover>.roll .ch,a:focus-visible>.roll .ch{transform:none}}
   </style>
 </head>
 <body>
@@ -472,6 +479,18 @@
   window.addEventListener('load',setReveal);
   window.addEventListener('resize',setReveal);
   setReveal();
+})();
+</script>
+<script>
+// rolling text buttons: split each label into letters (screen readers still get the plain label)
+(function(){
+  document.querySelectorAll('.nav-r a, a.pill').forEach(function(a){
+    var t=a.textContent.trim(); if(!t||a.querySelector('.roll')) return;
+    a.setAttribute('aria-label',t);
+    var r=document.createElement('span'); r.className='roll'; r.setAttribute('aria-hidden','true');
+    Array.from(t).forEach(function(c,i){ var s=document.createElement('span'); s.className='ch'; s.style.setProperty('--i',i); s.textContent=c; s.setAttribute('data-c',c); r.appendChild(s); });
+    a.textContent=''; a.appendChild(r);
+  });
 })();
 </script>
 </body>
