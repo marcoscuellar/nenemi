@@ -3,7 +3,7 @@ const R='/home/user/nenemi/', S='/tmp/claude-0/-home-user-nenemi/c367e670-81af-5
 const MARK=fs.readFileSync(R+'photos/logo/nenemi-mark.svg','utf8');
 const F=[
  {n:'01-home', shot:'01-home', photo:'photos/originals/kitchen-table.png', pos:'56% center', h:'Made for your<br>brain. Not their<br>expectations<b>.</b>', fs:8.4, sub:'You&rsquo;re not behind. You&rsquo;re paused.<br>There&rsquo;s a big difference.', dark:false},
- {n:'02-room', shot:'02-room', photo:'photos/originals/desk-eyes-closed.png', pos:'60% center', h:'Never lose<br>your place<b>.</b>', dark:false},
+ {n:'02-room', shot:'02-room', photo:'photos/originals/fabric-wall-designer.png', pos:'44% center', h:'Never lose<br>your place<b>.</b>', dark:false},
  {n:'03-day', shot:'03-day', photo:'photos/originals/hallway-tote.png', pos:'35% center', h:'Get a day<br>back<b>.</b>', dark:false},
  {n:'04-stuck', shot:'04-stuck', photo:'photos/originals/floor-mms.png', pos:'62% center', h:'Four ways<br>back in<b>.</b>', dark:true},
  {n:'05-rooms', shot:'05-rooms', photo:'photos/originals/living-room-two.png', pos:'60% center', h:'People heal<br>people<b>.</b>', dark:false},
