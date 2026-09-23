@@ -18,7 +18,7 @@ Before building or changing anything, ask: **does this hand them a crayon, or ma
 ## Voice
 - Warm, short, specific. One sentence per line. Proper capitalization and punctuation. No exclamation marks.
 - Greeting lines are the user's own list (see `greetingLines` in `index.html`). Cut before adding.
-- Product copy never says "unlimited rooms". Plans are "Full access" and "Free · n of 2 rooms".
+- Plans are "Full access" and "Free · n of 2 rooms". The paywall says "Unlimited rooms" (Marcos's call, Sep 2026).
 
 ## Mechanics that must stay true
 - Free plan: 2 rooms of the user's own plus the example room. Calendar, voice, and re-entry are always free. Existing rooms are never taken away.
