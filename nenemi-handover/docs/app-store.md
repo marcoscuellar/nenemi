@@ -127,5 +127,5 @@ Sign in with the demo account below (email and password). Then type or speak int
 ## Still to do before submission
 
 - **Clerk → production + Sign in with Apple — verify it's live.** The plan is: Clerk on its production instance on mynenemi.com, with Sign in with Apple enabled (Apple requires it whenever Google sign-in is offered). Marcos believes this is already done; it couldn't be confirmed from the build environment. 10-second check: open the sign-in sheet on https://www.mynenemi.com — "Continue with Apple" should be one of the options, and the account should be a production Clerk instance (not a `*.clerk.accounts.dev` dev one).
-- Store screenshots: **done** (refreshed 2026-09-23, both slots, exact sizes).
+- Store screenshots: **done** (refreshed 2026-09-23, both slots, exact sizes). Upload the framed set in `nenemi-handover/store/framed/` (headline + real app screen + a person behind it). The plain screens stay in `store/screenshots/`.
 - **Demo account for Apple's reviewer.** The app now opens on the sign-up screen, so the reviewer needs a login. Create one account (e.g. a spare email + password) and paste both into App Store Connect → App Review Information → Sign-in required.
