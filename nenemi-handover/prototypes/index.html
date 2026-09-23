@@ -2358,13 +2358,15 @@
   function greetingLines() {
     const h = new Date().getHours();
     const name = userFirstName();
-    const word = h >= 5 && h < 12 ? 'Morning' : h >= 12 && h < 17 ? 'Afternoon' : h >= 17 && h < 22 ? 'Evening' : 'Hey';
+    const word = h >= 5 && h < 12 ? 'Morning' : h >= 12 && h < 17 ? 'Afternoon' : 'Evening';
     const hello = name ? `${word} · ${name}` : word;
     const line = LINES[visitN % LINES.length];
     const cap = t => t.replace(/(^|[.!?]\s+)([a-z])/g, (m, a, c) => a + c.toUpperCase());
     return { hello, line: cap(line) };
   }
   let greetTimer = null;
+  // an app left open from afternoon into evening says so when they come back to it (unless a conversation is on screen)
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !document.querySelector('.app.talking')) renderGreeting(); });
   function renderGreetingSoon() { clearTimeout(greetTimer); greetTimer = setTimeout(() => { if (!document.getElementById('greetingText').dataset.named && userFirstName()) { document.getElementById('greetingText').dataset.named = '1'; renderGreeting(); } }, 50); }
   function renderGreeting() {
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;

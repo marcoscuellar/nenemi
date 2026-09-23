@@ -7,7 +7,7 @@ Before building or changing anything, ask: **does this hand them a crayon, or ma
 
 ## Non-negotiables
 - **Never tell the user what to do.** Copy offers, asks, or holds. No imperatives aimed at the person ("drop it here, then sleep" was removed for this reason). "Dump it here" is the one allowed exception because it's the box's name for its own lid.
-- **No shame mechanics, ever.** No streaks, no red, no "overdue", no countdowns, no comments on the hour. Late-night greeting is "Hey", not "Still up".
+- **No shame mechanics, ever.** No streaks, no red, no "overdue", no countdowns, no comments on the hour. The greeting is only ever Morning (5am to noon), Afternoon (noon to 5pm), or Evening (5pm to 5am), never "Still up".
 - **Capture before organize.** The user can always say it first and sort it never. The app files it, offers a room, or holds it loose.
 - **Re-entry over planning.** The first thing on any screen is "where you left off" and one small move, not a list.
 - **One small move.** Stuck screens offer one thing. Never a list of options longer than the four doors.
