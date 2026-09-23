@@ -1399,9 +1399,14 @@
   #onboard .ob-steplabel { position:fixed; top:calc(10px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:2; background:rgba(17,19,18,.9); color:#fff; font-family:var(--ob-mono); font-size:11px; letter-spacing:.12em; padding:6px 14px; border-radius:20px; }
   #onboard .ob-step { display:none; }
   #onboard .ob-step.active { display:block; }
-  /* left panel: deep black carved-stone texture (photos/texture, drawn by generate-stone.py), white type.
+  /* left panel: deep black carved texture (photos/texture/tex-*.webp), white type.
      !important beats the per-step photo the script sets inline, so the script stays as is. */
-  #onboard .ob-left { background-color:#070504 !important; background-image:linear-gradient(rgba(8,6,5,.12),rgba(8,6,5,.12)), url('/photos/texture/stone-tall.jpg') !important; background-size:cover, cover !important; background-position:0 0, 70% 62% !important; background-repeat:no-repeat, no-repeat !important; }
+  #onboard .ob-left { background-color:#050404 !important; background-image:url('/photos/texture/tex-glyphs.webp') !important; background-size:cover !important; background-position:right center !important; background-repeat:no-repeat !important; }
+  /* one carved texture per step, in order: glyphs (sign up), step-fret (code), diamonds (name), glyphs (plan), step-fret (welcome) */
+  #onboard:has(#obsCode.active) .ob-left { background-image:url('/photos/texture/tex-fret.webp') !important; }
+  #onboard:has(#obs2.active) .ob-left { background-image:url('/photos/texture/tex-diamonds.webp') !important; }
+  #onboard:has(#obs3.active) .ob-left { background-image:url('/photos/texture/tex-glyphs.webp') !important; }
+  #onboard:has(#obs4.active) .ob-left { background-image:url('/photos/texture/tex-fret.webp') !important; }
   #onboard .ob-left::before { display:none; }
   #onboard .ob-big, #onboard .ob-big .m { color:#fff; }
   #onboard .ob-lede, #onboard .ob-foot { color:#fff; }

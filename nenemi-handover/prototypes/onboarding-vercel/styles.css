@@ -20,12 +20,12 @@ button { cursor: pointer; }
 .shell { min-height: 100vh; display: grid; grid-template-columns: minmax(380px, 1fr) minmax(510px, 1fr); }
 .brand {
   min-height: 100vh; padding: 44px 46px; color: white; display: flex; flex-direction: column;
-  /* deep black carved-stone texture */
-  background-color: #070504;
-  background-image: linear-gradient(rgba(8,6,5,.12),rgba(8,6,5,.12)), url('./stone-tall.jpg');
-  background-size: cover, cover;
-  background-position: 0 0, 70% 62%;
-  background-repeat: no-repeat, no-repeat;
+  /* deep black carved texture, one per step (see below) */
+  background-color: #050404;
+  background-image: url('./tex-glyphs.webp');
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
   position: relative; overflow: hidden;
 }
 .brand > * { position: relative; z-index: 1; }
@@ -40,6 +40,11 @@ h1, h2 { font-family:"Archivo Black", "Archivo", sans-serif; margin:0; letter-sp
 .brand h1 { font-size: clamp(46px, 4.4vw, 68px); line-height: .99; margin-top: 27px; }
 .accent { color: var(--teal); }
 .brand .accent { color: #fff; }
+/* one texture per step, in order: glyphs (sign up), step-fret (code), diamonds (name), glyphs (plan), step-fret (welcome) */
+.shell:has(#code) .brand { background-image: url('./tex-fret.webp'); }
+.shell:has(.progress i:nth-child(2).active) .brand { background-image: url('./tex-diamonds.webp'); }
+.shell:has(.progress i:nth-child(3).active) .brand { background-image: url('./tex-glyphs.webp'); }
+.shell:has(.progress i:nth-child(4).active) .brand { background-image: url('./tex-fret.webp'); }
 .brand .eyebrow { color: #8ac7be; }
 .brand-copy > p { font-size:18px; line-height:1.55; max-width:480px; margin:24px 0 0; }
 .brand-foot { font-size:10px; letter-spacing:.16em; }
