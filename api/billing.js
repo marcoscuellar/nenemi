@@ -15,7 +15,7 @@ import { getIdentity } from '../lib/auth.js';
 
 const SECRET = process.env.STRIPE_SECRET_KEY || '';
 const PRICE = process.env.STRIPE_PRICE_MONTHLY || '';
-const SITE = process.env.NENEMI_SITE_URL || 'https://www.mynenemi.com';
+const SITE = process.env.NENEMI_SITE_URL || 'https://app.mynenemi.com';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');

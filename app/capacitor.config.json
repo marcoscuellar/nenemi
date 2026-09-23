@@ -3,8 +3,8 @@
   "appName": "Nenemi",
   "webDir": "www",
   "server": {
-    "url": "https://www.mynenemi.com/?open=1",
-    "allowNavigation": ["www.mynenemi.com", "mynenemi.com", "*.clerk.accounts.dev", "*.clerk.com", "accounts.google.com", "appleid.apple.com"]
+    "url": "https://app.mynenemi.com/?open=1",
+    "allowNavigation": ["app.mynenemi.com", "www.mynenemi.com", "mynenemi.com", "*.clerk.accounts.dev", "*.clerk.com", "accounts.google.com", "appleid.apple.com"]
   },
   "ios": {
     "contentInset": "never",

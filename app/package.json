@@ -2,7 +2,7 @@
   "name": "nenemi-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Native shell for Nenemi. Loads www.mynenemi.com inside a Capacitor WebView.",
+  "description": "Native shell for Nenemi. Loads app.mynenemi.com inside a Capacitor WebView.",
   "scripts": {
     "sync": "cap sync ios",
     "open": "cap open ios"

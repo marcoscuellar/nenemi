@@ -32,5 +32,6 @@ Before building or changing anything, ask: **does this hand them a crayon, or ma
 - Phone CSS lives in the last `@media (max-width: 720px)` block at the end of the stylesheet, on purpose, so it wins. Add phone rules there, never above the desktop rules.
 - Test with Playwright against a local mock server before pushing (see the scratchpad servers pattern used in this project; chromium headless shell is at `/opt/pw-browsers`).
 - Work on `claude/code-cleanup-q9353f`, then fast-forward `main`. Vercel deploys `main` to www.mynenemi.com.
+- Two addresses, one deploy: mynenemi.com and www always show the landing page (`welcome.html`); app.mynenemi.com is the app. Links into the app from www (`?start`, `?login`, `?open`, `?paid`) forward to app.mynenemi.com and carry any saved data along in `#handoff=` (browser storage is per address). The iOS shell loads app.mynenemi.com.
 - Never put keys in the repo. Env vars live in Vercel: Clerk, Neon, Anthropic, Blob (`BLOB_READ_WRITE_TOKEN`, created by adding a Blob store in the Vercel Storage tab), `NENEMI_ADMIN_EMAILS`.
 - Reference docs: `nenemi-handover/docs/` (external motors, way back in, storage plan, name meaning).

@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+  // Arriving from www with saved data in the link: keep it here (never overwrites what this address already holds).
+  (function () {
+    if (location.hash.indexOf('#handoff=') !== 0) return;
+    try {
+      const b = atob(location.hash.slice(9).replace(/-/g, '+').replace(/_/g, '/'));
+      const o = JSON.parse(new TextDecoder().decode(Uint8Array.from(b, c => c.charCodeAt(0))));
+      Object.keys(o).forEach(k => { if (/^nenemi\./.test(k) && localStorage.getItem(k) == null) localStorage.setItem(k, o[k]); });
+    } catch (e) {}
+    history.replaceState(null, '', location.pathname + location.search);
+  })();
+</script>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Nenemi</title>
@@ -3961,7 +3974,7 @@
   function toggleAcctMenu(ev) { if (ev) ev.stopPropagation(); const m = document.getElementById('acctMenu'); if (!m) return; renderAcctMenu(); m.classList.toggle('open'); }
   document.addEventListener('click', (e) => { const m = document.getElementById('acctMenu'); if (m && m.classList.contains('open') && !m.contains(e.target)) m.classList.remove('open'); });
   function showPhoneSetup() {
-    alert("iPhone: open www.mynenemi.com in Safari, tap Share, then \u201cAdd to Home Screen.\u201d\n\nAndroid: open it in Chrome, tap the three dots, then \u201cInstall app.\u201d\n\nIt gets its own icon and opens full-screen. Same account, same rooms.");
+    alert("iPhone: open app.mynenemi.com in Safari, tap Share, then \u201cAdd to Home Screen.\u201d\n\nAndroid: open it in Chrome, tap the three dots, then \u201cInstall app.\u201d\n\nIt gets its own icon and opens full-screen. Same account, same rooms.");
   }
   // ---------- your day, in your calendar app ----------
   // Same file format the feed uses (lib/ics.js). Times go out "floating": 9:30 means 9:30 wherever you are.
@@ -4342,10 +4355,28 @@
     try { if (typeof go === 'function') go('home'); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
   }
 
+  // mynenemi.com (and www) is the landing page; the app lives on app.mynenemi.com.
+  // Browser storage is per address, so anything saved on www rides along in the link the first time.
+  const APP_HOST = 'app.mynenemi.com';
+  function handoffHash() {
+    const keys = [STORE_KEY, SYNC_KEY, 'nenemi.seen', 'nenemi.onboarded', 'nenemi.lastRoom'], out = {};
+    try { keys.forEach(k => { const v = localStorage.getItem(k); if (v != null) out[k] = v; }); } catch (e) { return ''; }
+    if (!Object.keys(out).length) return '';
+    const pack = o => { const b = new TextEncoder().encode(JSON.stringify(o)); let t = ''; b.forEach(c => t += String.fromCharCode(c)); return btoa(t).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+    let h = pack(out);
+    if (h.length > 60000) { delete out[STORE_KEY]; h = pack(out); } // too big for a link: the sync code still brings it back
+    return '#handoff=' + h;
+  }
   // first-time visitors on the open web see the landing page. anyone with anything saved, an installed app, or a sign-in goes straight in.
   (function landing() {
     if (location.protocol === 'file:' || location.pathname !== '/') return;
     const q = new URLSearchParams(location.search);
+    if (/^(www\.)?mynenemi\.com$/.test(location.hostname)) {
+      const standaloneSite = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+      if (q.has('start') || q.has('login') || q.has('open') || q.has('paid') || standaloneSite) { location.replace('https://' + APP_HOST + '/' + location.search + handoffHash()); return; }
+      location.replace('/welcome.html'); return;
+    }
+    const onApp = location.hostname === APP_HOST;
     let seen = null; try { seen = localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY); } catch (e) {}
     const standalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
     const uat = (document.cookie.match(/(?:^|;)\s*__client_uat=([^;]*)/) || [])[1];
@@ -4354,7 +4385,7 @@
     if (q.has('open')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); return; }
     if (q.has('login')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); window.__openSignIn = true; return; } // welcome.html Log In → straight to sign-in
     if (q.has('start')) { try { localStorage.setItem('nenemi.seen', '1'); } catch (e) {} history.replaceState(null, '', '/'); return; } // arrived from a welcome.html CTA → into the app, where the wall gates it
-    if (seen || standalone || signedInHint || /__clerk|clerk_/.test(location.search + location.hash)) return;
+    if (onApp || seen || standalone || signedInHint || /__clerk|clerk_/.test(location.search + location.hash)) return;
     location.replace('/welcome.html');
   })();
 

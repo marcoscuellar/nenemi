@@ -5,7 +5,7 @@ One screen at a time. Do the step, come back, say "done". Nothing here needs to 
 ## Status at handoff — 2026-09-21
 
 - **Web app:** live at https://www.mynenemi.com, deploys automatically from `main` (Vercel). Current `main`: `8c122c1`.
-- **iOS shell:** ready in `app/`. Build **1.0 (2)**, iPhone only, portrait, minimum iOS 15. Loads the live site in a Capacitor WebView, so shipping web updates needs no new review.
+- **iOS shell:** ready in `app/`. Build **1.0 (2)**, iPhone only, portrait, minimum iOS 15. Loads the live app (app.mynenemi.com) in a Capacitor WebView, so shipping web updates needs no new review.
 - **Assets in the repo:** app icon + splash (in Xcode project), store screenshots for the 6.7" and 6.5" slots — 5 each — in `nenemi-handover/store/screenshots/`, privacy / terms / support pages live.
 - **One real blocker left:** Clerk must be switched to its production instance on mynenemi.com, and **Sign in with Apple** added (Apple requires it because Google sign-in is offered). ~20 minutes, with you at the keyboard. See "Still to do" at the bottom.
 - **Store screenshots refreshed 2026-09-23** to match the current look (reference restyle, time-of-day greeting, My Day). Five screens each for the 6.7" and 6.5" slots, at exact App Store sizes (1290×2796 and 1242×2688), in `nenemi-handover/store/screenshots/`.
@@ -15,7 +15,7 @@ Full access ($10/mo) is **web only**, through Stripe. The iPhone app offers **no
 
 ## What is already built
 
-- `app/` is the native shell. It is a Capacitor project that opens www.mynenemi.com inside the app, so every push to `main` updates the app too, with no new App Store review.
+- `app/` is the native shell. It is a Capacitor project that opens app.mynenemi.com inside the app, so every push to `main` updates the app too, with no new App Store review.
 - Bundle ID: `com.ollinos.nenemi`. App name: Nenemi. iPhone only, portrait only. Minimum iOS 15.
 - App icon (the white N with the teal glow, from photos/originals/N-icon.jpg) and splash are in the Xcode project.
 - The mic works inside the app through Apple's own speech recognizer, shipped as a local Swift package (`app/ios/App/NenemiSpeech`). The web page notices it is inside the shell and uses that instead of the browser API.
