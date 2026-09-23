@@ -262,11 +262,11 @@
     #people .support-links a .ar{color:#6b7072}
     /* 8. final invitation */
     .close-line{font-family:ui-monospace,Menlo,monospace;font-size:.72rem!important;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer)!important;margin:56px auto 0!important;max-width:none!important}
-    /* founder: one section. head across the top, then photo | note, with the work behind it under the signature */
+    /* founder: one section. photo | all the copy, centered to each other; phone stacks photo first */
     #founder{padding:96px 0 104px}
-    .founder2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);column-gap:64px;row-gap:40px;align-items:start}
-    .f-head{grid-column:1/-1}
-    .f-head h2{margin:14px 0 0;font-size:clamp(2.4rem,5vw,4.2rem)}
+    .founder2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);column-gap:64px;row-gap:40px;align-items:center}
+    .f-head{margin-bottom:26px}
+    .f-head h2{margin:14px 0 0;font-size:clamp(2.2rem,3.6vw,3.4rem)}
     .founder2 .founder-photo{max-width:none;width:100%;aspect-ratio:10/11}
     .f-copy .lead{margin:0;max-width:560px;color:var(--ink2)}
     .f-copy .founder-sign{margin-top:22px}
@@ -276,8 +276,7 @@
       #founder{padding:64px 0 72px}
       .founder2{grid-template-columns:1fr;row-gap:28px}
       .founder2 .founder-photo{order:1;aspect-ratio:4/5}
-      .f-head{order:2}
-      .f-copy{order:3}
+      .f-copy{order:2}
     }
     /* the next section overlaps each phone's bottom edge; keep the copy clear of that overlap */
     #day .feat-copy{padding-bottom:130px}
@@ -405,14 +404,14 @@
     </div>
   </div></section>
 
-  <!-- FOUNDER (one section: head across the top, photo left, note + the work behind it right) -->
+  <!-- FOUNDER (one section: photo left, all the copy right, centered to each other) -->
   <section id="founder"><div class="wrap founder2">
-    <div class="f-head">
-      <p class="mono teal">From the founder</p>
-      <h2>I built the room I needed.</h2>
-    </div>
     <div class="founder-photo"><img src="/photos/landing/founder.jpg" alt="Marcos, the founder of Nenemi"></div>
     <div class="f-copy">
+      <div class="f-head">
+        <p class="mono teal">From the founder</p>
+        <h2>I built the room<br>I needed.</h2>
+      </div>
       <p class="lead">I know what it’s like to have a plan, lose the thread, and spend the rest of the day trying to find your way back. I built NENEMI so you can put things down without losing them. Your thoughts have a place. Your progress is still there when you return. And you can come back without starting over.</p>
       <p class="founder-sign">— Marcos</p>
       <div class="f-work">
