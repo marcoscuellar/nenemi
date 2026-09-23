@@ -1,6 +1,6 @@
 # Nenemi — build rules
 
-Read `nenemi-handover/docs/nenemi-crayon-box.md` first. It's why this exists. Short version: people with ADHD have every crayon and no box. **Nenemi is the box.** Every change is judged against that.
+Read `nenemi-handover/docs/nenemi-crayon-box.md` first. Then the brand book, `nenemi-handover/docs/nenemi-brand-book.html` (v3.0). It's the source of truth for the mark, colors (ink #111312, ground #F5F6F5, teal #3C8692, maíz #E9BE55 used sparingly), type (Archivo Black display), and voice. Logo files live in `photos/logo/`. It's why this exists. Short version: people with ADHD have every crayon and no box. **Nenemi is the box.** Every change is judged against that.
 
 ## The one test
 Before building or changing anything, ask: **does this hand them a crayon, or make them go find one?** If it adds a decision, a step, a setting, or a wall between the user and putting something down, it's wrong, even if it's clever.
