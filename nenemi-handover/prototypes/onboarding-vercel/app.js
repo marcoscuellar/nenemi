@@ -10,7 +10,7 @@ const accountStages = ['signup','confirm','name','plan','welcome'];
 const productStages = ['capture','need','destination','ready'];
 
 const copy = {
-  signup: ['Your space, kept', 'A quieter place<br>for a <span class="accent">busy</span> brain.', 'Say it messy, in any order. NENEMI files it, holds it, and hands it back when you come looking.'],
+  signup: ['Your context, kept', 'Right where<br>you left off.', 'NENEMI holds the thread, plans your day with room to move, and helps when you’re stuck.'],
   confirm: ['One quick check', 'Check your<br><span class="accent">email.</span>', 'A six-digit code, just to be sure it’s you. Then you’re in.'],
   name: ['Just so it feels like yours', 'First, <span class="accent">your</span> name.', 'A name on the space. That’s all we need to get you in.'],
   plan: ['Yours, and only yours', 'This is all <span class="accent">yours.</span>', 'A quiet space only you can open. Free to keep, for as long as you like.'],
