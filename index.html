@@ -1619,6 +1619,13 @@
     .cal-checklist { margin-left: -20px; margin-right: -20px; padding: 24px 20px; }
     .rv-card, #pane-roomview .toggle-row, .rv-capture-panel { border-radius: 4px; }
     .room-card:hover, .rgp-card:hover { transform: none; }
+    /* avatar sits level with the wordmark, above the header rule */
+    .account-wrap { top: 12px; right: 14px; }
+    .account-slot { top: 0; right: 0; }
+    .account-slot img, .account-slot .avatar { width: 36px; height: 36px; }
+    /* every tab the same height, with room under the labels so Safari's toolbar never covers them */
+    .tabbar { padding-bottom: calc(16px + var(--sab)); }
+    .tab-stuck .stuck-tile { width: 22px; height: 22px; }
   }
 </style>
 </head>
