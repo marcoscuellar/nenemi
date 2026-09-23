@@ -65,7 +65,7 @@ def stone_svg(W, H, cx, cy, R):
   <feColorMatrix in='n' type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  .9 0 0 0 0' result='na'/>
   <feComposite in='b' in2='na' operator='arithmetic' k1='0' k2='1' k3='.22' k4='0' result='h'/>
   <feDiffuseLighting in='h' surfaceScale='{max(3.0,R*.005):.2f}' diffuseConstant='1' lighting-color='#fff' result='lit'><feDistantLight azimuth='235' elevation='38'/></feDiffuseLighting>
-  <feComponentTransfer in='lit'><feFuncR type='linear' slope='.125' intercept='-.036'/><feFuncG type='linear' slope='.125' intercept='-.036'/><feFuncB type='linear' slope='.125' intercept='-.034'/></feComponentTransfer>
+  <feComponentTransfer in='lit'><feFuncR type='linear' slope='.15' intercept='-.041'/><feFuncG type='linear' slope='.15' intercept='-.041'/><feFuncB type='linear' slope='.15' intercept='-.039'/></feComponentTransfer>
  </filter>
  <filter id='grain' filterUnits='userSpaceOnUse' x='0' y='0' width='{W}' height='{H}' color-interpolation-filters='sRGB'>
   <feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/>
