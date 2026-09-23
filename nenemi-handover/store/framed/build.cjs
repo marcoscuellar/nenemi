@@ -1,39 +1,41 @@
 const {chromium}=require('/opt/node22/lib/node_modules/playwright');const fs=require('fs');const {execFileSync}=require('child_process');
 const R='/home/user/nenemi/', S='/tmp/claude-0/-home-user-nenemi/c367e670-81af-5a70-98ea-1016a98294b4/scratchpad';
 const MARK=fs.readFileSync(R+'photos/logo/nenemi-mark.svg','utf8');
-const F=[
- {n:'01-home', shot:'01-home', photo:'photos/originals/kitchen-table.png', pos:'56% center', h:'Made for your<br>brain. Not their<br>expectations<b>.</b>', fs:8.4, sub:'You&rsquo;re not behind. You&rsquo;re paused.<br>There&rsquo;s a big difference.', dark:false},
- {n:'02-life', full:'photos/originals/jacket-messy-bed.jpg', pos:'53% center'},
- {n:'03-room', shot:'02-room', photo:'photos/originals/fabric-wall-designer.png', pos:'44% center', h:'Never lose<br>your place<b>.</b>', sub:'Built for the day you get pulled away.<br>Your room remembers where you were.', dark:false},
- {n:'04-life', full:'photos/originals/desk-stretch.png', pos:'57% center'},
- {n:'05-day', shot:'03-day', photo:'photos/originals/hallway-tote.png', pos:'35% center', h:'Get a day<br>back<b>.</b>', sub:'Built for the day that got away from you.<br>Nenemi makes room to move.', dark:false},
- {n:'06-life', full:'photos/originals/garden-phone.png', pos:'68% center'},
- {n:'07-stuck', shot:'04-stuck', photo:'photos/originals/floor-mms.png', pos:'62% center', h:'Four ways<br>back in<b>.</b>', sub:'Built for the moment you freeze.<br>One small move, when you&rsquo;re ready.', dark:true},
- {n:'08-life', full:'photos/originals/desk-eyes-closed.png', pos:'82% center'},
- {n:'09-rooms', shot:'05-rooms', photo:'photos/originals/living-room-two.png', pos:'60% center', h:'People heal<br>people<b>.</b>', sub:'Built for the days an app isn&rsquo;t enough.<br>Real people, one tap away.', dark:false},
- {n:'10-life', full:'photos/originals/couch-laundry.png', pos:'21% center'},
+const P=[
+ {shot:'01-home', h:'Made for your<br>brain. Not their<br>expectations<b>.</b>', fs:34, sub:'You&rsquo;re not behind. You&rsquo;re paused.<br>There&rsquo;s a big difference.', a:'photos/originals/kitchen-table.png', ap:'62% 40%', b1:'photos/originals/jacket-messy-bed.jpg', b1p:'50% 30%', b2:'photos/prove-workbench.jpg', b2p:'75% 40%'},
+ {shot:'02-room', h:'Never lose<br>your place<b>.</b>', sub:'Built for the day you get pulled away.<br>Your room remembers where you were.', a:'photos/originals/fabric-wall-designer.png', ap:'64% 30%', b1:'photos/originals/desk-stretch.png', b1p:'52% 30%', b2:'photos/contact-team.jpg', b2p:'55% 30%'},
+ {shot:'03-day', h:'Get a day<br>back<b>.</b>', sub:'Built for the day that got away from you.<br>Nenemi makes room to move.', a:'photos/originals/hallway-tote.png', ap:'52% 30%', b1:'photos/reality-market.jpeg', b1p:'55% 40%', b2:'photos/originals/garden-phone.png', b2p:'70% 30%'},
+ {shot:'04-stuck', h:'Four ways<br>back in<b>.</b>', sub:'Built for the moment you freeze.<br>One small move, when you&rsquo;re ready.', a:'photos/originals/floor-mms.png', ap:'72% 40%', b1:'photos/originals/desk-eyes-closed.png', b1p:'72% 30%', b2:'photos/originals/man-late.png', b2p:'50% 35%'},
+ {shot:'05-rooms', h:'People heal<br>people<b>.</b>', sub:'Built for the days an app isn&rsquo;t enough.<br>Real people, one tap away.', a:'photos/originals/living-room-two.png', ap:'78% 40%', b1:'photos/conversation-human.jpg', b1p:'55% 30%', b2:'photos/originals/couch-laundry.png', b2p:'25% 35%'},
 ];
-const life=(f)=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet"><style>*{margin:0}html,body{width:100vw;height:100vh;overflow:hidden;background:#111312}.ph{position:absolute;inset:0;background:url('file://${R}${f.full}') ${f.pos}/cover}.sh{position:absolute;left:0;right:0;top:0;height:22vh;background:linear-gradient(rgba(17,19,18,.55),transparent)}.eb{position:absolute;left:6vw;top:4.6vh;display:flex;align-items:center;gap:2.2vw;font:3.4vw 'Archivo Black',sans-serif;letter-spacing:.3em;color:#F5F6F5}.eb svg{width:5.6vw;height:auto}.eb path{fill:#F5F6F5}</style></head><body><div class="ph"></div><div class="sh"></div><div class="eb">${MARK}NENEMI</div></body></html>`;
-const page=(f,slot)=>f.full?life(f):`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
-*{margin:0;box-sizing:border-box}html,body{width:100vw;height:100vh;overflow:hidden}
-body{background:${f.dark?'#111312':'#F5F6F5'};position:relative;font-family:Archivo,sans-serif}
-.photo{position:absolute;left:0;right:0;top:${f.sub?'28vh':'25vh'};bottom:0;background:url('file://${R}${f.photo}') ${f.pos}/cover;
- -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 16vh);${f.dark?'filter:brightness(.55) saturate(.8)':''}}
-.eb{position:absolute;left:6vw;top:4.6vh;display:flex;align-items:center;gap:2.2vw;font:3.4vw 'Archivo Black',sans-serif;letter-spacing:.3em;color:${f.dark?'#F5F6F5':'#111312'}}.eb svg{width:5.6vw;height:auto}.eb path{fill:${f.dark?'#F5F6F5':'#111312'}}
-h1{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:${f.fs||11}vw;line-height:1;letter-spacing:-.02em;color:${f.dark?'#F5F6F5':'#111312'}}
-h1 b{color:${f.dark?'#5AA6B0':'#3C8692'}}
-.copy{position:absolute;left:6vw;right:6vw;top:8.6vh}.sub{margin-top:2.6vw;font:500 4vw/1.35 Archivo,sans-serif;color:${f.dark?'#B9BEBD':'#63696A'}}
-.phone{position:absolute;left:6vw;top:${f.sub?'31vh':'28vh'};width:60vw;padding:1.9vw;background:#0b0b0b;border-radius:10.5vw;
- box-shadow:0 4vw 10vw rgba(0,0,0,.45),0 0 0 .5vw rgba(255,255,255,.08)}
-.phone img{display:block;width:100%;border-radius:8.8vw}
-</style></head><body><div class="photo"></div><div class="eb">${MARK}NENEMI</div><div class="copy"><h1>${f.h}</h1>${f.sub?'<p class="sub">'+f.sub+'</p>':''}</div>
-<div class="phone"><img src="file://${S}/store/${slot}/${f.shot}.png"></div></body></html>`;
+const W=414,H=896;
+const card=(x,y,w,h,src,pos)=>`<div class="card" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background-image:url('file://${R}${src}');background-position:${pos}"></div>`;
+const page=slot=>{let out='';P.forEach((p,i)=>{const o=i*2*W;
+ out+=`<div class="eb" style="left:${o+24}px">${MARK}NENEMI</div>`;
+ out+=`<div class="copy" style="left:${o+24}px"><h1 style="font-size:${p.fs||45}px">${p.h}</h1><p class="sub">${p.sub}</p></div>`;
+ out+=card(o+18,330,250,470,p.a,p.ap);
+ out+=card(o+W+150,48,246,360,p.b1,p.b1p);
+ out+=card(o+W+150,428,246,420,p.b2,p.b2p);
+ out+=`<div class="phone" style="left:${o+W-131}px"><img src="file://${S}/store/${slot}/${p.shot}.png"></div>`;
+});
+return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
+*{margin:0;box-sizing:border-box}body{width:${W*10}px;height:${H}px;background:#F5F6F5;position:relative;overflow:hidden;font-family:Archivo,sans-serif}
+.eb{position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
+.copy{position:absolute;top:72px;width:370px}h1{font-family:'Archivo Black',sans-serif;font-weight:400;line-height:1;letter-spacing:-.02em;color:#111312}h1 b{color:#3C8692}
+.sub{margin-top:10px;font:500 15.5px/1.35 Archivo,sans-serif;color:#63696A}
+.card{position:absolute;border-radius:26px;background-size:cover;box-shadow:0 14px 34px rgba(17,19,18,.16)}
+.phone{position:absolute;top:268px;width:262px;padding:7px;background:#0b0b0b;border-radius:44px;box-shadow:0 22px 50px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.08);z-index:2}
+.phone img{display:block;width:100%;border-radius:37px}
+</style></head><body>${out}</body></html>`;};
 (async()=>{const b=await chromium.launch();
-for(const [slot,w,h] of [['6.7',430,932],['6.5',414,896]]){
- const p=await b.newPage({viewport:{width:w,height:h},deviceScaleFactor:3});
+for(const [slot,sc] of [['6.5',1],['6.7',430/414]]){
+ const p=await b.newPage({viewport:{width:Math.round(W*10*sc),height:slot==='6.5'?896:932},deviceScaleFactor:3});
  await p.route(/fonts\.(googleapis|gstatic)\.com/, r=>{const u=r.request().url(); try{const body=execFileSync('curl',['-s','-A','Mozilla/5.0 Chrome/140',u]); r.fulfill({status:200,body,contentType:u.includes('gstatic')?'font/woff2':'text/css',headers:{'access-control-allow-origin':'*'}});}catch(e){r.abort();}});
- fs.mkdirSync(S+'/frames/'+slot,{recursive:true});
- for(const f of F){const file=S+'/frames/'+f.n+'.html';fs.writeFileSync(file,page(f,slot));await p.goto('file://'+file);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(400);
-  await p.screenshot({path:S+'/frames/'+slot+'/'+f.n+'.png'});}
+ const file=S+'/frames/pano.html';fs.writeFileSync(file,page(slot).replace('<body>','<body style="zoom:'+sc+'">'));
+ await p.goto('file://'+file);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(800);
+ const dir=S+'/frames/pano-'+slot;fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir);
+ const pw=slot==='6.5'?414:430, ph=slot==='6.5'?896:932;
+ for(let k=0;k<10;k++) await p.screenshot({path:dir+'/'+String(k+1).padStart(2,'0')+'.png',clip:{x:k*pw,y:0,width:pw,height:ph}});
+ if(slot==='6.5'){await p.setViewportSize({width:W*10,height:H});}
 }
 await b.close();})();
