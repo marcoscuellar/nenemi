@@ -2,8 +2,10 @@
 //
 // POST /api/upload
 //   headers: Authorization: Bearer <clerk token>   (or ?device=<sync code> while signed out)
-//   body:    { name, type, dataUrl }   (dataUrl = "data:<type>;base64,....")
+//   body:    { name, type, dataUrl, roomId? }   (dataUrl = "data:<type>;base64,....")
 //   returns: { url }
+//            402 { error: 'file_limit', limit } when roomId names a room already holding its cap
+//            (5 files on Free, 25 on Full access). Loose drops on Home carry no roomId and aren't capped.
 //
 // The page resizes photos to a max edge of 1600px before sending, so the
 // data URL stays well under the request-size ceiling. Answers 503 when
@@ -12,7 +14,31 @@
 // ever lives in the repo.
 
 import { put } from '@vercel/blob';
-import { getIdentity } from '../lib/auth.js';
+import { neon } from '@neondatabase/serverless';
+import { getIdentity, fileLimitFor } from '../lib/auth.js';
+
+const DB_URL =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.STORAGE_URL ||
+  process.env.NEON_DATABASE_URL ||
+  process.env.DATABASE_URL_UNPOOLED ||
+  '';
+
+// files already in this room, from the last synced state. No database, no row, or no such room -> 0,
+// so the page's own check is the only gate (the page counts its local copy before it ever uploads).
+async function filesInRoom(key, roomId) {
+  if (!DB_URL || !roomId) return 0;
+  try {
+    const sql = neon(DB_URL);
+    const rows = await sql`select data from nenemi_state where device_id = ${key}`;
+    const room = (rows[0]?.data?.rooms || []).find(r => r && r.id === roomId);
+    return Array.isArray(room?.log) ? room.log.filter(e => e && e.file).length : 0;
+  } catch (e) {
+    console.error('nenemi /api/upload count', e?.message || e);
+    return 0;
+  }
+}
 
 const TOKEN = process.env.BLOB_READ_WRITE_TOKEN || '';
 const MAX_BYTES = 3 * 1024 * 1024; // 3MB raw — a resized phone photo is comfortably under this
@@ -28,6 +54,9 @@ export default async function handler(req, res) {
   if (who.error) return res.status(who.status).json({ error: who.error });
 
   const body = req.body || {};
+  const roomId = String(body.roomId || '').slice(0, 80);
+  const limit = fileLimitFor(who.plan);
+  if (roomId && (await filesInRoom(who.key, roomId)) >= limit) return res.status(402).json({ error: 'file_limit', limit });
   const name = String(body.name || 'file').trim().slice(0, 120) || 'file';
   const type = String(body.type || '').trim();
   const dataUrl = String(body.dataUrl || '');

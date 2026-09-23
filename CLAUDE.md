@@ -23,6 +23,7 @@ Before building or changing anything, ask: **does this hand them a crayon, or ma
 ## Mechanics that must stay true
 - Free plan: 2 rooms of the user's own plus the example room. Calendar, voice, and re-entry are always free. Existing rooms are never taken away.
 - The example room (`demo: true`) never counts toward the limit.
+- A room holds 5 files (photos, PDFs) on Free and 25 on Full access (`ROOM_FILES` in `lib/auth.js`, checked in `api/upload.js` and on the page). Loose drops on Home aren't capped. Files already saved are never taken away.
 - Smart routing (`api/route.js`) verifies room ids and falls back to first-word matching if Claude is unreachable. The page must work with no API key, no database, and no sign-in.
 - Every save lands in `localStorage` first, then syncs. Offline is a normal state, not an error.
 

@@ -3,7 +3,7 @@
 // Identity is either a signed-in Clerk user (Authorization: Bearer <token>)
 // or, for the pre-login flow, a sync code (?device=<code>).
 //
-// GET  /api/state  -> { data, updated_at, plan, roomLimit, signedIn } or data: null
+// GET  /api/state  -> { data, updated_at, plan, roomLimit, fileLimit, signedIn } or data: null
 // PUT  /api/state  body: the state object -> { ok: true }
 //                  402 { error: 'room_limit', limit } when a free plan tries to
 //                  grow past its room limit (existing rooms are never taken away)
@@ -13,7 +13,7 @@
 // 503 and the app keeps saving in the browser.
 
 import { neon } from '@neondatabase/serverless';
-import { getIdentity } from '../lib/auth.js';
+import { getIdentity, fileLimitFor } from '../lib/auth.js';
 
 const URL =
   process.env.DATABASE_URL ||
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         data: rows[0] ? rows[0].data : null,
         updated_at: rows[0] ? rows[0].updated_at : null,
-        plan: who.plan, roomLimit: limitOut, signedIn: who.kind === 'user',
+        plan: who.plan, roomLimit: limitOut, fileLimit: fileLimitFor(who.plan), signedIn: who.kind === 'user',
         planSource: who.meta?.planSource || null, planUntil: who.meta?.planUntil || null,
       });
     }
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
       await sql`insert into nenemi_state (device_id, data, updated_at)
                 values (${who.key}, ${json}::jsonb, now())
                 on conflict (device_id) do update set data = excluded.data, updated_at = now()`;
-      return res.status(200).json({ ok: true, plan: who.plan, roomLimit: limitOut, planSource: who.meta?.planSource || null, planUntil: who.meta?.planUntil || null });
+      return res.status(200).json({ ok: true, plan: who.plan, roomLimit: limitOut, fileLimit: fileLimitFor(who.plan), planSource: who.meta?.planSource || null, planUntil: who.meta?.planUntil || null });
     }
 
     res.setHeader('Allow', 'GET, PUT');

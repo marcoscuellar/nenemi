@@ -1700,7 +1700,7 @@
           <div class="ob-paidhead">Full access ($10/mo)</div>
           <ul>
             <li><span class="tick">✓</span> Unlimited rooms — as many as the day needs</li>
-            <li><span class="tick">✓</span> Unlimited document downloads in every room</li>
+            <li><span class="tick">✓</span> Up to 25 documents in every room</li>
             <li><span class="tick">✓</span> Priority context sync and advanced retrieval engines</li>
           </ul>
         </div>
@@ -2947,10 +2947,17 @@
     const input = document.getElementById('quickAddFile'); if (!input) return;
     input.accept = accept; input.click();
   }
-  function showQuickAddNote(msg) {
+  function showQuickAddNote(msg, extraHtml) {
     const el = document.getElementById('quickAddNote'); if (!el) return;
-    el.textContent = msg; el.hidden = false;
-    clearTimeout(showQuickAddNote._t); showQuickAddNote._t = setTimeout(() => { el.hidden = true; }, 4000);
+    el.textContent = msg; if (extraHtml) el.insertAdjacentHTML('beforeend', ' ' + extraHtml); el.hidden = false;
+    clearTimeout(showQuickAddNote._t); showQuickAddNote._t = setTimeout(() => { el.hidden = true; }, extraHtml ? 8000 : 4000);
+  }
+  // a room holds a set number of files (5 on Free, 25 on Full access). Nothing already in it is ever taken away.
+  function roomFileCount(r) { return (r && Array.isArray(r.log)) ? r.log.filter(e => e && e.file).length : 0; }
+  function fileCapFor() { return auth.plan === 'paid' ? Math.max(auth.fileLimit || 0, 25) : (auth.fileLimit || 5); }
+  function noteRoomFull(limit) {
+    if (auth.plan === 'paid') showQuickAddNote(`This room is holding its ${limit} files. A new room can take the next one.`);
+    else showQuickAddNote(`This room is holding its ${limit} files. Full access makes room for 25.`, fullAccessBtn());
   }
   // images get resized to a max 1600px edge and re-encoded as jpeg before upload — keeps a phone photo small
   // and comfortably under the request size ceiling; anything else (a pdf) goes through as-is, capped at 3MB.
@@ -2980,11 +2987,13 @@
   async function handleQuickAddFile(files) {
     const f = files && files[0]; const input = document.getElementById('quickAddFile'); if (input) input.value = '';
     if (!f || !currentRoom) return;
+    if (roomFileCount(currentRoom) >= fileCapFor()) { noteRoomFull(fileCapFor()); return; }
     try {
       const { dataUrl, type, name } = await prepareUpload(f);
-      const r = await fetch(apiUrl().replace('/api/state', '/api/upload'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ name, type, dataUrl }) });
+      const r = await fetch(apiUrl().replace('/api/state', '/api/upload'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ name, type, dataUrl, roomId: currentRoom.id }) });
       if (!r.ok) {
         const d = await r.json().catch(() => ({}));
+        if (r.status === 402 && d.error === 'file_limit') { noteRoomFull(d.limit || fileCapFor()); return; }
         showQuickAddNote(d.error === 'storage not connected' ? "Photo storage isn't set up yet." : "Couldn't add that. Try again when you're back online.");
         return;
       }
@@ -3849,7 +3858,7 @@
   function newSyncCode() { const w = () => SYNC_WORDS[Math.floor(Math.random() * SYNC_WORDS.length)]; return `${w()}-${w()}-${Math.floor(1000 + Math.random() * 9000)}`; }
   function syncCode() { try { let c = localStorage.getItem(SYNC_KEY); if (!c) { c = newSyncCode(); localStorage.setItem(SYNC_KEY, c); } return c; } catch (e) { return 'local-only'; } }
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
-  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, ready: false, smart: false, billing: false, price: 10, planSource: null, planUntil: null };
+  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 10, planSource: null, planUntil: null };
   function ownRooms() { return rooms.filter(r => !r.demo && !r.archived).length; }
   function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
   function apiUrl() { return auth.signedIn ? '/api/state' : `/api/state?device=${encodeURIComponent(syncCode())}`; }
@@ -4018,6 +4027,7 @@
     if (!j) return;
     if (j.plan) auth.plan = j.plan;
     if ('roomLimit' in j) auth.roomLimit = j.roomLimit;
+    if ('fileLimit' in j) auth.fileLimit = j.fileLimit;
     if ('planSource' in j) auth.planSource = j.planSource;
     if ('planUntil' in j) auth.planUntil = j.planUntil;
   }
