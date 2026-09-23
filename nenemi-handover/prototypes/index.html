@@ -1399,6 +1399,13 @@
   #onboard .ob-steplabel { position:fixed; top:calc(10px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:2; background:rgba(17,19,18,.9); color:#fff; font-family:var(--ob-mono); font-size:11px; letter-spacing:.12em; padding:6px 14px; border-radius:20px; }
   #onboard .ob-step { display:none; }
   #onboard .ob-step.active { display:block; }
+  /* left panel: solid ink with a quiet carved step-fret (xicalcoliuhqui) texture, white type.
+     !important beats the per-step photo the script sets inline, so the script stays as is. */
+  #onboard .ob-left { background-color:#101110 !important; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E"),radial-gradient(ellipse at 50% 45%, rgba(16,17,16,0) 35%, rgba(5,6,5,.55) 100%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='184' height='192' viewBox='0 0 184 192'%3E%3Cg fill='none' stroke-width='7' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath d='M6 86 H22 V70 H38 V54 H54 V14 H92 V52 H68 V30 H80 V40' transform='translate%281.4 1.4%29' stroke='%23050605'/%3E%3Cpath d='M6 86 H22 V70 H38 V54 H54 V14 H92 V52 H68 V30 H80 V40' transform='translate%28-.9 -.9%29' stroke='%23232423'/%3E%3Cpath d='M6 86 H22 V70 H38 V54 H54 V14 H92 V52 H68 V30 H80 V40' stroke='%23161716'/%3E%3Cpath d='M52 106 H68 V122 H84 V138 H100 V178 H138 V140 H114 V162 H126 V152' transform='translate%281.4 1.4%29' stroke='%23050605'/%3E%3Cpath d='M52 106 H68 V122 H84 V138 H100 V178 H138 V140 H114 V162 H126 V152' transform='translate%28-.9 -.9%29' stroke='%23232423'/%3E%3Cpath d='M52 106 H68 V122 H84 V138 H100 V178 H138 V140 H114 V162 H126 V152' stroke='%23161716'/%3E%3C/g%3E%3C/svg%3E") !important; background-size:180px 180px, 100% 100%, 184px 192px !important; background-position:0 0, 0 0, 0 0 !important; background-repeat:repeat, no-repeat, repeat !important; }
+  #onboard .ob-left::before { display:none; }
+  #onboard .ob-big, #onboard .ob-big .m { color:#fff; }
+  #onboard .ob-lede, #onboard .ob-foot { color:#fff; }
+  #onboard .ob-eyebrow { color:#8ac7be; }
   @media (max-width: 720px) {
     #onboard .ob-frame { grid-template-columns:1fr; }
     #onboard .ob-left { min-height:auto; padding:calc(30px + env(safe-area-inset-top,0px)) 24px 40px; }
