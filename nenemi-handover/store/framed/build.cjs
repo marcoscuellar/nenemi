@@ -3,12 +3,18 @@ const R='/home/user/nenemi/', S='/tmp/claude-0/-home-user-nenemi/c367e670-81af-5
 const MARK=fs.readFileSync(R+'photos/logo/nenemi-mark.svg','utf8');
 const F=[
  {n:'01-home', shot:'01-home', photo:'photos/originals/kitchen-table.png', pos:'56% center', h:'Made for your<br>brain. Not their<br>expectations<b>.</b>', fs:8.4, sub:'You&rsquo;re not behind. You&rsquo;re paused.<br>There&rsquo;s a big difference.', dark:false},
- {n:'02-room', shot:'02-room', photo:'photos/originals/fabric-wall-designer.png', pos:'44% center', h:'Never lose<br>your place<b>.</b>', sub:'Built for the day you get pulled away.<br>Your room remembers where you were.', dark:false},
- {n:'03-day', shot:'03-day', photo:'photos/originals/hallway-tote.png', pos:'35% center', h:'Get a day<br>back<b>.</b>', sub:'Built for the day that got away from you.<br>Nenemi makes room to move.', dark:false},
- {n:'04-stuck', shot:'04-stuck', photo:'photos/originals/floor-mms.png', pos:'62% center', h:'Four ways<br>back in<b>.</b>', sub:'Built for the moment you freeze.<br>One small move, when you&rsquo;re ready.', dark:true},
- {n:'05-rooms', shot:'05-rooms', photo:'photos/originals/living-room-two.png', pos:'60% center', h:'People heal<br>people<b>.</b>', sub:'Built for the days an app isn&rsquo;t enough.<br>Real people, one tap away.', dark:false},
+ {n:'02-life', full:'photos/originals/jacket-messy-bed.jpg', pos:'53% center'},
+ {n:'03-room', shot:'02-room', photo:'photos/originals/fabric-wall-designer.png', pos:'44% center', h:'Never lose<br>your place<b>.</b>', sub:'Built for the day you get pulled away.<br>Your room remembers where you were.', dark:false},
+ {n:'04-life', full:'photos/originals/desk-stretch.png', pos:'57% center'},
+ {n:'05-day', shot:'03-day', photo:'photos/originals/hallway-tote.png', pos:'35% center', h:'Get a day<br>back<b>.</b>', sub:'Built for the day that got away from you.<br>Nenemi makes room to move.', dark:false},
+ {n:'06-life', full:'photos/originals/garden-phone.png', pos:'68% center'},
+ {n:'07-stuck', shot:'04-stuck', photo:'photos/originals/floor-mms.png', pos:'62% center', h:'Four ways<br>back in<b>.</b>', sub:'Built for the moment you freeze.<br>One small move, when you&rsquo;re ready.', dark:true},
+ {n:'08-life', full:'photos/originals/desk-eyes-closed.png', pos:'82% center'},
+ {n:'09-rooms', shot:'05-rooms', photo:'photos/originals/living-room-two.png', pos:'60% center', h:'People heal<br>people<b>.</b>', sub:'Built for the days an app isn&rsquo;t enough.<br>Real people, one tap away.', dark:false},
+ {n:'10-life', full:'photos/originals/couch-laundry.png', pos:'21% center'},
 ];
-const page=(f,slot)=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
+const life=(f)=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet"><style>*{margin:0}html,body{width:100vw;height:100vh;overflow:hidden;background:#111312}.ph{position:absolute;inset:0;background:url('file://${R}${f.full}') ${f.pos}/cover}.sh{position:absolute;left:0;right:0;top:0;height:22vh;background:linear-gradient(rgba(17,19,18,.55),transparent)}.eb{position:absolute;left:6vw;top:4.6vh;display:flex;align-items:center;gap:2.2vw;font:3.4vw 'Archivo Black',sans-serif;letter-spacing:.3em;color:#F5F6F5}.eb svg{width:5.6vw;height:auto}.eb path{fill:#F5F6F5}</style></head><body><div class="ph"></div><div class="sh"></div><div class="eb">${MARK}NENEMI</div></body></html>`;
+const page=(f,slot)=>f.full?life(f):`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}html,body{width:100vw;height:100vh;overflow:hidden}
 body{background:${f.dark?'#111312':'#F5F6F5'};position:relative;font-family:Archivo,sans-serif}
 .photo{position:absolute;left:0;right:0;top:${f.sub?'28vh':'25vh'};bottom:0;background:url('file://${R}${f.photo}') ${f.pos}/cover;
