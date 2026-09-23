@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Nenemi · Made for your brain</title>
-  <meta name="description" content="Nenemi is a home for ADHD brains — put down what's in your head, walk away, and never lose your place again. No streaks, no shame, no starting over.">
+  <meta name="description" content="Planning your day is easy. Staying in it isn’t. NENEMI holds the thread of what you’re doing, so coming back doesn’t mean starting from zero.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
@@ -212,6 +212,57 @@
       .hero-cta,.close .row{flex-wrap:wrap}
       .foot-top{flex-direction:column;align-items:flex-start}
     }
+
+    /* ===== Sep 2026 copy brief: section colors + new pieces ===== */
+    /* 2. recognition: short, on black, "Yeah. Same." gets room to land */
+    #mid{min-height:0;padding:110px 0 120px;display:block}
+    .recog .recog-q{color:#f4f1ea;font-size:clamp(2rem,4.4vw,3.6rem);line-height:1.04;max-width:980px}
+    .recog .same{font-family:"Archivo Black","Arial Black",sans-serif;font-weight:900;color:var(--teal);letter-spacing:-.03em;line-height:.95;font-size:clamp(3.4rem,9vw,7.5rem);margin:44px 0 36px}
+    #mid .lead{color:#c2c6c8;max-width:700px}
+    /* 3. day: short product captions */
+    .caps{list-style:none;padding:0;margin:30px 0 0;display:grid;gap:12px;max-width:520px}
+    .caps li{position:relative;padding-left:26px;color:var(--ink);font-weight:600;font-size:1.05rem}
+    .caps li:before{content:"";position:absolute;left:0;top:.62em;width:14px;height:2px;background:var(--teal)}
+    /* 4. rooms: black */
+    #rooms{background:var(--ink);color:#fff}
+    #rooms h3{color:#fff}
+    #rooms p{color:#c2c6c8}
+    #rooms .mono.teal{color:var(--teal)}
+    #rooms .second{color:#fff;font-weight:600;font-size:clamp(1.1rem,1.4vw,1.3rem);margin-top:22px}
+    #rooms .device{background:#050506}
+    #rooms .device:before{background:#050506}
+    /* 5. four ways back in: white */
+    #shift{background:var(--bg);color:var(--ink)}
+    #shift .mono.teal{color:var(--teal-deep)}
+    #shift h2{color:var(--ink)}
+    #shift .lead{color:var(--dim)}
+    #shift .door{background:var(--card);border-color:var(--line)}
+    #shift .door:hover{border-color:var(--ink)}
+    #shift .door-ic,#shift .door-tx b{color:var(--ink)}
+    #shift .door-tx i{color:var(--dim)}
+    .move-eg{display:inline-flex;flex-direction:column;gap:8px;margin-top:28px;padding:18px 22px;border:1px solid var(--line);border-left:3px solid var(--teal-deep);border-radius:6px}
+    .move-eg b{font-family:"Archivo Black","Arial Black",sans-serif;font-weight:900;font-size:1.4rem;letter-spacing:-.02em}
+    /* 6. no-shame promise: a short dark pause */
+    #promise{background:#060706;color:#fff;border-top:none;padding:96px 0;text-align:center}
+    #promise h2{color:#fff}
+    #promise .lead{color:#c2c6c8;margin:20px auto 0}
+    /* 7. human support: black */
+    #people{background:var(--ink);color:#fff;border-top-color:#191b1b}
+    #people .kicker{color:var(--teal)}
+    #people h2{color:#fff}
+    #people .lead{color:#c2c6c8}
+    #people .people-photo{border-color:#2a2d2d}
+    .res-h{margin:30px 0 0;font-weight:700;color:#fff;font-size:1.1rem}
+    #people .support-links{margin-top:14px;border-top-color:#2a2d2d}
+    #people .support-links a{border-bottom-color:#2a2d2d;color:#f4f1ea}
+    #people .support-links a:hover{color:var(--teal)}
+    #people .support-links a .ar{color:#6b7072}
+    /* 8. final invitation */
+    .close-line{font-family:ui-monospace,Menlo,monospace;font-size:.72rem!important;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer)!important;margin:56px auto 0!important;max-width:none!important}
+    /* the next section overlaps each phone's bottom edge; keep the copy clear of that overlap */
+    #day .feat-copy{padding-bottom:130px}
+    #rooms .feat-copy{padding-bottom:200px}
+    @media(max-width:820px){.recog .same{margin:30px 0 26px}#promise{padding:72px 0}#day .feat-copy,#rooms .feat-copy{padding-bottom:0}}
   </style>
 </head>
 <body>
@@ -226,7 +277,7 @@
   <a class="brand" href="#top"><img class="mk" src="data:image/png;base64,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" alt="NENEMI" width="30" height="30" style="display:block"><span class="wm-txt">NENEMI</span></a>
   <div class="nav-r">
     <a class="lk desk" href="#day">The system</a>
-    <a class="lk desk" href="#people">Humans heal humans</a>
+    <a class="lk desk" href="#people">Human support</a>
     <span class="nav-sep desk"></span>
     <a class="pill" href="https://www.mynenemi.com/?start=1">Open Nenemi</a>
   </div>
@@ -241,33 +292,32 @@
     <div class="wrap hero-inner">
       <p class="mono eyebrow">Nenemi · pick up where you left off</p>
       <h1 class="display">Made for your brain.<br>Not their expectations<span class="tealdot">.</span></h1>
-      <p class="hero-sub">Not another productivity app. Put down what's in your head, walk away, and never lose your place again.</p>
+      <p class="hero-sub">Planning your day is easy. Staying in it isn’t. NENEMI holds the thread of what you’re doing, so when life pulls you away, coming back doesn’t mean starting from zero.</p>
       <div class="hero-cta">
         <a class="pill light" href="https://www.mynenemi.com/?start=1">Open Nenemi</a>
       </div>
-      <p class="mono hero-proof">Private. Secure. Yours.</p>
     </div>
-    <span class="hero-cap">MID-PROCESS // STILL HERE</span>
   </header>
 
-  <!-- MID-PROCESS -->
-  <section id="mid"><div class="wrap">
-    <p class="kicker">[ Mid-process ]</p>
-    <div class="mid-grid">
-      <div class="mid-head">You're not behind.<br><span class="dim">You're mid-process.</span></div>
-      <div class="quote">
-        <p>Ever lose your to-do list by 10:10 AM, hit a wall by 1 PM, and feel exhausted and burnt out by 5 PM?</p>
-        <div class="same">Yeah. Same.</div>
-      </div>
-    </div>
+  <!-- 2. RECOGNITION -->
+  <section id="mid"><div class="wrap recog">
+    <p class="kicker">You know the day</p>
+    <h2 class="recog-q">Ever lose your list by 10 AM, hit a wall by 1 PM, and feel spent by 5?</h2>
+    <div class="same">Yeah. Same.</div>
+    <p class="lead">Most tools help you plan the day. NENEMI helps you get back into it when the day goes somewhere else. When things fall apart, you don’t need to reconstruct everything before you can take the next step.</p>
   </div></section>
 
   <!-- 01 START THE DAY -->
   <section id="day"><div class="wrap feat">
     <div class="feat-copy">
       <p class="mono teal">01 · Start the day</p>
-      <h3>Start with a day<br>that can move.</h3>
-      <p>Appointments, room context, and what you just said — held together without pretending the day won't change.</p>
+      <h3>Get the noise out.<br>Get a day back.</h3>
+      <p>Type it, say it, start in the middle. You don’t have to organize your thoughts before putting them here. NENEMI helps you see what matters today and find a place to begin.</p>
+      <ul class="caps">
+        <li>Say it however it comes out.</li>
+        <li>Your day, with room to move.</li>
+        <li>If yesterday didn’t go to plan, you can carry something into today.</li>
+      </ul>
     </div>
     <div class="feat-media"><div class="device"><span class="scr"><img src="/photos/landing/app-day.png" alt="Nenemi My Day — the day laid out in gentle blocks"></span></div></div>
   </div></section>
@@ -277,17 +327,19 @@
     <div class="feat-copy">
       <p class="mono teal">02 · Rooms</p>
       <h3>Never pretend<br>you remembered.</h3>
-      <p>Nenemi remembers what mattered and the next small move, so you never restart from zero.</p>
+      <p>That project, the conversation you need to finish, the thing you meant to do next—give each its own Room. NENEMI keeps the context together, so you can leave when you need to and come back knowing where you were.</p>
+      <p class="second">Walk in. See what matters. Pick up where you left off.</p>
     </div>
     <div class="feat-media"><div class="device"><span class="scr"><img src="/photos/landing/app-rooms.png" alt="Nenemi Rooms — your spaces, held between visits"></span></div></div>
   </div></section>
 
-  <!-- FOUR WAYS BACK IN (black — the Rooms phone tucks behind its top edge) -->
+  <!-- FOUR WAYS BACK IN (white — the Rooms phone tucks behind its top edge) -->
   <section id="shift"><div class="wrap ways">
     <div class="ways-head">
-      <p class="mono teal">03 · When the plan stops working</p>
-      <h2>Four ways<br>back in.</h2>
-      <p class="lead">Pick the sentence that feels most true right now. Nenemi meets you there.</p>
+      <p class="mono teal">03 · When the day changes</p>
+      <h2>You had a plan. Then the day happened.</h2>
+      <p class="lead">A plan can make sense at 9 AM and feel impossible by 1 PM. Tell NENEMI where you are right now. It helps you find one small way back in.</p>
+      <div class="move-eg"><span class="mono teal">One small move</span><b>Open the doc.</b></div>
     </div>
     <div class="ways-grid">
       <div class="door">
@@ -296,27 +348,34 @@
       </div>
       <div class="door">
         <span class="door-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5a3 3 0 0 0-6 .3 3 3 0 0 0-1.8 5A3 3 0 0 0 6 15.6 3 3 0 0 0 12 16zM12 4.5a3 3 0 0 1 6 .3 3 3 0 0 1 1.8 5A3 3 0 0 1 18 15.6 3 3 0 0 1 12 16z"/></svg></span>
-        <span class="door-tx"><b>My head is too full.</b><i>Put it down. Nenemi has it.</i></span>
+        <span class="door-tx"><b>My head is too full.</b><i>Put down everything competing for space.</i></span>
       </div>
       <div class="door">
         <span class="door-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="2.5" y="8" width="16" height="8" rx="2.5"/><path d="M21 11v2" stroke-linecap="round"/><rect x="5" y="10.5" width="3.5" height="3" rx="1" fill="currentColor" stroke="none"/></svg></span>
-        <span class="door-tx"><b>I have no energy.</b><i>Shrink the day to match you.</i></span>
+        <span class="door-tx"><b>I have no energy.</b><i>Make the next move fit the energy you have.</i></span>
       </div>
       <div class="door">
         <span class="door-ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8 8 0 1 1-2.3-5.1"/><path d="M20 3.5v4h-4"/></svg></span>
-        <span class="door-tx"><b>I fell off.</b><i>You didn't fail. You paused.</i></span>
+        <span class="door-tx"><b>I fell off.</b><i>You paused. You didn’t fail.</i></span>
       </div>
     </div>
   </div></section>
 
-  <!-- PEOPLE -->
+  <!-- 6. NO-SHAME PROMISE -->
+  <section id="promise"><div class="wrap">
+    <h2>You paused. You didn’t fail.</h2>
+    <p class="lead">No streak to repair. No wall of overdue tasks. Come back as you are, and find your next move.</p>
+  </div></section>
+
+  <!-- 7. HUMAN SUPPORT -->
   <section id="people"><div class="wrap">
-    <p class="kicker">Humans heal humans</p>
+    <p class="kicker">04 · Human support</p>
     <div class="people-grid">
       <div class="people-photo"><img src="/photos/landing-support.png" alt="Two people having a quiet, supportive conversation at home"></div>
       <div>
-        <h2>Humans heal humans.</h2>
-        <p class="lead">Nenemi holds the day. Some things need another person — and real support stays one tap away.</p>
+        <h2>Systems help.<br>People heal.</h2>
+        <p class="lead">NENEMI can help you hold the day. Sometimes the next step is talking to someone who understands. Finding support should be as easy to reach as everything else here.</p>
+        <p class="res-h">Find the right person to talk to.</p>
         <div class="support-links">
           <a href="https://chadd.org/professional-directory/">Find an ADHD coach <span class="ar">↗</span></a>
           <a href="https://www.psychologytoday.com/us/therapists/adhd">Find a therapist <span class="ar">↗</span></a>
@@ -339,12 +398,12 @@
 
   <!-- CLOSE -->
   <section class="close"><div class="wrap">
-    <h2 class="display">It's okay.<br>Nenemi has it.</h2>
-    <p>Put down whatever is taking up space. Start wherever you are.</p>
+    <h2 class="display">It’s okay.<br>Nenemi has it.</h2>
+    <p>Whatever’s taking up space, put it here. Start with one thought. You can figure out the rest together.</p>
     <div class="row">
       <a class="pill" href="https://www.mynenemi.com/?start=1">Open Nenemi</a>
-      <a class="textlink" href="https://www.mynenemi.com/?start=1">Already have a space? Sign in</a>
     </div>
+    <p class="close-line">Calm isn’t the absence of work. It’s the absence of reconstruction.</p>
   </div></section>
 
 </main>
