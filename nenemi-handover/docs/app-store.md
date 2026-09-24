@@ -86,7 +86,7 @@ Everything below is ready to paste. Screenshots are in `nenemi-handover/store/sc
 - **Category:** Productivity. Secondary: Health & Fitness.
 - **Age rating:** 4+ (answer no to everything in the questionnaire).
 - **Keywords:** adhd,memory,brain dump,focus,planner,executive function,notes,voice,calendar,overwhelm
-- **Promotional text:** Made for your brain. Not for their expectations.
+- **Promotional text:** Made for your brain. Not their expectations.
 - **Description:**
 
   Nenemi is somewhere to put a thought without having to organize it first.
@@ -101,7 +101,7 @@ Everything below is ready to paste. Screenshots are in `nenemi-handover/store/sc
 
   Real people help. ADHD coaches, therapists, psychiatrists, and 988 are one tap from the stuck screen.
 
-  No streaks. No red. No shame. Works with no account; sign in when you want it on another device.
+  No streaks. No red. No shame. Sign in once and your rooms follow you to every device.
 
 - **Support URL:** https://www.mynenemi.com/support.html
 - **Marketing URL:** https://www.mynenemi.com/welcome.html
