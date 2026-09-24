@@ -8,9 +8,9 @@
   },
   "ios": {
     "contentInset": "never",
-    "backgroundColor": "#0A0A0A",
+    "backgroundColor": "#111312",
     "preferredContentMode": "mobile",
     "scheme": "Nenemi"
   },
-  "backgroundColor": "#0A0A0A"
+  "backgroundColor": "#111312"
 }
