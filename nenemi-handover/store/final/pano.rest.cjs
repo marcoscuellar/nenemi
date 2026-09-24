@@ -3,7 +3,7 @@ const R='/home/user/nenemi/', S='/tmp/claude-0/-home-user-nenemi/c367e670-81af-5
 const MARK=fs.readFileSync(R+'photos/logo/nenemi-mark.svg','utf8');
 const P=[
  {shot:'07-recap', fs:40, h:'The day ends.<br>What mattered<br>stays<b>.</b>', sub:'Say what happened, messy is fine. NENEMI holds what matters, gives one leftover a home, and lets the rest go. Nothing carries over unless you choose it.', a:'photos/originals/desk-stretch.png', ap:'42% 30%', b1:'photos/prove-workbench.jpg', b1p:'78% 40%', b2:'photos/originals/garden-phone.png', b2p:'66% 30%'},
- {shot:'06-humans', fs:42, h:'Systems help.<br>People heal<b>.</b>', sub:'NENEMI can help you hold the day. Sometimes the next step is talking to someone who understands. Finding support should be as easy to reach as everything else here.', a:'photos/originals/living-room-two.png', ap:'78% 40%', b1:'photos/conversation-human.jpg', b1p:'55% 30%', b2:'photos/originals/couch-laundry.png', b2p:'25% 35%'},
+ {shot:'06-humans', fs:42, h:'Systems help.<br>People heal<b>.</b>', sub:'NENEMI can help you hold the day. Sometimes the next step is talking to someone who understands. Finding support should be as easy to reach as everything else here.', a:'photos/reality-market.jpeg', ap:'45% 35%', b1:'photos/conversation-human.jpg', b1p:'55% 30%', b2:'photos/originals/couch-laundry.png', b2p:'25% 35%'},
 ];
 const FIN={shot:'01-home', fs:46, h:'It&rsquo;s okay.<br>Nenemi has it<b>.</b>', sub:'Whatever&rsquo;s taking up space, put it here. Start with one thought. You can figure out the rest together.'};
 const W=414,H=896;
