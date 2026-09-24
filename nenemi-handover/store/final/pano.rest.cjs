@@ -22,8 +22,8 @@ const page=slot=>{let out='';P.forEach((p,i)=>{const o=i*2*W;
  out+=`<div class="eb" style="left:${fo+24}px">${MARK}NENEMI</div><div class="copy" id="cpF" style="left:${fo+24}px"><h1 style="font-size:${FIN.fs}px">${FIN.h}</h1><p class="sub">${FIN.sub}</p></div><div class="phone pf" style="left:${fo+(W-290)/2}px;width:290px"><img src="file://${S}/store2/${slot}/${FIN.shot}.png"></div>`;
 return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}body{width:${W*(P.length*2+1)}px;height:${H}px;background:#F5F6F5;position:relative;overflow:hidden;font-family:Archivo,sans-serif}
-.eb{position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
-.copy{position:absolute;top:72px;width:370px}h1{font-family:'Archivo Black',sans-serif;font-weight:400;line-height:1;letter-spacing:-.02em;color:#111312}h1 b{color:#3C8692}
+.eb{display:none!important;position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
+.copy{position:absolute;top:40px;width:370px}h1{font-family:'Archivo Black',sans-serif;font-weight:400;line-height:1;letter-spacing:-.02em;color:#111312}h1 b{color:#3C8692}
 .sub{margin-top:12px;font:500 15px/1.42 Archivo,sans-serif;color:#63696A}
 .night{position:absolute;top:0;bottom:0;background:#111312;z-index:0}.eb.dk{color:#F5F6F5}.eb.dk path{fill:#F5F6F5}.dk h1{color:#F5F6F5}.dk h1 b{color:#5AA6B0}.dk .sub{color:#B9BEBD}
 .wave{position:absolute;left:0;top:0;z-index:2;pointer-events:none}

@@ -6,8 +6,8 @@ const B={fs:42,h:'Never pretend<br>you remembered<b>.</b>',sub:'That project, th
 const wave=()=>{let d='';for(let x=-20;x<=848;x+=8){const y=560+70*Math.sin((x-40)/828*Math.PI*1.6);d+=(d?'L':'M')+x+' '+y.toFixed(1)+' ';}return `<svg class="wave" width="828" height="896"><path d="${d}" fill="none" stroke="#3C8692" stroke-width="3.6" stroke-linecap="round"/></svg>`;};
 const page=slot=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}body{width:828px;height:896px;overflow:hidden;background:#F5F6F5;position:relative;font-family:Archivo,sans-serif}
-.eb{position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312;z-index:5}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
-.copy{position:absolute;top:74px;width:362px;z-index:5}h1{font-family:'Archivo Black',sans-serif;line-height:1;letter-spacing:-.02em;color:#111312}h1 b{color:#3C8692}
+.eb{display:none!important;position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312;z-index:5}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
+.copy{position:absolute;top:40px;width:362px;z-index:5}h1{font-family:'Archivo Black',sans-serif;line-height:1;letter-spacing:-.02em;color:#111312}h1 b{color:#3C8692}
 .sub{margin-top:12px;font:500 14.5px/1.42 Archivo,sans-serif;color:#63696A}
 .wave{position:absolute;left:0;top:0;z-index:1}
 .phone{position:absolute;padding:9px;background:#0b0b0b;border-radius:54px;box-shadow:0 50px 90px -16px rgba(17,19,18,.5),0 22px 40px -8px rgba(17,19,18,.3),0 0 0 1.5px rgba(255,255,255,.1)}
