@@ -5,6 +5,7 @@ const HS=[
  {n:'01', fs:36, h:'Get the noise out.<br>Get a day back<b>.</b>', sub:'Type it, say it, start in the middle. You don&rsquo;t have to organize your thoughts before putting them here. NENEMI helps you see what matters today and find a place to begin.', main:'03-day', back:'01-home'},
  {n:'02', fs:42, h:'Never pretend<br>you remembered<b>.</b>', sub:'That project, the conversation you need to finish, the thing you meant to do next&mdash;give each its own Room. NENEMI keeps the context together, so you can leave when you need to and come back knowing where you were.', main:'02-room', back:'05-rooms'},
  {n:'03', fs:42, dark:true, h:'You had a plan.<br>Then the day<br>happened<b>.</b>', sub:'A plan can make sense at 9 AM and feel impossible by 1 PM. Tell NENEMI where you are right now. It helps you find one small way back in.', main:'04-stuck', back:null},
+ {n:'04', fs:42, h:'The day ends.<br>What mattered<br>stays<b>.</b>', sub:'Say what happened, messy is fine. NENEMI holds what matters, gives one leftover a home, and lets the rest go. Nothing carries over unless you choose it.', main:'07-recap', back:'03-day'},
 ];
 const page=(x,slot)=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}html,body{width:414px;height:896px;overflow:hidden}
