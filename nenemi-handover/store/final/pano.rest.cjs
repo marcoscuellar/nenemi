@@ -19,7 +19,7 @@ const page=slot=>{let out='';P.forEach((p,i)=>{const o=i*2*W;
  out+=`<div class="phone pp" data-i="${i}" style="left:${o+W-131}px"><img src="file://${S}/store2/${slot}/${p.shot}.png"></div>`;
 });
  const fo=P.length*2*W;
- out+=`<div class="eb" style="left:${fo+24}px">${MARK}NENEMI</div><div class="copy" id="cpF" style="left:${fo+24}px"><h1 style="font-size:${FIN.fs}px">${FIN.h}</h1><p class="sub">${FIN.sub}</p></div><div class="phone pf" style="left:${fo+(W-290)/2}px;width:290px"><img src="file://${S}/store2/${slot}/${FIN.shot}.png"></div>`;
+ out+=`<div class="eb" style="left:${fo+24}px">${MARK}NENEMI</div><div class="copy" id="cpF" style="left:${fo+24}px"><h1 style="font-size:${FIN.fs}px">${FIN.h}</h1><p class="sub">${FIN.sub}</p></div><div class="card fc1" style="left:${fo+176}px;width:222px;height:330px;z-index:2;background-image:url('file://${R}photos/life-dinner.webp');background-position:45% 55%"></div><div class="card fc2" style="left:${fo+18}px;width:220px;height:340px;background-image:url('file://${R}photos/life-dogwalk.jpg');background-position:62% 30%"></div><div class="nm" id="nm" style="left:${fo+26}px"><div class="nm-l">THE NAME</div><div class="nm-w">NENEMI <span>neh-NEH-mee</span></div><div class="nm-t">From Nahuatl, a living Indigenous language. It means &ldquo;to walk&rdquo; or &ldquo;to go about.&rdquo; Your path doesn&rsquo;t have to be straight to keep moving.</div></div>`;
 return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}body{width:${W*(P.length*2+1)}px;height:${H}px;background:#F5F6F5;position:relative;overflow:hidden;font-family:Archivo,sans-serif}
 .eb{display:none!important;position:absolute;top:36px;display:flex;align-items:center;gap:9px;font:14px 'Archivo Black',sans-serif;letter-spacing:.3em;color:#111312}.eb svg{width:23px;height:auto}.eb path{fill:#111312}
@@ -27,6 +27,7 @@ return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2
 .sub{margin-top:12px;font:500 15px/1.42 Archivo,sans-serif;color:#63696A}
 .night{position:absolute;top:0;bottom:0;background:#111312;z-index:0}.eb.dk{color:#F5F6F5}.eb.dk path{fill:#F5F6F5}.dk h1{color:#F5F6F5}.dk h1 b{color:#5AA6B0}.dk .sub{color:#B9BEBD}
 .wave{position:absolute;left:0;top:0;z-index:2;pointer-events:none}
+.nm{position:absolute;width:362px;z-index:5;border-top:1px solid #D5D8D7;padding-top:14px}.nm-l{font:600 10.5px Archivo,sans-serif;letter-spacing:.24em;color:#3C8692}.nm-w{margin-top:6px;font:22px 'Archivo Black',sans-serif;letter-spacing:.18em;color:#111312}.nm-w span{font:500 15px Archivo,sans-serif;letter-spacing:0;color:#63696A;margin-left:8px}.nm-t{margin-top:6px;font:500 13px/1.42 Archivo,sans-serif;color:#63696A}
 .card{position:absolute;z-index:1;border-radius:26px;background-size:cover;box-shadow:0 14px 34px rgba(17,19,18,.16)}
 .phone{position:absolute;top:268px;width:262px;padding:7px;background:#0b0b0b;border-radius:44px;box-shadow:0 22px 50px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.08);z-index:3}
 .phone img{display:block;width:100%;border-radius:37px}
@@ -39,7 +40,7 @@ for(const [slot,sc] of [['6.5',1],['6.7',430/414]]){
  await p.goto('file://'+file);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(800);
  await p.evaluate(()=>{document.querySelectorAll('.pp').forEach(el=>{const c=document.getElementById('cp'+el.dataset.i);const top=Math.max(268,c.offsetTop+c.offsetHeight+24);el.style.top=top+'px';});
   document.querySelectorAll('.ca').forEach(el=>{const c=document.getElementById('cp'+el.dataset.i);const top=Math.max(330,c.offsetTop+c.offsetHeight+24);el.style.top=top+'px';el.style.height=Math.min(470,896-top-30)+'px';});
-  const f=document.getElementById('cpF'),pf=document.querySelector('.pf');pf.style.top=(f.offsetTop+f.offsetHeight+26)+'px';});
+  const f=document.getElementById('cpF');const t=f.offsetTop+f.offsetHeight+26;document.querySelector('.fc2').style.top=(t+4)+'px';document.querySelector('.fc1').style.top=(t+196)+'px';const nm=document.getElementById('nm');nm.style.top=(896-nm.offsetHeight-30)+'px';});
  await p.waitForTimeout(200);
  const dir=S+'/frames/rest-'+slot;fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir);
  const pw=slot==='6.5'?414:430, ph=slot==='6.5'?896:932;
