@@ -3885,6 +3885,8 @@
   function newSyncCode() { const w = () => SYNC_WORDS[Math.floor(Math.random() * SYNC_WORDS.length)]; return `${w()}-${w()}-${Math.floor(1000 + Math.random() * 9000)}`; }
   function syncCode() { try { let c = localStorage.getItem(SYNC_KEY); if (!c) { c = newSyncCode(); localStorage.setItem(SYNC_KEY, c); } return c; } catch (e) { return 'local-only'; } }
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
+  // inside the iPhone app (Capacitor shell) nothing is sold: Apple requires in-app purchase for that, so the web paywall stays on the web.
+  const IN_APP_SHELL = (() => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } })();
   const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 10, planSource: null, planUntil: null };
   function ownRooms() { return rooms.filter(r => !r.demo && !r.archived).length; }
   function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
@@ -3904,7 +3906,7 @@
       const cfg = await (await fetch('/api/config')).json();
       if (cfg.freeRooms) auth.roomLimit = cfg.freeRooms;
       auth.smart = Boolean(cfg.smartRouting);
-      auth.billing = Boolean(cfg.billing); if (cfg.price && cfg.price.monthly) auth.price = cfg.price.monthly;
+      auth.billing = Boolean(cfg.billing) && !IN_APP_SHELL; if (cfg.price && cfg.price.monthly) auth.price = cfg.price.monthly;
       if (!cfg.clerkPublishableKey || !cfg.authEnabled) { hideOnboard(); renderAccount(); return; } // no Clerk → no wall
       auth.pk = cfg.clerkPublishableKey;
       const host = clerkHost(auth.pk);
@@ -4242,6 +4244,7 @@
   let obFlow = false; // true while our custom sign-up flow is driving, so the auth listener doesn't override it
   function obEl(id) { return document.getElementById(id); }
   function obStep(n) {
+    if (n === 3 && IN_APP_SHELL) n = 4; // no plan/paywall step inside the iPhone app
     Object.values(obStepEl).forEach(id => { const el = obEl(id); if (el) el.classList.remove('active'); });
     const el = obEl(obStepEl[n]); if (el) el.classList.add('active');
     const dot = obDotFor[n] || 1;
