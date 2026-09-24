@@ -17,7 +17,7 @@ const SL=[
  {t:'l', hold:'A half-full day you can follow.', cards:[
    ['photos/reality-market.jpeg',-12,86,300,380,-1,'55% 40%'],['garden-phone.png',238,300,196,260,4,'68% 30%'],
    ['hallway-tote.png',36,490,240,320,-3,'50% 30%']]},
- {t:'p', dark:true, h:'Four ways<br>back in<b>.</b>', sub:'', shot:'04-stuck'},
+ {t:'p', h:'Four ways<br>back in<b>.</b>', sub:'', shot:'04-stuck'},
  {t:'l', split:true, hold:'You don&rsquo;t need a new plan.', holdDark:true, cards:[
    ['floor-mms.png',22,90,240,330,-2,'70% 40%'],['photos/wall.jpg',200,210,220,260,3,'62% 30%'],
    ['man-late.png',-18,470,232,300,2,'50% 35%'],['desk-phone.png',212,500,190,262,-3,'55% 30%']]},
@@ -50,9 +50,9 @@ return `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2
 .dk h1{color:#F5F6F5}.dk h1 b{color:#5AA6B0}
 .card{position:absolute;z-index:1;border-radius:22px;background-size:cover;box-shadow:0 14px 34px rgba(17,19,18,.18)}
 .wave{position:absolute;left:0;top:0;z-index:2}
-.phone{position:absolute;z-index:3;padding:8px;background:#0b0b0b;border-radius:46px;box-shadow:0 34px 60px -12px rgba(17,19,18,.42),0 12px 24px rgba(17,19,18,.2),0 0 0 1.5px rgba(255,255,255,.1)}
+.phone{position:absolute;z-index:3;padding:8px;background:#0b0b0b;border-radius:46px;box-shadow:0 48px 80px -14px rgba(17,19,18,.5),0 22px 40px -6px rgba(17,19,18,.28),0 6px 12px rgba(17,19,18,.16),0 0 0 1.5px rgba(255,255,255,.1)}
 .phone img{display:block;width:100%;border-radius:38px}
-.mini{padding:5px;border-radius:26px}.mini img{border-radius:21px}
+.mini{padding:5px;border-radius:26px;box-shadow:0 26px 44px -8px rgba(17,19,18,.5),0 10px 18px rgba(17,19,18,.25)}.mini img{border-radius:21px}
 .hold{position:absolute;top:42px;z-index:5;font:600 16px Archivo,sans-serif;color:#111312;background:#F5F6F5;padding:6px 12px;border-radius:100px;margin-left:-12px}
 .hold.dk{color:#F5F6F5;background:#111312}
 </style></head><body>${out}${wave()}</body></html>`;}
