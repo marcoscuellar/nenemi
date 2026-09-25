@@ -1041,6 +1041,12 @@
   .rv-capture-panel .dp-sub { font-family: var(--font-body); font-size: 15px; color: var(--muted); line-height: 1.4; margin-bottom: 16px; }
   .rv-capture-panel textarea { width: 100%; box-sizing: border-box; min-height: 58px; max-height: 40vh; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 14px 16px; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); outline: none; }
   .rv-capture-panel textarea::placeholder { color: var(--faint); }
+  .rv-convo { border-left: 2px solid var(--teal); padding: 2px 0 2px 12px; margin: 0 0 14px; font-family: var(--font-body); font-size: 15px; line-height: 1.45; color: var(--ink); }
+  .rv-convo .rc-said { font-size: 13px; color: var(--muted); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rv-convo .rc-follow { margin-top: 4px; color: var(--teal-soft); }
+  .rv-convo.thinking { color: var(--muted); }
+  #rvSummary.updating .anchor-text { opacity: 0.55; transition: opacity 0.2s; }
+  #rvSummary.fresh .anchor-text { color: var(--ink); transition: color 0.4s; }
   .dp-tools { display: flex; gap: 10px; margin: 14px 0 16px; }
   .dp-tool { width: 46px; height: 46px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink); cursor: pointer; }
   .dp-tool:hover { border-color: var(--ink); }
@@ -2070,8 +2076,8 @@
       </div>
       <div class="rv-body">
         <div class="rv-card">
-          <div class="anchor-label">Where you left off<span class="al-sub"> · Nenemi summary</span></div>
-          <div class="anchor-block" id="rvSummary"></div>
+          <div class="anchor-label">Where you left off<span class="al-sub" id="rvSummarySub"> · Nenemi summary</span></div>
+          <div class="anchor-block" id="rvSummary" aria-live="polite"></div>
         </div>
         <div class="rv-card">
           <div class="anchor-label">What's next<span class="al-sub"> · Suggested next move</span></div>
@@ -2102,6 +2108,7 @@
         <div class="rv-capture-panel">
           <h4 id="dpHeading">Add to this room</h4>
           <div class="dp-sub">Say what happened however it comes out. NENEMI will update this room.</div>
+          <div class="rv-convo" id="rvConvo" aria-live="polite" hidden></div>
           <textarea id="quickAddInput" rows="2" placeholder="I finished the login flow, fixed the menu, and still need to…"></textarea>
           <input type="file" id="quickAddFile" accept="image/*,application/pdf" hidden onchange="handleQuickAddFile(this.files)" />
           <div class="quickadd-note" id="quickAddNote" hidden></div>
@@ -2842,6 +2849,7 @@
     document.getElementById('rvSummary').innerHTML = `
       <div class="anchor-text">${briefHtml}</div>`;
     makeEditable(document.querySelector('#rvSummary .anchor-text'), { set: (t) => { r.brief = t; } });
+    renderConvo(r);
     document.getElementById('rvNext').innerHTML = `
       <div class="re-next" role="button" onclick="pickUp()">
         <div class="re-next-text">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
@@ -2885,14 +2893,83 @@
   }
   function openRoomLink() { if (currentRoom && currentRoom.link) window.open(currentRoom.link.url, '_blank'); }
 
+  // an update typed (or said) inside a room: it lands in the log first, exactly as said, so it's never lost.
+  // Then the summary is rewritten from it and NENEMI answers back with one line and one next move,
+  // so the room is a conversation that keeps going, not a form that goes quiet.
   function quickAdd() {
     const input = document.getElementById('quickAddInput');
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || !currentRoom) return;
     const source = input.dataset.source || 'typed'; delete input.dataset.source;
-    currentRoom.log.unshift({ source, ts: Date.now(), text });
+    const room = currentRoom;
+    room.log.unshift({ source, ts: Date.now(), text });
     input.value = '';
     save(); renderRoomView();
+    updateRoomFromNote(room, text);
+  }
+  const CONVO_FRESH_MS = 12 * 60 * 60 * 1000;
+  const roomUpdating = {};   // room id -> the words being read right now (not saved; a reload just shows the log)
+  function renderConvo(r) {
+    const el = document.getElementById('rvConvo'); if (!el) return;
+    const pendingSaid = roomUpdating[r.id];
+    const sum = document.getElementById('rvSummary'), sub = document.getElementById('rvSummarySub');
+    sum.classList.toggle('updating', Boolean(pendingSaid));
+    if (pendingSaid) sub.textContent = ' · Updating…';
+    else if (!sum.classList.contains('fresh') || sum.dataset.room !== r.id) { sum.classList.remove('fresh'); sub.textContent = ' · Nenemi summary'; }
+    sum.dataset.room = r.id;
+    const last = (r.thread || []).slice(-1)[0];
+    if (pendingSaid) {
+      el.className = 'rv-convo thinking'; el.hidden = false;
+      el.innerHTML = `<div class="rc-said">${escapeHtml(pendingSaid)}</div><div>Updating the summary…</div>`;
+      return;
+    }
+    if (!last || !last.reply || Date.now() - (last.ts || 0) > CONVO_FRESH_MS) { el.hidden = true; el.innerHTML = ''; return; }
+    el.className = 'rv-convo'; el.hidden = false;
+    el.innerHTML = `<div class="rc-said">${escapeHtml(last.said)}</div><div>${escapeHtml(last.reply)}</div>${last.follow ? `<div class="rc-follow">${escapeHtml(last.follow)}</div>` : ''}`;
+  }
+  async function updateRoomFromNote(room, text) {
+    const here = () => currentRoom && currentRoom.id === room.id && document.getElementById('pane-roomview').classList.contains('active');
+    const sum = document.getElementById('rvSummary'), sub = document.getElementById('rvSummarySub');
+    const done = (label) => {
+      delete roomUpdating[room.id];
+      if (!here()) return;
+      sum.classList.remove('updating'); sub.textContent = ' · Nenemi summary';
+      if (label) { sum.classList.add('fresh'); sub.textContent = ' · ' + label; clearTimeout(updateRoomFromNote._t); updateRoomFromNote._t = setTimeout(() => { sum.classList.remove('fresh'); sub.textContent = ' · Nenemi summary'; }, 6000); }
+    };
+    if (!(auth.smart && location.protocol !== 'file:')) {
+      // no smart routing (offline, no key): the words are saved; the summary stays the person's own until it can be rewritten honestly
+      if (here()) showQuickAddNote('Saved in this room.');
+      return;
+    }
+    roomUpdating[room.id] = text;
+    if (here()) renderConvo(room);
+    try {
+      const ctx = {
+        mode: 'room_update',
+        pinned_room_id: room.id,
+        text,
+        thread: (room.thread || []).slice(-4).map(t => ({ said: t.said, reply: [t.reply, t.follow].filter(Boolean).join(' ') })),
+        rooms: [{ id: room.id, name: room.name, one_liner: room.one_liner, brief: room.brief, loops: room.loops.filter(l => !l.resolved).map(l => l.text), recent: room.log.slice(1, 5).map(e => e.text) }],
+      };
+      const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
+      if (!r.ok) throw new Error('route ' + r.status);
+      const d = await r.json();
+      if (d.action === 'stuck') {
+        done();
+        if (here()) { renderConvo(room); showQuickAddNote(d.reply || 'Saved. One small way back in, coming up.'); setTimeout(() => go('stuck'), 900); }
+        return;
+      }
+      (d.loops_to_resolve || []).forEach(t => { const l = room.loops.find(l => !l.resolved && normalizeLoopText(l.text) === normalizeLoopText(t)); if (l) l.resolved = true; });
+      (d.loops_to_add || []).forEach(t => { if (t && !room.loops.some(l => normalizeLoopText(l.text) === normalizeLoopText(t))) room.loops.push({ text: t, resolved: false }); });
+      if (d.brief) room.brief = d.brief;
+      room.thread = [...(room.thread || []), { said: text, reply: d.reply || 'Saved in this room.', follow: d.follow_up || '', ts: Date.now() }].slice(-6);
+      delete roomUpdating[room.id];
+      save();
+      if (here()) { renderRoomView(); done(d.brief ? 'Updated just now' : ''); }
+    } catch (e) {
+      // offline is normal: the note is already in the log
+      if (here()) { done(); renderConvo(room); showQuickAddNote('Saved in this room.'); }
+    }
   }
   // a deliberate closing action for a room: recap today's own activity, in the room's own words,
   // then a human baton pass — future-them, not Claude, chooses where the next visit starts.
