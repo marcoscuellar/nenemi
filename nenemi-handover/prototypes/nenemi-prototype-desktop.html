@@ -644,6 +644,12 @@
   .lockdown-task { font-family: var(--font-display); font-weight: 700; font-size: 28px; text-align: center; max-width: 460px; }
   .lockdown-timer { font-family: var(--font-mono); font-size: 46px; color: var(--sage-text); margin-top: 26px; }
   .lockdown-hint { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 16px; }
+  .lockdown-room { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 14px; text-align: center; }
+  .lockdown-done { margin-top: 30px; padding: 13px 26px; border-radius: 4px; border: 1px solid var(--sage-text); background: none; color: var(--sage-text); font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; }
+  .lockdown-done:hover { background: rgba(138, 199, 190, 0.12); }
+  .lockdown-check { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; color: var(--sage-text); }
+  #pane-lockdown.finished .lockdown-check { opacity: 1; }
+  #pane-lockdown.finished .lockdown-inner, #pane-lockdown.finished .lockdown-exit { opacity: 0; transition: opacity 0.2s ease; }
   .lockdown-exit { position: absolute; bottom: 40px; left: 0; right: 0; text-align: center; background: none; border: none; color: var(--faint); font-family: var(--font-mono); font-size: 12px; cursor: pointer; }
 
   .friction-overlay { position: absolute; inset: 0; background: rgba(5,6,4,0.9); display: flex; align-items: center; justify-content: center; z-index: 60; }
@@ -1668,6 +1674,9 @@
     #pane-stuck .door-label { font-size: 18px; margin-bottom: 3px; }
     #pane-stuck .door-sub { font-size: 14px; }
     #pane-stuck .door::after { right: 20px; bottom: auto; top: 50%; margin-top: -5px; }
+    /* focus: step away sits above the tab bar, not under it */
+    .lockdown-exit { bottom: calc(92px + var(--sab)); padding: 10px 0; }
+    .lockdown-done { margin-top: 26px; padding: 14px 28px; }
   }
 </style>
 </head>
@@ -2258,10 +2267,13 @@
     <div class="pane" id="pane-lockdown">
       <div class="lockdown-label">[ FOCUS · ONE THING ]</div>
       <div class="lockdown-inner">
+        <div class="lockdown-room" id="lockdownRoom" hidden></div>
         <div class="lockdown-task" id="lockdownTask">Pick final logo direction</div>
         <div class="lockdown-timer" id="lockdownTimer">0:00</div>
         <div class="lockdown-hint">Everything else is put away. This is the only thing here.</div>
+        <button type="button" class="lockdown-done" id="lockdownDone" onclick="focusDone()" hidden>That's done.</button>
       </div>
+      <div class="lockdown-check" aria-hidden="true"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 5-5"/></svg></div>
       <button class="lockdown-exit" onclick="confirmExit()">[ step away ]</button>
     </div>
 
@@ -2706,7 +2718,7 @@
       <div class="loop-row ${l.resolved ? 'resolved' : ''}" data-idx="${i}">
         <div class="loop-check" onclick="toggleLoop(${i})"><svg viewBox="0 0 16 16" fill="none" stroke-width="2"><path d="M3 8l3.5 3.5L13 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="loop-text">${l.text}</div>
-        ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop('${l.text.replace(/'/g, "\\'")}')">Sit with me <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
+        ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop(currentRoom.loops[${i}].text, ${i})">Sit with me <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
       </div>`;
     document.getElementById('rvLoops').innerHTML = visibleLoops.length ? visibleLoops.map(loopRow).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
     document.getElementById('rvLoops').hidden = !loopsExpanded;
@@ -2841,15 +2853,13 @@
     return `${d} days ago · all still here`;
   }
   let pickUpTask = '';
-  // pick up = go to the work. calendar loops open the calendar; anything else lights the loop right here
+  // pick up = go to the work. calendar loops open the calendar; anything else opens focus on that one thing
   function pickUp() {
     if (!currentRoom) return;
     if (/\b(calendar|build (a|the|my) day|smart cal|the day)\b/i.test(pickUpTask)) { go('calendar'); return; }
     const i = currentRoom.loops.findIndex(l => !l.resolved);
     if (i < 0) { const q = document.getElementById('quickAddInput'); if (q) q.focus(); return; }
-    if (showAllLoopsFor !== currentRoom.id) { showAllLoopsFor = currentRoom.id; renderRoomView(); }
-    const row = document.querySelector(`#rvLoops .loop-row[data-idx="${i}"]`);
-    if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('lit'); setTimeout(() => row.classList.remove('lit'), 2400); }
+    focusOnLoop(currentRoom.loops[i].text, i);
   }
   // click to edit, in place: Enter or blur saves, Escape reverts. no separate edit mode to find first.
   function makeEditable(el, opts) {
@@ -3460,7 +3470,15 @@
 
   let lockdownSeconds = 0;
   let lockdownInterval = null;
-  function focusOnLoop(taskText) {
+  let lockdownLoop = null; // the loop being sat with: { room, idx }, so "That's done." closes the right one
+  function focusOnLoop(taskText, idx) {
+    const room = currentRoom;
+    if (room && !(idx >= 0)) idx = room.loops.findIndex(l => !l.resolved && l.text === taskText);
+    lockdownLoop = room && idx >= 0 && room.loops[idx] && !room.loops[idx].resolved ? { room, idx } : null;
+    const roomLine = document.getElementById('lockdownRoom');
+    roomLine.textContent = room ? room.name : ''; roomLine.hidden = !room;
+    document.getElementById('lockdownDone').hidden = !lockdownLoop;
+    document.getElementById('pane-lockdown').classList.remove('finished');
     document.getElementById('lockdownTask').textContent = taskText;
     lockdownSeconds = 0;
     document.getElementById('lockdownTimer').textContent = '0:00';
@@ -3474,9 +3492,33 @@
     go('lockdown');
   }
 
+  // done: the loop closes, one soft check, a plain line in the log, back to the room
+  function focusDone() {
+    const pane = document.getElementById('pane-lockdown');
+    if (!lockdownLoop || pane.classList.contains('finished')) return;
+    clearInterval(lockdownInterval);
+    const { room, idx } = lockdownLoop; lockdownLoop = null;
+    const loop = room.loops[idx];
+    if (loop && !loop.resolved) {
+      loop.resolved = true;
+      const mins = Math.max(1, Math.round(lockdownSeconds / 60));
+      room.log.unshift({ source: 'focus', ts: Date.now(), text: `Finished "${loop.text}" after ${mins} minute${mins === 1 ? '' : 's'}.` });
+      save();
+    }
+    try { if (navigator.vibrate) navigator.vibrate(18); } catch (e) {}
+    pane.classList.add('finished');
+    setTimeout(() => {
+      pane.classList.remove('finished');
+      go(currentRoom ? 'roomview' : 'home');
+      if (currentRoom) renderRoomView();
+    }, 900);
+  }
+
   // leaving is one tap. the log line is the app's, neutral, never a score
   function confirmExit() {
+    if (document.getElementById('pane-lockdown').classList.contains('finished')) return;
     clearInterval(lockdownInterval);
+    lockdownLoop = null;
     if (currentRoom && lockdownSeconds >= 120) {
       const mins = Math.round(lockdownSeconds / 60);
       currentRoom.log.unshift({ source: 'focus', ts: Date.now(), text: `Sat with "${document.getElementById('lockdownTask').textContent}" for ${mins} minutes.` });
