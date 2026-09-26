@@ -546,6 +546,7 @@
   .acct-menu .mi .k { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); }
   .acct-menu .sep { height: 1px; background: var(--line); margin: 6px 4px; }
   .acct-menu .mi.danger { color: var(--muted); }
+  .acct-menu .mi.back { color: var(--muted); font-size: 12.5px; }
   .new-room-card.limit { border-style: solid; color: var(--muted); cursor: default; }
   .new-room-card.limit b { color: var(--sage-text); font-weight: 600; }
 
@@ -4058,20 +4059,33 @@
     const planRow = !auth.signedIn || !auth.billing ? `<div class="mi static">${escapeHtml(plan)}</div>`
       : auth.plan === 'paid' ? `<div class="mi" onclick="manageFullAccess(); toggleAcctMenu()">Full access<span class="k">${auth.planUntil ? 'renews ' + new Date(auth.planUntil).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'manage'}</span></div>`
       : `<div class="mi" onclick="openFullAccess(); toggleAcctMenu()">${escapeHtml(plan)}<span class="k">Full access $${auth.price}/mo</span></div>`;
-    const items = [
+    // Two levels, so the first thing seen is short: Manage account / Sign out / Delete my account.
+    // Everything else sits one tap in, under Manage account.
+    const more = [
       planRow,
       `<div class="sep"></div>`,
-      IN_APP_SHELL ? '' : `<div class="mi" onclick="showPhoneSetup(); toggleAcctMenu()">Put Nenemi on your phone<span class="k">install</span></div>`,
-      `<div class="mi" onclick="exportRooms(); toggleAcctMenu()">Export my rooms<span class="k">json</span></div>`,
+      auth.signedIn ? `<div class="mi" onclick="try { Clerk.openUserProfile(); } catch (e) {} toggleAcctMenu()">Profile and sign-in</div>` : '',
+      `<div class="mi" onclick="location.href='mailto:marcos@ollinos.com?subject=Nenemi'; toggleAcctMenu()">Reach out to us<span class="k">email</span></div>`,
       `<div class="mi" onclick="showCalendarSync(); toggleAcctMenu()">Sync my calendar<span class="k">subscribe</span></div>`,
+      `<div class="mi" onclick="window.open('/privacy.html', '_blank'); toggleAcctMenu()">Privacy and terms</div>`,
+      `<div class="mi" onclick="exportRooms(); toggleAcctMenu()">Export my data<span class="k">json</span></div>`,
+      IN_APP_SHELL ? '' : `<div class="mi" onclick="window.open('${APP_STORE_URL}', '_blank'); toggleAcctMenu()">Find Nenemi in the App Store</div>`,
+      auth.signedIn ? '' : `<div class="mi" onclick="changeSync(); toggleAcctMenu()">Sync code<span class="k">${escapeHtml(syncCode())}</span></div>`,
     ];
-    if (!auth.signedIn) items.push(`<div class="mi" onclick="changeSync(); toggleAcctMenu()">Sync code<span class="k">${escapeHtml(syncCode())}</span></div>`);
-    if (auth.pk && !auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`);
-    items.push(`<div class="mi" onclick="location.href='mailto:marcos@ollinos.com?subject=Nenemi'; toggleAcctMenu()">Reach out to us<span class="k">email</span></div>`);
-    items.push(`<div class="mi" onclick="window.open('/privacy.html', '_blank'); toggleAcctMenu()">Privacy and terms</div>`);
-    if (auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="try { Clerk.openUserProfile(); } catch (e) {} toggleAcctMenu()">Manage account</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); deleteAccount()">Delete account</div>`);
+    let items;
+    if (!auth.signedIn) items = auth.pk ? [...more, `<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`] : more;
+    else if (acctView === 'more') items = [`<div class="mi back" onclick="acctGo(event, 'main')">\u2039 Manage account</div>`, `<div class="sep"></div>`, ...more.slice(2)];
+    else items = [
+      `<div class="mi" onclick="acctGo(event, 'more')">Manage account<span class="k">\u203a</span></div>`,
+      `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`,
+      `<div class="mi danger" onclick="toggleAcctMenu(); deleteAccount()">Delete my account</div>`,
+    ];
+    if (auth.signedIn && acctView === 'more') items.splice(2, 0, planRow, `<div class="sep"></div>`);
     m.innerHTML = items.join('');
   }
+  const APP_STORE_URL = 'https://apps.apple.com/app/id6810664237';
+  let acctView = 'main';
+  function acctGo(ev, view) { if (ev) ev.stopPropagation(); acctView = view; renderAcctMenu(); }
   // Removes the account and everything synced to it (rooms, files, any subscription), then this device's copy.
   async function deleteAccount() {
     if (!auth.signedIn) return;
@@ -4084,7 +4098,7 @@
     try { await Clerk.signOut(); } catch (e) {}
     location.reload();
   }
-  function toggleAcctMenu(ev) { if (ev) ev.stopPropagation(); const m = document.getElementById('acctMenu'); if (!m) return; renderAcctMenu(); m.classList.toggle('open'); }
+  function toggleAcctMenu(ev) { if (ev) ev.stopPropagation(); const m = document.getElementById('acctMenu'); if (!m) return; if (!m.classList.contains('open')) acctView = 'main'; renderAcctMenu(); m.classList.toggle('open'); }
   document.addEventListener('click', (e) => { const m = document.getElementById('acctMenu'); if (m && m.classList.contains('open') && !m.contains(e.target)) m.classList.remove('open'); });
   function showPhoneSetup() {
     alert("iPhone: open app.mynenemi.com in Safari, tap Share, then \u201cAdd to Home Screen.\u201d\n\nAndroid: open it in Chrome, tap the three dots, then \u201cInstall app.\u201d\n\nIt gets its own icon and opens full-screen. Same account, same rooms.");
