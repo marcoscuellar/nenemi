@@ -70,7 +70,14 @@
     --pill-bg: rgba(255,255,255,0.86);
     --shadow: rgba(21,23,27,0.10);
     --card-shadow: 0 1px 2px rgba(20,22,26,0.04), 0 8px 26px rgba(20,22,26,0.05);
-    --radius: 4px;
+    --radius: 12px;        /* cards and containers */
+    --radius-sm: 8px;      /* buttons, chips, inputs inside a card */
+    --ground: #F5F6F5;     /* the canvas modular cards sit on */
+    --link: #28A2C3;       /* context cyan: only for links out to the user's own work */
+    --link-ink: #16708A;   /* cyan text that stays readable on white */
+    --win: #0EBE82;        /* soft mint: only for completion */
+    --win-soft: rgba(14,190,130,0.10);
+    --win-ink: #08845A;
 
     --font-display: 'Archivo', sans-serif;
     --font-black: 'Archivo Black', 'Archivo', sans-serif;
@@ -553,7 +560,6 @@
   .brief-card { background: var(--surface); border: 1px solid var(--line2); border-radius: 4px; padding: 20px; margin-bottom: 22px; }
   .brief-label { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 10.5px; color: var(--sage-text); letter-spacing: 0.04em; margin-bottom: 10px; }
   .brief-text { font-size: 16px; line-height: 1.65; }
-  .room-link-row { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; padding: 11px 16px; background: var(--sage-fill); border-radius: 4px; color: var(--sage-text); font-size: 13.5px; cursor: pointer; width: fit-content; }
   .section-label { font-family: var(--font-mono); font-size: 10.5px; color: var(--faint); letter-spacing: 0.14em; text-transform: uppercase; margin: 4px 0 6px; }
   .loop-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); border-radius: 4px; transition: background 600ms ease, box-shadow 600ms ease; }
   .loop-row.lit { background: var(--sage-fill); box-shadow: 0 0 0 10px var(--sage-fill); }
@@ -645,9 +651,9 @@
   .lockdown-timer { font-family: var(--font-mono); font-size: 46px; color: var(--sage-text); margin-top: 26px; }
   .lockdown-hint { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 16px; }
   .lockdown-room { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 14px; text-align: center; }
-  .lockdown-done { margin-top: 30px; padding: 13px 26px; border-radius: 4px; border: 1px solid var(--sage-text); background: none; color: var(--sage-text); font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; }
-  .lockdown-done:hover { background: rgba(138, 199, 190, 0.12); }
-  .lockdown-check { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; color: var(--sage-text); }
+  .lockdown-done { margin-top: 30px; padding: 13px 26px; border-radius: var(--radius-sm); border: 1px solid var(--win); background: none; color: var(--win); font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; }
+  .lockdown-done:hover { background: rgba(14, 190, 130, 0.14); }
+  .lockdown-check { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; color: var(--win); }
   #pane-lockdown.finished .lockdown-check { opacity: 1; }
   #pane-lockdown.finished .lockdown-inner, #pane-lockdown.finished .lockdown-exit { opacity: 0; transition: opacity 0.2s ease; }
   .lockdown-exit { position: absolute; bottom: 40px; left: 0; right: 0; text-align: center; background: none; border: none; color: var(--faint); font-family: var(--font-mono); font-size: 12px; cursor: pointer; }
@@ -987,11 +993,17 @@
   .loose-chip .lb.quiet { color: var(--faint); font-weight: 500; }
 
   /* ================= ROOM detail (light) ================= */
-  #pane-roomview { background: var(--paper); overflow-y: auto; padding: 70px 20px 128px; }
+  #pane-roomview { background: var(--ground); overflow-y: auto; padding: 70px 20px 128px; }
   #pane-roomview.active { display: block; }
   #pane-roomview::before { display: none; }
   #pane-roomview .rv-header { position: relative; max-width: 560px; margin: 0 auto; display: block; padding: 0; border: none; background: none; }
-  .rv-back { width: 44px; height: 44px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink); cursor: pointer; margin-bottom: 16px; }
+  .rv-back { width: 36px; height: 36px; border-radius: 50%; background: var(--card); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--ink); cursor: pointer; flex-shrink: 0; }
+  .rv-back svg { width: 18px; height: 18px; }
+  .rv-topline { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .rv-crumb { font-family: var(--font-body); font-size: 13.5px; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rv-crumb-link { color: var(--muted); cursor: pointer; }
+  .rv-crumb-link:hover { color: var(--ink); }
+  .rv-crumb-sep { color: var(--faint); margin: 0 6px; }
   .rv-head-main { display: flex; align-items: flex-start; gap: 16px; }
   #pane-roomview .rv-icon { width: 68px; height: 68px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--ink); font-size: 40px; background: none; border: none; border-radius: 0; cursor: pointer; }
   #pane-roomview .rv-icon svg { width: 60px; height: 60px; }
@@ -1012,43 +1024,59 @@
   .wrapup-status { display: block; max-width: 560px; margin: 10px auto 0; font-size: 13px; color: var(--muted); }
 
   #pane-roomview .rv-body { display: flex; flex-direction: column; gap: 12px; max-width: 560px; margin: 22px auto 0; padding: 0; background: none; border: none; }
-  .rv-card { background: var(--card); border: 1px solid var(--line); border-radius: 4px; box-shadow: var(--card-shadow); padding: 22px; }
+  .rv-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 1px 2px rgba(17,19,18,0.03); padding: 20px; }
   #pane-roomview .anchor-label { font-family: var(--font-black); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); text-transform: none; margin: 0 0 10px; }
   #pane-roomview .anchor-label .al-sub { font-family: var(--font-body); font-weight: 500; font-size: 14px; letter-spacing: 0; color: var(--muted); }
   #pane-roomview .anchor-block { padding: 0; background: none; border: none; }
-  #pane-roomview .anchor-text { font-family: var(--font-body); font-size: 16px; line-height: 1.5; color: var(--muted); }
+  #pane-roomview .anchor-text { font-family: var(--font-body); font-size: 16px; line-height: 1.55; color: var(--muted); }
   #pane-roomview .anchor-highlight { color: var(--ink); font-weight: 600; }
-  #pane-roomview .re-next { display: block; cursor: pointer; }
+  #pane-roomview .re-next { display: block; }
   #pane-roomview .re-next-text { font-family: var(--font-body); font-weight: 400; font-size: 16px; color: var(--muted); margin-bottom: 16px; text-transform: none; letter-spacing: 0; }
-  #pane-roomview .re-btn { display: block; width: 100%; text-align: center; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 17px; border-radius: 4px; text-transform: none; letter-spacing: 0; }
+  .re-dock { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  #pane-roomview .re-btn { display: block; width: 100%; text-align: center; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 16px; border-radius: var(--radius-sm); text-transform: none; letter-spacing: 0; }
+  #pane-roomview .re-btn:hover { background: #222524; }
+  .re-done { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--card); color: var(--ink); border: 1px solid var(--line2); border-radius: var(--radius-sm); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 15px; cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
+  .re-done:hover { border-color: var(--win); background: var(--win-soft); }
+  .re-done.won { background: var(--win); border-color: var(--win); color: #fff; }
+  .ctx-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 16px; }
+  .ctx-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 8px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: rgba(40,162,195,0.06); color: var(--link-ink); font-family: var(--font-body); font-weight: 600; font-size: 14px; text-decoration: none; }
+  .ctx-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ctx-chip svg { flex-shrink: 0; }
+  .ctx-chip:hover { background: rgba(40,162,195,0.13); }
+  .ctx-edit, .ctx-add { background: none; border: none; padding: 6px 0; color: var(--faint); font-family: var(--font-body); font-size: 13px; cursor: pointer; }
+  .ctx-edit:hover, .ctx-add:hover { color: var(--link-ink); }
+  .ctx-input { width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-family: var(--font-body); font-size: 15px; outline: none; box-shadow: 0 0 0 3px rgba(40,162,195,0.12); }
+  .ctx-input.bad { border-color: var(--faint); box-shadow: none; }
   #pane-roomview .shrink-row { text-align: center; margin-top: 12px; }
   #pane-roomview .shrink-link { font-family: var(--font-body); font-size: 14px; color: var(--muted); cursor: pointer; text-transform: none; letter-spacing: 0; }
   #pane-roomview .shrink-status { display: block; font-size: 13px; color: var(--faint); margin-top: 6px; }
-  #pane-roomview .room-link-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; color: var(--ink); font-size: 14px; cursor: pointer; }
 
-  #pane-roomview .toggle-row { display: flex; align-items: center; gap: 13px; background: var(--card); border: 1px solid var(--line); border-radius: 4px; box-shadow: var(--card-shadow); padding: 18px 20px; cursor: pointer; }
+  #pane-roomview .toggle-row { display: flex; align-items: center; gap: 13px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 1px 2px rgba(17,19,18,0.03); padding: 16px 20px; cursor: pointer; }
   #pane-roomview .toggle-row .tr-ic { display: flex; color: var(--ink); flex-shrink: 0; }
-  #pane-roomview .toggle-row .tr-label { flex: 1; font-family: var(--font-display); font-weight: 800; font-size: 16.5px; color: var(--ink); text-transform: none; letter-spacing: 0; }
+  #pane-roomview .toggle-row .tr-label { flex: 1; font-family: var(--font-body); font-weight: 700; font-size: 15.5px; color: var(--ink); text-transform: none; letter-spacing: 0; }
   #pane-roomview .toggle-row .expand-label { display: none; }
   #pane-roomview .toggle-row .tr-chev { color: var(--faint); flex-shrink: 0; transition: transform .18s; }
   #pane-roomview .toggle-row.open .tr-chev { transform: rotate(90deg); }
   #pane-roomview #rvLoops, #pane-roomview #rvLog { padding: 4px 6px 2px; }
   #pane-roomview .loop-row { display: flex; align-items: center; gap: 10px; padding: 11px 6px; border-bottom: 1px solid var(--line); }
   #pane-roomview .loop-check { width: 22px; height: 22px; border: 1.5px solid var(--line2); border-radius: 7px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: transparent; }
-  #pane-roomview .loop-row.resolved .loop-check { background: var(--ink); border-color: var(--ink); color: #fff; }
+  #pane-roomview .loop-row.resolved .loop-check { background: var(--win); border-color: var(--win); color: #fff; }
   #pane-roomview .loop-check svg { width: 13px; height: 13px; stroke: currentColor; }
   #pane-roomview .loop-text { flex: 1; font-size: 15px; color: var(--ink); }
   #pane-roomview .loop-row.resolved .loop-text { color: var(--faint); text-decoration: line-through; }
   #pane-roomview .loop-focus { font-size: 12.5px; color: var(--muted); display: inline-flex; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; }
   #pane-roomview .log-entry { padding: 11px 6px; border-bottom: 1px solid var(--line); }
   #pane-roomview .log-time { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.05em; color: var(--faint); text-transform: uppercase; display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
-  #pane-roomview .log-text { font-size: 15px; color: var(--ink); line-height: 1.45; }
+  #pane-roomview .log-text { font-size: 14.5px; color: var(--muted); line-height: 1.45; }
+  #pane-roomview .log-entry:last-child { border-bottom: none; }
+  #pane-roomview .log-entry.log-focus { border-left: 2px solid var(--win); padding-left: 12px; }
+  #pane-roomview .log-entry.log-focus .log-text { color: var(--ink); }
   #pane-roomview .log-thumb { max-width: 140px; border-radius: 4px; }
 
-  .rv-capture-panel { background: var(--card); border: 1px solid var(--line); border-radius: 4px; box-shadow: var(--card-shadow); padding: 22px; display: block; }
+  .rv-capture-panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 1px 2px rgba(17,19,18,0.03); padding: 20px; display: block; }
   .rv-capture-panel h4 { font-family: var(--font-black); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 8px; text-transform: none; }
   .rv-capture-panel .dp-sub { font-family: var(--font-body); font-size: 15px; color: var(--muted); line-height: 1.4; margin-bottom: 16px; }
-  .rv-capture-panel textarea { width: 100%; box-sizing: border-box; min-height: 58px; max-height: 40vh; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 14px 16px; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); outline: none; }
+  .rv-capture-panel textarea { width: 100%; box-sizing: border-box; min-height: 58px; max-height: 40vh; resize: none; border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius-sm); padding: 14px 16px; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); caret-color: var(--teal); outline: none; }
   .rv-capture-panel textarea::placeholder { color: var(--faint); }
   .rv-convo { border-left: 2px solid var(--teal); padding: 2px 0 2px 12px; margin: 0 0 14px; font-family: var(--font-body); font-size: 15px; line-height: 1.45; color: var(--ink); }
   .rv-convo .rc-said { font-size: 13px; color: var(--muted); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1461,7 +1489,7 @@
     --sage: #2c6670; --sage-text: #101110; --sage-fill: #e8f1f0; --on-sage: #fff;
     --teal: #2c6670; --teal-soft: #2c6670; --teal-deep: #2c6670;
     --btn: #080908; --btn-ink: #fff;
-    --card-shadow: none; --shadow: rgba(15,18,16,.12); --radius: 4px;
+    --card-shadow: none; --shadow: rgba(15,18,16,.12);
     --font-mono: 'Archivo', system-ui, sans-serif;
     --rl-black: #080908; --rl-wash: #f3f3ef; --rl-pale: #e8f1f0; --rl-teal: #2c6670; --rl-amber: #f2c978;
   }
@@ -1526,21 +1554,23 @@
   .new-room-card.limit, .loose-chip { border-radius: 3px; box-shadow: none; }
 
   /* ---------- Room detail ---------- */
-  #pane-roomview { background: #f0f1f0; }
-  .rv-back { border-radius: 3px; background: transparent; border: 0; color: var(--rl-teal); }
-  .rv-card, #pane-roomview .toggle-row, .rv-capture-panel { border: 0; border-radius: 4px; background: #fff; box-shadow: 0 10px 28px rgba(15,18,16,.045); }
-  #pane-roomview .toggle-row:hover { box-shadow: 0 12px 32px rgba(15,18,16,.08); }
+  #pane-roomview { background: var(--ground); }
+  .rv-back { border-radius: var(--radius-sm); background: transparent; border: 0; color: var(--rl-teal); }
+  .rv-card, #pane-roomview .toggle-row, .rv-capture-panel { border: 1px solid var(--line); border-radius: var(--radius); background: #fff; box-shadow: 0 1px 2px rgba(17,19,18,.03); }
+  .rv-card, .rv-capture-panel { padding: 20px; }
+  #pane-roomview .toggle-row:hover { border-color: var(--line2); box-shadow: 0 4px 14px rgba(17,19,18,.05); }
   #pane-roomview .anchor-label { font-family: var(--font-body); font-weight: 700; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--rl-teal); margin: 0 0 13px; }
   #pane-roomview .anchor-label .al-sub { font-size: 10px; color: #686c67; }
-  #pane-roomview .re-next-text { font-family: var(--font-black); font-weight: 400; font-size: 26px; line-height: 1.15; letter-spacing: -.035em; color: var(--ink); }
-  #pane-roomview .re-btn, .rv-capture-panel .dp-btn { border-radius: 3px; background: var(--rl-black); color: #fff; }
-  #pane-roomview .rv-action-btn { border-radius: 3px; box-shadow: none; }
-  .rv-status-label { font-family: var(--font-body); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--rl-teal); background: var(--rl-pale); padding: 9px 12px; border-radius: 3px; }
+  #pane-roomview .re-next-text { font-family: var(--font-black); font-weight: 400; font-size: 26px; line-height: 1.15; letter-spacing: -.035em; color: var(--ink); margin-bottom: 20px; }
+  #pane-roomview .re-next-text.empty { font-family: var(--font-body); font-size: 16px; letter-spacing: 0; color: var(--muted); }
+  #pane-roomview .re-btn, .rv-capture-panel .dp-btn { border-radius: var(--radius-sm); background: var(--rl-black); color: #fff; }
+  #pane-roomview .rv-action-btn { border-radius: var(--radius-sm); box-shadow: none; }
+  .rv-status-label { font-family: var(--font-body); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--rl-teal); background: var(--rl-pale); padding: 9px 12px; border-radius: var(--radius-sm); }
   .rv-status-label::before { width: 7px; height: 7px; }
-  .rv-capture-panel textarea { border-radius: 3px; background: #fff; border-color: var(--line); }
+  .rv-capture-panel textarea { border-radius: var(--radius-sm); background: #fff; border-color: var(--line); }
   #pane-roomview .loop-check { border-radius: 50%; }
-  #pane-roomview .loop-row.resolved .loop-check { background: var(--rl-teal); border-color: var(--rl-teal); }
-  #pane-roomview .log-thumb { border-radius: 3px; }
+  #pane-roomview .loop-row.resolved .loop-check { background: var(--win); border-color: var(--win); }
+  #pane-roomview .log-thumb { border-radius: var(--radius-sm); }
 
   /* ---------- My Day ---------- */
   .week-strip { gap: 8px; }
@@ -1653,7 +1683,7 @@
     #pane-rooms .hub-sub, #pane-calendar .cal-subhead, .nt-sub { font-size: 15px; padding-bottom: 22px; }
     .greeting-big { font-size: 40px; }
     .cal-checklist { margin-left: -20px; margin-right: -20px; padding: 24px 20px; }
-    .rv-card, #pane-roomview .toggle-row, .rv-capture-panel { border-radius: 4px; }
+    .rv-card, #pane-roomview .toggle-row, .rv-capture-panel { border-radius: var(--radius); }
     .room-card:hover, .rgp-card:hover { transform: none; }
     /* avatar sits level with the wordmark, above the header rule */
     .account-wrap { top: 12px; right: 14px; }
@@ -1674,6 +1704,11 @@
     #pane-stuck .door-label { font-size: 18px; margin-bottom: 3px; }
     #pane-stuck .door-sub { font-size: 14px; }
     #pane-stuck .door::after { right: 20px; bottom: auto; top: 50%; margin-top: -5px; }
+    /* room view: modular cards, dock stays side by side, big task shrinks a step */
+    #pane-roomview .rv-body { gap: 12px; }
+    #pane-roomview .re-next-text { font-size: 22px; }
+    #pane-roomview .re-btn, .re-done { font-size: 15px; padding-left: 8px; padding-right: 8px; }
+    .ctx-chip { font-size: 13.5px; }
     /* focus: step away sits above the tab bar, not under it */
     .lockdown-exit { bottom: calc(92px + var(--sab)); padding: 10px 0; }
     .lockdown-done { margin-top: 26px; padding: 14px 28px; }
@@ -2080,9 +2115,12 @@
     <!-- ROOM VIEW -->
     <div class="pane" id="pane-roomview">
       <div class="rv-header">
-        <button type="button" class="rv-back" onclick="go('rooms')" title="Back to rooms">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
-        </button>
+        <div class="rv-topline">
+          <button type="button" class="rv-back" onclick="go('rooms')" title="Back to rooms">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <div class="rv-crumb"><span class="rv-crumb-link" onclick="go('rooms')">Rooms</span><span class="rv-crumb-sep">·</span><span id="rvCrumbTime"></span></div>
+        </div>
         <div class="rv-head-main">
           <div class="rv-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
           <div class="rv-head-text">
@@ -2091,7 +2129,7 @@
             <div class="rv-status-row">
               <div class="rv-status">
                 <div class="rv-status-label" id="rvStatusLabel">caught up</div>
-                <div class="rv-status-sub" id="rvStatusSub">Last updated today</div>
+                <div class="rv-status-sub" id="rvStatusSub" hidden></div>
               </div>
               <div class="rv-actions">
                 <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="4.2" height="6.5" rx="2.1"/><rect x="17.3" y="13" width="4.2" height="6.5" rx="2.1"/></svg></button>
@@ -2106,14 +2144,11 @@
         <div class="rv-card">
           <div class="anchor-label">Where you left off<span class="al-sub" id="rvSummarySub"> · Nenemi summary</span></div>
           <div class="anchor-block" id="rvSummary" aria-live="polite"></div>
+          <div class="ctx-row" id="rvCtx"></div>
         </div>
         <div class="rv-card">
           <div class="anchor-label">What's next<span class="al-sub"> · Suggested next move</span></div>
           <div class="reentry-next" id="rvNext"></div>
-          <div class="room-link-row" id="rvLinkRow" style="display:none" onclick="openRoomLink()">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M6.5 9.5L9.5 6.5M7 5L8.2 3.8a2.3 2.3 0 0 1 3.3 3.3L10 8.5M9 11l-1.2 1.2a2.3 2.3 0 0 1-3.3-3.3L6 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="rvLinkLabel">Continue in Claude</span>
-          </div>
         </div>
         <div class="rv-col">
           <div class="toggle-row" id="rvLoopsToggle" onclick="toggleLoopsRow()">
@@ -2703,11 +2738,9 @@
     const statusLabel = document.getElementById('rvStatusLabel'), statusSub = document.getElementById('rvStatusSub');
     if (statusLabel) { statusLabel.textContent = openCount > 0 ? `${openCount} still open` : 'caught up'; statusLabel.classList.toggle('open', openCount > 0); }
     const touch = lastTouch(r);
-    if (statusSub) statusSub.textContent = touch ? `Last updated ${relTime(touch)}` : 'Nothing here yet';
-
-    const linkRow = document.getElementById('rvLinkRow');
-    if (r.link) { linkRow.style.display = 'flex'; document.getElementById('rvLinkLabel').textContent = r.link.label; }
-    else { linkRow.style.display = 'none'; }
+    if (statusSub) statusSub.hidden = true;
+    document.getElementById('rvCrumbTime').textContent = touch ? `Updated ${relTime(touch)}` : 'Nothing here yet';
+    renderCtx(r);
 
     const indexedLoops = r.loops.map((loop, index) => ({ loop, index }));
     const openLoops = indexedLoops.filter(x => !x.loop.resolved);
@@ -2741,7 +2774,7 @@
     document.getElementById('rvLog').hidden = !logExpanded;
     const shown = logExpanded ? r.log : [];
     document.getElementById('rvLog').innerHTML = shown.map(e => `
-      <div class="log-entry">
+      <div class="log-entry${e.source === 'focus' ? ' log-focus' : ''}">
         <div class="log-time">
           ${e.source === 'voice'
             ? '<svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg> VOICE'
@@ -2853,10 +2886,11 @@
     return `${d} days ago · all still here`;
   }
   let pickUpTask = '';
+  const CAL_LOOP = /\b(calendar|build (a|the|my) day|smart cal|the day)\b/i;
   // pick up = go to the work. calendar loops open the calendar; anything else opens focus on that one thing
   function pickUp() {
     if (!currentRoom) return;
-    if (/\b(calendar|build (a|the|my) day|smart cal|the day)\b/i.test(pickUpTask)) { go('calendar'); return; }
+    if (CAL_LOOP.test(pickUpTask)) { go('calendar'); return; }
     const i = currentRoom.loops.findIndex(l => !l.resolved);
     if (i < 0) { const q = document.getElementById('quickAddInput'); if (q) q.focus(); return; }
     focusOnLoop(currentRoom.loops[i].text, i);
@@ -2899,9 +2933,12 @@
     makeEditable(document.querySelector('#rvSummary .anchor-text'), { set: (t) => { r.brief = t; } });
     renderConvo(r);
     document.getElementById('rvNext').innerHTML = `
-      <div class="re-next" role="button" onclick="pickUp()">
-        <div class="re-next-text">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
-        <span class="re-btn">${next ? 'Start' : 'Look around'}</span>
+      <div class="re-next">
+        <div class="re-next-text${next ? '' : ' empty'}">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
+        ${next ? `<div class="re-dock">
+          <button type="button" class="re-btn" onclick="pickUp()">${CAL_LOOP.test(next.text) ? 'Open the Day' : 'Start Focus'}</button>
+          <button type="button" class="re-done" onclick="doneNext(this)">That's done.</button>
+        </div>` : `<button type="button" class="re-btn" onclick="pickUp()">Look around</button>`}
       </div>
       ${next ? `<div class="shrink-row">
         <span class="shrink-link" id="shrinkLink" onclick="event.stopPropagation(); shrinkMove()">Too big? Make it smaller.</span>
@@ -2939,7 +2976,60 @@
       if (currentRoom.loops[idx] && !currentRoom.loops[idx].resolved) { currentRoom.loops[idx].text = smaller; save(); renderRoomView(); }
     } catch (e) { fail(); }
   }
-  function openRoomLink() { if (currentRoom && currentRoom.link) window.open(currentRoom.link.url, '_blank'); }
+  // the context link: one chip out to where the work actually lives. http(s) only, labeled from the address.
+  let editingLinkFor = null;
+  function cleanLinkUrl(raw) {
+    let t = String(raw || '').trim();
+    if (!t) return null;
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(t)) t = 'https://' + t;
+    try { const u = new URL(t); return (u.protocol === 'https:' || u.protocol === 'http:') && u.hostname.includes('.') ? u.href : null; } catch (e) { return null; }
+  }
+  function linkLabel(url) {
+    let u; try { u = new URL(url); } catch (e) { return 'Open link'; }
+    const h = u.hostname.replace(/^www\./, ''), path = u.pathname;
+    if (h === 'docs.google.com') return /^\/spreadsheets/.test(path) ? 'Google Sheet' : /^\/presentation/.test(path) ? 'Google Slides' : /^\/forms/.test(path) ? 'Google Form' : 'Google Doc';
+    const known = [[/(^|\.)figma\.com$/, 'Figma'], [/(^|\.)notion\.(so|site)$/, 'Notion'], [/^drive\.google\.com$/, 'Google Drive'], [/(^|\.)github\.com$/, 'GitHub'], [/(^|\.)claude\.ai$/, 'Claude'], [/(^|\.)canva\.com$/, 'Canva'], [/(^|\.)miro\.com$/, 'Miro'], [/(^|\.)linear\.app$/, 'Linear'], [/(^|\.)airtable\.com$/, 'Airtable'], [/(^|\.)dropbox\.com$/, 'Dropbox'], [/(^|\.)trello\.com$/, 'Trello'], [/(^|\.)(sharepoint|onedrive\.live)\.com$/, 'OneDrive'], [/(^|\.)vercel\.app$/, 'Vercel']];
+    const k = known.find(([re]) => re.test(h));
+    return k ? k[1] : h;
+  }
+  function renderCtx(r) {
+    const box = document.getElementById('rvCtx');
+    if (!box) return;
+    if (editingLinkFor === r.id) {
+      box.innerHTML = `<input class="ctx-input" id="ctxInput" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="Where the work lives: Figma, Notion, a doc" aria-label="Link to where the work lives" value="${escapeHtml(r.link ? r.link.url : '')}">`;
+      const i = document.getElementById('ctxInput');
+      i.onkeydown = (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); saveRoomLink(i.value); }
+        else if (e.key === 'Escape') { e.preventDefault(); saveRoomLink(null, true); }
+        else i.classList.remove('bad');
+      };
+      i.onblur = () => { if (editingLinkFor === r.id && !saveRoomLink(i.value)) saveRoomLink(null, true); };
+      i.focus();
+      return;
+    }
+    const arrow = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l6-6M6 5h5v5"/></svg>';
+    box.innerHTML = r.link && r.link.url
+      ? `<a class="ctx-chip" href="${escapeHtml(r.link.url)}" target="_blank" rel="noopener noreferrer">${arrow}<span>${escapeHtml(r.link.label || linkLabel(r.link.url))}</span></a><button type="button" class="ctx-edit" onclick="editRoomLink()">edit link</button>`
+      : `<button type="button" class="ctx-add" onclick="editRoomLink()">+ Add a link</button>`;
+  }
+  function editRoomLink() { if (!currentRoom) return; editingLinkFor = currentRoom.id; renderCtx(currentRoom); }
+  // returns true when the edit is finished (saved, cleared, or cancelled); false keeps the box open on a bad address
+  function saveRoomLink(raw, cancel) {
+    const r = currentRoom;
+    if (!r || editingLinkFor !== r.id) return true;
+    if (!cancel) {
+      if (!String(raw || '').trim()) { r.link = null; }
+      else {
+        const url = cleanLinkUrl(raw);
+        if (!url) { const i = document.getElementById('ctxInput'); if (i) i.classList.add('bad'); return false; }
+        if (!r.link || r.link.url !== url) r.link = { url, label: linkLabel(url) };
+      }
+      save();
+    }
+    editingLinkFor = null;
+    renderCtx(r);
+    return true;
+  }
 
   // an update typed (or said) inside a room: it lands in the log first, exactly as said, so it's never lost.
   // Then the summary is rewritten from it and NENEMI answers back with one line and one next move,
@@ -3492,20 +3582,35 @@
     go('lockdown');
   }
 
+  // one way to close a loop from a done button: resolved, a plain line in the log, a small buzz
+  function finishLoop(room, idx, seconds) {
+    const loop = room && room.loops[idx];
+    if (!loop || loop.resolved) return;
+    loop.resolved = true;
+    const mins = seconds ? Math.max(1, Math.round(seconds / 60)) : 0;
+    room.log.unshift({ source: 'focus', ts: Date.now(), text: mins ? `Finished "${loop.text}" after ${mins} minute${mins === 1 ? '' : 's'}.` : `Finished "${loop.text}".` });
+    save();
+    try { if (navigator.vibrate) navigator.vibrate(18); } catch (e) {}
+  }
+  // "That's done." on the room card: mint for a beat, then the next thing slides in
+  function doneNext(btn) {
+    if (!currentRoom || btn.disabled) return;
+    const idx = currentRoom.loops.findIndex(l => !l.resolved);
+    if (idx < 0) return;
+    const room = currentRoom;
+    finishLoop(room, idx, 0);
+    btn.disabled = true; btn.classList.add('won');
+    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Done.';
+    setTimeout(() => { if (currentRoom === room) renderRoomView(); }, 750);
+  }
+
   // done: the loop closes, one soft check, a plain line in the log, back to the room
   function focusDone() {
     const pane = document.getElementById('pane-lockdown');
     if (!lockdownLoop || pane.classList.contains('finished')) return;
     clearInterval(lockdownInterval);
     const { room, idx } = lockdownLoop; lockdownLoop = null;
-    const loop = room.loops[idx];
-    if (loop && !loop.resolved) {
-      loop.resolved = true;
-      const mins = Math.max(1, Math.round(lockdownSeconds / 60));
-      room.log.unshift({ source: 'focus', ts: Date.now(), text: `Finished "${loop.text}" after ${mins} minute${mins === 1 ? '' : 's'}.` });
-      save();
-    }
-    try { if (navigator.vibrate) navigator.vibrate(18); } catch (e) {}
+    finishLoop(room, idx, lockdownSeconds);
     pane.classList.add('finished');
     setTimeout(() => {
       pane.classList.remove('finished');

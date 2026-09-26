@@ -15,6 +15,16 @@ Before building or changing anything, ask: **does this hand them a crayon, or ma
 - **Dark sanctuary stays dark.** Stuck, Focus, and Friction screens are dark in both themes. No glare when someone is frozen.
 - **Humans heal.** Nenemi is the nudge, not the treatment. Point to real people; never pretend to be one.
 
+## Design standard (Sep 2026, pre-launch — this is the direction, not legacy)
+- Modular cards: crisp white cards on the `--ground` canvas (#F5F6F5), 1px `--line` border, 20px padding, 12px gaps between cards.
+- Corners: `--radius` (12px) for cards and containers, `--radius-sm` (8px) for buttons, chips, and inputs inside a card. Use the tokens, never a hardcoded radius. Older 3–4px corners elsewhere get moved to the tokens as each screen is touched.
+- Functional accents, each with one job and nowhere else:
+  - Context cyan `--link` #28A2C3 (text `--link-ink` #16708A for contrast): links out to the user's own work, like the room's link chip.
+  - Soft mint `--win` #0EBE82 (text `--win-ink`): completion only. "That's done.", checked loops, "Finished" lines in the log.
+  - Brand teal #3C8692 stays the calm signal (cursor, live dot, section eyebrows). Maíz stays for returning, never completing.
+- "I'm stuck" is solid black. No red, coral, or orange anywhere, ever.
+- Dark sanctuary rule still holds: Stuck, Focus, and Friction are dark. Everything else is light for now.
+
 ## Voice
 - Warm, short, specific. One sentence per line. Proper capitalization and punctuation. No exclamation marks.
 - Greeting lines are the user's own list (see `greetingLines` in `index.html`). Cut before adding.
