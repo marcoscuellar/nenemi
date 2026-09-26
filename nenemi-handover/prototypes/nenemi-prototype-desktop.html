@@ -1769,6 +1769,131 @@
     .side-room { border-radius: var(--pill); }
   }
 
+  /* ============ Day + Room: ported from the finalized clean reference (gemini-code-1790440308003.html) ============ */
+  #pane-calendar, #pane-roomview { --cyan: #28A2C3; --cyan-wash: #EAF7FA; --mint: #0EBE82; --mint-wash: #EAFBF4; --slate: #6B7280; --nx-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.02);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; line-height: 1.48; color: var(--ink); background: var(--ground); }
+  #pane-calendar.active, #pane-roomview.active { display: block; }
+  #pane-calendar::before, #pane-roomview::before { display: none; }
+  .nx-view { max-width: 1090px; margin: 0 auto; }
+  .nx-view button, .nx-view input, .nx-view select { font-family: inherit; line-height: 1.3; letter-spacing: normal; }
+  .nx-crumb button { font-size: inherit; }
+  .nx-shrink button { font-size: inherit; }
+  .nx-view button:focus-visible, .nx-view a:focus-visible, .nx-view input:focus-visible, .nx-view select:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  .nx-view button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .nx-view-header { padding: 0 0 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+  .nx-crumb { display: flex; align-items: center; gap: 8px; color: var(--slate); font-size: 12px; margin-bottom: 8px; }
+  .nx-crumb button { border: 0; background: none; padding: 0; color: inherit; cursor: pointer; }
+  .nx-crumb button:hover { text-decoration: underline; }
+  .nx-h1 { font-family: inherit; font-size: 28px; letter-spacing: -0.03em; line-height: 1.15; margin: 0; font-weight: 700; color: var(--ink); text-transform: none; }
+  .nx-intro { margin: 6px 0 0; color: var(--slate); font-size: 13px; }
+  .nx-intro:empty { display: none; }
+  .nx-text-button { border: 0; background: none; color: var(--slate); font-size: 12px; padding: 6px 2px; font-weight: 600; cursor: pointer; }
+  .nx-text-button:hover { color: var(--ink); text-decoration: underline; }
+  .nx-text-button[hidden] { display: none; }
+  .nx-columns { display: grid; grid-template-columns: minmax(0, 1.63fr) minmax(250px, 1fr); align-items: start; gap: 20px; }
+  .nx-stack { display: grid; gap: 20px; min-width: 0; }
+  .nx-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--nx-shadow); min-width: 0; }
+  .nx-card[hidden] { display: none; }
+  .nx-pad { padding: 24px; }
+  .nx-section-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .nx-section-title { font-weight: 700; font-size: 14px; letter-spacing: -0.01em; margin-top: 6px; }
+  .nx-section-header > .nx-section-title { margin-top: 0; }
+  .nx-meta { font-size: 11px; color: var(--slate); }
+  .nx-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8A9296; }
+  .nx-day-mark { font-size: 11px; color: #177E98; font-weight: 700; border: 1px solid #CEECF2; background: var(--cyan-wash); border-radius: 99px; padding: 4px 10px; white-space: nowrap; }
+  .nx-rollover { background: #FBFDFD; border-color: #D8E9E9; }
+  .nx-rollover .nx-eyebrow { color: #2684A0; }
+  .nx-rollover h2 { font-size: 17px; letter-spacing: -0.02em; line-height: 1.35; font-weight: 650; max-width: 520px; margin: 12px 0 8px; color: var(--ink); }
+  .nx-rollover p { margin: 0 0 18px; color: var(--slate); font-size: 12px; }
+  .nx-action-row { display: flex; flex-wrap: wrap; gap: 9px; }
+  .nx-button { min-height: 40px; border-radius: 8px; padding: 9px 16px; font-weight: 600; font-size: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.15s, background 0.15s, box-shadow 0.15s; }
+  .nx-button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+  .nx-button.dark { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .nx-button.mint { color: #078F61; background: #F2FCF7; border-color: #C7EFDF; }
+  .nx-button.mint.done { background: var(--mint); color: #fff; border-color: var(--mint); }
+  .nx-button svg { width: 14px; height: 14px; }
+  .nx-horizon-list { display: grid; gap: 0; }
+  .nx-task-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 14px 0; border-top: 1px solid #EFF1F1; }
+  .nx-task-row:first-child { border-top: 0; padding-top: 2px; }
+  .nx-task-check { width: 20px; height: 20px; border-radius: 6px; border: 1px solid #CED5D6; background: #fff; margin-top: 2px; display: grid; place-items: center; color: #fff; padding: 0; cursor: pointer; flex: none; }
+  .nx-task-check:hover { border-color: var(--mint); }
+  .nx-task-check.completed { background: var(--mint); border-color: var(--mint); }
+  .nx-task-check svg { width: 12px; height: 12px; }
+  .nx-task-name { font-size: 13px; font-weight: 600; line-height: 1.35; }
+  .nx-task-name.completed { color: #89938F; text-decoration: line-through; }
+  .nx-task-sub { font-size: 11px; color: var(--slate); margin-top: 4px; }
+  .nx-task-room { border: 1px solid #DAEEF2; background: #F2F9FA; color: #2484A0; border-radius: 99px; padding: 4px 8px; font-size: 10px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .nx-quick-add { display: flex; gap: 9px; margin-top: 18px; border-top: 1px solid #EFF1F1; padding-top: 18px; }
+  .nx-quick-add input, .nx-quick-add select, .nx-url-editor input, .nx-shrink-form input, .nx-room-add input { border: 1px solid var(--line); border-radius: 8px; background: #fff; min-height: 40px; padding: 9px 12px; color: var(--ink); min-width: 0; font-size: 13px; }
+  .nx-quick-add input { flex: 1; }
+  .nx-quick-add select { max-width: 175px; color: #4F5A5A; }
+  .nx-empty { padding: 36px 14px; text-align: center; }
+  .nx-empty-icon { height: 38px; width: 38px; border: 1px solid #E1EFE9; border-radius: 10px; display: grid; place-items: center; margin: 0 auto 12px; color: #16A676; background: #F5FCF9; }
+  .nx-empty-icon svg { width: 18px; height: 18px; }
+  .nx-empty h2 { font-size: 16px; margin: 0 0 4px; font-weight: 650; color: var(--ink); }
+  .nx-empty p { margin: 0; color: var(--slate); font-size: 12px; }
+  .nx-aside-quote { font-size: 16px; line-height: 1.4; letter-spacing: -0.02em; font-weight: 550; margin: 12px 0 18px; }
+  .nx-small-divider { height: 1px; background: #EFF1F1; margin: 16px 0; }
+  .nx-mini-row { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; padding: 6px 0; }
+  .nx-mini-row span:first-child { color: var(--slate); }
+  .nx-mini-row strong { font-weight: 650; }
+  .nx-note-card p { color: var(--slate); font-size: 12px; line-height: 1.6; margin: 12px 0 0; }
+  /* room */
+  .nx-room-head { min-width: 0; }
+  .nx-title-row { display: flex; align-items: center; gap: 10px; }
+  #pane-roomview .nx-room-icon { width: 30px; height: 30px; font-size: 20px; flex-shrink: 0; position: relative; }
+  #pane-roomview .nx-room-icon svg { width: 24px; height: 24px; }
+  .nx-head-side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0; }
+  .nx-head-tools { display: flex; gap: 6px; }
+  #pane-roomview .nx-head-tools .rv-action-btn { width: 34px; height: 34px; border-radius: 8px; box-shadow: none; }
+  #pane-roomview .nx-head-tools .rv-action-btn svg { width: 16px; height: 16px; }
+  .nx-room-status { border-radius: 99px; background: var(--cyan-wash); border: 1px solid #D3EBF1; color: #137F9D; padding: 6px 10px; white-space: nowrap; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; }
+  .nx-room-status.all-done { background: var(--mint-wash); border-color: #CFEFE0; color: #0B9467; }
+  .nx-room-status .dot { display: inline-block; background: currentColor; border-radius: 50%; width: 6px; height: 6px; margin-right: 6px; vertical-align: 1px; }
+  .nx-brief-copy { font-size: 14px; line-height: 1.65; max-width: 660px; margin: 0 0 20px; color: var(--ink); }
+  #pane-roomview .nx-brief-copy .anchor-text { font-family: inherit; font-size: 14px; line-height: 1.65; color: var(--ink); }
+  #pane-roomview .nx-brief-copy .anchor-highlight { font-weight: 600; }
+  .nx-context-row { border-top: 1px solid #EEF0F0; padding-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .nx-context-actions { display: flex; align-items: center; gap: 8px; }
+  .nx-context-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #CBEAF0; background: var(--cyan-wash); color: #117D9B; border-radius: 8px; padding: 8px 12px; text-decoration: none; font-weight: 650; font-size: 12px; }
+  .nx-context-chip.disabled { color: var(--slate); border-color: var(--line); background: var(--ground); }
+  .nx-url-editor { display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid #EFF1F1; margin-top: 16px; padding-top: 16px; }
+  .nx-url-editor input { flex: 1; min-width: 200px; }
+  .nx-url-editor input.bad { border-color: #9AA0A0; }
+  .nx-next-action { font-size: 20px; line-height: 1.35; letter-spacing: -0.02em; font-weight: 650; margin: 0 0 22px; max-width: 550px; color: var(--ink); }
+  .nx-next-dock { display: flex; gap: 9px; flex-wrap: wrap; }
+  .nx-next-dock .nx-button { min-width: 130px; }
+  #pane-roomview .nx-next-dock .re-btn, #pane-roomview .nx-next-dock .re-done { width: auto; display: inline-flex; font-size: 12px; padding: 9px 16px; border-radius: 8px; text-align: center; }
+  .nx-shrink { color: var(--slate); font-size: 12px; margin: 16px 0 0; }
+  .nx-shrink button { background: none; border: 0; padding: 0; color: #1889A6; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; cursor: pointer; }
+  .nx-shrink-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .nx-shrink-form[hidden] { display: none; }
+  .nx-shrink-form input { flex: 1; min-width: 170px; }
+  .nx-room-list { display: grid; gap: 0; }
+  .nx-room-item { display: grid; grid-template-columns: 24px minmax(0,1fr) auto; gap: 8px; align-items: center; padding: 9px 0; border-top: 1px solid #EFF1F1; font-size: 12px; }
+  .nx-room-item:first-child { border: 0; padding-top: 0; }
+  .nx-room-item .nx-task-check { width: 18px; height: 18px; margin: 0; }
+  .nx-loop-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nx-state { color: #94A09C; font-size: 11px; white-space: nowrap; }
+  .nx-room-add { display: flex; gap: 8px; margin-top: 14px; }
+  .nx-room-add input { flex: 1; }
+  /* the room's own capture and log, kept, restyled to sit inside the card system */
+  .nx-keep .rv-capture-panel.nx-flat { border: 0; box-shadow: none; padding: 0; margin: 0; background: none; position: static; }
+  #pane-roomview .nx-keep .rv-capture-panel h4 { font-family: inherit; font-size: 14px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 4px; }
+  #pane-roomview .nx-keep .dp-sub { font-size: 12px; color: var(--slate); margin-bottom: 12px; }
+  #pane-roomview .nx-keep .dp-btn { border-radius: 8px; font-size: 12px; min-height: 40px; }
+  #pane-roomview .nx-log .rv-col { margin: 0; }
+  #pane-roomview .nx-log .toggle-row { border: 0; box-shadow: none; border-radius: 12px; padding: 16px 24px; }
+  #pane-roomview .nx-log .toggle-row .tr-label { font-family: inherit; font-size: 14px; font-weight: 700; }
+  #pane-roomview .nx-log #rvLog { padding: 0 24px 12px; }
+  @media (min-width: 900px) {
+    #pane-calendar, #pane-roomview { padding-left: 292px; padding-right: 52px; }
+  }
+  @media (max-width: 1000px) {
+    .nx-columns { grid-template-columns: minmax(0, 1fr); }
+    .nx-aside-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
   /* phone (kept last so it wins) */
   @media (max-width: 720px) {
     body { background: #fff; }
@@ -1815,7 +1940,16 @@
     #pane-roomview .rv-body { gap: 12px; }
     /* v4: 100px of air between the last thing on any scrolling screen and the tab dock (78px tall) */
     #pane-rooms, #pane-notes, #pane-humans { padding-bottom: calc(178px + var(--sab)); }
-    #pane-roomview, .rv-container, #pane-calendar { padding-bottom: 120px !important; }
+    #pane-roomview, .rv-container, #pane-calendar { padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important; }
+    #pane-calendar, #pane-roomview { padding-left: 16px; padding-right: 16px; }
+    .nx-columns, .nx-aside-stack { grid-template-columns: minmax(0, 1fr); }
+    .nx-pad { padding: 20px; }
+    .nx-view-header { align-items: flex-start; }
+    .nx-quick-add { flex-wrap: wrap; }
+    .nx-quick-add input { flex: 1 1 100%; }
+    .nx-quick-add select { flex: 1; max-width: none; }
+    .nx-url-editor input { min-width: 0; flex: 1 1 100%; }
+    .nx-context-row { flex-wrap: wrap; }
     #pane-calendar .cal-title, #pane-roomview .rv-name, #pane-rooms .hub-title, #pane-notes .hub-title, .nt-title { font-size: 26px; line-height: 1.2; margin-top: 0; }
     #pane-roomview .re-next-text { font-size: 19px; }
     .tab { border-radius: var(--radius-sm); }
@@ -2112,82 +2246,60 @@
 
     <!-- CALENDAR -->
     <div class="pane" id="pane-calendar">
-      <div class="cal-topbar">
-        <div class="back-home" onclick="go('home')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 8H1M1 8L6 3M1 8L6 13" stroke-linecap="round" stroke-linejoin="round"/></svg> Home</div>
-      </div>
-      <div class="cal-body">
-        <div class="cal-inner">
-          <div class="carry-card" id="carryPrompt" hidden>
-            <div class="carry-q">Want to bring over what's still open from yesterday? No pressure, no judgment.</div>
-            <div class="carry-names" id="carryNames"></div>
-            <div class="carry-actions">
-              <button type="button" class="carry-go" onclick="bringOver()">Bring them over</button>
-              <button type="button" class="carry-rest" onclick="letRest()">Let them rest for now</button>
-            </div>
+      <section class="nx-view">
+        <div class="nx-view-header">
+          <div>
+            <div class="nx-crumb">Your space · <span id="nxDateCrumb"></span></div>
+            <h1 class="nx-h1">My day</h1>
+            <p class="nx-intro">A little room for what matters now.</p>
           </div>
-          <div class="cal-head">
-            <div class="cal-eyebrow">Today only</div>
-            <div class="cal-title">My day</div>
-            <div class="cal-date" id="calDate">Today</div>
-            <div class="cal-subhead">Your day, with room to move.</div>
-            <div class="cal-sub" id="calSub" hidden></div>
-            <div class="week-strip" id="weekStrip"></div>
-          </div>
+          <button type="button" id="clearDayBtn" class="nx-text-button" onclick="clearDay()">Clear day</button>
+        </div>
 
-          <div class="cal-columns">
-            <div class="smart-cal">
-              <div class="sc-title">What does today need to hold?</div>
-              <div class="sc-desc">Put down appointments, obligations, worries, and things you hope to touch. Messy is fine.</div>
-              <div class="sc-dump-wrap">
-                <textarea class="sc-dump" id="calDump" placeholder="I have a call at 2. Need to fix the Test App empty state, get groceries, and I really need a break before dinner…"></textarea>
-                <div class="mic-btn" id="calMic" title="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></div>
+        <div class="nx-columns">
+          <div class="nx-stack">
+            <section id="carryPrompt" class="nx-card nx-pad nx-rollover" hidden>
+              <div class="nx-eyebrow">A gentle option</div>
+              <h2>Want to bring over what's still open from yesterday? No pressure, no judgment.</h2>
+              <p id="carryNames"></p>
+              <div class="nx-action-row">
+                <button class="nx-button dark carry-go" type="button" onclick="bringOver()">Bring them over</button>
+                <button class="nx-button carry-rest" type="button" onclick="letRest()">Let them rest for now</button>
               </div>
-              <div class="sc-divider"></div>
-              <div class="sc-label">from yesterday</div>
-              <div class="sc-ro-text" id="roText"></div>
-              <div class="sc-chips" id="roChips">
-                <div class="sc-chip primary" onclick="roMoveAll()">move to today</div>
-                <div class="sc-chip" onclick="roTossAll()">toss 'em</div>
-              </div>
-              <div class="cal-summary-row" id="calSummary"></div>
-              <button class="sc-build" onclick="buildDay()">Build my day</button>
-              <div class="sc-note" id="calNote"></div>
-            </div>
+            </section>
 
-            <div class="cal-left">
-              <div class="cal-col-head">
+            <section class="nx-card nx-pad">
+              <div class="nx-section-header">
                 <div>
-                  <div class="cal-col-title">Your day, with room to move.</div>
-                  <div class="cal-col-desc">Built from appointments, room context, and what you just said.</div>
+                  <div class="nx-eyebrow">Flexible by design</div>
+                  <div class="nx-section-title">Today's horizon</div>
                 </div>
-                <div class="cal-blocks-count" id="calCount">0 BLOCKS</div>
+                <span class="nx-day-mark" id="nxHorizonCount">OPEN SPACE</span>
               </div>
-              <div class="day-tools"><button type="button" class="clear-day" id="clearDayBtn" onclick="clearDay()">Clear Day</button></div>
-              <div class="agenda" id="agenda"></div>
-              <div class="day-entry" onclick="addToToday()">
-                <span class="de-ic"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg></span>
-                <span class="de-tx"><b>Add to today</b><i>Keep it realistic.</i></span>
-                <svg class="de-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-              </div>
-              <div class="day-entry" onclick="go('notes')">
-                <span class="de-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
-                <span class="de-tx"><b>Recap my day</b><i>Write about it when you're ready.</i></span>
-                <svg class="de-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-              </div>
-              <div class="regroup-row">
-                <span>Day changed? Rebuild only what remains.</span>
-                <span class="regroup-btn" onclick="regroupDay()">Regroup my day</span>
-              </div>
-              <div class="agenda-actions">
-                <button class="ag-btn" onclick="editEvent(null)">+ Add block</button>
-                <button class="ag-btn" onclick="addDayToCalendar()">Add to my calendar</button>
-              </div>
-            </div>
+              <div id="nxHorizon"></div>
+              <form id="nxDayAdd" class="nx-quick-add" onsubmit="event.preventDefault(); nxAddToday();">
+                <input id="nxDayInput" type="text" required maxlength="160" placeholder="Add something for today" autocomplete="off">
+                <select id="nxDayRoom" aria-label="Choose a room"></select>
+                <button class="nx-button dark" type="submit">Add</button>
+              </form>
+            </section>
+          </div>
 
-            <aside class="cal-checklist" id="calChecklist" aria-label="Today's checklist"></aside>
+          <div class="nx-stack nx-aside-stack">
+            <section class="nx-card nx-pad">
+              <div class="nx-eyebrow">A quieter way to plan</div>
+              <p class="nx-aside-quote">Your day can change. Your work still has a place to live.</p>
+              <div class="nx-small-divider"></div>
+              <div class="nx-mini-row"><span>Today</span><strong id="nxSummaryToday">Clear</strong></div>
+              <div class="nx-mini-row"><span>Waiting in rooms</span><strong id="nxSummaryRooms">0 open</strong></div>
+            </section>
+            <section class="nx-card nx-pad nx-note-card">
+              <div class="nx-eyebrow">Whenever you're ready</div>
+              <p>Clearing a day removes its plan, not its work. You can always find an open step inside its room.</p>
+            </section>
           </div>
         </div>
-      </div>
+      </section>
     </div>
 
     <!-- WRITE ABOUT IT: one page per day, yours only -->
@@ -2236,61 +2348,53 @@
 
     <!-- ROOM VIEW -->
     <div class="pane" id="pane-roomview">
-      <div class="rv-header">
-        <div class="rv-topline">
-          <button type="button" class="rv-back" onclick="go('rooms')" title="Back to rooms">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
-          </button>
-          <div class="rv-crumb"><span class="rv-crumb-link" onclick="go('rooms')">Rooms</span><span class="rv-crumb-sep">·</span><span id="rvCrumbTime"></span></div>
-        </div>
-        <div class="rv-head-main">
-          <div class="rv-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
-          <div class="rv-head-text">
-            <div class="rv-name" id="rvName">Memory App</div>
-            <div class="rv-desc" id="rvDesc" hidden></div>
-            <div class="rv-status-row">
-              <div class="rv-status">
-                <div class="rv-status-label" id="rvStatusLabel">caught up</div>
-                <div class="rv-status-sub" id="rvStatusSub" hidden></div>
-              </div>
-              <div class="rv-actions">
-                <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="4.2" height="6.5" rx="2.1"/><rect x="17.3" y="13" width="4.2" height="6.5" rx="2.1"/></svg></button>
-                <button type="button" class="rv-action-btn" id="btnWrapUp" onclick="wrapUpDay()" title="Wrap up today's progress"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 5-5"/></svg></button>
-              </div>
+      <section class="nx-view">
+        <div class="nx-view-header">
+          <div class="nx-room-head">
+            <div class="nx-crumb"><button type="button" onclick="go('rooms')">Rooms</button> · <span id="rvCrumbTime">Updated recently</span></div>
+            <div class="nx-title-row">
+              <div class="rv-icon nx-room-icon" id="rvIcon" title="Color or icon" onclick="toggleRoomStyle(event)"></div>
+              <h1 class="nx-h1" id="rvName"></h1>
+            </div>
+            <p class="nx-intro" id="rvDesc"></p>
+          </div>
+          <div class="nx-head-side">
+            <span id="rvStatusLabel" class="nx-room-status"></span>
+            <div class="nx-head-tools">
+              <button type="button" class="rv-action-btn" id="reCatchup" onclick="catchMeUp()" title="Catch me up (15s)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="4.2" height="6.5" rx="2.1"/><rect x="17.3" y="13" width="4.2" height="6.5" rx="2.1"/></svg></button>
+              <button type="button" class="rv-action-btn" id="btnWrapUp" onclick="wrapUpDay()" title="Wrap up today's progress"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 5-5"/></svg></button>
             </div>
           </div>
         </div>
         <span class="wrapup-status" id="wrapUpStatus" hidden></span>
-      </div>
-      <div class="rv-body">
-        <div class="rv-card">
-          <div class="anchor-label">Where you left off<span class="al-sub" id="rvSummarySub"> · Nenemi summary</span></div>
-          <div class="anchor-block" id="rvSummary" aria-live="polite"></div>
-          <div class="ctx-row" id="rvCtx"></div>
-        </div>
-        <div class="rv-card">
-          <div class="anchor-label">What's next<span class="al-sub"> · Suggested next move</span></div>
-          <div class="reentry-next" id="rvNext"></div>
-        </div>
-        <div class="rv-col">
-          <div class="toggle-row" id="rvLoopsToggle" onclick="toggleLoopsRow()">
-            <span class="tr-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>
-            <span class="tr-label" id="rvLoopsToggleLabel">Still open</span>
-            <span class="expand-label" id="rvLoopsExpandLabel">Expand +</span>
-            <svg class="tr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div id="rvLoops" hidden></div>
-        </div>
-        <div class="rv-col">
-          <div class="toggle-row" id="rvLogToggle" onclick="toggleLogRow()">
-            <span class="tr-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
-            <span class="tr-label" id="rvLogToggleLabel">Progress log</span>
-            <span class="expand-label" id="rvLogExpandLabel">Expand +</span>
-            <svg class="tr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-          </div>
-          <div id="rvLog" hidden></div>
-        </div>
-        <div class="rv-capture-panel">
+
+        <div class="nx-columns">
+          <div class="nx-stack">
+            <section class="nx-card nx-pad">
+              <div class="nx-section-header">
+                <div>
+                  <div class="nx-eyebrow">The brief</div>
+                  <div class="nx-section-title">Where you left off</div>
+                </div>
+                <span class="nx-meta" id="rvSummarySub">Everything in one place</span>
+              </div>
+              <div class="nx-brief-copy" id="rvSummary" aria-live="polite"></div>
+              <div id="rvCtx"></div>
+            </section>
+
+            <section class="nx-card nx-pad">
+              <div class="nx-section-header">
+                <div>
+                  <div class="nx-eyebrow">One thing at a time</div>
+                  <div class="nx-section-title">What's next</div>
+                </div>
+                <span class="nx-meta">THE NEXT SMALL MOVE</span>
+              </div>
+              <div id="rvNext"></div>
+            </section>
+
+            <section class="nx-card nx-pad nx-keep">
+              <div class="rv-capture-panel nx-flat">
           <h4 id="dpHeading">Add to this room</h4>
           <div class="dp-sub">Say what happened however it comes out. NENEMI will update this room.</div>
           <div class="rv-convo" id="rvConvo" aria-live="polite" hidden></div>
@@ -2304,7 +2408,36 @@
           </div>
           <button type="button" class="dp-btn" onclick="quickAdd()">Update room</button>
         </div>
-      </div>
+            </section>
+            <section class="nx-card nx-keep nx-log">
+        <div class="rv-col">
+          <div class="toggle-row" id="rvLogToggle" onclick="toggleLogRow()">
+            <span class="tr-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+            <span class="tr-label" id="rvLogToggleLabel">Progress log</span>
+            <span class="expand-label" id="rvLogExpandLabel">Expand +</span>
+            <svg class="tr-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+          <div id="rvLog" hidden></div>
+        </div>
+            </section>
+          </div>
+
+          <div class="nx-stack nx-aside-stack">
+            <section class="nx-card nx-pad">
+              <div class="nx-section-header"><span class="nx-section-title">Open in this room</span><span class="nx-meta" id="nxRoomOpenMeta"></span></div>
+              <div id="rvLoops" class="nx-room-list"></div>
+              <form class="nx-room-add" onsubmit="event.preventDefault(); nxAddLoop();">
+                <input id="nxLoopInput" type="text" required maxlength="160" placeholder="Add a next step" autocomplete="off">
+                <button class="nx-button" type="submit">Add</button>
+              </form>
+            </section>
+            <section class="nx-card nx-pad nx-note-card">
+              <div class="nx-eyebrow">Your room, your pace</div>
+              <p>A step can wait here without becoming overdue. Come back and pick up the thread whenever you need it.</p>
+            </section>
+          </div>
+        </div>
+      </section>
     </div>
 
     <!-- STUCK SANCTUARY -->
@@ -2536,6 +2669,7 @@
     roomsMegaCloseT = setTimeout(() => { const el = document.getElementById('roomsMega'); if (el) el.hidden = true; }, 220);
   }
   function go(id) {
+    if (id === 'day') id = 'calendar';
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
@@ -2859,35 +2993,20 @@
     rvIcon.innerHTML = roomIconHtml(r); rvIcon.style.cssText = ROOM_COLORS[r.color] ? `--rc:${ROOM_COLORS[r.color]}` : '';
     renderReentry(r);
     const openCount = r.loops.filter(l => !l.resolved).length;
-    const statusLabel = document.getElementById('rvStatusLabel'), statusSub = document.getElementById('rvStatusSub');
-    if (statusLabel) { statusLabel.textContent = openCount > 0 ? `${openCount} still open` : 'caught up'; statusLabel.classList.toggle('open', openCount > 0); }
+    const statusLabel = document.getElementById('rvStatusLabel');
+    if (statusLabel) { statusLabel.innerHTML = `<span class="dot"></span>${openCount > 0 ? `${openCount} STILL OPEN` : 'ALL CAUGHT UP'}`; statusLabel.classList.toggle('all-done', openCount === 0); }
     const touch = lastTouch(r);
-    if (statusSub) statusSub.hidden = true;
     document.getElementById('rvCrumbTime').textContent = touch ? `Updated ${relTime(touch)}` : 'Nothing here yet';
     renderCtx(r);
 
-    const indexedLoops = r.loops.map((loop, index) => ({ loop, index }));
-    const openLoops = indexedLoops.filter(x => !x.loop.resolved);
-    const resolvedLoops = indexedLoops.filter(x => x.loop.resolved);
-    const loopsExpanded = showAllLoopsFor === r.id;
-    const visibleLoops = loopsExpanded ? [...openLoops, ...resolvedLoops] : [];
-    const loopRow = ({ loop: l, index: i }) => `
-      <div class="loop-row ${l.resolved ? 'resolved' : ''}" data-idx="${i}">
-        <div class="loop-check" onclick="toggleLoop(${i})"><svg viewBox="0 0 16 16" fill="none" stroke-width="2"><path d="M3 8l3.5 3.5L13 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="loop-text">${l.text}</div>
-        ${!l.resolved ? `<div class="loop-focus" onclick="focusOnLoop(currentRoom.loops[${i}].text, ${i})">Sit with me <svg width="10" height="10" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8h10M9 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>` : ''}
-      </div>`;
-    document.getElementById('rvLoops').innerHTML = visibleLoops.length ? visibleLoops.map(loopRow).join('') : `<div style="color:var(--faint); font-size:13.5px; padding:8px 0;">Nothing open right now.</div>`;
-    document.getElementById('rvLoops').hidden = !loopsExpanded;
-    document.querySelectorAll('#rvLoops .loop-text').forEach((el, idx) => makeEditable(el, { set: (t) => { r.loops[visibleLoops[idx].index].text = t; } }));
-
-    const loopsToggle = document.getElementById('rvLoopsToggle');
-    loopsToggle.parentElement.hidden = false;
-    loopsToggle.classList.toggle('open', loopsExpanded);
-    document.getElementById('rvLoopsToggleLabel').textContent = openLoops.length > 0
-      ? `Still open · ${openLoops.length}`
-      : (resolvedLoops.length > 0 ? `All caught up · ${resolvedLoops.length} completed` : 'Still open');
-    document.getElementById('rvLoopsExpandLabel').textContent = loopsExpanded ? 'Collapse –' : 'Expand +';
+    // open in this room: every open step, quietly, with the one in "What's next" first
+    const openLoops = r.loops.map((loop, index) => ({ loop, index })).filter(x => !x.loop.resolved);
+    const todayNames = new Set(dayList(today).map(e => e.name));
+    const meta = document.getElementById('nxRoomOpenMeta'); if (meta) meta.textContent = openLoops.length ? `${openLoops.length} open` : 'Clear';
+    document.getElementById('rvLoops').innerHTML = openLoops.length
+      ? openLoops.map(({ loop: l, index: i }) => `<div class="nx-room-item" data-idx="${i}"><button type="button" class="nx-task-check" onclick="toggleLoop(${i})" aria-label="Mark as done"></button><span class="nx-loop-text">${escapeHtml(l.text)}</span><span class="nx-state">${todayNames.has(l.text) ? 'On today’s horizon' : 'In this room'}</span></div>`).join('')
+      : `<p class="nx-meta">No open steps in this room.</p>`;
+    document.querySelectorAll('#rvLoops .nx-loop-text').forEach((el, idx) => makeEditable(el, { set: (t) => { if (t) r.loops[openLoops[idx].index].text = t; } }));
 
     const logExpanded = showAllLogFor === r.id;
     const logToggle = document.getElementById('rvLogToggle');
@@ -3057,17 +3176,36 @@
     makeEditable(document.querySelector('#rvSummary .anchor-text'), { set: (t) => { r.brief = t; } });
     renderConvo(r);
     document.getElementById('rvNext').innerHTML = `
-      <div class="re-next">
-        <div class="re-next-text${next ? '' : ' empty'}">${escapeHtml(next ? next.text : 'No to-dos here. Poke around, or add one below.')}</div>
-        ${next ? `<div class="re-dock">
-          <button type="button" class="re-btn" onclick="pickUp()">${CAL_LOOP.test(next.text) ? 'Open the Day' : 'Start Focus'}</button>
-          <button type="button" class="re-done" onclick="doneNext(this)">That's done.</button>
-        </div>` : `<button type="button" class="re-btn" onclick="pickUp()">Look around</button>`}
+      <p class="nx-next-action">${escapeHtml(next ? next.text : 'Nothing is asking for your attention here right now.')}</p>
+      <div class="nx-next-dock">
+        <button class="nx-button dark re-btn" type="button" onclick="pickUp()" ${next ? '' : 'disabled'}>${next && CAL_LOOP.test(next.text) ? 'Open the day ↗' : 'Start focus ↗'}</button>
+        <button class="nx-button mint re-done" type="button" onclick="doneNext(this)" ${next ? '' : 'disabled'}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg><span>That's done.</span></button>
       </div>
-      ${next ? `<div class="shrink-row">
-        <span class="shrink-link" id="shrinkLink" onclick="event.stopPropagation(); shrinkMove()">Too big? Make it smaller.</span>
-        <span class="shrink-status" id="shrinkStatus" hidden></span>
-      </div>` : ''}`;
+      ${next ? `<p class="nx-shrink">Too big? <button type="button" onclick="toggleShrink()">Make it smaller.</button></p>
+      <form id="nxShrinkForm" class="nx-shrink-form" hidden onsubmit="event.preventDefault(); nxShrink();">
+        <input id="nxSmallStep" required maxlength="160" placeholder="The smallest first step" autocomplete="off">
+        <button class="nx-button dark" type="submit">Add first step</button>
+        <button class="nx-button" type="button" onclick="toggleShrink(false)">Cancel</button>
+      </form>` : ''}`;
+  }
+  // too big? the person names the smallest first step; it goes in front of the current one, nothing is removed
+  function toggleShrink(force) {
+    const f = document.getElementById('nxShrinkForm'); if (!f) return;
+    f.hidden = force === undefined ? !f.hidden : !force;
+    if (!f.hidden) document.getElementById('nxSmallStep').focus();
+  }
+  function nxShrink() {
+    if (!currentRoom) return;
+    const inp = document.getElementById('nxSmallStep'); const t = (inp.value || '').trim(); if (!t) return;
+    const idx = currentRoom.loops.findIndex(l => !l.resolved);
+    currentRoom.loops.splice(idx < 0 ? 0 : idx, 0, { text: t, resolved: false });
+    save(); renderRoomView();
+  }
+  function nxAddLoop() {
+    if (!currentRoom) return;
+    const inp = document.getElementById('nxLoopInput'); const t = (inp.value || '').trim(); if (!t) return;
+    currentRoom.loops.push({ text: t, resolved: false }); inp.value = '';
+    save(); renderRoomView();
   }
   // "too big? make it smaller" — one smaller physical first step, atomic: only this loop's text ever changes.
   async function shrinkMove() {
@@ -3119,22 +3257,19 @@
   function renderCtx(r) {
     const box = document.getElementById('rvCtx');
     if (!box) return;
-    if (editingLinkFor === r.id) {
-      box.innerHTML = `<input class="ctx-input" id="ctxInput" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="Where the work lives: Figma, Notion, a doc" aria-label="Link to where the work lives" value="${escapeHtml(r.link ? r.link.url : '')}">`;
-      const i = document.getElementById('ctxInput');
-      i.onkeydown = (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); saveRoomLink(i.value); }
-        else if (e.key === 'Escape') { e.preventDefault(); saveRoomLink(null, true); }
-        else i.classList.remove('bad');
-      };
-      i.onblur = () => { if (editingLinkFor === r.id && !saveRoomLink(i.value)) saveRoomLink(null, true); };
-      i.focus();
-      return;
-    }
-    const arrow = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11l6-6M6 5h5v5"/></svg>';
-    box.innerHTML = r.link && r.link.url
-      ? `<a class="ctx-chip" href="${escapeHtml(r.link.url)}" target="_blank" rel="noopener noreferrer">${arrow}<span>${escapeHtml(r.link.label || linkLabel(r.link.url))}</span></a><button type="button" class="ctx-edit" onclick="editRoomLink()">edit link</button>`
-      : `<button type="button" class="ctx-add" onclick="editRoomLink()">+ Add a link</button>`;
+    const url = r.link && r.link.url ? cleanLinkUrl(r.link.url) : null;
+    const chip = url
+      ? `<a class="nx-context-chip" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">↗ ${escapeHtml(linkLabel(url))}${r.link.title ? ' · ' + escapeHtml(r.link.title) : ''}</a>`
+      : `<span class="nx-context-chip disabled">No link yet</span>`;
+    const editing = editingLinkFor === r.id;
+    box.innerHTML = `<div class="nx-context-row"><div>${chip}</div><div class="nx-context-actions"><span class="nx-meta">CONTEXT LINK</span><button class="nx-text-button ctx-edit" type="button" onclick="${editing ? 'saveRoomLink(null, true)' : 'editRoomLink()'}">Edit</button></div></div>
+      ${editing ? `<form class="nx-url-editor" onsubmit="event.preventDefault(); saveRoomLink(document.getElementById('ctxInput').value);">
+        <input id="ctxInput" class="ctx-input" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://figma.com/..." value="${escapeHtml(r.link ? r.link.url : '')}">
+        <input id="ctxTitle" type="text" maxlength="60" placeholder="Optional link label" value="${escapeHtml(r.link && r.link.title ? r.link.title : '')}">
+        <button class="nx-button dark" type="submit">Save link</button>
+        <button class="nx-button" type="button" onclick="saveRoomLink(null, true)">Cancel</button>
+      </form>` : ''}`;
+    if (editing) { const i = document.getElementById('ctxInput'); i.onkeydown = (e) => { if (e.key === 'Escape') { e.preventDefault(); saveRoomLink(null, true); } else i.classList.remove('bad'); }; i.focus(); }
   }
   function editRoomLink() { if (!currentRoom) return; editingLinkFor = currentRoom.id; renderCtx(currentRoom); }
   // returns true when the edit is finished (saved, cleared, or cancelled); false keeps the box open on a bad address
@@ -3146,7 +3281,8 @@
       else {
         const url = cleanLinkUrl(raw);
         if (!url) { const i = document.getElementById('ctxInput'); if (i) i.classList.add('bad'); return false; }
-        if (!r.link || r.link.url !== url) r.link = { url, label: linkLabel(url) };
+        const title = ((document.getElementById('ctxTitle') || {}).value || '').trim();
+        r.link = { url, label: linkLabel(url), ...(title ? { title } : {}) };
       }
       save();
     }
@@ -3176,8 +3312,8 @@
     const pendingSaid = roomUpdating[r.id];
     const sum = document.getElementById('rvSummary'), sub = document.getElementById('rvSummarySub');
     sum.classList.toggle('updating', Boolean(pendingSaid));
-    if (pendingSaid) sub.textContent = ' · Updating…';
-    else if (!sum.classList.contains('fresh') || sum.dataset.room !== r.id) { sum.classList.remove('fresh'); sub.textContent = ' · Nenemi summary'; }
+    if (pendingSaid) sub.textContent = 'Updating…';
+    else if (!sum.classList.contains('fresh') || sum.dataset.room !== r.id) { sum.classList.remove('fresh'); sub.textContent = 'Everything in one place'; }
     sum.dataset.room = r.id;
     const last = (r.thread || []).slice(-1)[0];
     if (pendingSaid) {
@@ -3195,8 +3331,8 @@
     const done = (label) => {
       delete roomUpdating[room.id];
       if (!here()) return;
-      sum.classList.remove('updating'); sub.textContent = ' · Nenemi summary';
-      if (label) { sum.classList.add('fresh'); sub.textContent = ' · ' + label; clearTimeout(updateRoomFromNote._t); updateRoomFromNote._t = setTimeout(() => { sum.classList.remove('fresh'); sub.textContent = ' · Nenemi summary'; }, 6000); }
+      sum.classList.remove('updating'); sub.textContent = 'Everything in one place';
+      if (label) { sum.classList.add('fresh'); sub.textContent = label; clearTimeout(updateRoomFromNote._t); updateRoomFromNote._t = setTimeout(() => { sum.classList.remove('fresh'); sub.textContent = 'Everything in one place'; }, 6000); }
     };
     if (!(auth.smart && location.protocol !== 'file:')) {
       // no smart routing (offline, no key): the words are saved; the summary stays the person's own until it can be rewritten honestly
@@ -3723,9 +3859,8 @@
     if (idx < 0) return;
     const room = currentRoom;
     finishLoop(room, idx, 0);
-    btn.disabled = true; btn.classList.add('won');
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Done.';
-    setTimeout(() => { if (currentRoom === room) renderRoomView(); }, 750);
+    btn.disabled = true; btn.classList.add('won', 'done');
+    setTimeout(() => { if (currentRoom === room) renderRoomView(); }, 400);
   }
 
   // done: the loop closes, one soft check, a plain line in the log, back to the room
@@ -3808,53 +3943,48 @@
     const sc = document.querySelector('#pane-calendar .smart-cal');
     if (sc) { sc.scrollIntoView({ behavior: 'smooth', block: 'center' }); const t = document.getElementById('calDump'); if (t) setTimeout(() => t.focus(), 300); }
   }
+  // My day: today's horizon. No week strip, no calendar grid. One list, one add, one gentle offer.
   function renderCal() {
-    const isToday = dkey(selectedDay) === dkey(today);
-    renderWeekStrip();
-    document.getElementById('calDate').textContent = selectedDay.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-    const calSub = document.getElementById('calSub');
-    if (calSub) calSub.textContent = `${selectedDay.toLocaleDateString(undefined, { weekday: 'short' })} · ${selectedDay.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
-    const list = dayList(selectedDay).slice().sort((a, b) => a.start - b.start);
-    document.getElementById('calCount').textContent = `${list.length} block${list.length === 1 ? '' : 's'}`;
-    const nowH = today.getHours() + today.getMinutes() / 60;
-    const el = document.getElementById('agenda');
-    if (!list.length) {
-      el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the left, or add one block.' : 'Nothing here yet.'}</div>`;
-      renderRollover(); renderCarryPrompt(); renderCalSummary(); renderChecklist(); return;
-    }
-    let html = '', nowShown = false;
-    list.forEach(e => {
-      const i = dayList(selectedDay).indexOf(e);
-      const room = e.room ? rooms.find(r => r.id === e.room) : null;
-      const done = !!e.done;
-      const past = isToday && e.end <= nowH && !done;
-      if (isToday && !nowShown && !past && !done) {
-        html += `<div class="now-divider"><span class="now-dot"></span><span class="now-label">Now · ${fmtClockCaps(nowH)}</span><span class="now-line"></span></div>`;
-        nowShown = true;
+    selectedDay = new Date(today);
+    const crumb = document.getElementById('nxDateCrumb');
+    if (crumb) crumb.textContent = today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+    const all = dayList(today).slice().sort((a, b) => a.start - b.start);
+    const open = all.filter(e => !e.done), done = all.filter(e => e.done);
+    const mark = document.getElementById('nxHorizonCount'); if (mark) mark.textContent = open.length ? `${open.length} OPEN` : 'OPEN SPACE';
+    const sT = document.getElementById('nxSummaryToday'); if (sT) sT.textContent = open.length ? `${open.length} in view` : 'Clear';
+    const waiting = rooms.filter(r => !r.archived).reduce((n, r) => n + r.loops.filter(l => !l.resolved).length, 0);
+    const sR = document.getElementById('nxSummaryRooms'); if (sR) sR.textContent = `${waiting} open`;
+    const sel = document.getElementById('nxDayRoom');
+    if (sel) { const keep = sel.value; sel.innerHTML = `<option value="">No room</option>` + rooms.filter(r => !r.archived).map(r => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.name)}</option>`).join(''); sel.value = [...sel.options].some(o => o.value === keep) ? keep : ''; }
+    const el = document.getElementById('nxHorizon');
+    if (el) {
+      if (!all.length) {
+        el.innerHTML = `<div class="nx-empty"><div class="nx-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18"/></svg></div><h2>Your day is clear. Room to move.</h2><p>One step is enough to start.</p></div>`;
+      } else {
+        el.innerHTML = '<div class="nx-horizon-list">' + [...open, ...done].map(e => {
+          const i = dayList(today).indexOf(e);
+          const room = e.room ? rooms.find(r => r.id === e.room) : null;
+          const sub = e.done ? 'A small win, right here.' : (e.kind === 'fixed' ? `${fmtAmPm(e.start)} – ${fmtAmPm(e.end)}` : 'One step is enough.');
+          return `<div class="nx-task-row">
+            <button type="button" class="nx-task-check${e.done ? ' completed' : ''}" onclick="nxToggleEvent(${i})" aria-label="${e.done ? 'Mark as open' : 'Mark as done'}">${e.done ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg>' : ''}</button>
+            <div><div class="nx-task-name${e.done ? ' completed' : ''}">${escapeHtml(e.name)}</div><div class="nx-task-sub">${sub}</div></div>
+            ${room ? `<button type="button" class="nx-task-room" onclick="openRoom('${room.id}')">${escapeHtml(room.name)}</button>` : '<span></span>'}
+          </div>`;
+        }).join('') + '</div>';
       }
-      let tag, tagLabel;
-      if (done) { tag = 'done'; tagLabel = 'Done'; }
-      else if (past) { tag = 'passed'; tagLabel = e.kind === 'buffer' ? 'Ended' : 'Passed'; }
-      else if (e.kind === 'fixed') { tag = 'fixed'; tagLabel = 'Fixed'; }
-      else if (room) { tag = 'room'; tagLabel = 'From room'; }
-      else if (e.kind === 'buffer') { tag = 'protected'; tagLabel = 'Protected'; }
-      else { tag = 'focus'; tagLabel = 'Focus'; }
-      const desc = e.notes || `${kindLabel(e.kind)} · ${Math.round((e.end - e.start) * 60)} min${room ? ' · ' + escapeHtml(room.name) : ''}`;
-      html += `<div class="ag-row${past ? ' past' : ''}${done ? ' done' : ''}" onclick="editEvent(${i})">
-          <div class="ag-time">${fmtClockCaps(e.start)}</div>
-          <div class="ag-body">
-            <div class="ag-title">${escapeHtml(e.name)}</div>
-            <div class="ag-desc">${escapeHtml(desc)}</div>
-          </div>
-          <div class="ag-tag ${tag}">${done ? '<svg class="ag-check" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' : ''}${tagLabel}</div>
-        </div>`;
-    });
-    el.innerHTML = html;
-    renderRollover();
+    }
+    const clr = document.getElementById('clearDayBtn'); if (clr) clr.hidden = !all.length;
     renderCarryPrompt();
-    renderCalSummary();
-    renderChecklist();
   }
+  function nxToggleEvent(i) { const e = dayList(today)[i]; if (!e) return; e.done = !e.done; if (e.done) { try { if (navigator.vibrate) navigator.vibrate(12); } catch (x) {} } save(); renderCal(); }
+  function nxAddToday() {
+    const inp = document.getElementById('nxDayInput'); const text = (inp.value || '').trim(); if (!text) return;
+    const list = dayList(today); const st = nextFreeSlot(list, 0.5); const start = st !== null ? st : 23.5;
+    const room = document.getElementById('nxDayRoom').value || null;
+    list.push({ start, end: start + 0.5, name: text, kind: 'block', ...(room ? { room } : {}) });
+    inp.value = ''; save(); renderCal();
+  }
+
 
   // ---------- My Day to-do checklist: one ongoing list, held until you check or clear it ----------
   let checklistDragId = null;
@@ -4055,8 +4185,7 @@
     const items = openFromYesterday();
     const show = items.length > 0 && rested !== dkey(today) && dkey(selectedDay) === dkey(today);
     box.hidden = !show;
-    if (show) document.getElementById('carryNames').textContent = items.map(i => i.name).join(' · ');
-    const clr = document.getElementById('clearDayBtn'); if (clr) clr.hidden = !dayList(selectedDay).length;
+    if (show) document.getElementById('carryNames').textContent = `${items.length} ${items.length === 1 ? 'step is' : 'steps are'} waiting quietly in your rooms.`;
   }
   function bringOver() {
     const items = openFromYesterday(); if (!items.length) return;
@@ -4066,16 +4195,17 @@
     carried = []; save(); renderCal();
   }
   function letRest() { try { localStorage.setItem(REST_KEY, dkey(today)); } catch (e) {} renderCarryPrompt(); }
-  function clearDay() { events[dkey(selectedDay)] = []; save(); renderCal(); }
+  function clearDay() { events[dkey(today)] = []; save(); renderCal(); }
 
   // ---------- zero-shame rollover ----------
   function renderRollover() {
     const txt = document.getElementById('roText'), chips = document.getElementById('roChips');
+    if (!txt || !chips) return;
     if (!carried.length) { txt.innerHTML = 'Nothing hanging around from yesterday. Clean slate.'; chips.style.display = 'none'; return; }
     chips.style.display = 'flex';
     txt.innerHTML = `These are still hanging around. Wanna move them into today or just toss 'em? <span class="names">${escapeHtml(carried.map(c => c.name).join(', '))}</span>`;
   }
-  function calNote(t) { document.getElementById('calNote').textContent = t; }
+  function calNote(t) { const n = document.getElementById('calNote'); if (n) n.textContent = t; }
   function overlaps(list, s, e) { return list.some(x => s < x.end && e > x.start); }
   function nextFreeSlot(list, dur, from) {
     const now = new Date();
@@ -4258,7 +4388,7 @@
     if (out.placed) box.value = '';   // otherwise their words stay in the box
     calNote(out.note);
   }
-  document.getElementById('calDump').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) buildDay(); });
+  document.getElementById('calDump')?.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) buildDay(); });
 
   // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
   const STORE_KEY = 'nenemi.v1';
