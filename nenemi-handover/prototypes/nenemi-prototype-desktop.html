@@ -1386,97 +1386,95 @@
     .cal-checklist { align-self: start; position: sticky; top: 30px; margin-top: 0; }
   }
 
-  /* ===== Onboarding wall — self-contained, #onboard-scoped with its own --ob-* tokens so nothing
-     leaks to or from the app's global CSS. Shown only when Clerk auth is available and unsigned. ===== */
+  /* ===== Onboarding (v4, Sep 2026): one calm card on the ground. Self-contained, #onboard-scoped
+     with its own --ob-* tokens so nothing leaks to or from the app's global CSS. ===== */
   body.onboarding { overflow: hidden; }
   #onboard {
-    --ob-ink:#111312; --ob-card:#ffffff; --ob-ground:#F5F6F5; --ob-line:#E5E7E6; --ob-dim:#63696A;
-    --ob-teal:#2C6670; --ob-turq:#3C8692; --ob-turq-deep:#2C6670;
-    --ob-font:'Archivo',system-ui,sans-serif; --ob-black:'Archivo Black','Archivo',sans-serif; --ob-mono:'IBM Plex Mono',ui-monospace,monospace;
-    position:fixed; inset:0; z-index:9999; background:var(--ob-card); color:var(--ob-ink);
-    font-family:var(--ob-font); overflow-y:auto; -webkit-font-smoothing:antialiased;
+    --ob-ink:#111312; --ob-card:#ffffff; --ob-ground:#F5F6F5; --ob-line:#E5E7EB; --ob-dim:#6B7280; --ob-faint:#8A9296;
+    --ob-cyan:#28A2C3; --ob-cyan-ink:#137F9D; --ob-cyan-wash:#EAF7FA; --ob-mint:#0EBE82; --ob-mint-ink:#078F61; --ob-mint-wash:#EAFBF4;
+    --ob-shadow:0 1px 3px rgba(0,0,0,.04), 0 6px 16px rgba(0,0,0,.02);
+    --ob-font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    position:fixed; inset:0; z-index:9999; background:var(--ob-ground); color:var(--ob-ink);
+    font-family:var(--ob-font); font-size:14px; line-height:1.5; overflow-y:auto; -webkit-font-smoothing:antialiased;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:calc(48px + env(safe-area-inset-top,0px)) 16px calc(48px + env(safe-area-inset-bottom,0px));
   }
   #onboard[hidden] { display:none; }
   #onboard * { box-sizing:border-box; }
-  #onboard .ob-frame { width:100%; min-height:100%; display:grid; grid-template-columns:1fr 1fr; background:var(--ob-card); }
-  #onboard .ob-left { position:relative; overflow:hidden; background:#0a0b0c center 28%/cover no-repeat; color:#fff; padding:40px 46px; display:flex; flex-direction:column; justify-content:space-between; min-height:100vh; transition:background-image .3s ease; }
-  #onboard .ob-left::before { content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(100deg,rgba(8,10,12,.95),rgba(8,10,12,.66) 44%,rgba(8,10,12,.30)),linear-gradient(0deg,rgba(8,10,12,.82),transparent 46%); }
-  #onboard .ob-left > * { position:relative; z-index:1; }
-  #onboard .ob-brand { display:flex; align-items:center; gap:9px; }
-  #onboard .ob-brand img { width:22px; height:22px; filter:invert(1); }
-  #onboard .ob-brand span { font-family:var(--ob-black); font-size:15px; letter-spacing:.14em; }
-  #onboard .ob-mid { max-width:420px; }
-  #onboard .ob-eyebrow { font-family:var(--ob-mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.55); display:flex; align-items:center; gap:12px; margin-bottom:22px; }
-  #onboard .ob-eyebrow::before { content:""; width:26px; height:2px; background:var(--ob-turq); }
-  #onboard .ob-big { font-family:var(--ob-black); font-size:clamp(34px,4vw,52px); line-height:1.02; letter-spacing:-.02em; margin:0; }
-  #onboard .ob-big .m { color:var(--ob-turq); }
-  #onboard .ob-lede { color:rgba(255,255,255,.72); font-size:16px; line-height:1.6; max-width:400px; margin:22px 0 0; }
-  #onboard .ob-foot { font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.4); }
-  #onboard .ob-right { background:var(--ob-card); padding:40px 46px; display:flex; flex-direction:column; justify-content:center; min-height:100vh; }
-  #onboard .ob-inner { width:100%; max-width:400px; margin:0 auto; }
-  #onboard .ob-dots { display:flex; gap:7px; margin-bottom:30px; }
-  #onboard .ob-dots i { width:7px; height:7px; border-radius:50%; background:var(--ob-line); }
-  #onboard .ob-dots i.on { background:var(--ob-ink); width:22px; border-radius:4px; }
-  #onboard h2 { font-family:var(--ob-black); font-size:30px; letter-spacing:-.01em; margin:0 0 6px; color:var(--ob-ink); }
-  #onboard .ob-sub { color:var(--ob-dim); font-size:15px; line-height:1.5; margin:0 0 26px; }
-  #onboard label.ob-f { display:block; font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ob-dim); margin:16px 0 7px; }
-  #onboard .ob-in { width:100%; padding:13px 14px; border:1px solid var(--ob-line); border-radius:8px; background:var(--ob-ground); font-family:var(--ob-font); font-size:15px; color:var(--ob-ink); }
-  #onboard .ob-in::placeholder { color:#9aa0a2; }
+  #onboard button, #onboard input, #onboard textarea { font-family:inherit; }
+  #onboard :focus-visible { outline:2px solid var(--ob-cyan); outline-offset:2px; }
+  #onboard .ob-card { width:100%; max-width:440px; margin:auto 0; background:var(--ob-card); border:1px solid var(--ob-line); border-radius:12px; box-shadow:var(--ob-shadow); padding:32px 32px 28px; }
+  #onboard .ob-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:26px; }
+  #onboard .ob-brand { display:flex; align-items:center; gap:9px; font-weight:700; font-size:13px; letter-spacing:.16em; }
+  #onboard .ob-brand img { width:20px; height:20px; }
+  #onboard .ob-dots { display:flex; gap:6px; }
+  #onboard .ob-dots i { width:6px; height:6px; border-radius:99px; background:var(--ob-line); transition:width .2s, background .2s; }
+  #onboard .ob-dots i.on { background:var(--ob-ink); width:18px; }
+  #onboard .ob-dots i.past { background:var(--ob-mint); }
+  #onboard .ob-eyebrow { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ob-faint); margin-bottom:8px; }
+  #onboard h1, #onboard h2 { font-size:22px; line-height:1.25; letter-spacing:-.02em; font-weight:700; margin:0 0 6px; color:var(--ob-ink); }
+  #onboard .ob-sub { color:var(--ob-dim); font-size:13.5px; line-height:1.55; margin:0 0 22px; }
+  #onboard .ob-step { display:none; }
+  #onboard .ob-step.active { display:block; animation:obIn .22s ease; }
+  @keyframes obIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) { #onboard .ob-step.active { animation:none; } }
+  #onboard .ob-oauth { display:grid; gap:10px; }
+  #onboard .ob-oauth button, #onboard .ob-btn, #onboard .ob-btn-free { width:100%; min-height:46px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .15s, box-shadow .15s, background .15s; }
+  #onboard .ob-oauth button { border:1px solid var(--ob-line); background:#fff; color:var(--ob-ink); }
+  #onboard .ob-oauth button:hover, #onboard .ob-btn-free:hover { border-color:#CED5D6; box-shadow:0 4px 10px rgba(0,0,0,.04); }
+  #onboard .ob-oauth svg { width:17px; height:17px; flex:none; }
+  #onboard .ob-divider { display:flex; align-items:center; gap:12px; color:var(--ob-faint); font-size:12px; margin:18px 0; }
+  #onboard .ob-divider::before, #onboard .ob-divider::after { content:""; flex:1; height:1px; background:var(--ob-line); }
+  #onboard label.ob-f { display:block; font-size:12px; font-weight:600; color:var(--ob-dim); margin:14px 0 6px; }
+  #onboard .ob-in { width:100%; min-height:46px; padding:11px 14px; border:1px solid var(--ob-line); border-radius:12px; background:#fff; font-size:15px; color:var(--ob-ink); }
+  #onboard .ob-in::placeholder, #onboard textarea::placeholder { color:#A3AAAD; }
+  #onboard .ob-in:focus, #onboard .ob-thought:focus-within { border-color:var(--ob-cyan); box-shadow:0 0 0 3px rgba(40,162,195,.12); outline:none; }
   #onboard .ob-row2 { display:flex; gap:12px; }
   #onboard .ob-row2 > div { flex:1; }
-  #onboard .ob-btn { width:100%; margin-top:22px; padding:15px; border:none; border-radius:8px; background:var(--ob-ink); color:#fff; font-family:var(--ob-font); font-weight:700; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+  #onboard .ob-btn { margin-top:18px; border:1px solid var(--ob-ink); background:var(--ob-ink); color:#fff; }
+  #onboard .ob-btn:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 14px rgba(17,19,18,.14); }
   #onboard .ob-btn:disabled { opacity:.55; cursor:default; }
-  #onboard .ob-btn.ghost { background:#fff; color:var(--ob-ink); border:1px solid var(--ob-line); margin-top:12px; }
-  #onboard .ob-oauth { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
-  #onboard .ob-oauth button { padding:12px; border:1px solid var(--ob-line); border-radius:8px; background:#fff; font-family:var(--ob-font); font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; color:var(--ob-ink); }
-  #onboard .ob-oauth button svg { width:15px; height:15px; }
-  #onboard .ob-divider { display:flex; align-items:center; gap:12px; color:#b7bcbc; font-size:12px; margin:18px 0; }
-  #onboard .ob-divider::before, #onboard .ob-divider::after { content:""; flex:1; height:1px; background:var(--ob-line); }
-  #onboard .ob-fine { font-size:12.5px; color:var(--ob-dim); margin-top:18px; }
-  #onboard .ob-fine a, #onboard .ob-link { color:var(--ob-teal); text-decoration:none; font-weight:600; cursor:pointer; }
-  #onboard .ob-mini { font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#9aa0a2; margin-top:8px; }
-  #onboard .ob-err { color:#b4342b; font-size:13px; line-height:1.4; margin-top:10px; }
-  #onboard .ob-err:empty { margin-top:0; }
-  #onboard .ob-plan { border:1px solid var(--ob-line); border-radius:12px; padding:22px; background:var(--ob-ground); }
-  #onboard .ob-price { display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; }
-  #onboard .ob-price b { font-family:var(--ob-black); font-size:28px; }
-  #onboard .ob-plan ul { list-style:none; padding:0; margin:16px 0 0; display:flex; flex-direction:column; gap:10px; }
-  #onboard .ob-plan li { display:flex; gap:10px; font-size:14.5px; color:var(--ob-ink); }
-  #onboard .ob-plan li .tick { color:var(--ob-teal); font-weight:800; }
-  #onboard .ob-paid { margin-top:16px; padding:16px 18px; border:1px dashed var(--ob-line); border-radius:10px; }
-  #onboard .ob-paidhead { font-family:var(--ob-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ob-dim); margin-bottom:10px; }
-  #onboard .ob-paid ul { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; }
-  #onboard .ob-paid li { display:flex; gap:10px; font-size:14px; color:var(--ob-ink); }
-  #onboard .ob-paid li .tick { color:var(--ob-turq-deep); font-weight:800; }
-  #onboard .ob-price2 { font-size:13px; color:var(--ob-dim); margin-top:12px; }
-  #onboard .ob-price2 b { color:var(--ob-ink); }
-  #onboard .ob-wcards { display:flex; flex-direction:column; gap:12px; margin-top:4px; }
-  #onboard .ob-wcard { display:flex; gap:14px; align-items:flex-start; padding:15px 16px; border:1px solid var(--ob-line); border-radius:10px; }
-  #onboard .ob-wcard .n { font-family:var(--ob-mono); font-size:11px; color:var(--ob-turq-deep); font-weight:700; margin-top:2px; }
-  #onboard .ob-wcard b { font-size:15px; }
-  #onboard .ob-wcard p { margin:3px 0 0; font-size:13.5px; color:var(--ob-dim); line-height:1.45; }
-  #onboard .ob-steplabel { position:fixed; top:calc(10px + env(safe-area-inset-top,0px)); left:50%; transform:translateX(-50%); z-index:2; background:rgba(17,19,18,.9); color:#fff; font-family:var(--ob-mono); font-size:11px; letter-spacing:.12em; padding:6px 14px; border-radius:20px; }
-  #onboard .ob-step { display:none; }
-  #onboard .ob-step.active { display:block; }
-  /* left panel: deep black carved texture (photos/texture/tex-*.webp), white type.
-     !important beats the per-step photo the script sets inline, so the script stays as is. */
-  #onboard .ob-left { background-color:#050404 !important; background-image:url('/photos/texture/tex-glyphs.webp') !important; background-size:cover !important; background-position:right center !important; background-repeat:no-repeat !important; }
-  /* one carved texture per step, in order: glyphs (sign up), step-fret (code), diamonds (name), glyphs (plan), step-fret (welcome) */
-  #onboard:has(#obsCode.active) .ob-left { background-image:url('/photos/texture/tex-fret.webp') !important; }
-  #onboard:has(#obs2.active) .ob-left { background-image:url('/photos/texture/tex-diamonds.webp') !important; }
-  #onboard:has(#obs3.active) .ob-left { background-image:url('/photos/texture/tex-glyphs.webp') !important; }
-  #onboard:has(#obs4.active) .ob-left { background-image:url('/photos/texture/tex-fret.webp') !important; }
-  #onboard .ob-left::before { display:none; }
-  #onboard .ob-big, #onboard .ob-big .m { color:#fff; }
-  #onboard .ob-lede, #onboard .ob-foot { color:#fff; }
-  #onboard .ob-eyebrow { color:#8ac7be; }
-  @media (max-width: 720px) {
-    #onboard .ob-frame { grid-template-columns:1fr; }
-    #onboard .ob-left { min-height:auto; padding:calc(30px + env(safe-area-inset-top,0px)) 24px 40px; }
-    #onboard .ob-mid { margin:26px 0; }
-    #onboard .ob-right { min-height:auto; padding:32px 24px calc(44px + env(safe-area-inset-bottom,0px)); }
-    #onboard .ob-big { font-size:34px; }
-    #onboard .ob-steplabel { display:none; } /* the dots carry the step here; the pill would collide with the wordmark */
+  #onboard .ob-btn-free { margin-top:10px; border:1px solid var(--ob-ink); background:#fff; color:var(--ob-ink); }
+  #onboard .ob-fine { font-size:12.5px; color:var(--ob-dim); margin-top:16px; text-align:center; }
+  #onboard .ob-link { background:none; border:0; padding:0; color:var(--ob-cyan-ink); font-weight:600; font-size:inherit; cursor:pointer; text-decoration:none; }
+  #onboard .ob-link:hover { text-decoration:underline; text-underline-offset:3px; }
+  #onboard .ob-escape { display:block; margin:20px auto 0; background:none; border:0; color:var(--ob-dim); font-size:13px; font-weight:600; cursor:pointer; }
+  #onboard .ob-escape:hover { color:var(--ob-ink); }
+  #onboard .ob-err { color:var(--ob-ink); background:var(--ob-ground); border-radius:8px; font-size:13px; line-height:1.4; margin-top:12px; padding:9px 12px; }
+  #onboard .ob-err:empty { display:none; }
+  /* step 2: one question */
+  #onboard .ob-thought { position:relative; border:1px solid var(--ob-line); border-radius:12px; background:#fff; }
+  #onboard .ob-thought textarea { display:block; width:100%; min-height:132px; resize:none; border:0; background:none; padding:14px 50px 14px 14px; font-size:15px; line-height:1.5; color:var(--ob-ink); outline:none; border-radius:12px; }
+  #onboard .ob-mic { position:absolute; right:10px; bottom:10px; width:34px; height:34px; border-radius:50%; border:1px solid var(--ob-line); background:#fff; color:var(--ob-dim); display:grid; place-items:center; cursor:pointer; }
+  #onboard .ob-mic:hover { color:var(--ob-cyan-ink); border-color:#CBEAF0; }
+  #onboard .ob-mic.listening { color:#fff; background:var(--ob-cyan); border-color:var(--ob-cyan); }
+  #onboard .ob-mic.unsupported { display:none; }
+  #onboard .ob-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  #onboard .ob-chip { border:1px solid var(--ob-line); background:#fff; color:var(--ob-dim); border-radius:99px; padding:7px 13px; font-size:12.5px; font-weight:600; cursor:pointer; }
+  #onboard .ob-chip:hover { border-color:#CBEAF0; color:var(--ob-cyan-ink); }
+  #onboard .ob-chip.on { background:var(--ob-cyan-wash); border-color:#CBEAF0; color:var(--ob-cyan-ink); }
+  /* step 3: plans */
+  #onboard .ob-plans { display:grid; gap:10px; }
+  #onboard .ob-plan { position:relative; display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:1px solid var(--ob-line); border-radius:12px; background:#fff; padding:14px 16px; cursor:pointer; }
+  #onboard .ob-plan .ob-radio { width:18px; height:18px; border-radius:50%; border:1.5px solid #CED5D6; flex:none; display:grid; place-items:center; }
+  #onboard .ob-plan.on { border-color:var(--ob-cyan); box-shadow:0 0 0 3px rgba(40,162,195,.10); }
+  #onboard .ob-plan.on .ob-radio { border-color:var(--ob-cyan); }
+  #onboard .ob-plan.on .ob-radio::after { content:""; width:8px; height:8px; border-radius:50%; background:var(--ob-cyan); }
+  #onboard .ob-plan-main { flex:1; min-width:0; }
+  #onboard .ob-plan-name { font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  #onboard .ob-plan-note { font-size:12px; color:var(--ob-dim); margin-top:2px; }
+  #onboard .ob-plan-price { font-weight:700; font-size:15px; white-space:nowrap; }
+  #onboard .ob-plan-price small { font-weight:500; color:var(--ob-dim); font-size:12px; }
+  #onboard .ob-badge { font-size:10px; font-weight:700; letter-spacing:.04em; color:var(--ob-mint-ink); background:var(--ob-mint-wash); border:1px solid #C7EFDF; border-radius:99px; padding:2px 8px; }
+  #onboard .ob-free-note { font-size:12.5px; color:var(--ob-dim); text-align:center; margin-top:12px; }
+  /* step 4: handoff */
+  #onboard .ob-handoff { text-align:center; padding:18px 0 6px; }
+  #onboard .ob-handoff-mark { width:42px; height:42px; border-radius:12px; margin:0 auto 14px; display:grid; place-items:center; background:var(--ob-mint-wash); border:1px solid #C7EFDF; color:var(--ob-mint); }
+  @media (max-width: 520px) {
+    #onboard { padding:calc(20px + env(safe-area-inset-top,0px)) 12px calc(24px + env(safe-area-inset-bottom,0px)); }
+    #onboard .ob-card { padding:24px 20px 22px; }
+    #onboard h1, #onboard h2 { font-size:20px; }
+    #onboard .ob-row2 { flex-direction:column; gap:0; }
   }
 
   /* ===================== Reference look (Sep 2026) =====================
@@ -1996,101 +1994,103 @@
   <h1 class="sr-only">Nenemi</h1>
 
 <!-- ============ ONBOARDING WALL (hidden until the gate shows it) ============ -->
-<div id="onboard" hidden aria-label="Create your Nenemi space">
-  <div class="ob-steplabel" id="obStepLabel">STEP 1 OF 4 — SIGN UP</div>
-  <div class="ob-frame">
-    <div class="ob-left">
+<div id="onboard" hidden aria-label="Where your head gets quiet">
+  <div class="ob-card" role="dialog" aria-labelledby="obTitle">
+    <div class="ob-top">
       <div class="ob-brand"><img src="/photos/icon/nenemi-mark-ink.png" alt=""><span>NENEMI</span></div>
-      <div class="ob-mid">
-        <div class="ob-eyebrow" id="obEye">Your context, kept</div>
-        <h2 class="ob-big" id="obHead">Right where you left off.</h2>
-        <p class="ob-lede" id="obSub">Nenemi holds the thread, plans your day with room to move, and helps when you're stuck.</p>
-      </div>
-      <div class="ob-foot">NENEMI — WHERE YOUR HEAD GETS QUIET</div>
+      <div class="ob-dots" aria-hidden="true"><i class="on" id="obd1"></i><i id="obd2"></i><i id="obd3"></i><i id="obd4"></i></div>
     </div>
-    <div class="ob-right"><div class="ob-inner">
-      <div class="ob-dots"><i class="on" id="obd1"></i><i id="obd2"></i><i id="obd3"></i><i id="obd4"></i></div>
 
-      <!-- STEP 1: create account -->
-      <div class="ob-step active" id="obs1">
-        <h2>Create your account</h2>
-        <p class="ob-sub">Free to start — 2 rooms, no card. Your space, private to you.</p>
-        <div class="ob-oauth">
-          <button type="button" onclick="obOAuth('oauth_apple')">Continue with Apple</button>
-          <button type="button" onclick="obOAuth('oauth_google')">Continue with Google</button>
-        </div>
-        <div class="ob-divider">or</div>
-        <label class="ob-f" for="obEmail">Email</label>
-        <input class="ob-in" id="obEmail" type="email" autocomplete="email" placeholder="you@email.com">
-        <label class="ob-f" for="obPass">Password</label>
-        <input class="ob-in" id="obPass" type="password" autocomplete="new-password" placeholder="9+ characters">
-        <button class="ob-btn" id="obStartBtn" type="button" onclick="obCreate()">Start free →</button>
-        <div class="ob-err" id="obErr1"></div>
-        <div class="ob-fine">Already have a space? <span class="ob-link" onclick="obSignIn()">Sign in</span></div>
-        <div class="ob-mini">Free for 2 rooms · no card to start</div>
+    <!-- STEP 1: quiet entry -->
+    <div class="ob-step active" id="obs1">
+      <h1 id="obTitle">Where your head gets quiet.</h1>
+      <p class="ob-sub">A calm place to put everything down, so you can pick it back up later.</p>
+      <div class="ob-oauth">
+        <button type="button" onclick="obOAuth('oauth_apple')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.1zM14 5.1c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3-1.5z"/></svg>Continue with Apple</button>
+        <button type="button" onclick="obOAuth('oauth_google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8c.9-2.6 3.3-4.4 6.2-4.4z"/></svg>Continue with Google</button>
       </div>
+      <div class="ob-divider">or with email</div>
+      <label class="ob-f" for="obEmail">Email</label>
+      <input class="ob-in" id="obEmail" type="email" autocomplete="email" placeholder="you@email.com">
+      <label class="ob-f" for="obPass">Password</label>
+      <input class="ob-in" id="obPass" type="password" autocomplete="new-password" placeholder="9+ characters" onkeydown="if (event.key === 'Enter') obCreate()">
+      <button class="ob-btn" id="obStartBtn" type="button" onclick="obCreate()">Continue</button>
+      <div class="ob-err" id="obErr1" role="status"></div>
+      <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
+      <button type="button" class="ob-escape" id="obGuestBtn" onclick="obGuest()">Try without an account →</button>
+    </div>
 
-      <!-- STEP 1a: confirm email -->
-      <div class="ob-step" id="obsCode">
-        <h2>Check your email.</h2>
-        <p class="ob-sub">We sent a 6-digit code to <b id="obCodeEmail">your email</b>. Enter it to confirm it's you.</p>
-        <label class="ob-f" for="obCode">Code</label>
-        <input class="ob-in" id="obCode" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
-        <button class="ob-btn" id="obCodeBtn" type="button" onclick="obVerify()">Confirm →</button>
-        <div class="ob-err" id="obErrCode"></div>
-        <div class="ob-fine"><span class="ob-link" onclick="obResend()">Resend the code</span></div>
+    <!-- STEP 1a: confirm email -->
+    <div class="ob-step" id="obsCode">
+      <h2>One quick check.</h2>
+      <p class="ob-sub">A 6-digit code went to <b id="obCodeEmail">your email</b>, just to be sure it's you.</p>
+      <label class="ob-f" for="obCode">Code</label>
+      <input class="ob-in" id="obCode" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" onkeydown="if (event.key === 'Enter') obVerify()">
+      <button class="ob-btn" id="obCodeBtn" type="button" onclick="obVerify()">Confirm</button>
+      <div class="ob-err" id="obErrCode" role="status"></div>
+      <div class="ob-fine"><button type="button" class="ob-link" onclick="obResend()">Send the code again</button></div>
+    </div>
+
+    <!-- STEP 1b: name, only when the account needs one -->
+    <div class="ob-step" id="obsName">
+      <h2>What should we call you?</h2>
+      <p class="ob-sub">Just so it feels like yours.</p>
+      <div class="ob-row2">
+        <div><label class="ob-f" for="obFirst">First name</label><input class="ob-in" id="obFirst" autocomplete="given-name"></div>
+        <div><label class="ob-f" for="obLast">Last name</label><input class="ob-in" id="obLast" autocomplete="family-name"></div>
       </div>
+      <button class="ob-btn" id="obNameBtn" type="button" onclick="obSaveName()">Continue</button>
+      <div class="ob-err" id="obErr2" role="status"></div>
+    </div>
 
-      <!-- STEP 2: name -->
-      <div class="ob-step" id="obs2">
-        <h2>Nice to meet you.</h2>
-        <p class="ob-sub">What should we call you? Just so it feels like yours.</p>
-        <div class="ob-row2">
-          <div><label class="ob-f" for="obFirst">First name</label><input class="ob-in" id="obFirst" autocomplete="given-name" placeholder="Marcos"></div>
-          <div><label class="ob-f" for="obLast">Last name</label><input class="ob-in" id="obLast" autocomplete="family-name" placeholder="Cuellar"></div>
-        </div>
-        <button class="ob-btn" id="obNameBtn" type="button" onclick="obSaveName()">Continue →</button>
-        <div class="ob-err" id="obErr2"></div>
+    <!-- STEP 2: one question -->
+    <div class="ob-step" id="obs2">
+      <div class="ob-eyebrow">Just one question</div>
+      <h2>What's taking up the most space in your head right now?</h2>
+      <p class="ob-sub">However it comes out is fine.</p>
+      <div class="ob-thought">
+        <textarea id="obThought" maxlength="600" aria-label="What's taking up the most space in your head" placeholder="The launch, the thing with the landlord, that email I keep not sending…"></textarea>
+        <button type="button" class="ob-mic mic-btn" id="obMic" title="Say it instead" aria-label="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></button>
       </div>
-
-      <!-- STEP 3: your place + plan -->
-      <div class="ob-step" id="obs3">
-        <h2>As much space as your head needs.</h2>
-        <p class="ob-sub">Keep the doors open. Free gives you a quiet anchor. Full access removes every limit, as many rooms, notes, and threads as your day requires.</p>
-        <div class="ob-plan">
-          <div class="ob-price"><b>Free</b></div>
-          <ul>
-            <li><span class="tick">✓</span> 2 rooms of your own, with 5 document downloads per room</li>
-            <li><span class="tick">✓</span> Calendar, voice, and your way back in — always</li>
-            <li><span class="tick">✓</span> Saved to your device first, synced across them</li>
-          </ul>
-        </div>
-        <div class="ob-paid">
-          <div class="ob-paidhead">Full access ($10/mo)</div>
-          <ul>
-            <li><span class="tick">✓</span> Unlimited rooms — as many as the day needs</li>
-            <li><span class="tick">✓</span> Up to 25 documents in every room</li>
-            <li><span class="tick">✓</span> Priority context sync and advanced retrieval engines</li>
-          </ul>
-        </div>
-        <button class="ob-btn" type="button" onclick="obSeeFullAccess()">Unlock full access — $10/mo</button>
-        <div class="ob-fine" style="text-align:center"><span class="ob-link" onclick="obStep(4)">Stay on free for now</span></div>
+      <div class="ob-chips" role="group" aria-label="Or start from one of these">
+        <button type="button" class="ob-chip" onclick="obChip(this)">Work &amp; Projects</button>
+        <button type="button" class="ob-chip" onclick="obChip(this)">Life Admin</button>
+        <button type="button" class="ob-chip" onclick="obChip(this)">Something I'm avoiding</button>
       </div>
+      <button class="ob-btn" type="button" onclick="obIntake()">Organize this for me →</button>
+    </div>
 
-      <!-- STEP 4: quiet welcome -->
-      <div class="ob-step" id="obs4">
-        <h2 id="obWelcomeHead">Welcome in.</h2>
-        <p class="ob-sub">Your place is ready. A quick look at what's inside — then it's yours.</p>
-        <div class="ob-wcards">
-          <div class="ob-wcard"><span class="n">01</span><div><b>Home</b><p>Say what's in your head. It lands where it belongs.</p></div></div>
-          <div class="ob-wcard"><span class="n">02</span><div><b>Rooms</b><p>One thing each. Held between visits, so you never restart from zero.</p></div></div>
-          <div class="ob-wcard"><span class="n">03</span><div><b>A way back in</b><p>Stuck or scattered? A calm screen and one small move.</p></div></div>
-        </div>
-        <button class="ob-btn" type="button" onclick="obFinish()">Take me in →</button>
-        <div class="ob-fine" style="text-align:center"><span class="ob-link" onclick="obFinish()">Skip the look</span></div>
+    <!-- STEP 3: respectful paywall -->
+    <div class="ob-step" id="obs3">
+      <div class="ob-eyebrow">Whenever you're ready</div>
+      <h2>Room to grow, no rush.</h2>
+      <p class="ob-sub">NÈNÈMI gives you 2 rooms free forever. Unlock unlimited space and voice memory when you're ready.</p>
+      <div class="ob-plans" role="radiogroup" aria-label="Full access billing">
+        <button type="button" class="ob-plan on" role="radio" aria-checked="true" data-plan="annual" onclick="obPickPlan('annual')">
+          <span class="ob-radio"></span>
+          <span class="ob-plan-main"><span class="ob-plan-name">Annual <span class="ob-badge">14-day free trial</span></span><span class="ob-plan-note">$4/mo, billed once a year</span></span>
+          <span class="ob-plan-price">$48<small>/yr</small></span>
+        </button>
+        <button type="button" class="ob-plan" role="radio" aria-checked="false" data-plan="monthly" onclick="obPickPlan('monthly')">
+          <span class="ob-radio"></span>
+          <span class="ob-plan-main"><span class="ob-plan-name">Monthly</span><span class="ob-plan-note">Cancel anytime</span></span>
+          <span class="ob-plan-price">$6<small>/mo</small></span>
+        </button>
       </div>
+      <button class="ob-btn" id="obPaidBtn" type="button" onclick="obChoosePaid()">Start the 14-day trial</button>
+      <button class="ob-btn-free" type="button" onclick="obChooseFree()">Start with 2 free rooms</button>
+      <div class="ob-err" id="obErr3" role="status"></div>
+      <div class="ob-free-note">Calendar, voice, and your way back in stay free, always.</div>
+    </div>
 
-    </div></div>
+    <!-- STEP 4: handoff -->
+    <div class="ob-step" id="obs4">
+      <div class="ob-handoff">
+        <div class="ob-handoff-mark"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg></div>
+        <h2 id="obWelcomeHead">Your space is ready.</h2>
+        <p class="ob-sub" id="obWelcomeSub" style="margin-bottom:0">Opening your day…</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -4512,7 +4512,7 @@
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
   // inside the iPhone app (Capacitor shell) nothing is sold: Apple requires in-app purchase for that, so the web paywall stays on the web.
   const IN_APP_SHELL = (() => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } })();
-  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 10, planSource: null, planUntil: null };
+  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 6, planSource: null, planUntil: null };
   function ownRooms() { return rooms.filter(r => !r.demo && !r.archived).length; }
   function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
   function apiUrl() { return auth.signedIn ? '/api/state' : `/api/state?device=${encodeURIComponent(syncCode())}`; }
@@ -4710,7 +4710,7 @@
     if ('planSource' in j) auth.planSource = j.planSource;
     if ('planUntil' in j) auth.planUntil = j.planUntil;
   }
-  // ---------- Full access: $10 a month, rooms without a cap. Calendar, voice, sync stay free. ----------
+  // ---------- Full access: $6 a month or $48 a year, rooms without a cap. Calendar, voice, sync stay free. ----------
   function fullAccessLine() { return auth.billing ? `Full access is $${auth.price} a month and opens more rooms.` : 'Full access opens more, soon.'; }
   function fullAccessBtn() { return auth.billing ? `<span class="mini-btn" onclick="openFullAccess()">Open full access</span>` : ''; }
   let limitNoted = false;
@@ -4721,15 +4721,15 @@
     log.scrollTop = log.scrollHeight;
   }
   function billingUrl(action) { return `/api/billing${action ? '?action=' + action : ''}`; }
-  async function openFullAccess() {
-    if (!auth.billing) return;
-    if (!auth.signedIn) { const log = document.getElementById('chatLog'); if (log) { log.innerHTML += `<div class="bubble dos">Sign in first so the plan can follow you to every device.</div>`; log.scrollTop = log.scrollHeight; } try { Clerk.openSignIn(); } catch (e) {} return; }
+  async function openFullAccess(plan) {
+    if (!auth.billing) return false;
+    if (!auth.signedIn) { const log = document.getElementById('chatLog'); if (log) { log.innerHTML += `<div class="bubble dos">Full access lives on an account, so it can follow you to every device. Sign in and it's one step.</div>`; log.scrollTop = log.scrollHeight; } return false; }
     try {
-      const r = await fetch(billingUrl('checkout'), { method: 'POST', headers: await authHeaders() });
+      const r = await fetch(billingUrl('checkout') + (plan === 'annual' ? '&plan=annual' : ''), { method: 'POST', headers: await authHeaders() });
       const j = await r.json();
-      if (r.ok && j.url) { location.href = j.url; return; }
+      if (r.ok && j.url) { location.href = j.url; return true; }
       throw new Error(j.error || r.status);
-    } catch (e) { const log = document.getElementById('chatLog'); if (log) { log.innerHTML += `<div class="bubble dos">Couldn't open the checkout right now. Nothing was charged.</div>`; log.scrollTop = log.scrollHeight; } }
+    } catch (e) { const log = document.getElementById('chatLog'); if (log) { log.innerHTML += `<div class="bubble dos">Couldn't open the checkout right now. Nothing was charged.</div>`; log.scrollTop = log.scrollHeight; } return false; }
   }
   async function manageFullAccess() {
     if (auth.planSource === 'apple') { window.open('https://apps.apple.com/account/subscriptions', '_blank'); return; }
@@ -4879,54 +4879,45 @@
   document.getElementById('stuckInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); stuckSend(); } });
   document.getElementById('stuckInput').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.max(84, Math.min(this.scrollHeight, window.innerHeight * 0.4)) + 'px'; });
 
-  // ===== Onboarding wall: a hard sign-up gate wired to Clerk (custom, headless flow). The
-  //       localStorage + /api/state engine underneath is untouched — this only gates the UI. =====
-  const obL = {
-    1:{photo:'/photos/landing-hero.png', eye:'Your context, kept', head:'Right where you left off.', sub:"Nenemi holds the thread, plans your day with room to move, and helps when you're stuck."},
-    code:{photo:'/photos/landing-hero.png', eye:'One quick check', head:'Check your <span class="m">email</span>.', sub:"A six-digit code, just to be sure it's you. Then you're in."},
-    2:{photo:'/photos/originals/desk-eyes-closed.png', eye:'Just so it feels like yours', head:'First, <span class="m">your</span> name.', sub:"A name on the door. That's all we need to get you in."},
-    3:{photo:'/photos/landing-support.png', eye:'Yours, and only yours', head:'This is all <span class="m">yours</span>.', sub:"A quiet room no one else can open. Free to keep, for as long as you like."},
-    4:{photo:'/photos/originals/garden-phone.png', eye:'A quick look inside', head:'Welcome to your <span class="m">place</span>.', sub:"A few rooms in the house. Then the door is yours."}
-  };
-  const obLabels = { 1:'STEP 1 OF 4 — SIGN UP', code:'STEP 1 OF 4 — CONFIRM', 2:'STEP 2 OF 4 — YOUR NAME', 3:'STEP 3 OF 4 — YOUR PLACE', 4:'STEP 4 OF 4 — WELCOME' };
-  const obDotFor = { 1:1, code:1, 2:2, 3:3, 4:4 };
-  const obStepEl = { 1:'obs1', code:'obsCode', 2:'obs2', 3:'obs3', 4:'obs4' };
-  let obFlow = false; // true while our custom sign-up flow is driving, so the auth listener doesn't override it
+  // ===== Onboarding (v4): one calm card. Entry → one question → an unhurried plan choice → straight into My day.
+  //       Wired to Clerk (custom, headless flow). The localStorage + /api/state engine underneath is untouched. =====
+  const obStepEl = { 1:'obs1', code:'obsCode', name:'obsName', 2:'obs2', 3:'obs3', 4:'obs4' };
+  const obDotFor = { 1:1, code:1, name:1, 2:2, 3:3, 4:4 };
+  let obFlow = false; // true while our flow is driving, so the auth listener doesn't pull the card back to step 1
+  let obPlan = 'annual';
+  const OB_GUEST = 'nenemi.guest', OB_INTAKE = 'nenemi.intake';
   function obEl(id) { return document.getElementById(id); }
   function obStep(n) {
-    if (n === 3 && IN_APP_SHELL) n = 4; // no plan/paywall step inside the iPhone app
+    if (n === 3 && (IN_APP_SHELL || !auth.billing)) n = 4; // no plan step inside the iPhone app, or where billing isn't on
     Object.values(obStepEl).forEach(id => { const el = obEl(id); if (el) el.classList.remove('active'); });
     const el = obEl(obStepEl[n]); if (el) el.classList.add('active');
     const dot = obDotFor[n] || 1;
-    for (let i = 1; i <= 4; i++) { const d = obEl('obd' + i); if (d) d.classList.toggle('on', i === dot); }
-    const L = obL[n] || obL[1];
-    if (obEl('obEye')) obEl('obEye').innerHTML = L.eye;
-    if (obEl('obHead')) obEl('obHead').innerHTML = L.head;
-    if (obEl('obSub')) obEl('obSub').innerHTML = L.sub;
-    if (obEl('obStepLabel')) obEl('obStepLabel').textContent = obLabels[n] || '';
-    const left = document.querySelector('#onboard .ob-left'); if (left) left.style.backgroundImage = 'url("' + L.photo + '")';
+    for (let i = 1; i <= 4; i++) { const d = obEl('obd' + i); if (d) { d.classList.toggle('on', i === dot); d.classList.toggle('past', i < dot); } }
     const o = obEl('onboard'); if (o) o.scrollTop = 0;
-    if (n === 4) { const fn = (typeof userFirstName === 'function' && userFirstName()) || ''; const h = obEl('obWelcomeHead'); if (h) h.textContent = fn ? ('Welcome in, ' + fn + '.') : 'Welcome in.'; }
+    if (n === 2) { const t = obEl('obThought'); if (t) setTimeout(() => t.focus(), 60); }
+    if (n === 4) obHandoff();
   }
   function showOnboard(step) { const o = obEl('onboard'); if (!o) return; o.hidden = false; document.body.classList.add('onboarding'); obStep(step || 1); }
   function hideOnboard() { const o = obEl('onboard'); if (!o) return; o.hidden = true; document.body.classList.remove('onboarding'); }
   function obDone() { try { return localStorage.getItem('nenemi.onboarded') === '1'; } catch (e) { return false; } }
+  function obGuestMode() { try { return localStorage.getItem(OB_GUEST) === '1'; } catch (e) { return false; } }
   function obPriorUser() { try { return !!(localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY)); } catch (e) { return false; } }
   // authoritative decision, run once Clerk's real state is known
   function gateOnboarding() {
+    if (obFlow) return;                                              // mid-flow: leave the card where it is
     if (location.protocol === 'file:') { hideOnboard(); return; }   // dev / no server: never wall
     if (!auth.pk) { hideOnboard(); return; }                        // auth unavailable: can't (and won't) wall
     if (auth.signedIn) {
       if (obDone() || obPriorUser()) { hideOnboard(); return; }      // existing user: never disrupt
-      showOnboard((typeof userFirstName === 'function' && userFirstName()) ? 3 : 2); return; // fresh sign-up
+      showOnboard(2); return;                                        // fresh sign-up (e.g. back from Apple/Google)
     }
+    if (obGuestMode() && obDone()) { hideOnboard(); return; }        // chose to try it without an account
     showOnboard(1);                                                  // auth on, not signed in
     if (window.__openSignIn) { window.__openSignIn = false; obSignIn(); } // arrived from a Log In link
   }
   function obShowErr(id, e) {
     const el = obEl(id); if (!el) return;
-    const m = (e && e.errors && e.errors[0] && (e.errors[0].longMessage || e.errors[0].message)) || (e && e.message) || 'Something went wrong. Try again in a moment.';
-    el.textContent = m;
+    el.textContent = (e && e.errors && e.errors[0] && (e.errors[0].longMessage || e.errors[0].message)) || (e && e.message) || 'Something went sideways. One more try in a moment?';
   }
   function obClearErr(id) { const el = obEl(id); if (el) el.textContent = ''; }
   function obBusy(id, on, label) { const b = obEl(id); if (!b) return; b.disabled = on; if (label != null) b.textContent = label; }
@@ -4935,49 +4926,48 @@
     obClearErr('obErr1');
     const email = (obEl('obEmail').value || '').trim();
     const pass = obEl('obPass').value || '';
-    if (!email || !pass) { obShowErr('obErr1', { message: 'Enter an email and a password to start.' }); return; }
-    if (!obReady()) { obShowErr('obErr1', { message: 'Sign-up is waking up — one moment, then try again.' }); return; }
+    if (!email || !pass) { obShowErr('obErr1', { message: 'An email and a password are all it needs.' }); return; }
+    if (!obReady()) { obShowErr('obErr1', { message: 'Sign-up is waking up. One moment, then again.' }); return; }
     obBusy('obStartBtn', true, 'One moment…');
     try {
       obFlow = true;
       await Clerk.client.signUp.create({ emailAddress: email, password: pass });
       await Clerk.client.signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
       if (obEl('obCodeEmail')) obEl('obCodeEmail').textContent = email;
-      obBusy('obStartBtn', false, 'Start free →');
+      obBusy('obStartBtn', false, 'Continue');
       obStep('code');
       const c = obEl('obCode'); if (c) c.focus();
     } catch (e) {
-      obBusy('obStartBtn', false, 'Start free →');
+      obBusy('obStartBtn', false, 'Continue');
       obFlow = false;
       const code = e && e.errors && e.errors[0] && e.errors[0].code;
-      if (code === 'form_identifier_exists') obShowErr('obErr1', { message: 'That email already has a space. Use Sign in, just below.' });
+      if (code === 'form_identifier_exists') obShowErr('obErr1', { message: 'That email already has a space. Sign in is just below.' });
       else obShowErr('obErr1', e);
     }
   }
   async function obVerify() {
     obClearErr('obErrCode');
     const code = (obEl('obCode').value || '').trim();
-    if (!code) { obShowErr('obErrCode', { message: 'Enter the code from your email.' }); return; }
-    if (!obReady()) { obShowErr('obErrCode', { message: 'One moment, then try again.' }); return; }
+    if (!code) { obShowErr('obErrCode', { message: 'The code from your email goes here.' }); return; }
+    if (!obReady()) { obShowErr('obErrCode', { message: 'One moment, then again.' }); return; }
     obBusy('obCodeBtn', true, 'Confirming…');
     try {
       const su = Clerk.client.signUp;
       await su.attemptEmailAddressVerification({ code });
-      if (su.status === 'complete') { await Clerk.setActive({ session: su.createdSessionId }); }
-      obBusy('obCodeBtn', false, 'Confirm →');
-      obStep(2);
-      const f = obEl('obFirst'); if (f) f.focus();
-    } catch (e) { obBusy('obCodeBtn', false, 'Confirm →'); obShowErr('obErrCode', e); }
+      obBusy('obCodeBtn', false, 'Confirm');
+      if (su.status === 'complete') { await Clerk.setActive({ session: su.createdSessionId }); obStep(2); }
+      else { obStep('name'); const f = obEl('obFirst'); if (f) f.focus(); } // this account needs a name before it can finish
+    } catch (e) { obBusy('obCodeBtn', false, 'Confirm'); obShowErr('obErrCode', e); }
   }
   async function obResend() {
     if (!obReady()) return;
-    try { await Clerk.client.signUp.prepareEmailAddressVerification({ strategy: 'email_code' }); obShowErr('obErrCode', { message: 'Sent again — check your email.' }); }
+    try { await Clerk.client.signUp.prepareEmailAddressVerification({ strategy: 'email_code' }); obShowErr('obErrCode', { message: 'Sent again.' }); }
     catch (e) { obShowErr('obErrCode', e); }
   }
   async function obSaveName() {
     obClearErr('obErr2');
     const f = (obEl('obFirst').value || '').trim(), l = (obEl('obLast').value || '').trim();
-    if (!f) { obShowErr('obErr2', { message: 'A first name is all we need.' }); return; }
+    if (!f) { obShowErr('obErr2', { message: 'A first name is all it needs.' }); return; }
     obBusy('obNameBtn', true, 'One moment…');
     try {
       const su = window.Clerk && Clerk.client && Clerk.client.signUp;
@@ -4988,25 +4978,90 @@
         await Clerk.user.update({ firstName: f, lastName: l });
       }
       try { if (typeof renderAccount === 'function') renderAccount(); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
-      obBusy('obNameBtn', false, 'Continue →');
-      obStep(3);
-    } catch (e) { obBusy('obNameBtn', false, 'Continue →'); obShowErr('obErr2', e); }
+      obBusy('obNameBtn', false, 'Continue');
+      obStep(2);
+    } catch (e) { obBusy('obNameBtn', false, 'Continue'); obShowErr('obErr2', e); }
   }
   async function obOAuth(strategy) {
-    if (!obReady()) { obShowErr('obErr1', { message: 'Sign-up is waking up — one moment, then try again.' }); return; }
+    if (!obReady()) { obShowErr('obErr1', { message: 'Sign-up is waking up. One moment, then again.' }); return; }
     try {
       obFlow = true;
       await Clerk.client.signUp.authenticateWithRedirect({ strategy, redirectUrl: '/?start=1', redirectUrlComplete: '/?start=1' });
     } catch (e) { obFlow = false; obShowErr('obErr1', e); }
   }
   function obSignIn() { try { if (window.Clerk && auth.pk) Clerk.openSignIn(); } catch (e) {} }
-  function obSeeFullAccess() { if (auth.billing) { try { openFullAccess(); return; } catch (e) {} } obStep(4); }
+  // no account: everything saves on this device first, like always. An account can come later.
+  function obGuest() {
+    try { localStorage.setItem(OB_GUEST, '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    obFlow = true;
+    obStep(2);
+  }
+  // step 2: one question, never a survey
+  function obChip(btn) {
+    const was = btn.classList.contains('on');
+    document.querySelectorAll('#onboard .ob-chip').forEach(c => c.classList.remove('on'));
+    if (!was) btn.classList.add('on');
+  }
+  function obIntake() {
+    const text = (obEl('obThought').value || '').trim();
+    const chip = document.querySelector('#onboard .ob-chip.on');
+    try { localStorage.setItem(OB_INTAKE, JSON.stringify({ text, topic: chip ? chip.textContent.trim() : '' })); } catch (e) {}
+    obFlow = true;
+    obStep(3);
+  }
+  // step 3: two honest choices, free as easy as paid
+  function obPickPlan(p) {
+    obPlan = p;
+    document.querySelectorAll('#onboard .ob-plan').forEach(b => { const on = b.dataset.plan === p; b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false'); });
+    obEl('obPaidBtn').textContent = p === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly';
+  }
+  function obChooseFree() { obStep(4); }
+  async function obChoosePaid() {
+    obClearErr('obErr3');
+    if (!auth.signedIn) { obShowErr('obErr3', { message: 'Full access lives on an account, so it can follow you to every device. Free is all yours for now, and an account can come anytime.' }); return; }
+    obBusy('obPaidBtn', true, 'Opening checkout…');
+    obApplyIntake();
+    try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    const ok = await openFullAccess(obPlan);
+    if (!ok) { obBusy('obPaidBtn', false, obPlan === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly'); obShowErr('obErr3', { message: "Checkout didn't open just now. Nothing was charged. Free works in the meantime." }); }
+  }
+  // step 4: the thought becomes a room, and its first small step sits on today at this hour
+  function obApplyIntake() {
+    let intake = null; try { intake = JSON.parse(localStorage.getItem(OB_INTAKE) || 'null'); } catch (e) {}
+    if (!intake || (!intake.text && !intake.topic)) return null;
+    try { localStorage.removeItem(OB_INTAKE); } catch (e) {}
+    const text = intake.text || '';
+    const words = text.replace(/[.!?,;:]+/g, ' ').split(/\s+/).filter(Boolean);
+    const name = intake.topic || (words.slice(0, 4).join(' ').replace(/^\w/, c => c.toUpperCase())) || 'First room';
+    const step = text ? (text.length > 90 ? text.slice(0, 87).replace(/\s+\S*$/, '') + '…' : text) : '';
+    const room = { id: 'r' + Date.now(), name, one_liner: text || intake.topic, brief: text ? `First note: “${text}” The Brief grows from here.` : 'A room for this. The Brief grows from what you add.',
+      loops: step ? [{ text: step, resolved: false }] : [], log: text ? [{ source: 'typed', ts: Date.now(), text }] : [], link: null };
+    rooms.unshift(room);
+    if (step) {
+      const n = new Date(); const startH = Math.floor((n.getHours() + n.getMinutes() / 60) * 4) / 4;
+      const ev = { name: step, kind: 'block', room: room.id, start: startH, end: Math.min(24, startH + 0.5), point: true };
+      normalizeEvent(ev); dayList(today).push(ev);
+    }
+    save(); renderRoomList(); renderHomeReturn(); renderSideRooms(); renderCal();
+    return room;
+  }
+  let obHandoffT = null;
+  function obHandoff() {
+    const room = obApplyIntake();
+    const fn = (typeof userFirstName === 'function' && userFirstName()) || '';
+    if (obEl('obWelcomeHead')) obEl('obWelcomeHead').textContent = fn ? `Your space is ready, ${fn}.` : 'Your space is ready.';
+    if (obEl('obWelcomeSub')) obEl('obWelcomeSub').textContent = room ? `Made a room: ${room.name}. Opening your day…` : 'Opening your day…';
+    clearTimeout(obHandoffT); obHandoffT = setTimeout(obFinish, 1100);
+  }
   function obFinish() {
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     obFlow = false;
     hideOnboard();
-    try { if (typeof go === 'function') go('home'); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
+    try { if (typeof go === 'function') go('day'); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
   }
+  attachVoice(obEl('obMic'), obEl('obThought'), null);
+  // back from Stripe with the browser's Back button: the plan button is usable again
+  window.addEventListener('pageshow', () => { const b = obEl('obPaidBtn'); if (b && b.disabled) obBusy('obPaidBtn', false, obPlan === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly'); });
 
   // mynenemi.com (and www) is the landing page; the app lives on app.mynenemi.com.
   // Browser storage is per address, so anything saved on www rides along in the link the first time.
@@ -5050,7 +5105,7 @@
     const uat = (document.cookie.match(/(?:^|;)\s*__client_uat=([^;]*)/) || [])[1];
     const signedInHint = uat && Number(uat) > 0;
     if (signedInHint && obPriorUser()) return; // returning, signed-in user → no wall flash
-    showOnboard(signedInHint ? 3 : 1);
+    showOnboard(signedInHint ? 2 : 1);
   })();
   restore();
   renderCal();
