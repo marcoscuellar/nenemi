@@ -4061,7 +4061,7 @@
     const items = [
       planRow,
       `<div class="sep"></div>`,
-      `<div class="mi" onclick="showPhoneSetup(); toggleAcctMenu()">Put Nenemi on your phone<span class="k">install</span></div>`,
+      IN_APP_SHELL ? '' : `<div class="mi" onclick="showPhoneSetup(); toggleAcctMenu()">Put Nenemi on your phone<span class="k">install</span></div>`,
       `<div class="mi" onclick="exportRooms(); toggleAcctMenu()">Export my rooms<span class="k">json</span></div>`,
       `<div class="mi" onclick="showCalendarSync(); toggleAcctMenu()">Sync my calendar<span class="k">subscribe</span></div>`,
     ];
@@ -4069,8 +4069,20 @@
     if (auth.pk && !auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`);
     items.push(`<div class="mi" onclick="location.href='mailto:marcos@ollinos.com?subject=Nenemi'; toggleAcctMenu()">Reach out to us<span class="k">email</span></div>`);
     items.push(`<div class="mi" onclick="window.open('/privacy.html', '_blank'); toggleAcctMenu()">Privacy and terms</div>`);
-    if (auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="try { Clerk.openUserProfile(); } catch (e) {} toggleAcctMenu()">Manage account</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`);
+    if (auth.signedIn) items.push(`<div class="sep"></div>`, `<div class="mi" onclick="try { Clerk.openUserProfile(); } catch (e) {} toggleAcctMenu()">Manage account</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`, `<div class="mi danger" onclick="toggleAcctMenu(); deleteAccount()">Delete account</div>`);
     m.innerHTML = items.join('');
+  }
+  // Removes the account and everything synced to it (rooms, files, any subscription), then this device's copy.
+  async function deleteAccount() {
+    if (!auth.signedIn) return;
+    if (!confirm('Delete your account and everything in it?\n\nRooms, notes, and files go for good. This can’t be undone.')) return;
+    try {
+      const r = await fetch('/api/account', { method: 'DELETE', headers: await authHeaders() });
+      if (!r.ok) throw new Error(r.status);
+    } catch (e) { alert('That didn’t go through. Nothing was deleted.\n\nIf it keeps happening, marcos@ollinos.com can do it by hand.'); return; }
+    try { Object.keys(localStorage).filter(k => k.startsWith('nenemi')).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    try { await Clerk.signOut(); } catch (e) {}
+    location.reload();
   }
   function toggleAcctMenu(ev) { if (ev) ev.stopPropagation(); const m = document.getElementById('acctMenu'); if (!m) return; renderAcctMenu(); m.classList.toggle('open'); }
   document.addEventListener('click', (e) => { const m = document.getElementById('acctMenu'); if (m && m.classList.contains('open') && !m.contains(e.target)) m.classList.remove('open'); });
