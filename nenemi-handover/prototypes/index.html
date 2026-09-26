@@ -1035,8 +1035,8 @@
   .re-dock { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   #pane-roomview .re-btn { display: block; width: 100%; text-align: center; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 16px; border-radius: var(--radius-sm); text-transform: none; letter-spacing: 0; }
   #pane-roomview .re-btn:hover { background: #222524; }
-  .re-done { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--card); color: var(--ink); border: 1px solid var(--line2); border-radius: var(--radius-sm); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 15px; cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
-  .re-done:hover { border-color: var(--win); background: var(--win-soft); }
+  .re-done { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: rgba(14,190,130,0.05); color: var(--ink); border: 1px solid var(--win); border-radius: var(--radius-sm); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 15px; cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
+  .re-done:hover { background: rgba(14,190,130,0.12); }
   .re-done.won { background: var(--win); border-color: var(--win); color: #fff; }
   .ctx-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 16px; }
   .ctx-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 8px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: rgba(40,162,195,0.06); color: var(--link-ink); font-family: var(--font-body); font-weight: 600; font-size: 14px; text-decoration: none; }
@@ -1567,6 +1567,8 @@
   #pane-roomview .rv-action-btn { border-radius: var(--radius-sm); box-shadow: none; }
   .rv-status-label { font-family: var(--font-body); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--rl-teal); background: var(--rl-pale); padding: 9px 12px; border-radius: var(--radius-sm); }
   .rv-status-label::before { width: 7px; height: 7px; }
+  .rv-status-label.open { color: var(--link-ink); background: rgba(40,162,195,0.10); box-shadow: inset 0 0 0 1px rgba(40,162,195,0.35); }
+  .rv-status-label.open::before { background: var(--link); }
   .rv-capture-panel textarea { border-radius: var(--radius-sm); background: #fff; border-color: var(--line); }
   #pane-roomview .loop-check { border-radius: 50%; }
   #pane-roomview .loop-row.resolved .loop-check { background: var(--win); border-color: var(--win); }
@@ -1706,6 +1708,7 @@
     #pane-stuck .door::after { right: 20px; bottom: auto; top: 50%; margin-top: -5px; }
     /* room view: modular cards, dock stays side by side, big task shrinks a step */
     #pane-roomview .rv-body { gap: 12px; }
+    #pane-roomview { padding-bottom: calc(128px + var(--sab)); }
     #pane-roomview .re-next-text { font-size: 22px; }
     #pane-roomview .re-btn, .re-done { font-size: 15px; padding-left: 8px; padding-right: 8px; }
     .ctx-chip { font-size: 13.5px; }
@@ -2523,13 +2526,15 @@
   const roomIconSvg = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 7.5L8 2l6 5.5M3.5 6.5V13.5h9V6.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
   function ago(hours) { return Date.now() - hours * 3600e3; }
+  // the example room shows what a link chip looks like; seeded once, so clearing it keeps it cleared
+  const DEMO_LINK = { url: 'https://www.figma.com/', label: 'Figma' };
   const rooms = [
     {
       id: 'welcome', demo: true, name: 'How rooms work', one_liner: 'an example room — yours go next to it',
       brief: "A room holds one thing you're working on. The Brief is where you left off. Open loops are small next moves. Everything you say about it lands in the log below. Say anything on Home and NENEMI files it here or offers you a new room. Come back after a week and the card at the top tells you exactly where to pick up.",
       loops: [{ text: 'Say one messy thought on Home', resolved: false }, { text: 'Build a day from the Calendar', resolved: false }],
       log: [{ source: 'voice', ts: ago(1), text: 'This is what a note looks like. Voice notes land here too.' }],
-      link: null,
+      link: { ...DEMO_LINK }, linkSeeded: true,
     },
   ];
 
@@ -4129,6 +4134,7 @@
       const d = JSON.parse(raw);
       if (Array.isArray(d.rooms)) rooms.splice(0, rooms.length, ...d.rooms);
       rooms.forEach(r => { if (Array.isArray(r.log)) r.log = r.log.filter(e => !/^Stepped out of a focus session/.test(e.text || '')); });
+      rooms.forEach(r => { if (r.demo && !r.linkSeeded) { if (!r.link) r.link = { ...DEMO_LINK }; r.linkSeeded = true; } });
       if (d.events && typeof d.events === 'object') { Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events); }
       if (Array.isArray(d.carried)) carried = d.carried;
       loose = Array.isArray(d.loose) ? d.loose : [];

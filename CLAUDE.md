@@ -19,8 +19,8 @@ Before building or changing anything, ask: **does this hand them a crayon, or ma
 - Modular cards: crisp white cards on the `--ground` canvas (#F5F6F5), 1px `--line` border, 20px padding, 12px gaps between cards.
 - Corners: `--radius` (12px) for cards and containers, `--radius-sm` (8px) for buttons, chips, and inputs inside a card. Use the tokens, never a hardcoded radius. Older 3–4px corners elsewhere get moved to the tokens as each screen is touched.
 - Functional accents, each with one job and nowhere else:
-  - Context cyan `--link` #28A2C3 (text `--link-ink` #16708A for contrast): links out to the user's own work, like the room's link chip.
-  - Soft mint `--win` #0EBE82 (text `--win-ink`): completion only. "That's done.", checked loops, "Finished" lines in the log.
+  - Context cyan `--link` #28A2C3 (text `--link-ink` #16708A for contrast): links out to the user's own work (the room's link chip), and the room's "n still open" badge. The example room ships with a Figma link so the chip is visible on day one.
+  - Soft mint `--win` #0EBE82 (text `--win-ink`): completion only. "That's done." (mint border and 5% tint at rest, solid mint when tapped), checked loops, "Finished" lines in the log.
   - Brand teal #3C8692 stays the calm signal (cursor, live dot, section eyebrows). Maíz stays for returning, never completing.
 - "I'm stuck" is solid black. No red, coral, or orange anywhere, ever.
 - Dark sanctuary rule still holds: Stuck, Focus, and Friction are dark. Everything else is light for now.
