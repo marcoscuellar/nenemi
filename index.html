@@ -1790,6 +1790,7 @@
   .nx-text-button { border: 0; background: none; color: var(--slate); font-size: 12px; padding: 6px 2px; font-weight: 600; cursor: pointer; }
   .nx-text-button:hover { color: var(--ink); text-decoration: underline; }
   .nx-text-button[hidden] { display: none; }
+  .nx-recap-link { justify-self: start; padding: 0 2px; }
   .nx-columns { display: grid; grid-template-columns: minmax(0, 1.63fr) minmax(250px, 1fr); align-items: start; gap: 20px; }
   .nx-stack { display: grid; gap: 20px; min-width: 0; }
   .nx-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--nx-shadow); min-width: 0; }
@@ -2297,6 +2298,7 @@
               <div class="nx-eyebrow">Whenever you're ready</div>
               <p>Clearing a day removes its plan, not its work. You can always find an open step inside its room.</p>
             </section>
+            <button type="button" class="nx-text-button nx-recap-link" onclick="go('notes')">↗ Recap my day</button>
           </div>
         </div>
       </section>
