@@ -1653,6 +1653,18 @@
     /* every tab the same height, with room under the labels so Safari's toolbar never covers them */
     .tabbar { padding-bottom: calc(16px + var(--sab)); }
     .tab-stuck .stuck-tile { width: 22px; height: 22px; }
+    /* stuck screen: no white strip under the status bar, and the four doors as calm full-width rows */
+    body:has(.app.dark-pane), .app.dark-pane { background: #050506; }
+    #pane-stuck .doors { padding: 28px 20px 24px; }
+    #pane-stuck .doors-title { font-size: 40px; line-height: .95; }
+    #pane-stuck .doors-sub { font-size: 15px; margin-top: 10px; }
+    #pane-stuck .doors-mark { display: none; }
+    #pane-stuck .doors-grid { grid-template-columns: 1fr; gap: 10px; margin-top: 28px; }
+    #pane-stuck .door { display: grid; grid-template-columns: 26px 1fr; column-gap: 16px; align-items: center; min-height: 0; padding: 18px 44px 18px 18px; }
+    #pane-stuck .door-icon { grid-row: span 2; margin: 0; width: 22px; height: 22px; }
+    #pane-stuck .door-label { font-size: 18px; margin-bottom: 3px; }
+    #pane-stuck .door-sub { font-size: 14px; }
+    #pane-stuck .door::after { right: 20px; bottom: auto; top: 50%; margin-top: -5px; }
   }
 </style>
 </head>
