@@ -15,15 +15,20 @@ Before building or changing anything, ask: **does this hand them a crayon, or ma
 - **Dark sanctuary stays dark.** Stuck, Focus, and Friction screens are dark in both themes. No glare when someone is frozen.
 - **Humans heal.** Nenemi is the nudge, not the treatment. Point to real people; never pretend to be one.
 
-## Design standard (Sep 2026, pre-launch — this is the direction, not legacy)
-- Modular cards: crisp white cards on the `--ground` canvas (#F5F6F5), 1px `--line` border, 20px padding, 12px gaps between cards.
-- Corners: `--radius` (12px) for cards and containers, `--radius-sm` (8px) for buttons, chips, and inputs inside a card. Use the tokens, never a hardcoded radius. Older 3–4px corners elsewhere get moved to the tokens as each screen is touched.
-- Functional accents, each with one job and nowhere else:
-  - Context cyan `--link` #28A2C3 (text `--link-ink` #16708A for contrast): links out to the user's own work (the room's link chip), and the room's "n still open" badge. The example room ships with a Figma link so the chip is visible on day one.
-  - Soft mint `--win` #0EBE82 (text `--win-ink`): completion only. "That's done." (mint border and 5% tint at rest, solid mint when tapped), checked loops, "Finished" lines in the log.
-  - Brand teal #3C8692 stays the calm signal (cursor, live dot, section eyebrows). Maíz stays for returning, never completing.
-- "I'm stuck" is solid black. No red, coral, or orange anywhere, ever.
-- Dark sanctuary rule still holds: Stuck, Focus, and Friction are dark. Everything else is light for now.
+## Design standard (v4, Sep 2026, pre-launch — this is the direction, not legacy)
+Reference: the FacilityFlow modular SaaS dashboard look. It all lives in one CSS layer, `DESIGN SYSTEM v4`, placed last before the phone block in `index.html`. Change the system there, not in the older passes above it.
+- Canvas and cards: `--ground` #F5F6F5 behind every light screen. Cards are white, 1px `--line` #E5E7EB, `--card-shadow` (`0 1px 3px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.02)`), 20px padding, 12px gaps. A box inside a card is part of the card, not a second card.
+- Corners: `--radius` 12px for cards, containers, and sheets. `--radius-sm` 8px for buttons, chips, and inputs. `--pill` for navigation. Use the tokens, never a hardcoded radius.
+- Lines: hairlines only. No 3–4px black or teal rules.
+- Pill navigation: nav items, the day strip, and the room breadcrumb are capsules. The chosen day is an ink capsule. The room breadcrumb is a white capsule with an ink back button.
+- Functional color, each with its own jobs and nowhere else:
+  - Ink `--ink` #111312: headlines and primary actions (Start Focus, Write, Update room).
+  - Cyan `--link` #28A2C3 (text `--link-ink` #16708A): links out to the user's work (room link chip), the active nav tab, category indicators (room dots), and the "n still open" badge. The example room ships with a Figma link so the chip shows on day one.
+  - Mint `--win` #0EBE82 (text `--win-ink`): completion and today. "That's done." (mint border and 5% tint at rest, solid when tapped), the "caught up" badge, checked loops and checklist items, "Finished" log lines, today's date in the day strip.
+  - Brand teal stays on section eyebrows. Maíz stays for returning, never completing.
+- "I'm stuck" is solid black. No red, coral, or orange anywhere, ever, including priority or overdue markers the reference uses.
+- Phone: every scrolling screen keeps 100px between its last item and the tab dock (`padding-bottom: calc(178px + var(--sab))`, since the dock is 78px).
+- Dark sanctuary still holds: Stuck, Human support, Focus, and Friction are dark in both themes.
 
 ## Voice
 - Warm, short, specific. One sentence per line. Proper capitalization and punctuation. No exclamation marks.

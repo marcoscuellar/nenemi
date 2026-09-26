@@ -1664,6 +1664,81 @@
     .app { width: calc(100% - 56px); max-width: 1500px; height: calc(100dvh - 56px); margin: 28px auto; border: 1px solid #d9dad6; border-radius: 12px; box-shadow: 0 18px 45px rgba(15,18,16,.07); transform: translateZ(0); }
   }
 
+  /* ===================== DESIGN SYSTEM v4 (Sep 2026) =====================
+     Modular white cards on the ground, 12px corners, ambient shadow, pill navigation,
+     functional color: cyan = context/active/category, mint = completion, ink = headlines + primary actions.
+     One layer, placed last before phone so it wins over the older passes above. See CLAUDE.md. */
+  :root {
+    --ink: #111312; --ink-2: #111312; --btn: #111312; --rl-black: #111312;
+    --line: #E5E7EB; --line2: #D9DCE1;
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+    --card-shadow-hover: 0 2px 6px rgba(0,0,0,0.05), 0 10px 24px rgba(0,0,0,0.04);
+    --pill: 999px;
+    --link-tint: rgba(40,162,195,0.12);
+  }
+  .app, #pane-home, #pane-rooms, #pane-calendar, #pane-notes, #pane-roomview { background: var(--ground); }
+
+  /* cards */
+  .composer-pill, .room-card, .rgp-card, .rgp-more, .cal-checklist, .agenda, .nt-card, .notes-box,
+  .rv-card, #pane-roomview .toggle-row, .rv-capture-panel {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--card-shadow);
+  }
+  .room-card:hover, .rgp-card:hover, #pane-roomview .toggle-row:hover { transform: none; border-color: var(--line2); box-shadow: var(--card-shadow-hover); }
+  .app:not(.talking) .home-side .hr-empty { border-radius: var(--radius); border-color: var(--line2); background: rgba(255,255,255,0.5); }
+  .sheet { border-radius: var(--radius); border-color: var(--line); }
+  .cl-close { border-radius: var(--radius); background: var(--ink); }
+  /* the first room card is a card like the others; recency shows in the order, not in black */
+  .room-grid > .room-card:first-child, .rgp-card:first-child { background: var(--card); border-color: var(--line); color: var(--ink); }
+  .room-grid > .room-card:first-child .rc-name, .rgp-card:first-child .rgp-name { color: var(--ink); }
+  .room-grid > .room-card:first-child .rc-icon { color: var(--ink); background: var(--rl-pale); border: 0; }
+  .room-grid > .room-card:first-child .rc-oneliner, .room-grid > .room-card:first-child .rc-quiet, .rgp-card:first-child .rgp-meta { color: var(--muted); }
+  .room-grid > .room-card:first-child .rc-chev { color: var(--faint); }
+  .rc-icon, .rc-icon.nr { border-radius: var(--radius-sm); }
+  /* day: the agenda is a card, rows are hairlines */
+  .agenda { padding: 2px 20px; }
+  .agenda > :last-child { border-bottom: 0; }
+  /* a writing box inside a card is part of the card, not a second card */
+  .nt-card .notes-box { border: 0; box-shadow: none; padding: 0; background: none; }
+
+  /* hairlines, not heavy rules */
+  .section-row, .nt-earlier-h { border-top: 1px solid var(--line); }
+  .cl-title { border-bottom: 1px solid var(--line); }
+  .cl-add { border: 1px solid var(--line); background: var(--card); }
+  .where-card { border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--card-shadow); background: var(--card); }
+
+  /* buttons and inputs inside cards */
+  .cap-btn, .cl-add-btn, .cl-close-btn, .nt-hold, .carry-btn, #pane-roomview .re-btn, .rv-capture-panel .dp-btn, .re-done { border-radius: var(--radius-sm); }
+  .cl-add, .rv-capture-panel textarea, .sheet input, .sheet select, .sheet-input, .sheet-link, .sheet-notes { border-radius: var(--radius-sm); }
+
+  /* pill navigation: capsules, the active one high-contrast */
+  .week-strip { background: var(--card); border: 1px solid var(--line); border-radius: var(--pill); padding: 5px; box-shadow: var(--card-shadow); }
+  .ws-day { border-radius: var(--pill); padding: 8px 0 9px; }
+  .ws-day.sel { background: var(--ink); box-shadow: none; }
+  .ws-day .ws-num { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; border-radius: 50%; }
+  .ws-day:has(.ws-dot) .ws-num { background: var(--win); color: #fff; }
+  .ws-dot { display: none; }
+  .rv-topline { width: fit-content; max-width: 100%; box-sizing: border-box; gap: 10px; padding: 4px 16px 4px 4px; background: var(--card); border: 1px solid var(--line); border-radius: var(--pill); box-shadow: var(--card-shadow); }
+  .rv-topline .rv-back { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; border: 0; }
+  .rv-topline .rv-back svg { width: 16px; height: 16px; }
+  .rv-crumb-link { color: var(--ink); font-weight: 600; }
+
+  /* functional color */
+  .rc-dot { background: var(--link); }
+  .side-room .sr-dot { background: var(--link-tint); color: var(--link-ink); }
+  .rv-status-label { border-radius: var(--pill); }
+  .rv-status-label:not(.open) { color: var(--win-ink); background: var(--win-soft); box-shadow: inset 0 0 0 1px rgba(14,190,130,0.35); }
+  .rv-status-label:not(.open)::before { background: var(--win); }
+  .cl-row.done .cl-check { background: var(--win); border-color: var(--win); }
+
+  @media (min-width: 900px) {
+    .tab { border-radius: var(--pill); }
+    .tab.active { background: var(--link-tint); box-shadow: none; }
+    .tab.active .tab-ic, .tab.active .tab-lb { color: var(--link-ink); }
+    .tab-stuck, .app.dark-pane .tab-stuck { border-radius: var(--pill); }
+    .tab-stuck:hover, .tab-stuck.active, .app.dark-pane .tab-stuck.active { background: #26292A; box-shadow: none; }
+    .side-room { border-radius: var(--pill); }
+  }
+
   /* phone (kept last so it wins) */
   @media (max-width: 720px) {
     body { background: #fff; }
@@ -1673,8 +1748,8 @@
     .app.dark-pane .tabbar { background: #131315; border-top-color: #26262A; }
     .tab { border-radius: 3px; }
     .tab .tab-lb { font-size: 10px; }
-    .tab.active:not(.tab-stuck) { background: var(--rl-pale); box-shadow: inset 0 3px 0 var(--rl-teal); }
-    .tab.active:not(.tab-stuck) .tab-ic, .tab.active:not(.tab-stuck) .tab-lb { color: #174f55; }
+    .tab.active:not(.tab-stuck) { background: var(--link-tint); box-shadow: inset 0 3px 0 var(--link); }
+    .tab.active:not(.tab-stuck) .tab-ic, .tab.active:not(.tab-stuck) .tab-lb { color: var(--link-ink); }
     .app.dark-pane .tab.active:not(.tab-stuck) { background: rgba(255,255,255,0.08); box-shadow: inset 0 3px 0 #8ac7be; }
     .app.dark-pane .tab.active:not(.tab-stuck) .tab-ic, .app.dark-pane .tab.active:not(.tab-stuck) .tab-lb { color: #F4F1EA; }
     .tab-stuck, .tab-stuck.active, .app.dark-pane .tab-stuck { background: var(--rl-black); border-radius: 12px; }
@@ -1708,7 +1783,10 @@
     #pane-stuck .door::after { right: 20px; bottom: auto; top: 50%; margin-top: -5px; }
     /* room view: modular cards, dock stays side by side, big task shrinks a step */
     #pane-roomview .rv-body { gap: 12px; }
-    #pane-roomview { padding-bottom: calc(128px + var(--sab)); }
+    /* v4: 100px of air between the last thing on any scrolling screen and the tab dock (78px tall) */
+    #pane-roomview, #pane-rooms, #pane-calendar, #pane-notes, #pane-humans { padding-bottom: calc(178px + var(--sab)); }
+    .tab { border-radius: var(--radius-sm); }
+    .agenda { padding: 2px 14px; }
     #pane-roomview .re-next-text { font-size: 22px; }
     #pane-roomview .re-btn, .re-done { font-size: 15px; padding-left: 8px; padding-right: 8px; }
     .ctx-chip { font-size: 13.5px; }
