@@ -1700,6 +1700,36 @@
   /* a writing box inside a card is part of the card, not a second card */
   .nt-card .notes-box { border: 0; box-shadow: none; padding: 0; background: none; }
 
+  /* type: refined titles, executive task text */
+  #pane-calendar .cal-title, #pane-roomview .rv-name, #pane-rooms .hub-title, #pane-notes .hub-title, .nt-title {
+    font-family: var(--font-body); font-weight: 700; font-size: 28px; line-height: 1.2; letter-spacing: -0.015em; text-transform: none; margin: 0 0 6px;
+  }
+  #pane-calendar .cal-date { font-family: var(--font-body); font-weight: 500; font-size: 15px; line-height: 1.4; letter-spacing: 0; color: var(--muted); margin-top: 0; }
+  #pane-calendar .cal-subhead { font-size: 14px; }
+  #pane-roomview .rv-icon { width: 44px; height: 44px; font-size: 26px; }
+  #pane-roomview .rv-icon svg { width: 36px; height: 36px; }
+  #pane-roomview .re-next-text { font-family: var(--font-body); font-weight: 600; font-size: 20px; line-height: 1.35; letter-spacing: -0.01em; }
+  .ag-title { font-family: var(--font-body); font-weight: 600; font-size: 15px; letter-spacing: -0.005em; }
+  .ag-desc { font-size: 13px; color: var(--muted); }
+  .ag-time { font-family: var(--font-body); font-weight: 500; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+  .ag-tag, .ag-tag.passed, .ag-tag.fixed, .ag-tag.room { font-family: var(--font-body); font-weight: 600; font-size: 12px; letter-spacing: 0; text-transform: none; color: var(--muted); background: var(--surface); border: 0; border-left: 0; border-radius: var(--pill); padding: 4px 10px; }
+  .ag-tag.done { background: var(--win-soft); color: var(--win-ink); }
+  .cal-blocks-count { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--muted); }
+
+  /* day: the offer from yesterday, and Clear Day */
+  .carry-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--card-shadow); padding: 20px; margin-bottom: 20px; }
+  .carry-q { font-family: var(--font-body); font-weight: 600; font-size: 16px; line-height: 1.4; color: var(--ink); }
+  .carry-names { font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.45; }
+  .carry-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .carry-go, .carry-rest { font-family: var(--font-body); font-weight: 700; font-size: 14.5px; padding: 11px 18px; border-radius: var(--radius-sm); cursor: pointer; }
+  .carry-go { background: var(--ink); color: #fff; border: 1px solid var(--ink); }
+  .carry-rest { background: var(--card); color: var(--ink); border: 1px solid var(--line2); }
+  .carry-rest:hover { border-color: var(--ink); }
+  .day-tools { display: flex; justify-content: flex-end; margin: 0 0 10px; }
+  .day-tools:has(.clear-day[hidden]) { display: none; }
+  .clear-day { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--ink); background: var(--card); border: 1px solid var(--line2); border-radius: var(--pill); padding: 6px 14px; cursor: pointer; }
+  .clear-day:hover { border-color: var(--ink); }
+
   /* hairlines, not heavy rules */
   .section-row, .nt-earlier-h { border-top: 1px solid var(--line); }
   .cl-title { border-bottom: 1px solid var(--line); }
@@ -1784,10 +1814,12 @@
     /* room view: modular cards, dock stays side by side, big task shrinks a step */
     #pane-roomview .rv-body { gap: 12px; }
     /* v4: 100px of air between the last thing on any scrolling screen and the tab dock (78px tall) */
-    #pane-roomview, #pane-rooms, #pane-calendar, #pane-notes, #pane-humans { padding-bottom: calc(178px + var(--sab)); }
+    #pane-rooms, #pane-notes, #pane-humans { padding-bottom: calc(178px + var(--sab)); }
+    #pane-roomview, .rv-container, #pane-calendar { padding-bottom: 120px !important; }
+    #pane-calendar .cal-title, #pane-roomview .rv-name, #pane-rooms .hub-title, #pane-notes .hub-title, .nt-title { font-size: 26px; line-height: 1.2; margin-top: 0; }
+    #pane-roomview .re-next-text { font-size: 19px; }
     .tab { border-radius: var(--radius-sm); }
     .agenda { padding: 2px 14px; }
-    #pane-roomview .re-next-text { font-size: 22px; }
     #pane-roomview .re-btn, .re-done { font-size: 15px; padding-left: 8px; padding-right: 8px; }
     .ctx-chip { font-size: 13.5px; }
     /* focus: step away sits above the tab bar, not under it */
@@ -2085,6 +2117,14 @@
       </div>
       <div class="cal-body">
         <div class="cal-inner">
+          <div class="carry-card" id="carryPrompt" hidden>
+            <div class="carry-q">Want to bring over what's still open from yesterday? No pressure, no judgment.</div>
+            <div class="carry-names" id="carryNames"></div>
+            <div class="carry-actions">
+              <button type="button" class="carry-go" onclick="bringOver()">Bring them over</button>
+              <button type="button" class="carry-rest" onclick="letRest()">Let them rest for now</button>
+            </div>
+          </div>
           <div class="cal-head">
             <div class="cal-eyebrow">Today only</div>
             <div class="cal-title">My day</div>
@@ -2122,6 +2162,7 @@
                 </div>
                 <div class="cal-blocks-count" id="calCount">0 BLOCKS</div>
               </div>
+              <div class="day-tools"><button type="button" class="clear-day" id="clearDayBtn" onclick="clearDay()">Clear Day</button></div>
               <div class="agenda" id="agenda"></div>
               <div class="day-entry" onclick="addToToday()">
                 <span class="de-ic"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg></span>
@@ -3723,23 +3764,15 @@
   const today = new Date();
   let selectedDay = new Date(today);
   const events = {}; // key: yyyy-mm-dd -> [{start, end, name, kind}]  kind: 'block' | 'fixed' | 'buffer'
-  let carried = [ { name: 'Confirm Q3 estimate amount' }, { name: 'Send invite text to siblings' } ];
+  let carried = [];
   let loose = []; // thoughts you chose not to put in a room yet
   let notes = {}; // yyyy-mm-dd -> what they wrote about that day. theirs only.
   let checklist = []; // one ongoing to-do list on My Day: [{ id, text, done }]
   function dkey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   function dayList(d) { const k = dkey(d); return events[k] || (events[k] = []); }
-  (function seed() {
-    events[dkey(today)] = [
-      { start: 9, end: 9 + 40/60, name: 'Finish proposal opener', kind: 'block' },
-      { start: 11, end: 11.75, name: 'Team call', kind: 'fixed' },
-      { start: 12.25, end: 13, name: 'Lunch + leave the desk', kind: 'buffer' },
-      { start: 14, end: 15, name: 'Client meeting', kind: 'fixed' },
-      { start: 16, end: 16 + 35/60, name: 'Send follow-ups', kind: 'block' },
-    ];
-    const tm = new Date(today); tm.setDate(tm.getDate()+1);
-    events[dkey(tm)] = [ { start: 10, end: 11, name: 'Taxes — reconcile 1099s', kind: 'fixed' } ];
-  })();
+  // no sample events: a day starts empty. these are the old samples, removed from saved days too.
+  const OLD_SEED = new Set(['9|Finish proposal opener', '11|Team call', '12.25|Lunch + leave the desk', '14|Client meeting', '16|Send follow-ups', '10|Taxes — reconcile 1099s']);
+  const OLD_CARRIED = new Set(['Confirm Q3 estimate amount', 'Send invite text to siblings']);
   function fmtClock(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); return `${((hr + 11) % 12) + 1}:${String(m).padStart(2,'0')}`; }
   function fmtAmPm(h) { const hr = Math.floor(h), m = Math.round((h - hr) * 60); const ap = hr >= 12 ? 'pm' : 'am'; const h12 = ((hr + 11) % 12) + 1; return m ? `${h12}:${String(m).padStart(2,'0')}${ap}` : `${h12}${ap}`; }
   function fmtHourLabel(h) { return `${((h + 11) % 12) + 1} ${h >= 12 ? 'PM' : 'AM'}`; }
@@ -3787,7 +3820,7 @@
     const el = document.getElementById('agenda');
     if (!list.length) {
       el.innerHTML = `<div class="ag-empty">${isToday ? 'Nothing on the day yet. Dump it on the left, or add one block.' : 'Nothing here yet.'}</div>`;
-      renderRollover(); renderCalSummary(); renderChecklist(); return;
+      renderRollover(); renderCarryPrompt(); renderCalSummary(); renderChecklist(); return;
     }
     let html = '', nowShown = false;
     list.forEach(e => {
@@ -3818,6 +3851,7 @@
     });
     el.innerHTML = html;
     renderRollover();
+    renderCarryPrompt();
     renderCalSummary();
     renderChecklist();
   }
@@ -4007,6 +4041,32 @@
     dayList(selectedDay).splice(editing, 1); save(); renderCal(); closeEvent();
   }
   document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!document.getElementById('evtSheet').hidden) closeEvent(); if (!document.getElementById('syncSheet').hidden) closeSyncSheet(); });
+
+  // ---------- from yesterday: one quiet offer at the top of the day ----------
+  const REST_KEY = 'nenemi.restedOn';
+  function openFromYesterday() {
+    const y = new Date(today); y.setDate(y.getDate() - 1);
+    const fromDay = (events[dkey(y)] || []).filter(e => e.kind === 'block' && !e.done && !e.broughtOver).map(e => ({ name: e.name, dur: Math.max(0.25, e.end - e.start), src: e }));
+    return [...fromDay, ...carried.map(c => ({ name: c.name, dur: 0.5 }))];
+  }
+  function renderCarryPrompt() {
+    const box = document.getElementById('carryPrompt'); if (!box) return;
+    let rested = null; try { rested = localStorage.getItem(REST_KEY); } catch (e) {}
+    const items = openFromYesterday();
+    const show = items.length > 0 && rested !== dkey(today) && dkey(selectedDay) === dkey(today);
+    box.hidden = !show;
+    if (show) document.getElementById('carryNames').textContent = items.map(i => i.name).join(' · ');
+    const clr = document.getElementById('clearDayBtn'); if (clr) clr.hidden = !dayList(selectedDay).length;
+  }
+  function bringOver() {
+    const items = openFromYesterday(); if (!items.length) return;
+    selectedDay = new Date(today);
+    const list = dayList(today);
+    items.forEach(i => { const t = nextFreeSlot(list, i.dur); if (t !== null) list.push({ start: t, end: t + i.dur, name: i.name, kind: 'block' }); if (i.src) i.src.broughtOver = true; });
+    carried = []; save(); renderCal();
+  }
+  function letRest() { try { localStorage.setItem(REST_KEY, dkey(today)); } catch (e) {} renderCarryPrompt(); }
+  function clearDay() { events[dkey(selectedDay)] = []; save(); renderCal(); }
 
   // ---------- zero-shame rollover ----------
   function renderRollover() {
@@ -4214,7 +4274,8 @@
       rooms.forEach(r => { if (Array.isArray(r.log)) r.log = r.log.filter(e => !/^Stepped out of a focus session/.test(e.text || '')); });
       rooms.forEach(r => { if (r.demo && !r.linkSeeded) { if (!r.link) r.link = { ...DEMO_LINK }; r.linkSeeded = true; } });
       if (d.events && typeof d.events === 'object') { Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events); }
-      if (Array.isArray(d.carried)) carried = d.carried;
+      Object.keys(events).forEach(k => { if (Array.isArray(events[k])) events[k] = events[k].filter(e => !OLD_SEED.has(`${e.start}|${e.name}`)); });
+      if (Array.isArray(d.carried)) carried = d.carried.filter(c => !OLD_CARRIED.has(c.name));
       loose = Array.isArray(d.loose) ? d.loose : [];
       notes = d.notes && typeof d.notes === 'object' ? d.notes : {};
       checklist = Array.isArray(d.checklist) ? d.checklist : [];

@@ -27,7 +27,9 @@ Reference: the FacilityFlow modular SaaS dashboard look. It all lives in one CSS
   - Mint `--win` #0EBE82 (text `--win-ink`): completion and today. "That's done." (mint border and 5% tint at rest, solid when tapped), the "caught up" badge, checked loops and checklist items, "Finished" log lines, today's date in the day strip.
   - Brand teal stays on section eyebrows. Maíz stays for returning, never completing.
 - "I'm stuck" is solid black. No red, coral, or orange anywhere, ever, including priority or overdue markers the reference uses.
-- Phone: every scrolling screen keeps 100px between its last item and the tab dock (`padding-bottom: calc(178px + var(--sab))`, since the dock is 78px).
+- Phone clearance: `#pane-roomview`, `.rv-container`, and `#pane-calendar` use `padding-bottom: 120px !important` (Marcos's call). Rooms, Notes, and Human support keep `calc(178px + var(--sab))`.
+- Type: page titles (My day, Rooms, room names, Close the day) are Archivo 700 at 28px (26px on phone), line-height 1.2, tracking -0.015em. No giant brutalist headlines. Task text is 15px/600 in the day list and 20px/600 for a room's next move.
+- Day view starts empty. No sample events. The top offers "Want to bring over what's still open from yesterday? No pressure, no judgment." with Bring them over / Let them rest for now (rest hides it for today and keeps the items). Clear Day empties the chosen day in one tap.
 - Dark sanctuary still holds: Stuck, Human support, Focus, and Friction are dark in both themes.
 
 ## Voice
