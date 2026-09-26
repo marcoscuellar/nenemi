@@ -1816,7 +1816,7 @@
   .nx-horizon-list { display: grid; gap: 0; }
   .nx-task-row { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 14px 0; border-top: 1px solid #EFF1F1; }
   .nx-task-row:first-child { border-top: 0; padding-top: 2px; }
-  .nx-task-check { width: 20px; height: 20px; border-radius: 6px; border: 1px solid #CED5D6; background: #fff; margin-top: 2px; display: grid; place-items: center; color: #fff; padding: 0; cursor: pointer; flex: none; }
+  .nx-task-check { width: 20px; height: 20px; border-radius: 50%; border: 1px solid #CED5D6; background: #fff; margin-top: 2px; display: grid; place-items: center; color: #fff; padding: 0; cursor: pointer; flex: none; }
   .nx-task-check:hover { border-color: var(--mint); }
   .nx-task-check.completed { background: var(--mint); border-color: var(--mint); }
   .nx-task-check svg { width: 12px; height: 12px; }
@@ -1874,6 +1874,30 @@
   .nx-room-item { display: grid; grid-template-columns: 24px minmax(0,1fr) auto; gap: 8px; align-items: center; padding: 9px 0; border-top: 1px solid #EFF1F1; font-size: 12px; }
   .nx-room-item:first-child { border: 0; padding-top: 0; }
   .nx-room-item .nx-task-check { width: 18px; height: 18px; margin: 0; }
+  /* timed schedule */
+  .nx-slot + .nx-slot { margin-top: 18px; }
+  .nx-slot-head { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8A9296; padding-bottom: 8px; border-bottom: 1px solid #EFF1F1; }
+  .nx-slot .nx-task-row:first-child { border-top: 0; padding-top: 12px; }
+  .nx-task-row { align-items: center; }
+  .nx-task-row .nx-task-check { margin-top: 0; }
+  .nx-task-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .nx-task-sub { font-size: 12px; color: #6B7280; margin-top: 3px; }
+  .nx-dot { margin: 0 7px; color: #B6BDC0; }
+  .nx-time { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .nx-task-row.now { margin: 0 -12px; padding-left: 12px; padding-right: 12px; background: var(--cyan-wash); border-radius: 8px; box-shadow: inset 3px 0 0 var(--cyan); border-top-color: transparent; }
+  .nx-task-row.now + .nx-task-row { border-top-color: transparent; }
+  .nx-now { display: inline-block; margin-left: 8px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; color: #137F9D; background: #fff; border: 1px solid #CEECF2; border-radius: 99px; padding: 2px 7px; vertical-align: 2px; }
+  .nx-task-right { display: flex; align-items: center; gap: 8px; }
+  .nx-bump { border: 1px solid var(--line); background: #fff; color: #6B7280; border-radius: 99px; padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .nx-bump:hover { border-color: var(--cyan); color: #137F9D; }
+  .nx-row-link { display: inline-flex; align-items: center; gap: 4px; border: 1px solid #CBEAF0; background: var(--cyan-wash); color: #117D9B; border-radius: 8px; padding: 5px 9px; font-size: 11px; font-weight: 650; text-decoration: none; white-space: nowrap; }
+  .nx-row-jump { border: 0; background: none; color: #9AA3A6; font-size: 20px; line-height: 1; padding: 2px 6px; cursor: pointer; }
+  .nx-row-jump:hover { color: var(--ink); }
+  .nx-task-row.is-done .nx-task-sub { color: #9AA3A6; }
+  .nx-time-field { display: flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; min-height: 40px; padding: 0 4px 0 10px; }
+  .nx-time-field span { font-size: 11px; color: #8A9296; font-weight: 600; }
+  .nx-view .nx-time-field input { border: 0; min-height: 36px; padding: 0 4px; font-size: 13px; color: var(--ink); background: none; width: 104px; }
+  .nx-time-field:has(input:disabled) { opacity: 0.55; }
   .nx-loop-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nx-state { color: #94A09C; font-size: 11px; white-space: nowrap; }
   .nx-room-add { display: flex; gap: 8px; margin-top: 14px; }
@@ -1948,7 +1972,11 @@
     .nx-view-header { align-items: flex-start; }
     .nx-quick-add { flex-wrap: wrap; }
     .nx-quick-add input { flex: 1 1 100%; }
-    .nx-quick-add select { flex: 1; max-width: none; }
+    .nx-quick-add select { flex: 1 1 100%; max-width: none; }
+    .nx-time-field { flex: 1 1 0; }
+    .nx-quick-add .nx-button { flex: 1 1 100%; }
+    .nx-view .nx-time-field input { width: 100%; min-width: 0; }
+    .nx-task-row.now { margin: 0 -10px; padding-left: 10px; padding-right: 10px; }
     .nx-url-editor input { min-width: 0; flex: 1 1 100%; }
     .nx-context-row { flex-wrap: wrap; }
     #pane-calendar .cal-title, #pane-roomview .rv-name, #pane-rooms .hub-title, #pane-notes .hub-title, .nt-title { font-size: 26px; line-height: 1.2; margin-top: 0; }
@@ -2281,6 +2309,8 @@
               <form id="nxDayAdd" class="nx-quick-add" onsubmit="event.preventDefault(); nxAddToday();">
                 <input id="nxDayInput" type="text" required maxlength="160" placeholder="Add something for today" autocomplete="off">
                 <select id="nxDayRoom" aria-label="Choose a room"></select>
+                <label class="nx-time-field"><span>Start</span><input id="nxDayStart" type="time" aria-label="Start time, optional" oninput="document.getElementById('nxDayEnd').disabled = !this.value; if (!this.value) document.getElementById('nxDayEnd').value = '';"></label>
+                <label class="nx-time-field"><span>End</span><input id="nxDayEnd" type="time" aria-label="End time, optional" disabled></label>
                 <button class="nx-button dark" type="submit">Add</button>
               </form>
             </section>
@@ -3070,7 +3100,7 @@
     const undone = list.find(e => !e.done);
     if (!undone) { el.hidden = true; el.innerHTML = ''; return; }
     const i = dayList(today).indexOf(undone);
-    const desc = `${fmtClockCaps(undone.start)} · ${kindLabel(undone.kind)} · ${Math.round((undone.end - undone.start) * 60)} min`;
+    const desc = undone.anytime ? 'Anytime today' : `${fmtClockCaps(undone.start)} · ${kindLabel(undone.kind)} · ${Math.round((undone.end - undone.start) * 60)} min`;
     el.hidden = false;
     el.innerHTML = `
       <div class="nt-card-h">One thing still needs a home</div>
@@ -3810,7 +3840,7 @@
   // door 4: what didn't happen earlier today slides into the next white space. No red, just math.
   function slideForward() {
     const list = dayList(today), nowH = today.getHours() + today.getMinutes() / 60;
-    const missed = list.filter(e => e.kind === 'block' && e.end <= nowH);
+    const missed = list.filter(e => e.kind === 'block' && !e.anytime && e.end <= nowH);
     if (!missed.length) return 'Nothing slipped. Pick up where you were.';
     missed.forEach(e => { const i = list.indexOf(e); if (i >= 0) list.splice(i, 1); });
     let tomorrow = 0;
@@ -3946,12 +3976,40 @@
     if (sc) { sc.scrollIntoView({ behavior: 'smooth', block: 'center' }); const t = document.getElementById('calDump'); if (t) setTimeout(() => t.focus(), 300); }
   }
   // My day: today's horizon. No week strip, no calendar grid. One list, one add, one gentle offer.
+  // ---------- My day as a timed schedule: morning, afternoon, evening, then anytime ----------
+  // an event keeps start/end in hours (the rest of the app reads those) plus `time` as the person wrote it:
+  // "09:00 - 10:30" for a range, "14:00" for a point, or no time at all (anytime: true).
+  function hhmm(h) { const m = Math.round(h * 60); return `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; }
+  function parseHHMM(v) { const m = String(v || '').match(/^(\d{1,2}):(\d{2})$/); return m ? (+m[1]) + (+m[2]) / 60 : null; }
+  function eventTimeString(e) { return e.anytime ? '' : (e.point ? hhmm(e.start) : `${hhmm(e.start)} - ${hhmm(e.end)}`); }
+  function normalizeEvent(e) {
+    if (e.time && typeof e.start !== 'number') {
+      const [a, b] = String(e.time).split('-').map(x => parseHHMM(x.trim()));
+      if (a !== null) { e.start = a; e.end = b !== null && b > a ? b : a + 0.5; e.point = !(b !== null && b > a); }
+    }
+    if (typeof e.start !== 'number') { e.anytime = true; e.start = 0; e.end = 0; }
+    if (!e.anytime) e.time = eventTimeString(e);
+    return e;
+  }
+  function fmtRange(e) {
+    const t = (h) => { const hr = Math.floor(h) % 24, m = Math.round((h - Math.floor(h)) * 60); return { txt: `${((hr + 11) % 12) + 1}:${String(m).padStart(2, '0')}`, ap: hr >= 12 ? 'PM' : 'AM' }; };
+    const a = t(e.start); if (e.point) return `${a.txt} ${a.ap}`;
+    const b = t(e.end); return a.ap === b.ap ? `${a.txt} – ${b.txt} ${b.ap}` : `${a.txt} ${a.ap} – ${b.txt} ${b.ap}`;
+  }
+  function nowHours() { const n = new Date(); return n.getHours() + n.getMinutes() / 60; }
+  const SLOTS = [
+    { key: 'morning', label: 'Morning', test: e => !e.anytime && e.start < 12 },
+    { key: 'afternoon', label: 'Afternoon', test: e => !e.anytime && e.start >= 12 && e.start < 17 },
+    { key: 'evening', label: 'Evening', test: e => !e.anytime && e.start >= 17 },
+    { key: 'anytime', label: 'Anytime today', test: e => e.anytime },
+  ];
   function renderCal() {
     selectedDay = new Date(today);
     const crumb = document.getElementById('nxDateCrumb');
     if (crumb) crumb.textContent = today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
-    const all = dayList(today).slice().sort((a, b) => a.start - b.start);
-    const open = all.filter(e => !e.done), done = all.filter(e => e.done);
+    const list = dayList(today); list.forEach(normalizeEvent);
+    const all = list.slice().sort((a, b) => (a.anytime - b.anytime) || (a.start - b.start));
+    const open = all.filter(e => !e.done);
     const mark = document.getElementById('nxHorizonCount'); if (mark) mark.textContent = open.length ? `${open.length} OPEN` : 'OPEN SPACE';
     const sT = document.getElementById('nxSummaryToday'); if (sT) sT.textContent = open.length ? `${open.length} in view` : 'Clear';
     const waiting = rooms.filter(r => !r.archived).reduce((n, r) => n + r.loops.filter(l => !l.resolved).length, 0);
@@ -3963,28 +4021,56 @@
       if (!all.length) {
         el.innerHTML = `<div class="nx-empty"><div class="nx-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18"/></svg></div><h2>Your day is clear. Room to move.</h2><p>One step is enough to start.</p></div>`;
       } else {
-        el.innerHTML = '<div class="nx-horizon-list">' + [...open, ...done].map(e => {
-          const i = dayList(today).indexOf(e);
+        const nowH = nowHours();
+        const row = (e) => {
+          const i = list.indexOf(e);
           const room = e.room ? rooms.find(r => r.id === e.room) : null;
-          const sub = e.done ? 'A small win, right here.' : (e.kind === 'fixed' ? `${fmtAmPm(e.start)} – ${fmtAmPm(e.end)}` : 'One step is enough.');
-          return `<div class="nx-task-row">
+          const isNow = !e.done && !e.anytime && e.start <= nowH && nowH < e.end;
+          const slipped = !e.done && !e.anytime && e.start <= nowH;
+          const sub = [room ? escapeHtml(room.name) : '', e.anytime ? '' : `<span class="nx-time">${fmtRange(e)}</span>`].filter(Boolean).join('<span class="nx-dot">•</span>') || 'Anytime';
+          const link = room && room.link && room.link.url ? cleanLinkUrl(room.link.url) : null;
+          const right = [
+            slipped ? `<button type="button" class="nx-bump" onclick="bumpEvent(${i})" aria-label="Move 30 minutes later">+30m</button>` : '',
+            link ? `<a class="nx-row-link" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" title="Open ${escapeHtml(linkLabel(link))}">↗ ${escapeHtml(linkLabel(link))}</a>`
+                 : room ? `<button type="button" class="nx-row-jump" onclick="openRoom('${room.id}')" aria-label="Open ${escapeHtml(room.name)}">›</button>` : '',
+          ].join('');
+          return `<div class="nx-task-row${isNow ? ' now' : ''}${e.done ? ' is-done' : ''}">
             <button type="button" class="nx-task-check${e.done ? ' completed' : ''}" onclick="nxToggleEvent(${i})" aria-label="${e.done ? 'Mark as open' : 'Mark as done'}">${e.done ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg>' : ''}</button>
-            <div><div class="nx-task-name${e.done ? ' completed' : ''}">${escapeHtml(e.name)}</div><div class="nx-task-sub">${sub}</div></div>
-            ${room ? `<button type="button" class="nx-task-room" onclick="openRoom('${room.id}')">${escapeHtml(room.name)}</button>` : '<span></span>'}
+            <div class="nx-task-body"><div class="nx-task-name${e.done ? ' completed' : ''}">${escapeHtml(e.name)}${isNow ? '<span class="nx-now">NOW</span>' : ''}</div><div class="nx-task-sub">${sub}</div></div>
+            <div class="nx-task-right">${right}</div>
           </div>`;
-        }).join('') + '</div>';
+        };
+        el.innerHTML = SLOTS.map(sl => {
+          const items = all.filter(sl.test); if (!items.length) return '';
+          return `<div class="nx-slot"><div class="nx-slot-head">${sl.label}</div><div class="nx-horizon-list">${items.map(row).join('')}</div></div>`;
+        }).join('');
       }
     }
     const clr = document.getElementById('clearDayBtn'); if (clr) clr.hidden = !all.length;
     renderCarryPrompt();
   }
+  // slipped past its start? one tap moves it 30 minutes later. no red, no "passed", nothing counted.
+  function bumpEvent(i) {
+    const e = dayList(today)[i]; if (!e || e.anytime) return;
+    if (e.start + 0.5 >= 24) { e.anytime = true; delete e.time; }
+    else { e.start += 0.5; e.end = Math.min(24, e.end + 0.5); e.time = eventTimeString(e); }
+    save(); renderCal();
+  }
+  // the NOW highlight and +30m follow the clock while My day is open
+  setInterval(() => { const p = document.getElementById('pane-calendar'); if (p && p.classList.contains('active') && !p.contains(document.activeElement)) renderCal(); }, 60000);
   function nxToggleEvent(i) { const e = dayList(today)[i]; if (!e) return; e.done = !e.done; if (e.done) { try { if (navigator.vibrate) navigator.vibrate(12); } catch (x) {} } save(); renderCal(); }
   function nxAddToday() {
     const inp = document.getElementById('nxDayInput'); const text = (inp.value || '').trim(); if (!text) return;
-    const list = dayList(today); const st = nextFreeSlot(list, 0.5); const start = st !== null ? st : 23.5;
     const room = document.getElementById('nxDayRoom').value || null;
-    list.push({ start, end: start + 0.5, name: text, kind: 'block', ...(room ? { room } : {}) });
-    inp.value = ''; save(); renderCal();
+    const sEl = document.getElementById('nxDayStart'), eEl = document.getElementById('nxDayEnd');
+    const st = parseHHMM(sEl.value), en = parseHHMM(eEl.value);
+    const ev = { name: text, kind: 'block', ...(room ? { room } : {}) };
+    if (st === null) Object.assign(ev, { anytime: true, start: 0, end: 0 });
+    else if (en !== null && en > st) Object.assign(ev, { start: st, end: en });
+    else Object.assign(ev, { start: st, end: Math.min(24, st + 0.5), point: true });
+    normalizeEvent(ev);
+    dayList(today).push(ev);
+    inp.value = ''; sEl.value = ''; eEl.value = ''; eEl.disabled = true; save(); renderCal();
   }
 
 
@@ -4193,7 +4279,7 @@
     const items = openFromYesterday(); if (!items.length) return;
     selectedDay = new Date(today);
     const list = dayList(today);
-    items.forEach(i => { const t = nextFreeSlot(list, i.dur); if (t !== null) list.push({ start: t, end: t + i.dur, name: i.name, kind: 'block' }); if (i.src) i.src.broughtOver = true; });
+    items.forEach(i => { list.push({ name: i.name, kind: 'block', anytime: true, start: 0, end: 0, ...(i.src && i.src.room ? { room: i.src.room } : {}) }); if (i.src) i.src.broughtOver = true; });
     carried = []; save(); renderCal();
   }
   function letRest() { try { localStorage.setItem(REST_KEY, dkey(today)); } catch (e) {} renderCarryPrompt(); }
