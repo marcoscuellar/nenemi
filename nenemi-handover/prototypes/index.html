@@ -1415,7 +1415,11 @@
   #onboard h1, #onboard h2 { font-size:22px; line-height:1.25; letter-spacing:-.02em; font-weight:700; margin:0 0 6px; color:var(--ob-ink); }
   #onboard .ob-sub { color:var(--ob-dim); font-size:13.5px; line-height:1.55; margin:0 0 22px; }
   #onboard .ob-step { display:none; }
-  #onboard .ob-step.active { display:block; animation:obIn .32s cubic-bezier(.2,.7,.2,1); }
+  #onboard .ob-step.active { display:block; }
+  @keyframes obRise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+  #onboard .ob-card.waiting { opacity:0; }
+  #onboard .ob-card.rise { animation:obRise .8s cubic-bezier(.2,.7,.2,1) both; }
+  #onboard .ob-step.active .rise-i { animation:obRise .6s cubic-bezier(.2,.7,.2,1) both; }
   #onboard .ob-step.leaving { animation:obOut .18s ease forwards; }
   @keyframes obOut { to { opacity:0; transform:translateY(-4px); } }
   #onboard.closing { animation:obClose .32s ease forwards; }
@@ -1427,7 +1431,7 @@
   #onboard .ob-rules li b { color:var(--ob-ink); font-weight:650; }
   #onboard .ob-rule-n { flex:none; width:24px; height:24px; border-radius:99px; background:var(--ob-cyan-wash); border:1px solid #CBEAF0; color:var(--ob-cyan-ink); font-size:12px; font-weight:700; display:grid; place-items:center; margin-top:1px; }
   @keyframes obIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
-  @media (prefers-reduced-motion: reduce) { #onboard .ob-step.active, #onboard .ob-step.leaving, #onboard.closing { animation:none; } }
+  @media (prefers-reduced-motion: reduce) { #onboard .ob-step.active, #onboard .ob-step.leaving, #onboard.closing, #onboard .ob-card.rise, #onboard .ob-step.active .rise-i { animation:none; } #onboard .ob-card.waiting { opacity:1; } }
   #onboard .ob-oauth { display:grid; gap:10px; }
   #onboard .ob-oauth button, #onboard .ob-btn, #onboard .ob-btn-free { width:100%; min-height:46px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .15s, box-shadow .15s, background .15s; }
   #onboard .ob-oauth button { border:1px solid var(--ob-line); background:#fff; color:var(--ob-ink); }
@@ -5055,6 +5059,7 @@
     const show = () => {
       Object.values(obStepEl).forEach(id => { const el = obEl(id); if (el) el.classList.remove('active', 'leaving'); });
       next.classList.add('active');
+      obRiseIn(next, obRiseBase); obRiseBase = 60;
       const dot = obDotFor[n] || 1;
       for (let i = 1; i <= 4; i++) { const d = obEl('obd' + i); if (d) { d.classList.toggle('on', i === dot); d.classList.toggle('past', i < dot); } }
       const o = obEl('onboard'); if (o) o.scrollTop = 0;
@@ -5064,11 +5069,28 @@
     if (cur && !calm) { cur.classList.add('leaving'); setTimeout(show, 180); } else show();
   }
   let obSplashT = null, obSplashShown = false;
+  // the card floats up, then what's inside it follows, one piece at a time
+  let obRiseBase = 60;
+  function obRiseIn(stepEl, base) {
+    if (!stepEl) return;
+    const items = [];
+    [...stepEl.children].forEach(c => { if (c.matches('.ob-rules, .ob-chips, .ob-plans, .ob-oauth, .ob-row2')) items.push(...c.children); else if (!c.matches('.ob-err:empty')) items.push(c); });
+    items.forEach((el, i) => { el.classList.remove('rise-i'); void el.offsetWidth; el.style.animationDelay = (base + i * 70) + 'ms'; el.classList.add('rise-i'); });
+  }
+  function obRiseCard(delay) {
+    const card = document.querySelector('#onboard .ob-card'); if (!card) return;
+    card.classList.remove('waiting', 'rise'); void card.offsetWidth;
+    card.style.animationDelay = (delay || 0) + 'ms'; card.classList.add('rise');
+  }
   function showOnboard(step) {
     const o = obEl('onboard'); if (!o) return;
     const wasHidden = o.hidden;
+    const splash = (step || 1) === 1 && wasHidden && !obSplashShown;
+    const card = document.querySelector('#onboard .ob-card');
+    if (splash && card) card.classList.add('waiting');        // held back until the splash eases away
+    else if (wasHidden) { obRiseCard(0); obRiseBase = 260; }
     o.hidden = false; o.classList.remove('closing'); document.body.classList.add('onboarding'); obStep(step || 1);
-    if ((step || 1) === 1 && wasHidden && !obSplashShown) obSplash();
+    if (splash) obSplash();
   }
   // the first thing anyone sees: the mark and the name. a tap, a key, or a couple of seconds moves on.
   function obSplash() {
@@ -5084,6 +5106,7 @@
     const sp = obEl('obSplash'); if (!sp || sp.hidden || sp.classList.contains('away')) return;
     clearTimeout(obSplashT); document.removeEventListener('keydown', obSplashKey);
     sp.classList.add('away'); setTimeout(() => { sp.hidden = true; }, 620);
+    obRiseCard(180); obRiseIn(document.querySelector('#onboard .ob-step.active'), 440);
   }
   function hideOnboard() { const o = obEl('onboard'); if (!o) return; o.hidden = true; document.body.classList.remove('onboarding'); }
   function obDone() { try { return localStorage.getItem('nenemi.onboarded') === '1'; } catch (e) { return false; } }
