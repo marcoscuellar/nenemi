@@ -1824,7 +1824,12 @@
   .nx-task-room { border: 1px solid #DAEEF2; background: #F2F9FA; color: #2484A0; border-radius: 99px; padding: 4px 8px; font-size: 10px; font-weight: 600; white-space: nowrap; cursor: pointer; }
   .nx-quick-add { display: flex; gap: 9px; margin-top: 18px; border-top: 1px solid #EFF1F1; padding-top: 18px; }
   .nx-quick-add input, .nx-quick-add select, .nx-url-editor input, .nx-shrink-form input, .nx-room-add input { border: 1px solid var(--line); border-radius: 8px; background: #fff; min-height: 40px; padding: 9px 12px; color: var(--ink); min-width: 0; font-size: 13px; }
+  .nx-quick-add { flex-wrap: wrap; }
   .nx-quick-add input { flex: 1; }
+  .nx-quick-add > #nxDayInput { flex: 1 1 100%; }
+  .nx-quick-add select { flex: 1 1 110px; min-width: 0; }
+  .nx-quick-add .nx-time-field { flex: 0 1 auto; }
+  .nx-view .nx-quick-add .nx-time-field input { width: 86px; }
   .nx-quick-add select { max-width: 175px; color: #4F5A5A; }
   .nx-empty { padding: 36px 14px; text-align: center; }
   .nx-empty-icon { height: 38px; width: 38px; border: 1px solid #E1EFE9; border-radius: 10px; display: grid; place-items: center; margin: 0 auto 12px; color: #16A676; background: #F5FCF9; }
@@ -1917,6 +1922,22 @@
     .nx-aside-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
+  /* in-app toasts */
+  .nx-toasts { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; width: min(420px, calc(100vw - 32px)); pointer-events: none; }
+  .nx-toast { position: relative; pointer-events: auto; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 12px; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.08), 0 2px 6px -1px rgba(0,0,0,0.03);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13.5px; line-height: 1.5; color: #111827; padding: 14px 40px 14px 16px;
+    opacity: 0; transform: translateY(-10px); transition: opacity .2s ease-out, transform .2s ease-out; }
+  .nx-toast.in { opacity: 1; transform: none; }
+  .nx-toast.out { opacity: 0; transform: translateY(-6px); transition-duration: .18s; }
+  .nx-toast-msg b { font-weight: 650; }
+  .nx-toast-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .nx-toast-btn { font: inherit; font-size: 12.5px; font-weight: 600; border-radius: 8px; padding: 7px 12px; border: 1px solid #E5E7EB; background: #fff; color: #111827; cursor: pointer; }
+  .nx-toast-btn:hover { border-color: #CED5D6; }
+  .nx-toast-btn.primary { background: #111312; border-color: #111312; color: #fff; }
+  .nx-toast-x { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border: 0; background: none; color: #9AA3A6; font-size: 18px; line-height: 1; border-radius: 8px; cursor: pointer; }
+  .nx-toast-x:hover { color: #111827; background: #F5F6F5; }
+  @media (prefers-reduced-motion: reduce) { .nx-toast, .nx-toast.in, .nx-toast.out { transform: none; transition: opacity .2s; } }
+
   /* phone (kept last so it wins) */
   @media (max-width: 720px) {
     body { background: #fff; }
@@ -1963,6 +1984,7 @@
     #pane-roomview .rv-body { gap: 12px; }
     /* v4: 100px of air between the last thing on any scrolling screen and the tab dock (78px tall) */
     #pane-rooms, #pane-notes, #pane-humans { padding-bottom: calc(178px + var(--sab)); }
+    .nx-toasts { top: calc(24px + var(--sat)); width: calc(100vw - 24px); }
     #pane-roomview, .rv-container, #pane-calendar { padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important; }
     #pane-calendar, #pane-roomview { padding-left: 16px; padding-right: 16px; }
     .nx-columns, .nx-aside-stack { grid-template-columns: minmax(0, 1fr); }
@@ -1973,6 +1995,8 @@
     .nx-quick-add select { flex: 1 1 100%; max-width: none; }
     .nx-time-field { flex: 1 1 0; }
     .nx-quick-add .nx-button { flex: 1 1 100%; }
+    .nx-quick-add .nx-time-field { flex: 1 1 0; }
+    .nx-view .nx-quick-add .nx-time-field input { width: 100%; }
     .nx-view .nx-time-field input { width: 100%; min-width: 0; }
     .nx-task-row.now { margin: 4px -10px; padding-left: 9px; padding-right: 9px; }
     .nx-url-editor input { min-width: 0; flex: 1 1 100%; }
@@ -2094,6 +2118,7 @@
   </div>
 </div>
 
+<div class="nx-toasts" id="nxToasts" aria-live="polite" aria-atomic="false"></div>
 <div class="app">
 
   <!-- ============ MAIN ============ -->
@@ -2702,6 +2727,7 @@
   }
   function go(id) {
     if (id === 'day') id = 'calendar';
+    setTimeout(() => { if (typeof pumpToasts === 'function') pumpToasts(); }, 300);
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
@@ -2994,6 +3020,7 @@
   function openRoom(id) {
     currentRoom = rooms.find(r => r.id === id);
     lastRoomId = id; try { localStorage.setItem('nenemi.lastRoom', id); } catch (e) {}
+    if (currentRoom) { currentRoom.lastVisited = Date.now(); save(); }
     renderRoomView();
     go('roomview');
   }
@@ -4058,13 +4085,92 @@
   }
   // the NOW highlight and +30m follow the clock while My day is open
   setInterval(() => { const p = document.getElementById('pane-calendar'); if (p && p.classList.contains('active') && !p.contains(document.activeElement)) renderCal(); }, 60000);
+
+  // ---------- in-app toasts: gentle, one at a time, never while someone is in a dark room or signing up ----------
+  const TOAST_KEY = 'nenemi_toast_history';
+  const toastQueue = []; let toastShowing = null;
+  function toastHist() { try { return JSON.parse(localStorage.getItem(TOAST_KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function toastHistSet(h) {
+    const cutoff = Date.now() - 4 * 864e5; // keep four days, enough for every rule here
+    Object.keys(h).forEach(k => { if (typeof h[k] === 'number' && h[k] < cutoff && !k.startsWith('lunchAt:')) delete h[k]; });
+    try { localStorage.setItem(TOAST_KEY, JSON.stringify(h)); } catch (e) {}
+  }
+  function toastSeen(key) { return key in toastHist(); }
+  function toastMark(key, val) { const h = toastHist(); h[key] = val == null ? Date.now() : val; toastHistSet(h); }
+  function toastQuiet() {
+    if (document.body.classList.contains('onboarding')) return true;
+    const a = document.querySelector('.pane.active'); return !!(a && /pane-(stuck|lockdown|humans)$/.test(a.id));
+  }
+  // t: { key, html, actions: [{ label, primary, run }] }
+  function queueToast(t) {
+    if (toastSeen(t.key) || toastQueue.some(q => q.key === t.key) || (toastShowing && toastShowing.key === t.key)) return;
+    toastMark(t.key); toastQueue.push(t); pumpToasts();
+  }
+  function pumpToasts() {
+    if (toastShowing || !toastQueue.length || toastQuiet()) return;
+    const t = toastQueue.shift(); toastShowing = t;
+    const host = document.getElementById('nxToasts'); if (!host) return;
+    const el = document.createElement('div'); el.className = 'nx-toast'; el.setAttribute('role', 'status');
+    el.innerHTML = `<div class="nx-toast-msg">${t.html}</div>` +
+      (t.actions && t.actions.length ? `<div class="nx-toast-actions">${t.actions.map((a, i) => `<button type="button" class="nx-toast-btn${a.primary ? ' primary' : ''}" data-i="${i}">${escapeHtml(a.label)}</button>`).join('')}</div>` : '') +
+      `<button type="button" class="nx-toast-x" aria-label="Close">×</button>`;
+    const close = () => { if (!el.isConnected) return; clearTimeout(el._t); el.classList.remove('in'); el.classList.add('out'); setTimeout(() => { el.remove(); toastShowing = null; setTimeout(pumpToasts, 400); }, 200); };
+    el.querySelector('.nx-toast-x').onclick = close;
+    el.querySelectorAll('.nx-toast-btn').forEach(b => b.onclick = () => { try { const a = t.actions[+b.dataset.i]; if (a && a.run) a.run(); } finally { close(); } });
+    host.appendChild(el); requestAnimationFrame(() => el.classList.add('in'));
+    if (!t.actions || !t.actions.length) el._t = setTimeout(close, 8000);
+  }
+  function toastTick() {
+    if (location.protocol === 'file:') return;
+    const now = new Date(), dk = dkey(now), h = now.getHours() + now.getMinutes() / 60, ms = now.getTime();
+    const list = events[dk] || [];
+    // 1. morning kickoff: 7:30–9:30, fewer than two blocks on today
+    if (h >= 7.5 && h < 9.5 && list.filter(e => !e.done).length < 2) queueToast({ key: 'morning:' + dk,
+      html: "Good morning. When you're ready, let’s pick one or two moves to anchor your day.",
+      actions: [{ label: 'Open Horizon', primary: true, run: () => { go('day'); setTimeout(() => { const i = document.getElementById('nxDayInput'); if (i) i.focus(); }, 80); } }] });
+    // 3. mid-day pause: one random moment between 11:30 and 1:30, once a day
+    const hist = toastHist(); let lunchAt = hist['lunchAt:' + dk];
+    if (lunchAt == null) { lunchAt = 11.5 + Math.random() * 2; toastMark('lunchAt:' + dk, lunchAt); }
+    if (h >= lunchAt && h < 13.5) queueToast({ key: 'lunch:' + dk,
+      html: 'Mid-day pause: Have you eaten or stretched? Your tasks will stay right here while you fuel up.',
+      actions: [{ label: 'Taking a break', primary: true, run: () => {} }] });
+    list.forEach(e => {
+      if (e.done) return;
+      const name = `<b>${escapeHtml(e.name)}</b>`;
+      // 2. fifteen minutes before a timed block
+      if (!e.anytime && h >= e.start - 0.25 && h < e.start - 0.25 + 5 / 60) queueToast({ key: `pre:${dk}:${e.start}:${e.name}`, html: `In 15 minutes: ${name}. Take a sip of water and shift gears when ready.` });
+      // 4. fifteen minutes after it ends (untimed: 45 minutes after it was added), still open, once per task
+      const due = e.anytime ? (e.createdAt ? e.createdAt + 45 * 6e4 : null) : null;
+      const past = e.anytime ? (due != null && ms >= due && dkey(new Date(e.createdAt)) === dk) : h >= e.end + 0.25;
+      if (past) queueToast({ key: `grace:${dk}:${e.name}`,
+        html: `${name}<br>Don't forget to fill in your to-do. If you were not able to do it, that's completely fine—we can practice later!`,
+        actions: [
+          { label: 'Done', primary: true, run: () => { e.done = true; save(); renderCal(); } },
+          { label: 'Anytime', run: () => { e.anytime = true; e.start = 0; e.end = 0; delete e.time; delete e.point; e.createdAt = Date.now(); save(); renderCal(); } },
+        ] });
+    });
+    // 5. a room with open steps, unvisited for more than 34 hours; at most one of these a day
+    const last = toastHist()['room:last'] || 0;
+    if (ms - last > 864e5) {
+      const resting = rooms.filter(r => !r.archived && !r.demo && r.loops.some(l => !l.resolved))
+        .map(r => ({ r, seen: r.lastVisited || lastTouch(r) || 0 })).filter(x => x.seen && ms - x.seen > 34 * 36e5)
+        .sort((a, b) => a.seen - b.seen)[0];
+      if (resting) { toastMark('room:last', ms); queueToast({ key: `room:${resting.r.id}:${dk}`,
+        html: `Your <b>${escapeHtml(resting.r.name)}</b> space is resting quietly. Want to take a quick peek, or leave it for tomorrow?`,
+        actions: [{ label: 'View Room', primary: true, run: () => openRoom(resting.r.id) }, { label: 'Let it rest', run: () => {} }] }); }
+    }
+    pumpToasts();
+  }
+  setInterval(toastTick, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) toastTick(); });
+  setTimeout(toastTick, 4000);
   function nxToggleEvent(i) { const e = dayList(today)[i]; if (!e) return; e.done = !e.done; if (e.done) { try { if (navigator.vibrate) navigator.vibrate(12); } catch (x) {} } save(); renderCal(); }
   function nxAddToday() {
     const inp = document.getElementById('nxDayInput'); const text = (inp.value || '').trim(); if (!text) return;
     const room = document.getElementById('nxDayRoom').value || null;
     const sEl = document.getElementById('nxDayStart'), eEl = document.getElementById('nxDayEnd');
     const st = parseHHMM(sEl.value), en = parseHHMM(eEl.value);
-    const ev = { name: text, kind: 'block', ...(room ? { room } : {}) };
+    const ev = { name: text, kind: 'block', createdAt: Date.now(), ...(room ? { room } : {}) };
     if (st === null) Object.assign(ev, { anytime: true, start: 0, end: 0 });
     else if (en !== null && en > st) Object.assign(ev, { start: st, end: en });
     else Object.assign(ev, { start: st, end: Math.min(24, st + 0.5), point: true });
@@ -4279,7 +4385,7 @@
     const items = openFromYesterday(); if (!items.length) return;
     selectedDay = new Date(today);
     const list = dayList(today);
-    items.forEach(i => { list.push({ name: i.name, kind: 'block', anytime: true, start: 0, end: 0, ...(i.src && i.src.room ? { room: i.src.room } : {}) }); if (i.src) i.src.broughtOver = true; });
+    items.forEach(i => { list.push({ name: i.name, kind: 'block', anytime: true, start: 0, end: 0, createdAt: Date.now(), ...(i.src && i.src.room ? { room: i.src.room } : {}) }); if (i.src) i.src.broughtOver = true; });
     carried = []; save(); renderCal();
   }
   function letRest() { try { localStorage.setItem(REST_KEY, dkey(today)); } catch (e) {} renderCarryPrompt(); }
