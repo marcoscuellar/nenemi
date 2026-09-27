@@ -5113,6 +5113,7 @@
   function obDone() { try { return localStorage.getItem('nenemi.onboarded') === '1'; } catch (e) { return false; } }
   function obPriorUser() { try { return !!(localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY)); } catch (e) { return false; } }
   // authoritative decision, run once Clerk's real state is known
+  const OB_PREVIEW = /[?&]welcome\b/.test(location.search);
   function gateOnboarding() {
     if (obFlow) return;                                              // mid-flow: leave the card where it is
     if (location.protocol === 'file:') { hideOnboard(); return; }   // dev / no server: never wall
@@ -5359,6 +5360,7 @@
   // finishes loading. initAuth()/gateOnboarding() then corrects it (auth-off hides it; a live session advances it).
   (function preGate() {
     if (location.protocol === 'file:' || location.pathname !== '/') return;
+    if (OB_PREVIEW) { try { sessionStorage.removeItem('nenemi.splashSeen'); } catch (e) {} obSplashShown = false; history.replaceState(null, '', '/'); obFlow = true; showOnboard(1); return; } // ?welcome: show the whole onboarding again
     if (obDone()) return; // already through onboarding → straight to the app
     const uat = (document.cookie.match(/(?:^|;)\s*__client_uat=([^;]*)/) || [])[1];
     const signedInHint = uat && Number(uat) > 0;
