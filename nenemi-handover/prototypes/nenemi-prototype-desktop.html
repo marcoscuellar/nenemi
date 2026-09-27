@@ -1452,6 +1452,19 @@
   #onboard .ob-escape:hover { color:var(--ob-ink); }
   #onboard .ob-err { color:var(--ob-ink); background:var(--ob-ground); border-radius:8px; font-size:13px; line-height:1.4; margin-top:12px; padding:9px 12px; }
   #onboard .ob-err:empty { display:none; }
+
+  /* splash before frame 1: white mark + name on ink, floating in, then easing away */
+  #onboard .ob-splash { position:fixed; inset:0; z-index:10; background:#111312; display:grid; place-items:center; cursor:pointer; transition:opacity .6s ease; }
+  #onboard .ob-splash[hidden] { display:none; }
+  #onboard .ob-splash.away { opacity:0; pointer-events:none; }
+  #onboard .ob-splash-float { display:flex; flex-direction:column; align-items:center; gap:16px; animation:obIdle 4.8s ease-in-out 1.4s infinite; }
+  #onboard .ob-splash-mark { width:52px; height:auto; opacity:0; transform:translateY(18px) scale(.96); animation:obFloatIn .9s cubic-bezier(.2,.7,.2,1) .15s forwards; }
+  #onboard .ob-splash-word { font-family:'Archivo Black','Archivo',sans-serif; color:#fff; font-size:13px; letter-spacing:.36em; padding-left:.36em; opacity:0; transform:translateY(14px); animation:obFloatIn .9s cubic-bezier(.2,.7,.2,1) .55s forwards; }
+  @keyframes obFloatIn { to { opacity:1; transform:none; } }
+  @keyframes obIdle { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
+  @media (prefers-reduced-motion: reduce) {
+    #onboard .ob-splash-float, #onboard .ob-splash-mark, #onboard .ob-splash-word { animation:none; opacity:1; transform:none; }
+  }
   /* step 2: one question */
   #onboard .ob-thought { position:relative; border:1px solid var(--ob-line); border-radius:12px; background:#fff; }
   #onboard .ob-thought textarea { display:block; width:100%; min-height:132px; resize:none; border:0; background:none; padding:14px 50px 14px 14px; font-size:15px; line-height:1.5; color:var(--ob-ink); outline:none; border-radius:12px; }
@@ -2039,6 +2052,13 @@
 
 <!-- ============ ONBOARDING WALL (hidden until the gate shows it) ============ -->
 <div id="onboard" hidden aria-label="Welcome to NÈNÈMI">
+  <!-- splash: just the mark and the name, white on ink, floating in -->
+  <div class="ob-splash" id="obSplash" hidden onclick="obSplashDone()">
+    <div class="ob-splash-float">
+      <svg class="ob-splash-mark" viewBox="92 168 838 687" aria-hidden="true"><g fill="#FFFFFF"><path d="M152 188 H320 L765 672 H870 Q910 672 910 712 V795 Q910 835 870 835 H650 L230 355 H112 V228 Q112 188 152 188 Z"/><path d="M573 188 H870 Q910 188 910 228 V570 H765 V352 H573 Z"/><path d="M112 462 H250 V672 H430 V835 H152 Q112 835 112 795 Z"/></g></svg>
+      <div class="ob-splash-word">NENEMI</div>
+    </div>
+  </div>
   <div class="ob-card" role="dialog" aria-labelledby="obTitle">
     <div class="ob-top">
       <div class="ob-brand"><img src="/photos/icon/nenemi-mark-ink.png" alt=""><span>NENEMI</span></div>
@@ -5043,7 +5063,28 @@
     const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (cur && !calm) { cur.classList.add('leaving'); setTimeout(show, 180); } else show();
   }
-  function showOnboard(step) { const o = obEl('onboard'); if (!o) return; o.hidden = false; o.classList.remove('closing'); document.body.classList.add('onboarding'); obStep(step || 1); }
+  let obSplashT = null, obSplashShown = false;
+  function showOnboard(step) {
+    const o = obEl('onboard'); if (!o) return;
+    const wasHidden = o.hidden;
+    o.hidden = false; o.classList.remove('closing'); document.body.classList.add('onboarding'); obStep(step || 1);
+    if ((step || 1) === 1 && wasHidden && !obSplashShown) obSplash();
+  }
+  // the first thing anyone sees: the mark and the name. a tap, a key, or a couple of seconds moves on.
+  function obSplash() {
+    const sp = obEl('obSplash'); if (!sp) return;
+    obSplashShown = true;
+    sp.hidden = false; sp.classList.remove('away');
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    clearTimeout(obSplashT); obSplashT = setTimeout(obSplashDone, calm ? 1400 : 2600);
+    document.addEventListener('keydown', obSplashKey);
+  }
+  function obSplashKey(e) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') obSplashDone(); }
+  function obSplashDone() {
+    const sp = obEl('obSplash'); if (!sp || sp.hidden || sp.classList.contains('away')) return;
+    clearTimeout(obSplashT); document.removeEventListener('keydown', obSplashKey);
+    sp.classList.add('away'); setTimeout(() => { sp.hidden = true; }, 620);
+  }
   function hideOnboard() { const o = obEl('onboard'); if (!o) return; o.hidden = true; document.body.classList.remove('onboarding'); }
   function obDone() { try { return localStorage.getItem('nenemi.onboarded') === '1'; } catch (e) { return false; } }
   function obPriorUser() { try { return !!(localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY)); } catch (e) { return false; } }
