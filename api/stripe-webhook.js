@@ -2,7 +2,8 @@
 //
 // POST /api/stripe-webhook  (Stripe-Signature header, raw body)
 //   checkout.session.completed      -> paid, remember the Stripe customer id
-//   customer.subscription.updated   -> paid while active or trialing, else free; planUntil = period end
+//   customer.subscription.updated   -> paid while active or trialing, else free; planUntil = period end;
+//                                      trialEnd while trialing (the app's day-5 heads-up reads it)
 //   customer.subscription.deleted   -> free
 //
 // Body parsing is off so the signature can be checked against the exact bytes Stripe sent.
@@ -44,16 +45,17 @@ export async function handleEvent(stripe, event, write = setPlan) {
     const userId = await userIdFor(stripe, obj);
     if (!userId) return { skipped: 'no user' };
     if (customerId) { try { await stripe.customers.update(customerId, { metadata: { userId } }); } catch (e) {} }
-    let until = null;
-    if (obj.subscription) { try { const sub = await stripe.subscriptions.retrieve(typeof obj.subscription === 'string' ? obj.subscription : obj.subscription.id); until = whenIso(sub.current_period_end); } catch (e) {} }
-    await write(userId, { plan: 'paid', planSource: 'stripe', planUntil: until, stripeCustomerId: customerId });
+    let until = null, trialEnd = null;
+    if (obj.subscription) { try { const sub = await stripe.subscriptions.retrieve(typeof obj.subscription === 'string' ? obj.subscription : obj.subscription.id); until = whenIso(sub.current_period_end); if (sub.status === 'trialing') trialEnd = whenIso(sub.trial_end); } catch (e) {} }
+    await write(userId, { plan: 'paid', planSource: 'stripe', planUntil: until, trialEnd, stripeCustomerId: customerId });
     return { userId, plan: 'paid' };
   }
   if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
     const userId = await userIdFor(stripe, obj);
     if (!userId) return { skipped: 'no user' };
     const active = event.type !== 'customer.subscription.deleted' && (obj.status === 'active' || obj.status === 'trialing' || obj.status === 'past_due');
-    await write(userId, { plan: active ? 'paid' : 'free', planSource: 'stripe', planUntil: whenIso(obj.current_period_end), stripeCustomerId: customerId });
+    const trialEnd = active && obj.status === 'trialing' ? whenIso(obj.trial_end) : null;
+    await write(userId, { plan: active ? 'paid' : 'free', planSource: 'stripe', planUntil: whenIso(obj.current_period_end), trialEnd, stripeCustomerId: customerId });
     return { userId, plan: active ? 'paid' : 'free' };
   }
   return { skipped: event.type };

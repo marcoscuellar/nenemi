@@ -1386,121 +1386,134 @@
     .cal-checklist { align-self: start; position: sticky; top: 30px; margin-top: 0; }
   }
 
-  /* ===== Onboarding (v4, Sep 2026): one calm card on the ground. Self-contained, #onboard-scoped
-     with its own --ob-* tokens so nothing leaks to or from the app's global CSS. ===== */
+  /* ===== Splash (every load, everyone): the mark and the name, white on #0D0E11. 400ms in, 1000ms of quiet,
+     600ms out; a tap or a key skips it. Lives above everything, including the onboarding. ===== */
+  #nxSplash { position:fixed; inset:0; z-index:10001; background:#0D0E11; display:grid; place-items:center; cursor:pointer; transition:opacity .6s ease; }
+  #nxSplash.away { opacity:0; pointer-events:none; }
+  #nxSplash .nx-splash-float { display:flex; flex-direction:column; align-items:center; gap:16px; }
+  #nxSplash .nx-splash-mark { width:52px; height:auto; opacity:0; transform:translateY(8px); animation:nxSplashIn .4s ease-out forwards; }
+  #nxSplash .nx-splash-word { font-family:'Archivo Black','Archivo',sans-serif; color:#fff; font-size:13px; letter-spacing:.36em; padding-left:.36em; opacity:0; transform:translateY(8px); animation:nxSplashIn .4s ease-out forwards; }
+  @keyframes nxSplashIn { to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) { #nxSplash .nx-splash-mark, #nxSplash .nx-splash-word { animation:none; opacity:1; transform:none; } }
+
+  /* ===== Onboarding (v6, Sep 2026): one centered card per screen, a chapter + progress header,
+     pills that move on by themselves. Self-contained, #onboard-scoped. ===== */
   body.onboarding { overflow: hidden; }
   #onboard {
-    --ob-ink:#111312; --ob-card:#ffffff; --ob-ground:#F5F6F5; --ob-line:#E5E7EB; --ob-dim:#6B7280; --ob-faint:#8A9296;
-    --ob-cyan:#28A2C3; --ob-cyan-ink:#137F9D; --ob-cyan-wash:#EAF7FA; --ob-mint:#0EBE82; --ob-mint-ink:#078F61; --ob-mint-wash:#EAFBF4;
-    --ob-shadow:0 1px 3px rgba(0,0,0,.04), 0 6px 16px rgba(0,0,0,.02);
+    --ob-ink:#0D0E11; --ob-body:#6B7280; --ob-help:#9CA3AF; --ob-line:#E5E7EB; --ob-field:#D1D5DB; --ob-ground:#F5F6F5;
+    --ob-cyan:#28A2C3; --ob-cyan-ink:#137F9D; --ob-mint:#0EBE82; --ob-mint-ink:#078F61; --ob-mint-wash:#EAFBF4;
     --ob-font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     position:fixed; inset:0; z-index:9999; background:var(--ob-ground); color:var(--ob-ink);
-    font-family:var(--ob-font); font-size:14px; line-height:1.5; overflow-y:auto; -webkit-font-smoothing:antialiased;
-    display:flex; align-items:flex-start; justify-content:center;
-    padding:calc(48px + env(safe-area-inset-top,0px)) 16px calc(48px + env(safe-area-inset-bottom,0px));
+    font-family:var(--ob-font); font-size:13px; line-height:1.5; overflow-y:auto; -webkit-font-smoothing:antialiased;
+    padding:calc(52px + env(safe-area-inset-top,0px) + 40px) 16px calc(40px + env(safe-area-inset-bottom,0px));
   }
   #onboard[hidden] { display:none; }
   #onboard * { box-sizing:border-box; }
   #onboard button, #onboard input, #onboard textarea { font-family:inherit; }
   #onboard :focus-visible { outline:2px solid var(--ob-cyan); outline-offset:2px; }
-  #onboard .ob-card { width:100%; max-width:440px; margin:auto 0; background:var(--ob-card); border:1px solid var(--ob-line); border-radius:12px; box-shadow:var(--ob-shadow); padding:32px 32px 28px; }
-  #onboard .ob-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:26px; }
-  #onboard .ob-brand { display:flex; align-items:center; gap:9px; font-weight:700; font-size:13px; letter-spacing:.16em; }
-  #onboard .ob-brand img { width:20px; height:20px; }
-  #onboard .ob-dots { display:flex; gap:6px; }
-  #onboard .ob-dots i { width:6px; height:6px; border-radius:99px; background:var(--ob-line); transition:width .2s, background .2s; }
-  #onboard .ob-dots i.on { background:var(--ob-ink); width:18px; }
-  #onboard .ob-dots i.past { background:var(--ob-mint); }
-  #onboard .ob-eyebrow { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--ob-faint); margin-bottom:8px; }
-  #onboard h1, #onboard h2 { font-size:22px; line-height:1.25; letter-spacing:-.02em; font-weight:700; margin:0 0 6px; color:var(--ob-ink); }
-  #onboard .ob-sub { color:var(--ob-dim); font-size:13.5px; line-height:1.55; margin:0 0 22px; }
-  #onboard .ob-step { display:none; }
-  #onboard .ob-step.active { display:block; }
-  @keyframes obRise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
-  #onboard .ob-card.waiting { opacity:0; }
-  #onboard .ob-card.rise { animation:obRise .8s cubic-bezier(.2,.7,.2,1) both; }
-  #onboard .ob-step.active .rise-i { animation:obRise .6s cubic-bezier(.2,.7,.2,1) both; }
-  #onboard .ob-step.leaving { animation:obOut .18s ease forwards; }
-  @keyframes obOut { to { opacity:0; transform:translateY(-4px); } }
   #onboard.closing { animation:obClose .32s ease forwards; }
   @keyframes obClose { to { opacity:0; } }
-  #onboard .ob-hero { font-size:28px; letter-spacing:-.03em; line-height:1.15; margin-bottom:10px; }
-  #onboard .ob-lead { font-size:16px; font-weight:600; color:var(--ob-ink); letter-spacing:-.01em; margin:0 0 8px; }
-  #onboard .ob-rules { list-style:none; padding:0; margin:18px 0 4px; display:grid; gap:10px; }
-  #onboard .ob-rules li { display:flex; gap:12px; align-items:flex-start; border:1px solid var(--ob-line); border-radius:12px; padding:13px 14px; font-size:13.5px; line-height:1.5; color:var(--ob-dim); background:#fff; }
-  #onboard .ob-rules li b { color:var(--ob-ink); font-weight:650; }
-  #onboard .ob-rule-n { flex:none; width:24px; height:24px; border-radius:99px; background:var(--ob-cyan-wash); border:1px solid #CBEAF0; color:var(--ob-cyan-ink); font-size:12px; font-weight:700; display:grid; place-items:center; margin-top:1px; }
-  @keyframes obIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
-  @media (prefers-reduced-motion: reduce) { #onboard .ob-step.active, #onboard .ob-step.leaving, #onboard.closing, #onboard .ob-card.rise, #onboard .ob-step.active .rise-i { animation:none; } #onboard .ob-card.waiting { opacity:1; } }
-  #onboard .ob-oauth { display:grid; gap:10px; }
-  #onboard .ob-oauth button, #onboard .ob-btn, #onboard .ob-btn-free { width:100%; min-height:46px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .15s, box-shadow .15s, background .15s; }
-  #onboard .ob-oauth button { border:1px solid var(--ob-line); background:#fff; color:var(--ob-ink); }
-  #onboard .ob-oauth button:hover, #onboard .ob-btn-free:hover { border-color:#CED5D6; box-shadow:0 4px 10px rgba(0,0,0,.04); }
-  #onboard .ob-oauth svg { width:17px; height:17px; flex:none; }
-  #onboard .ob-divider { display:flex; align-items:center; gap:12px; color:var(--ob-faint); font-size:12px; margin:18px 0; }
-  #onboard .ob-divider::before, #onboard .ob-divider::after { content:""; flex:1; height:1px; background:var(--ob-line); }
-  #onboard label.ob-f { display:block; font-size:12px; font-weight:600; color:var(--ob-dim); margin:14px 0 6px; }
-  #onboard .ob-in { width:100%; min-height:46px; padding:11px 14px; border:1px solid var(--ob-line); border-radius:12px; background:#fff; font-size:15px; color:var(--ob-ink); }
-  #onboard .ob-in::placeholder, #onboard textarea::placeholder { color:#A3AAAD; }
-  #onboard .ob-in:focus, #onboard .ob-thought:focus-within { border-color:var(--ob-cyan); box-shadow:0 0 0 3px rgba(40,162,195,.12); outline:none; }
-  #onboard .ob-row2 { display:flex; gap:12px; }
-  #onboard .ob-row2 > div { flex:1; }
-  #onboard .ob-btn { margin-top:18px; border:1px solid var(--ob-ink); background:var(--ob-ink); color:#fff; }
-  #onboard .ob-btn:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 14px rgba(17,19,18,.14); }
-  #onboard .ob-btn:disabled { opacity:.55; cursor:default; }
-  #onboard .ob-btn-free { margin-top:10px; border:1px solid var(--ob-ink); background:#fff; color:var(--ob-ink); }
-  #onboard .ob-fine { font-size:12.5px; color:var(--ob-dim); margin-top:16px; text-align:center; }
-  #onboard .ob-link { background:none; border:0; padding:0; color:var(--ob-cyan-ink); font-weight:600; font-size:inherit; cursor:pointer; text-decoration:none; }
-  #onboard .ob-link:hover { text-decoration:underline; text-underline-offset:3px; }
-  #onboard .ob-escape { display:block; margin:20px auto 0; background:none; border:0; color:var(--ob-dim); font-size:13px; font-weight:600; cursor:pointer; }
-  #onboard .ob-escape:hover { color:var(--ob-ink); }
-  #onboard .ob-err { color:var(--ob-ink); background:var(--ob-ground); border-radius:8px; font-size:13px; line-height:1.4; margin-top:12px; padding:9px 12px; }
-  #onboard .ob-err:empty { display:none; }
-
-  /* splash before frame 1: white mark + name on ink, floating in, then easing away */
-  #onboard .ob-splash { position:fixed; inset:0; z-index:10000; background:#0D0E11; display:grid; place-items:center; cursor:pointer; transition:opacity .6s ease; }
-  #onboard .ob-splash[hidden] { display:none; }
-  #onboard .ob-splash.away { opacity:0; pointer-events:none; }
-  #onboard .ob-splash-float { display:flex; flex-direction:column; align-items:center; gap:16px; }
-  #onboard .ob-splash-mark { width:52px; height:auto; opacity:0; transform:translateY(8px); animation:obFloatIn .4s ease-out forwards; }
-  #onboard .ob-splash-word { font-family:'Archivo Black','Archivo',sans-serif; color:#fff; font-size:13px; letter-spacing:.36em; padding-left:.36em; opacity:0; transform:translateY(8px); animation:obFloatIn .4s ease-out forwards; }
-  @keyframes obFloatIn { to { opacity:1; transform:none; } }
-  @keyframes obIdle { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
-  @media (prefers-reduced-motion: reduce) {
-    #onboard .ob-splash-float, #onboard .ob-splash-mark, #onboard .ob-splash-word { animation:none; opacity:1; transform:none; }
-  }
-  /* step 2: one question */
-  #onboard .ob-thought { position:relative; border:1px solid var(--ob-line); border-radius:12px; background:#fff; }
-  #onboard .ob-thought textarea { display:block; width:100%; min-height:132px; resize:none; border:0; background:none; padding:14px 50px 14px 14px; font-size:15px; line-height:1.5; color:var(--ob-ink); outline:none; border-radius:12px; }
-  #onboard .ob-mic { position:absolute; right:10px; bottom:10px; width:34px; height:34px; border-radius:50%; border:1px solid var(--ob-line); background:#fff; color:var(--ob-dim); display:grid; place-items:center; cursor:pointer; }
+  #onboard #header-bar { position:fixed; top:0; left:0; right:0; z-index:2; height:calc(52px + env(safe-area-inset-top,0px)); padding-top:env(safe-area-inset-top,0px);
+    background:rgba(245,246,245,.95); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px); border-bottom:1px solid var(--ob-line); }
+  #onboard .ob-head-in { position:relative; height:52px; max-width:440px; margin:0 auto; padding:0 16px; display:flex; flex-direction:column; justify-content:center; gap:7px; }
+  #onboard .ob-chapter { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ob-body); text-align:center; }
+  #onboard .ob-track { height:4px; border-radius:99px; background:var(--ob-line); overflow:hidden; }
+  #onboard .ob-track i { display:block; height:100%; width:0; background:var(--ob-cyan); border-radius:99px; transition:width .3s ease; }
+  #onboard .ob-back { position:absolute; left:-30px; top:50%; transform:translateY(-50%); width:28px; height:28px; border:0; background:none; color:var(--ob-body); border-radius:8px; display:grid; place-items:center; cursor:pointer; }
+  #onboard .ob-back:hover { color:var(--ob-ink); background:#fff; }
+  #onboard .ob-back[hidden] { display:none; }
+  #onboard .card { display:none; width:100%; max-width:440px; margin:0 auto; background:#fff; border:1px solid var(--ob-line); border-radius:16px;
+    box-shadow:0 4px 20px -2px rgba(0,0,0,.06), 0 2px 6px -1px rgba(0,0,0,.02); padding:32px; }
+  #onboard .card.active { display:block; animation:obCardIn .22s ease both; }
+  #onboard.hold .card.active { animation:none; opacity:0; }
+  @keyframes obCardIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) { #onboard .card.active, #onboard.closing { animation:none; } #onboard.hold .card.active { opacity:1; } #onboard .ob-track i { transition:none; } }
+  #onboard h1, #onboard h2 { font-size:20px; font-weight:700; line-height:1.35; letter-spacing:-.01em; color:var(--ob-ink); margin:0 0 6px; }
+  #onboard p, #onboard .ob-p { font-size:13px; line-height:1.5; color:var(--ob-body); margin:0 0 20px; }
+  #onboard .ob-help { font-size:11px; color:var(--ob-help); margin-top:12px; }
+  #onboard .ob-quiet { font-size:13px; color:var(--ob-body); margin:0 0 6px; }
+  #onboard .ob-stack { display:grid; gap:10px; }
+  #onboard .pill { display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; text-align:left; background:#FAFAFA; border:1px solid var(--ob-line); border-radius:12px; padding:16px;
+    font-size:14px; font-weight:500; line-height:1.4; color:var(--ob-ink); cursor:pointer; transition:border-color .15s, background .15s, transform .12s; -webkit-tap-highlight-color:transparent; }
+  #onboard .pill:hover, #onboard .pill.on { border-color:var(--ob-cyan); background:#fff; }
+  #onboard .pill:active, #onboard .pill.press { transform:scale(.99); }
+  #onboard .pill .tick { flex:none; width:18px; height:18px; border-radius:5px; border:1.5px solid var(--ob-field); display:grid; place-items:center; color:#fff; }
+  #onboard .pill.on .tick { background:var(--ob-cyan); border-color:var(--ob-cyan); }
+  #onboard .pill .tick svg { width:12px; height:12px; opacity:0; }
+  #onboard .pill.on .tick svg { opacity:1; }
+  #onboard .ob-input, #onboard textarea.ob-input { display:block; width:100%; padding:12px; border:1px solid var(--ob-field); border-radius:8px; background:#fff; font-size:13px; line-height:1.5; color:var(--ob-ink); outline:none; }
+  #onboard textarea.ob-input { min-height:150px; resize:vertical; padding-right:52px; }
+  #onboard .ob-input::placeholder { color:var(--ob-help); }
+  #onboard .ob-input:focus { border-color:var(--ob-cyan); box-shadow:0 0 0 3px rgba(40,162,195,.12); }
+  #onboard .ob-field { position:relative; }
+  #onboard .ob-mic { position:absolute; right:10px; bottom:10px; width:34px; height:34px; border-radius:50%; border:1px solid var(--ob-line); background:#fff; color:var(--ob-body); display:grid; place-items:center; cursor:pointer; }
   #onboard .ob-mic:hover { color:var(--ob-cyan-ink); border-color:#CBEAF0; }
   #onboard .ob-mic.listening { color:#fff; background:var(--ob-cyan); border-color:var(--ob-cyan); }
   #onboard .ob-mic.unsupported { display:none; }
-  #onboard .ob-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
-  #onboard .ob-chip { border:1px solid var(--ob-line); background:#fff; color:var(--ob-dim); border-radius:99px; padding:7px 13px; font-size:12.5px; font-weight:600; cursor:pointer; }
-  #onboard .ob-chip:hover { border-color:#CBEAF0; color:var(--ob-cyan-ink); }
-  #onboard .ob-chip.on { background:var(--ob-cyan-wash); border-color:#CBEAF0; color:var(--ob-cyan-ink); }
-  /* step 3: plans */
-  #onboard .ob-plans { display:grid; gap:10px; }
-  #onboard .ob-plan { position:relative; display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:1px solid var(--ob-line); border-radius:12px; background:#fff; padding:14px 16px; cursor:pointer; }
-  #onboard .ob-plan .ob-radio { width:18px; height:18px; border-radius:50%; border:1.5px solid #CED5D6; flex:none; display:grid; place-items:center; }
-  #onboard .ob-plan.on { border-color:var(--ob-cyan); box-shadow:0 0 0 3px rgba(40,162,195,.10); }
-  #onboard .ob-plan.on .ob-radio { border-color:var(--ob-cyan); }
-  #onboard .ob-plan.on .ob-radio::after { content:""; width:8px; height:8px; border-radius:50%; background:var(--ob-cyan); }
-  #onboard .ob-plan-main { flex:1; min-width:0; }
-  #onboard .ob-plan-name { font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  #onboard .ob-plan-note { font-size:12px; color:var(--ob-dim); margin-top:2px; }
-  #onboard .ob-plan-price { font-weight:700; font-size:15px; white-space:nowrap; }
-  #onboard .ob-plan-price small { font-weight:500; color:var(--ob-dim); font-size:12px; }
+  #onboard .btn, #onboard .btn-secondary { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; margin-top:20px; padding:14px; border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; transition:opacity .15s, transform .12s; }
+  #onboard .btn { background:#111827; color:#fff; border:1px solid #111827; }
+  #onboard .btn-secondary { background:#F3F4F6; color:#111827; border:1px solid var(--ob-line); }
+  #onboard .btn:disabled, #onboard .btn-secondary:disabled { opacity:.55; cursor:default; }
+  #onboard .btn:active:not(:disabled), #onboard .btn-secondary:active:not(:disabled) { transform:scale(.99); }
+  #onboard .btn + .btn-secondary { margin-top:10px; }
+  #onboard .ob-link { background:none; border:0; padding:0; color:var(--ob-cyan-ink); font-weight:600; font-size:inherit; cursor:pointer; }
+  #onboard .ob-link:hover { text-decoration:underline; text-underline-offset:3px; }
+  #onboard .ob-fine { font-size:12px; color:var(--ob-body); margin-top:16px; text-align:center; }
+  #onboard .ob-err { color:var(--ob-ink); background:var(--ob-ground); border-radius:8px; font-size:12.5px; line-height:1.4; margin-top:12px; padding:9px 12px; }
+  #onboard .ob-err:empty { display:none; }
+  /* the dump, read back */
+  #onboard .ob-sum { border:1px solid var(--ob-line); border-radius:12px; padding:16px; margin:14px 0 4px; }
+  #onboard .ob-k { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--ob-help); margin-bottom:4px; }
+  #onboard .ob-sum-name { font-size:15px; font-weight:700; color:var(--ob-ink); margin-bottom:10px; }
+  #onboard .ob-sum ul { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+  #onboard .ob-sum li { position:relative; padding-left:16px; font-size:13px; color:var(--ob-ink); line-height:1.45; }
+  #onboard .ob-sum li::before { content:""; position:absolute; left:2px; top:.55em; width:6px; height:6px; border-radius:50%; background:var(--ob-cyan); }
+  #onboard .ob-edit-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
+  #onboard .ob-edit-row .ob-input { flex:1; }
+  #onboard .ob-x { flex:none; width:32px; height:32px; border-radius:8px; border:1px solid var(--ob-line); background:#fff; color:var(--ob-body); cursor:pointer; font-size:16px; line-height:1; }
+  #onboard .ob-move { border:1px solid rgba(40,162,195,.35); background:rgba(40,162,195,.04); border-radius:12px; padding:16px; font-size:15px; font-weight:600; color:var(--ob-ink); margin:14px 0 18px; }
+  #onboard .ob-two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  #onboard .ob-learn { list-style:none; padding:0; margin:14px 0 0; display:grid; gap:10px; }
+  #onboard .ob-learn li { border:1px solid var(--ob-line); border-radius:12px; padding:14px 16px; font-size:13.5px; color:var(--ob-ink); line-height:1.45; }
+  /* the paywall */
+  #onboard .ob-plans { display:grid; gap:10px; margin-top:16px; }
+  #onboard .plan { display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:1px solid var(--ob-line); border-radius:12px; background:#FAFAFA; padding:14px 16px; cursor:pointer; color:var(--ob-ink); }
+  #onboard .plan .ob-radio { width:18px; height:18px; border-radius:50%; border:1.5px solid var(--ob-field); flex:none; display:grid; place-items:center; }
+  #onboard .plan.on { border-color:var(--ob-cyan); background:#fff; }
+  #onboard .plan.on .ob-radio { border-color:var(--ob-cyan); }
+  #onboard .plan.on .ob-radio::after { content:""; width:8px; height:8px; border-radius:50%; background:var(--ob-cyan); }
+  #onboard .plan-main { flex:1; min-width:0; }
+  #onboard .plan-name { font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  #onboard .plan-note { font-size:12px; color:var(--ob-body); margin-top:2px; }
+  #onboard .plan-price { font-weight:700; font-size:14px; white-space:nowrap; }
+  #onboard .plan-price small { font-weight:500; color:var(--ob-body); font-size:12px; }
   #onboard .ob-badge { font-size:10px; font-weight:700; letter-spacing:.04em; color:var(--ob-mint-ink); background:var(--ob-mint-wash); border:1px solid #C7EFDF; border-radius:99px; padding:2px 8px; }
-  #onboard .ob-free-note { font-size:12.5px; color:var(--ob-dim); text-align:center; margin-top:12px; }
-  /* step 4: handoff */
-  #onboard .ob-handoff { text-align:center; padding:18px 0 6px; }
-  #onboard .ob-handoff-mark { width:42px; height:42px; border-radius:12px; margin:0 auto 14px; display:grid; place-items:center; background:var(--ob-mint-wash); border:1px solid #C7EFDF; color:var(--ob-mint); }
+  #onboard .ob-trial { margin-top:14px; border:1px solid var(--ob-line); border-radius:12px; padding:14px 16px; }
+  #onboard .ob-trial[hidden] { display:none; }
+  #onboard .ob-trial-line { font-size:13px; color:var(--ob-ink); font-weight:600; margin-bottom:10px; }
+  #onboard .ob-tl { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+  #onboard .ob-tl li { display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--ob-body); }
+  #onboard .ob-tl li b { color:var(--ob-ink); font-weight:600; min-width:48px; }
+  #onboard .ob-tl li i { width:8px; height:8px; border-radius:50%; background:var(--ob-line); flex:none; }
+  #onboard .ob-tl li:first-child i { background:var(--ob-mint); }
+  #onboard .ob-sponsor { margin-top:22px; padding-top:18px; border-top:1px solid var(--ob-line); }
+  #onboard .ob-sponsor b { display:block; font-size:13px; color:var(--ob-ink); margin-bottom:4px; }
+  #onboard .ob-sponsor p { font-size:12px; margin:0 0 8px; }
+  #onboard .ob-sponsor a { color:var(--ob-cyan-ink); font-weight:600; font-size:12.5px; text-decoration:none; }
+  #onboard .ob-sponsor a:hover { text-decoration:underline; text-underline-offset:3px; }
+  /* account, only when a paid plan is chosen */
+  #onboard .ob-oauth { display:grid; gap:10px; }
+  #onboard .ob-oauth .btn-secondary { margin-top:0; background:#fff; }
+  #onboard .ob-oauth svg { width:17px; height:17px; flex:none; }
+  #onboard .ob-divider { display:flex; align-items:center; gap:12px; color:var(--ob-help); font-size:12px; margin:18px 0 6px; }
+  #onboard .ob-divider::before, #onboard .ob-divider::after { content:""; flex:1; height:1px; background:var(--ob-line); }
+  #onboard label.ob-f { display:block; font-size:12px; font-weight:600; color:var(--ob-body); margin:12px 0 6px; }
+  #onboard .ob-row2 { display:flex; gap:12px; }
+  #onboard .ob-row2 > div { flex:1; }
   @media (max-width: 520px) {
-    #onboard { padding:calc(20px + env(safe-area-inset-top,0px)) 12px calc(24px + env(safe-area-inset-bottom,0px)); }
-    #onboard .ob-card { padding:24px 20px 22px; }
-    #onboard h1, #onboard h2 { font-size:20px; }
+    #onboard { padding-left:12px; padding-right:12px; }
+    #onboard .ob-back { left:4px; }
+    #onboard .ob-head-in { padding:0 44px; }
     #onboard .ob-row2 { flex-direction:column; gap:0; }
   }
 
@@ -1976,6 +1989,35 @@
   @media (prefers-reduced-motion: reduce) { .nx-spot, .nx-spot.below, .nx-spot.in { transform: none; transition: opacity .2s; } }
 
   /* phone (kept last so it wins) */
+  /* ---- profile effects (onboarding answers 2–12): small, quiet variations on what's already here ---- */
+  #homeReturnTop[hidden] { display: none; }
+  .home-return-top { width: 100%; margin: 0 0 18px; }
+  .home-return-top .hr-line { flex-direction: column; align-items: flex-start; gap: 9px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; box-shadow: var(--card-shadow); font-size: 15px; color: var(--ink); }
+  .home-center.return-first .home-side #homeReturn { display: none; }
+  .home-return .hr-go { margin-top: 4px; font-size: 13px; }
+  @media (min-width: 900px) { .home-return-top { display: none !important; } .home-center.return-first .home-side #homeReturn { display: block; } }
+  #pane-stuck.why-on .door-why { display: block; margin-top: 12px; }
+  #pane-stuck.why-on .door-why .q { color: #8A8A85; }
+  #pane-stuck.why-on .door-why .a { color: #9B9C98; font-size: 13px; line-height: 1.5; }
+  #pane-stuck.why-none .door-why, #pane-stuck.why-none .why-works, #pane-stuck.why-none .stuck-tag { display: none !important; }
+  #pane-stuck .stuck-lighter { margin-top: 4px; }
+  .lockdown-leave { margin-top: 26px; width: 100%; max-width: 420px; display: grid; gap: 10px; }
+  .lockdown-leave[hidden] { display: none; }
+  .lockdown-leave input { width: 100%; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid #2E2F33; background: #17181B; color: #EDEDEA; font: inherit; font-size: 15px; outline: none; }
+  .lockdown-leave input:focus { border-color: #5E6066; }
+  .lockdown-leave-row { display: flex; gap: 10px; justify-content: center; }
+  .lockdown-leave-row button { border: 1px solid #2E2F33; background: #fff; color: #111312; border-radius: var(--radius-sm); padding: 9px 16px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .lockdown-leave-row button + button { background: transparent; color: #9B9C98; }
+  .anchor-last { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+  .anchor-last span { display: block; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--slate); margin-bottom: 4px; }
+  .nx-start-here { display: inline-block; margin-left: 8px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 99px; padding: 2px 7px; vertical-align: 2px; }
+  .nx-more { display: block; width: 100%; margin-top: 10px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: var(--radius-sm); background: none; color: var(--slate); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; text-align: center; }
+  .nx-more:hover { color: var(--ink); border-color: #CED5D6; }
+  .nx-now-bar { margin-top: 8px; height: 4px; border-radius: 99px; background: rgba(40, 162, 195, 0.14); overflow: hidden; max-width: 260px; }
+  .nx-now-bar i { display: block; height: 100%; background: #28A2C3; border-radius: 99px; }
+  .nx-fit { margin: 2px 0 10px; font-size: 12.5px; color: var(--slate); }
+  .nx-fit[hidden] { display: none; }
+
   @media (max-width: 720px) {
     body { background: #fff; }
     .main::before { background: #fff; height: 64px; border-bottom: 3px solid var(--ink); }
@@ -2051,127 +2093,216 @@
 </style>
 </head>
 <body>
+<!-- the splash: every load, for everyone. pure CSS timing; the script removes it at 2s (or on a tap / key) and says so. -->
+<div id="nxSplash" aria-hidden="true">
+  <div class="nx-splash-float">
+    <svg class="nx-splash-mark" viewBox="92 168 838 687"><g fill="#FFFFFF"><path d="M152 188 H320 L765 672 H870 Q910 672 910 712 V795 Q910 835 870 835 H650 L230 355 H112 V228 Q112 188 152 188 Z"/><path d="M573 188 H870 Q910 188 910 228 V570 H765 V352 H573 Z"/><path d="M112 462 H250 V672 H430 V835 H152 Q112 835 112 795 Z"/></g></svg>
+    <div class="nx-splash-word">NENEMI</div>
+  </div>
+</div>
+<script>
+(function () {
+  var s = document.getElementById('nxSplash'); if (!s) return;
+  var over = false, t = setTimeout(end, 1400);
+  function end() {
+    if (over) return; over = true; clearTimeout(t); document.removeEventListener('keydown', key);
+    s.classList.add('away');
+    setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); window.__nxSplashDone = true; document.dispatchEvent(new Event('nx-splash-done')); }, 600);
+  }
+  function key(e) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') end(); }
+  s.addEventListener('click', end); document.addEventListener('keydown', key);
+})();
+</script>
   <a class="skip-link" href="#main">Skip to content</a>
   <h1 class="sr-only">Nenemi</h1>
 
-<!-- ============ ONBOARDING WALL (hidden until the gate shows it) ============ -->
+<!-- ============ ONBOARDING (v6): one card at a time; the gate shows it ============ -->
 <div id="onboard" hidden aria-label="Welcome to NÈNÈMI">
-  <!-- splash: just the mark and the name, white on ink, floating in -->
-  <div class="ob-splash" id="obSplash" hidden onclick="obSplashDone()">
-    <div class="ob-splash-float">
-      <svg class="ob-splash-mark" viewBox="92 168 838 687" aria-hidden="true"><g fill="#FFFFFF"><path d="M152 188 H320 L765 672 H870 Q910 672 910 712 V795 Q910 835 870 835 H650 L230 355 H112 V228 Q112 188 152 188 Z"/><path d="M573 188 H870 Q910 188 910 228 V570 H765 V352 H573 Z"/><path d="M112 462 H250 V672 H430 V835 H152 Q112 835 112 795 Z"/></g></svg>
-      <div class="ob-splash-word">NENEMI</div>
+  <div id="header-bar">
+    <div class="ob-head-in">
+      <button type="button" class="ob-back" id="obBack" onclick="obBackStep()" aria-label="Back" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <div class="ob-chapter" id="obChapter">Hello</div>
+      <div class="ob-track" aria-hidden="true"><i id="obFill"></i></div>
     </div>
   </div>
-  <div class="ob-card" role="dialog" aria-labelledby="obTitle">
-    <div class="ob-top">
-      <div class="ob-brand"><img src="/photos/icon/nenemi-mark-ink.png" alt=""><span>NENEMI</span></div>
-      <div class="ob-dots" aria-hidden="true"><i class="on" id="obd1"></i><i id="obd2"></i><i id="obd3"></i><i id="obd4"></i></div>
-    </div>
 
-    <!-- FRAME 1: welcome -->
-    <div class="ob-step active" id="obf1">
-      <h1 id="obTitle" class="ob-hero">Welcome to NÈNÈMI.</h1>
-      <p class="ob-lead">Built for your brain, not their expectations.</p>
-      <p class="ob-sub">A quiet place to set down the open loops so you can pick them up when you're ready.</p>
-      <button class="ob-btn" type="button" onclick="obStep('rules')">Let's begin →</button>
-      <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
-    </div>
+  <!-- 1 -->
+  <section class="card" id="ob-hello" role="dialog" aria-labelledby="obTitle">
+    <h1 id="obTitle">Hey, I'm NÈNÈMI.</h1>
+    <p>I help you keep track of what's going on, figure out what matters today, and pick things back up when you lose the thread.</p>
+    <button class="btn" type="button" onclick="advanceTo('ob-name')">Continue</button>
+    <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
+  </section>
 
-    <!-- FRAME 2: the mental model -->
-    <div class="ob-step" id="obf2">
-      <div class="ob-eyebrow">How it works</div>
-      <h2>Three simple rules.</h2>
-      <ol class="ob-rules">
-        <li><span class="ob-rule-n">1</span><span><b>Dump the noise:</b> Drop thoughts without worrying where they go.</span></li>
-        <li><span class="ob-rule-n">2</span><span><b>Rooms hold context:</b> Projects stay intact so you never lose your thread.</span></li>
-        <li><span class="ob-rule-n">3</span><span><b>One move today:</b> We bring only what matters right now onto your schedule.</span></li>
-      </ol>
-      <button class="ob-btn" type="button" onclick="obStep(2)">Got it →</button>
-    </div>
+  <!-- 2 -->
+  <section class="card" id="ob-name">
+    <h2>What should I call you?</h2>
+    <p>First name or nickname is perfect.</p>
+    <form onsubmit="event.preventDefault(); obNameNext();">
+      <input class="ob-input" id="obName" type="text" maxlength="40" autocomplete="given-name" aria-label="Your first name or nickname">
+      <button class="btn" type="submit">Continue</button>
+    </form>
+  </section>
 
-    <!-- STEP 2: one question -->
-    <div class="ob-step" id="obs2">
-      <div class="ob-eyebrow">Your first move</div>
-      <h2>What's taking up the most space in your head right now?</h2>
-      <p class="ob-sub">However it comes out is fine.</p>
-      <div class="ob-thought">
-        <textarea id="obThought" maxlength="600" aria-label="What's taking up the most space in your head" placeholder="The launch, the thing with the landlord, that email I keep not sending…"></textarea>
+  <!-- 3–12 are built from OB_QS -->
+  <div id="obQs" style="display:contents"></div>
+
+  <!-- 13 -->
+  <section class="card" id="ob-moment">
+    <p class="ob-quiet">You don't need to answer this right now, but…</p>
+    <h2>Are you planning for the day you actually have, or the day you wish you were having?</h2>
+    <button class="btn" type="button" onclick="advanceTo('ob-dump')">Continue</button>
+  </section>
+
+  <!-- 14 -->
+  <section class="card" id="ob-dump">
+    <h2>Okay. What's in your head right now?</h2>
+    <p>Doesn't have to be organized. Just get it out.</p>
+    <form onsubmit="event.preventDefault(); obDumpNext();">
+      <div class="ob-field">
+        <textarea class="ob-input" id="obThought" maxlength="1500" aria-label="What's in your head right now"></textarea>
         <button type="button" class="ob-mic mic-btn" id="obMic" title="Say it instead" aria-label="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></button>
       </div>
-      <div class="ob-chips" role="group" aria-label="Or start from one of these">
-        <button type="button" class="ob-chip" onclick="obChip(this)">Work &amp; Projects</button>
-        <button type="button" class="ob-chip" onclick="obChip(this)">Life Admin</button>
-        <button type="button" class="ob-chip" onclick="obChip(this)">Something I'm avoiding</button>
-      </div>
-      <button class="ob-btn" type="button" onclick="obIntake()">Organize this for me →</button>
-    </div>
+      <button class="btn" id="obDumpBtn" type="submit">Continue</button>
+    </form>
+  </section>
 
-    <!-- FRAME 4: respectful pricing -->
-    <div class="ob-step" id="obs3">
-      <div class="ob-eyebrow">Whenever you're ready</div>
-      <h2>Keep it free, or unlock unlimited space.</h2>
-      <p class="ob-sub">2 rooms free forever. No countdown timers or surprise lockouts.</p>
-      <div class="ob-plans" role="radiogroup" aria-label="Full access billing">
-        <button type="button" class="ob-plan on" role="radio" aria-checked="true" data-plan="annual" onclick="obPickPlan('annual')">
-          <span class="ob-radio"></span>
-          <span class="ob-plan-main"><span class="ob-plan-name">Annual <span class="ob-badge">14-day free trial</span></span><span class="ob-plan-note">$4/mo, billed once a year</span></span>
-          <span class="ob-plan-price">$48<small>/yr</small></span>
-        </button>
-        <button type="button" class="ob-plan" role="radio" aria-checked="false" data-plan="monthly" onclick="obPickPlan('monthly')">
-          <span class="ob-radio"></span>
-          <span class="ob-plan-main"><span class="ob-plan-name">Monthly</span><span class="ob-plan-note">Cancel anytime</span></span>
-          <span class="ob-plan-price">$6<small>/mo</small></span>
-        </button>
-      </div>
-      <button class="ob-btn" id="obPaidBtn" type="button" onclick="obChoosePaid()">Start the 14-day trial</button>
-      <button class="ob-btn-free" type="button" onclick="obChooseFree()">Start with 2 free rooms</button>
-      <div class="ob-err" id="obErr3" role="status"></div>
-    </div>
+  <!-- 15 -->
+  <section class="card" id="ob-check">
+    <h2>Did I get that right?</h2>
+    <div id="obCheckBody"></div>
+  </section>
 
-    <!-- FRAME 4b: an account, only when Full access is chosen -->
-    <div class="ob-step" id="obsAcct">
-      <div class="ob-eyebrow">One quick thing</div>
-      <h2>Full access lives on an account.</h2>
-      <p class="ob-sub">So it can follow you to every device. Your first room is already saved on this one.</p>
-      <div class="ob-oauth">
-        <button type="button" onclick="obOAuth('oauth_apple')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.1zM14 5.1c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3-1.5z"/></svg>Continue with Apple</button>
-        <button type="button" onclick="obOAuth('oauth_google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8c.9-2.6 3.3-4.4 6.2-4.4z"/></svg>Continue with Google</button>
-      </div>
-      <div class="ob-divider">or with email</div>
+  <!-- 16 -->
+  <section class="card" id="ob-start">
+    <p class="ob-quiet" id="obStartLine"></p>
+    <h2>Want somewhere easy to start?</h2>
+    <div class="ob-stack" style="margin-top:16px">
+      <button type="button" class="pill" onclick="obStartPick(this, true)">Yeah</button>
+      <button type="button" class="pill" onclick="obStartPick(this, false)">Not right now</button>
+    </div>
+  </section>
+
+  <!-- 17 -->
+  <section class="card" id="ob-small">
+    <div class="ob-k">Your next move</div>
+    <div class="ob-move" id="obMove"></div>
+    <h2>Does that feel small enough?</h2>
+    <div class="ob-two" style="margin-top:16px" id="obSmallPills">
+      <button type="button" class="pill" onclick="obSmallYes(this)">Yep</button>
+      <button type="button" class="pill" onclick="obSmaller(this)">Smaller</button>
+    </div>
+    <form id="obSmallForm" hidden onsubmit="event.preventDefault(); obSmallSave();" style="margin-top:16px">
+      <input class="ob-input" id="obSmallIn" maxlength="160" placeholder="What's the smallest first piece?" aria-label="What's the smallest first piece?">
+      <button class="btn" type="submit">That's it</button>
+    </form>
+    <div class="ob-help" id="obSmallNote"></div>
+  </section>
+
+  <!-- 18 -->
+  <section class="card" id="ob-today">
+    <h2>What actually feels realistic today?</h2>
+    <p>The rest stays safe in your room.</p>
+    <div class="ob-stack" id="obTodayList"></div>
+    <button class="btn" type="button" onclick="obTodayNext()">Continue</button>
+  </section>
+
+  <!-- 19 -->
+  <section class="card" id="ob-learn">
+    <h2>Here's what I'm learning about you.</h2>
+    <ul class="ob-learn" id="obLearnList"></ul>
+    <button class="btn" type="button" onclick="advanceTo('ob-better')">Continue</button>
+  </section>
+
+  <!-- 20: never stored -->
+  <section class="card" id="ob-better">
+    <p class="ob-quiet">You don't need to answer this now, but…</p>
+    <h2>What would a better day actually feel like?</h2>
+    <form onsubmit="event.preventDefault(); obAfterQuestions();">
+      <textarea class="ob-input" id="obBetter" maxlength="600" aria-label="What would a better day actually feel like" style="min-height:110px;padding-right:12px;margin-top:14px"></textarea>
+      <button class="btn" type="submit">Continue</button>
+    </form>
+  </section>
+
+  <!-- paywall -->
+  <section class="card" id="ob-pay">
+    <h2>Want me to keep this with you?</h2>
+    <div class="ob-plans" role="radiogroup" aria-label="Choose a plan">
+      <button type="button" class="plan on" role="radio" aria-checked="true" data-plan="annual" onclick="obPickPlan('annual')">
+        <span class="ob-radio"></span>
+        <span class="plan-main"><span class="plan-name">Annual <span class="ob-badge">7 days free</span></span></span>
+        <span class="plan-price" id="obPriceAnnual">$59.99<small>/year</small></span>
+      </button>
+      <button type="button" class="plan" role="radio" aria-checked="false" data-plan="monthly" onclick="obPickPlan('monthly')">
+        <span class="ob-radio"></span>
+        <span class="plan-main"><span class="plan-name">Monthly</span><span class="plan-note">No trial.</span></span>
+        <span class="plan-price" id="obPriceMonthly">$10.99<small>/month</small></span>
+      </button>
+      <button type="button" class="plan" role="radio" aria-checked="false" data-plan="free" onclick="obPickPlan('free')">
+        <span class="ob-radio"></span>
+        <span class="plan-main"><span class="plan-name">Free</span><span class="plan-note">Limited features.</span></span>
+        <span class="plan-price">$0</span>
+      </button>
+    </div>
+    <div class="ob-trial" id="obTrial">
+      <div class="ob-trial-line">And I'm not going to make you remember when the trial ends.</div>
+      <ul class="ob-tl">
+        <li><i></i><b>Today</b>$0</li>
+        <li><i></i><b>Day 5</b>we remind you</li>
+        <li><i></i><b>Day 7</b>annual plan starts</li>
+      </ul>
+    </div>
+    <button class="btn" id="obPaidBtn" type="button" onclick="obPayGo()">Start 7 days free</button>
+    <div class="ob-err" id="obErr3" role="status"></div>
+    <div class="ob-sponsor">
+      <b>Can't afford NÈNÈMI right now? Reach out. We got you.</b>
+      <p>We keep sponsored memberships available, funded by us and by people who donate access for someone else.</p>
+      <a href="mailto:marcos@ollinos.com?subject=Sponsored%20access">Ask about sponsored access</a>
+    </div>
+  </section>
+
+  <!-- account, only when a paid plan is chosen -->
+  <section class="card" id="ob-acct">
+    <h2>Full access lives on an account.</h2>
+    <p>So it can follow you to every device. Your first room is already saved on this one.</p>
+    <div class="ob-oauth">
+      <button type="button" class="btn-secondary" onclick="obOAuth('oauth_apple')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.700 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.700 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.1zM14 5.1c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3-1.5z"/></svg>Continue with Apple</button>
+      <button type="button" class="btn-secondary" onclick="obOAuth('oauth_google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.900 3.3-4.8 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8c.9-2.6 3.3-4.4 6.2-4.4z"/></svg>Continue with Google</button>
+    </div>
+    <div class="ob-divider">or with email</div>
+    <form onsubmit="event.preventDefault(); obCreate();">
       <label class="ob-f" for="obEmail">Email</label>
-      <input class="ob-in" id="obEmail" type="email" autocomplete="email" placeholder="you@email.com">
+      <input class="ob-input" id="obEmail" type="email" autocomplete="email" placeholder="you@email.com">
       <label class="ob-f" for="obPass">Password</label>
-      <input class="ob-in" id="obPass" type="password" autocomplete="new-password" placeholder="9+ characters" onkeydown="if (event.key === 'Enter') obCreate()">
-      <button class="ob-btn" id="obStartBtn" type="button" onclick="obCreate()">Continue</button>
-      <div class="ob-err" id="obErr1" role="status"></div>
-      <div class="ob-fine"><button type="button" class="ob-link" onclick="obStep(3)">← Back to plans</button></div>
-    </div>
+      <input class="ob-input" id="obPass" type="password" autocomplete="new-password" placeholder="9+ characters">
+      <button class="btn" id="obStartBtn" type="submit">Continue</button>
+    </form>
+    <div class="ob-err" id="obErr1" role="status"></div>
+  </section>
 
-    <!-- STEP 1a: confirm email -->
-    <div class="ob-step" id="obsCode">
-      <h2>One quick check.</h2>
-      <p class="ob-sub">A 6-digit code went to <b id="obCodeEmail">your email</b>, just to be sure it's you.</p>
-      <label class="ob-f" for="obCode">Code</label>
-      <input class="ob-in" id="obCode" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" onkeydown="if (event.key === 'Enter') obVerify()">
-      <button class="ob-btn" id="obCodeBtn" type="button" onclick="obVerify()">Confirm</button>
-      <div class="ob-err" id="obErrCode" role="status"></div>
-      <div class="ob-fine"><button type="button" class="ob-link" onclick="obResend()">Send the code again</button></div>
-    </div>
+  <section class="card" id="ob-code">
+    <h2>One quick check.</h2>
+    <p>A 6-digit code went to <b id="obCodeEmail">your email</b>, just to be sure it's you.</p>
+    <form onsubmit="event.preventDefault(); obVerify();">
+      <input class="ob-input" id="obCode" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" aria-label="Code">
+      <button class="btn" id="obCodeBtn" type="submit">Confirm</button>
+    </form>
+    <div class="ob-err" id="obErrCode" role="status"></div>
+    <div class="ob-fine"><button type="button" class="ob-link" onclick="obResend()">Send the code again</button></div>
+  </section>
 
-    <!-- STEP 1b: name, only when the account needs one -->
-    <div class="ob-step" id="obsName">
-      <h2>What should we call you?</h2>
-      <p class="ob-sub">Just so it feels like yours.</p>
+  <section class="card" id="ob-acctname">
+    <h2>What should we put on the account?</h2>
+    <p>Just so it feels like yours.</p>
+    <form onsubmit="event.preventDefault(); obSaveName();">
       <div class="ob-row2">
-        <div><label class="ob-f" for="obFirst">First name</label><input class="ob-in" id="obFirst" autocomplete="given-name"></div>
-        <div><label class="ob-f" for="obLast">Last name</label><input class="ob-in" id="obLast" autocomplete="family-name"></div>
+        <div><label class="ob-f" for="obFirst">First name</label><input class="ob-input" id="obFirst" autocomplete="given-name"></div>
+        <div><label class="ob-f" for="obLast">Last name</label><input class="ob-input" id="obLast" autocomplete="family-name"></div>
       </div>
-      <button class="ob-btn" id="obNameBtn" type="button" onclick="obSaveName()">Continue</button>
-      <div class="ob-err" id="obErr2" role="status"></div>
-    </div>
-
-  </div>
+      <button class="btn" id="obNameBtn" type="submit">Continue</button>
+    </form>
+    <div class="ob-err" id="obErr2" role="status"></div>
+  </section>
 </div>
 
 <div class="nx-toasts" id="nxToasts" aria-live="polite" aria-atomic="false"></div>
@@ -2318,25 +2449,26 @@
 
         <div class="chat-log" id="chatLog"></div>
 
+        <div class="home-return home-return-top" id="homeReturnTop" hidden></div>
         <div class="where-now" id="whereNow">
           <div class="where-h">Where are you right now?</div>
           <div class="where-grid">
-            <button type="button" class="where-card" onclick="go('rooms')">
+            <button type="button" class="where-card" data-k="rooms" onclick="go('rooms')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="10"/><rect x="4" y="8" width="16" height="1.6" fill="#fff"/><rect x="4" y="11.2" width="16" height="1.6" fill="#fff"/><rect x="4" y="14.4" width="16" height="1.6" fill="#fff"/></svg></span>
               <span class="wc-tx"><b>Rooms</b><i>Pick up where you left</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </button>
-            <button type="button" class="where-card" onclick="go('calendar')">
+            <button type="button" class="where-card" data-k="day" onclick="go('calendar')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="14" width="4" height="7" rx="1"/><rect x="10" y="9" width="4" height="12" rx="1"/><rect x="17" y="4" width="4" height="17" rx="1"/></svg></span>
               <span class="wc-tx"><b>My day</b><i>Dump it all here. Get a day back</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </button>
-            <button type="button" class="where-card" onclick="go('stuck')">
+            <button type="button" class="where-card" data-k="stuck" onclick="go('stuck')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="12" r="7" fill="currentColor"/><circle cx="15" cy="12" r="6.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span>
               <span class="wc-tx"><b>Feeling stuck?</b><i>Been there. Let's get you unstuck</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
             </button>
-            <button type="button" class="where-card" onclick="go('humans')">
+            <button type="button" class="where-card" data-k="humans" onclick="go('humans')">
               <span class="wc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7Z"/></svg></span>
               <span class="wc-tx"><b>Human support</b><i>Additional support is here for you</i></span>
               <span class="wc-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
@@ -2386,6 +2518,7 @@
                 </div>
                 <span class="nx-day-mark" id="nxHorizonCount">OPEN SPACE</span>
               </div>
+              <p class="nx-fit" id="nxFit" hidden></p>
               <div id="nxHorizon"></div>
               <form id="nxDayAdd" class="nx-quick-add" onsubmit="event.preventDefault(); nxAddToday();">
                 <input id="nxDayInput" type="text" required maxlength="160" placeholder="Add something for today" autocomplete="off">
@@ -2409,6 +2542,7 @@
               <div class="nx-eyebrow">Whenever you're ready</div>
               <p>Clearing a day removes its plan, not its work. You can always find an open step inside its room.</p>
             </section>
+            <button type="button" class="nx-text-button nx-recap-link" id="nxSyncLink" hidden onclick="showCalendarSync()">↗ Sync my calendar</button>
             <button type="button" class="nx-text-button nx-recap-link" onclick="go('notes')">↗ Recap my day</button>
           </div>
         </div>
@@ -2675,6 +2809,10 @@
         <div class="lockdown-timer" id="lockdownTimer">0:00</div>
         <div class="lockdown-hint">Everything else is put away. This is the only thing here.</div>
         <button type="button" class="lockdown-done" id="lockdownDone" onclick="focusDone()" hidden>That's done.</button>
+        <form class="lockdown-leave" id="lockdownLeave" hidden onsubmit="event.preventDefault(); saveLeaveNote();">
+          <input id="lockdownLeaveIn" maxlength="200" placeholder="Where did you leave it?" aria-label="Where did you leave it?" autocomplete="off">
+          <div class="lockdown-leave-row"><button type="submit">Save it</button><button type="button" onclick="document.getElementById('lockdownLeaveIn').value=''; saveLeaveNote();">Skip</button></div>
+        </form>
       </div>
       <div class="lockdown-check" aria-hidden="true"><svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 5-5"/></svg></div>
       <button class="lockdown-exit" onclick="confirmExit()">[ step away ]</button>
@@ -2739,17 +2877,24 @@
     const el = document.getElementById('homeReturn'); if (!el) return;
     const mine = rooms.filter(r => !r.demo && !r.archived);
     const last = (lastRoomId && rooms.find(r => r.id === lastRoomId)) || mine[0] || null;
-    if (!last) { el.innerHTML = `<div class="hr-empty">Nothing to return to yet. Say something above and it makes a room.</div>`; }
+    let html;
+    if (!last) html = `<div class="hr-empty">Nothing to return to yet. Say something above and it makes a room.</div>`;
     else {
       const open = (last.loops || []).find(l => !l.resolved);
-      el.innerHTML = `<div class="hr-line" onclick="openRoom('${last.id}')"><span class="hr-k">Where you left off</span><span>${escapeHtml(last.name)}${open ? ' — ' + escapeHtml(open.text) : ''}</span></div>`;
+      const withMove = open && (pf('useful') === 'next' || pfReturnFirst()); // they asked for the next move up front
+      html = `<div class="hr-line" onclick="openRoom('${last.id}')"><span class="hr-k">Where you left off</span><span>${escapeHtml(last.name)}${open ? ' — ' + escapeHtml(open.text) : ''}</span>${withMove ? `<button type="button" class="nx-button dark hr-go" onclick="event.stopPropagation(); homePickUp('${last.id}')">Start focus ↗</button>` : ''}</div>`;
     }
+    el.innerHTML = html;
+    const top = document.getElementById('homeReturnTop');
+    if (top) { top.hidden = !pfReturnFirst(); top.innerHTML = top.hidden ? '' : html; }
     renderHomeRoomsPreview(mine);
+    applyProfileChrome();
   }
+  function homePickUp(id) { openRoom(id); pickUp(); }
   function renderHomeRoomsPreview(mine) {
     const el = document.getElementById('homeRoomsPreview'); if (!el) return;
     mine = mine || rooms.filter(r => !r.demo && !r.archived);
-    const list = mine.slice().sort(roomOrder).slice(0, 5);
+    const list = mine.slice().sort(roomOrder).slice(0, pf('useful') === 'track' ? 50 : 5); // keeping track of everything: every room in view
     el.innerHTML = list.map(r => {
       const openCount = r.loops.filter(l => !l.resolved).length;
       return `<div class="rgp-card" onclick="openRoom('${r.id}')">
@@ -2811,7 +2956,7 @@
 
   // ---------- greeting: your name, the hour, and one line that knows what's going on ----------
   // Rotates every visit. Never a countdown, never a guilt trip, never a couch question.
-  function userFirstName() { try { const u = window.Clerk && Clerk.user; return u ? (u.firstName || u.username || '') : ''; } catch (e) { return ''; } }
+  function userFirstName() { let n = ''; try { const u = window.Clerk && Clerk.user; n = u ? (u.firstName || u.username || '') : ''; } catch (e) {} return n || pf('name') || ''; }
   // one step per page load, not per render
   let visitN = 0; try { visitN = (parseInt(localStorage.getItem('nenemi.visit') || '0', 10) + 1) % 100000; localStorage.setItem('nenemi.visit', String(visitN)); } catch (e) {}
   // the greeting is steady: the time of day and their name, then one small question. never their projects, never their day.
@@ -3123,7 +3268,7 @@
       : `<p class="nx-meta">No open steps in this room.</p>`;
     document.querySelectorAll('#rvLoops .nx-loop-text').forEach((el, idx) => makeEditable(el, { set: (t) => { if (t) r.loops[openLoops[idx].index].text = t; } }));
 
-    const logExpanded = showAllLogFor === r.id;
+    const logExpanded = showAllLogFor === r.id || (pfLogOpen() && showAllLogFor !== '-' + r.id);
     const logToggle = document.getElementById('rvLogToggle');
     logToggle.parentElement.hidden = false;
     logToggle.classList.toggle('open', logExpanded);
@@ -3219,7 +3364,12 @@
   }
   function toggleLoop(i) { currentRoom.loops[i].resolved = !currentRoom.loops[i].resolved; save(); renderRoomView(); }
   let showAllLogFor = null;
-  function toggleLogRow() { showAllLogFor = (currentRoom && showAllLogFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
+  function toggleLogRow() {
+    if (!currentRoom) return;
+    const open = showAllLogFor === currentRoom.id || (pfLogOpen() && showAllLogFor !== '-' + currentRoom.id);
+    showAllLogFor = open ? (pfLogOpen() ? '-' + currentRoom.id : null) : currentRoom.id; // '-id' = closed on purpose where it starts open
+    renderRoomView();
+  }
   let showAllLoopsFor = null;
   function toggleLoopsRow() { showAllLoopsFor = (currentRoom && showAllLoopsFor === currentRoom.id) ? null : (currentRoom && currentRoom.id); renderRoomView(); }
   let showArchived = false;
@@ -3286,8 +3436,9 @@
     const briefHtml = briefSplit && briefSplit[2].trim().length > 3
       ? `${escapeHtml(briefSplit[1])}<span class="anchor-highlight">${escapeHtml(briefSplit[2])}</span>`
       : escapeHtml(briefText);
+    const showLast = pfLastNote() && last && last.text && last.text !== r.brief && !(r.brief || '').includes(last.text);
     document.getElementById('rvSummary').innerHTML = `
-      <div class="anchor-text">${briefHtml}</div>`;
+      <div class="anchor-text">${briefHtml}</div>${showLast ? `<div class="anchor-last"><span>Last note · ${escapeHtml(when(last))}</span>${escapeHtml(last.text.length > 220 ? last.text.slice(0, 220).replace(/\s+\S*$/, '') + '…' : last.text)}</div>` : ''}`;
     makeEditable(document.querySelector('#rvSummary .anchor-text'), { set: (t) => { r.brief = t; } });
     renderConvo(r);
     document.getElementById('rvNext').innerHTML = `
@@ -3297,7 +3448,7 @@
         <button class="nx-button mint re-done" type="button" onclick="doneNext(this)" ${next ? '' : 'disabled'}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg><span>That's done.</span></button>
       </div>
       ${next ? `<p class="nx-shrink">Too big? <button type="button" onclick="toggleShrink()">Make it smaller.</button></p>
-      <form id="nxShrinkForm" class="nx-shrink-form" hidden onsubmit="event.preventDefault(); nxShrink();">
+      <form id="nxShrinkForm" class="nx-shrink-form" ${pf('tripsUp') === 'start' ? '' : 'hidden'} onsubmit="event.preventDefault(); nxShrink();">
         <input id="nxSmallStep" required maxlength="160" placeholder="The smallest first step" autocomplete="off">
         <button class="nx-button dark" type="submit">Add first step</button>
         <button class="nx-button" type="button" onclick="toggleShrink(false)">Cancel</button>
@@ -3865,8 +4016,11 @@
   function shuffled(arr) { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
   function setRegroup(state) {
     regroupState = state;
-    const pool = state ? NUDGES.filter(n => n.s.includes(state)) : NUDGES;
-    nudgeOrder = [...contextNudges(state), ...shuffled(pool)]; nudgePos = 0;
+    let pool = state ? NUDGES.filter(n => n.s.includes(state)) : NUDGES;
+    if (pf('showUp') === 'gentle') pool = pool.filter(n => n.m !== '2-minute rule' && n.m !== 'temptation bundling');
+    let mixed = shuffled(pool);
+    if (pfTool('someone')) mixed = [...mixed.filter(n => n.m === 'body doubling'), ...mixed.filter(n => n.m !== 'body doubling')];
+    nudgeOrder = [...contextNudges(state), ...mixed]; nudgePos = 0;
     showNudge();
   }
   function showNudge() {
@@ -3876,11 +4030,12 @@
     const q = document.getElementById('nudgeQuote');
     if (n.q) { const t = n.q.length > 150 ? n.q.slice(0, 150).replace(/\s+\S*$/, '') + '…' : n.q; q.innerHTML = `\u201c${escapeHtml(t)}\u201d<span class="where">in ${escapeHtml(n.where || '')}</span>`; q.hidden = false; }
     else { q.hidden = true; q.innerHTML = ''; }
-    document.querySelector('.stuck-sub').textContent = 'No pressure to do anything after. Just this.';
+    document.querySelector('.stuck-sub').textContent = pf('showUp') === 'push' ? 'Two minutes counts.' : 'No pressure to do anything after. Just this.';
   }
   function nextNudge() { if (!nudgeOrder.length) setRegroup(regroupState); else { nudgePos++; showNudge(); } }
   function stuckDone() {
-    document.getElementById('nudgeText').textContent = "That's a real start. Proud of you.";
+    const nm = userFirstName();
+    document.getElementById('nudgeText').textContent = nm ? `That's a real start, ${nm}. Proud of you.` : "That's a real start. Proud of you.";
     document.getElementById('nudgeQuote').hidden = true;
     document.getElementById('nudgeTag').textContent = 'celebrate the start · novelty & momentum';
     document.querySelector('.stuck-sub').textContent = '';
@@ -3888,7 +4043,32 @@
   }
 
   // ---------- the Way Back In: four doors (docs/nenemi-way-back-in.md) ----------
-  function showDoors() { document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = true; document.getElementById('stuckNote').textContent = ''; const a = document.querySelector('.app'); if (a) a.classList.remove('sanctuary-move'); }
+  // the why lines, plain or named, depending on what words feel useful to them
+  const DOOR_WHY = {
+    start: ['Starting is the hardest part. We trick the brain by making the task tiny.', 'ADHD task initiation: starting is the hardest part. We trick the brain by making the task tiny.'],
+    full: ['Working memory is limited. Offload the noise so you can focus.', 'Working memory: it runs short, especially with ADHD. Offload the noise so you can focus.'],
+    tired: ['Low energy means high resistance. We lower the bar to create momentum.', 'ADHD and energy: low dopamine means high resistance. We lower the bar to create momentum.'],
+    broke: ['Shame is a productivity killer. We pick up exactly where you left off.', 'Context switching: getting back in is the hard part, not the work. We pick up exactly where you left off.'],
+  };
+  const WHY_WORKS = ['A tiny, specific action gets you moving before the resistance catches up. Momentum does the rest.', 'An ADHD brain often needs a tiny, specific action to get moving before the resistance catches up. Momentum does the rest.'];
+  function applyStuckProfile() {
+    const pane = document.getElementById('pane-stuck'); if (!pane) return;
+    const why = pf('why'), words = pf('words');
+    const named = words === 'yes' || words === 'sometimes';
+    pane.classList.toggle('why-none', why === 'just');
+    pane.classList.toggle('why-on', why === 'tell' || (why !== 'just' && named));
+    const lead = pfLeadDoor();
+    document.querySelectorAll('#doors .door').forEach(d => {
+      const st = (d.getAttribute('onclick') || '').match(/openDoor\('(\w+)'\)/); const k = st && st[1]; if (!k) return;
+      d.style.order = lead === k ? '-1' : '';
+      const w = d.querySelector('.door-why'), a = w && w.querySelector('.a');
+      if (a && words) a.textContent = DOOR_WHY[k][named ? 1 : 0];
+      if (w) w.classList.toggle('open', why === 'tell' && words !== 'sometimes');
+    });
+    const ww = document.querySelector('#pane-stuck .why-works');
+    if (ww) { ww.classList.toggle('open', why === 'tell'); if (words) ww.querySelector('.why-body').textContent = WHY_WORKS[named ? 1 : 0]; }
+  }
+  function showDoors() { applyStuckProfile(); document.getElementById('doors').hidden = false; document.getElementById('stuckMove').hidden = true; document.getElementById('stuckDump').hidden = true; document.getElementById('stuckNote').textContent = ''; const a = document.querySelector('.app'); if (a) a.classList.remove('sanctuary-move'); }
   function openDoor(state) {
     document.getElementById('doors').hidden = true;
     const a = document.querySelector('.app'); if (a) a.classList.add('sanctuary-move');
@@ -3901,18 +4081,25 @@
     document.getElementById('stuckDump').hidden = true; document.getElementById('stuckMove').hidden = false;
     setRegroup(state);
     let note = '';
-    if (state === 'tired') note = lowEnergyDay();
+    const noteEl = document.getElementById('stuckNote');
+    if (state === 'tired') {
+      const en = pf('energy');
+      if (en === 'track') note = 'Your day stays as it is. Just this one thing.';
+      else if (en === 'ask') { noteEl.innerHTML = `<button type="button" class="stuck-btn ghost stuck-lighter" onclick="document.getElementById('stuckNote').textContent = lowEnergyDay(${pf('energy') === 'little' ? 3 : 2})">Make today lighter?</button>`; return; }
+      else note = lowEnergyDay(en === 'little' ? 3 : 2);
+    }
     if (state === 'broke') note = slideForward();
-    if (state === 'start') note = "Your brain sees the whole thing as a mountain. We're looking for the fork.";
-    document.getElementById('stuckNote').textContent = note;
+    if (state === 'start' && pf('why') !== 'just') note = "Your brain sees the whole thing as a mountain. We're looking for the fork.";
+    noteEl.textContent = note;
   }
   // door 3: keep what's fixed, keep two blocks, everything else goes to tomorrow, 15 minutes of air between what's left
-  function lowEnergyDay() {
+  function lowEnergyDay(keepN) {
+    keepN = keepN || 2;
     const list = dayList(today), nowH = today.getHours() + today.getMinutes() / 60;
     const ahead = list.filter(e => e.end > nowH).sort((a, b) => a.start - b.start);
     if (!ahead.length) return "Nothing left on today. That's allowed.";
     const keep = [], move = []; let blocks = 0;
-    ahead.forEach(e => { if (e.kind === 'fixed') keep.push(e); else if (e.kind === 'buffer') { /* re-added below */ } else if (blocks < 2) { keep.push(e); blocks++; } else move.push(e); });
+    ahead.forEach(e => { if (e.kind === 'fixed') keep.push(e); else if (e.kind === 'buffer') { /* re-added below */ } else if (blocks < keepN) { keep.push(e); blocks++; } else move.push(e); });
     const tm = new Date(today); tm.setDate(tm.getDate() + 1); const tmList = dayList(tm);
     move.forEach(e => { const dur = e.end - e.start; const st = nextFreeSlot(tmList, dur, 9); if (st !== null) tmList.push({ start: st, end: st + dur, name: e.name, kind: e.kind }); });
     const rebuilt = [...list.filter(e => e.end <= nowH), ...keep];
@@ -3943,6 +4130,7 @@
     const roomLine = document.getElementById('lockdownRoom');
     roomLine.textContent = room ? room.name : ''; roomLine.hidden = !room;
     document.getElementById('lockdownDone').hidden = !lockdownLoop;
+    const lv = document.getElementById('lockdownLeave'); if (lv) lv.hidden = true;
     document.getElementById('pane-lockdown').classList.remove('finished');
     document.getElementById('lockdownTask').textContent = taskText;
     lockdownSeconds = 0;
@@ -3993,9 +4181,18 @@
     }, 900);
   }
 
+  function saveLeaveNote() {
+    const i = document.getElementById('lockdownLeaveIn'); const t = (i && i.value || '').trim();
+    if (t && currentRoom) { currentRoom.log.unshift({ source: 'typed', ts: Date.now(), text: `Left it here: ${t}` }); save(); }
+    confirmExit();
+  }
   // leaving is one tap. the log line is the app's, neutral, never a score
   function confirmExit() {
     if (document.getElementById('pane-lockdown').classList.contains('finished')) return;
+    // they said they lose where they left off: one optional line before stepping away
+    const leave = document.getElementById('lockdownLeave');
+    if (leave && pfLeaveNote() && currentRoom && leave.hidden) { leave.hidden = false; const i = document.getElementById('lockdownLeaveIn'); i.value = ''; setTimeout(() => i.focus(), 40); return; }
+    if (leave) leave.hidden = true;
     clearInterval(lockdownInterval);
     lockdownLoop = null;
     if (currentRoom && lockdownSeconds >= 120) {
@@ -4018,6 +4215,51 @@
   let loose = []; // thoughts you chose not to put in a room yet
   let notes = {}; // yyyy-mm-dd -> what they wrote about that day. theirs only.
   let checklist = []; // one ongoing to-do list on My Day: [{ id, text, done }]
+  // how they said they work (onboarding 2–12). Every answer changes something real; no answer = the default app.
+  let profile = {};
+  function pf(k) { return profile && profile[k] != null ? profile[k] : null; }
+  function pfTool(t) { return !!(profile && Array.isArray(profile.tools) && profile.tools.includes(t)); }
+  // My day: how many open rows show before the rest wait behind "n more resting"
+  function pfDayCap() { const l = pf('longList'); if (l === 'fine') return 0; if (l === 'urgent') return 5; if (l) return 3; return pf('useful') === 'lighter' ? 3 : 0; }
+  function pfStartHere() { return pf('longList') === 'pick' || pf('tripsUp') === 'matters'; }
+  function pfShowDur() { const t = pf('time'); return !!t && t !== 'normal'; }
+  function pfLastNote() { return ['notes', 'where', 'gone'].includes(pf('slips')) || pf('showUp') === 'context'; }
+  function pfLeaveNote() { return ['where', 'gone'].includes(pf('slips')); }
+  function pfLogOpen() { return pf('tripsUp') === 'remember' || pf('showUp') === 'context'; }
+  function pfRestHours() { return ['reminded', 'gone'].includes(pf('slips')) || pfTool('hope') ? 24 : 34; }
+  function pfReturnFirst() { return pf('useful') === 'resume' || pfTool('visible'); }
+  function pfLeadDoor() { const s = pf('showUp'); if (s === 'talk') return 'full'; return { start: 'start', switch: 'broke', remember: 'broke', matters: 'full', many: 'tired' }[pf('tripsUp')] || null; }
+  // what screen 19 says, from the same answers the app reads
+  function learnLines(p) {
+    const out = [];
+    const u = { track: "I'll keep all your rooms in view.", next: "I'll put your next move where you'll see it first.", resume: "I'll open with where you left off.", lighter: "I'll keep your day lighter." }[p.useful];
+    const s = { structure: "I'll keep things structured.", gentle: "I'll keep it gentle.", push: "I'll give you a little push.", talk: "When you're stuck, I'll start by listening.", context: "I'll help you remember the context." }[p.showUp];
+    const t = { start: "When starting is hard, I'll go smaller first.", switch: "I'll give you more time before a switch.", remember: "I'll keep your trail visible in each room.", matters: "I'll point to one place to start.", many: "When it's too much, I'll help shrink the day." }[p.tripsUp];
+    const l = ['ignore', 'pick', 'urgent', 'stop'].includes(p.longList) ? "I'll show a few things at a time. The rest waits safely in rooms." : null;
+    const tm = p.time && p.time !== 'normal' ? "I'll make time easier to see." : null;
+    const sl = ['notes', 'where', 'gone'].includes(p.slips) ? "I'll give you context when things come back." : p.slips === 'reminded' ? "I'll bring resting things back a little sooner." : null;
+    const e = { little: "When energy drops, I'll lighten the day a little.", track: "When energy drops, I'll keep your plan steady.", ask: "I'll ask before changing your plan." }[p.energy];
+    const w = p.why === 'tell' ? "I'll tell you the why." : p.why === 'just' ? "I'll skip the explanations." : null;
+    const v = p.words === 'yes' ? "I'll use words like ADHD when they help." : ['no', 'figuring'].includes(p.words) ? "I'll keep it in plain words." : null;
+    [u, s, t, l, tm, sl, e, w, v].forEach(x => { if (x && out.length < 5) out.push(x); });
+    if (!out.length) out.push("I'll keep things the way they are and learn as we go.");
+    if (p.name) out.unshift(`Good to meet you, ${p.name}.`);
+    return out;
+  }
+  // the parts of the app that change shape from the answers, applied wherever they show
+  function applyProfileChrome() {
+    const ci = document.getElementById('composerInput');
+    if (ci) ci.placeholder = pf('showUp') === 'talk' ? "Talk it through here. I'll keep up."
+      : (pfTool('notes') || pfTool('text')) ? "Anything you'd text yourself can land here."
+      : "Doesn't have to be organized. Just dump it here — we take care of the rest.";
+    // Home cards: what they said matters most leads
+    const order = ['rooms', 'day', 'stuck', 'humans'];
+    const lead = { track: 'rooms', next: 'day', lighter: 'day' }[pf('useful')];
+    if (lead) { order.splice(order.indexOf(lead), 1); order.unshift(lead); }
+    if (pfTool('someone')) { order.splice(order.indexOf('humans'), 1); order.splice(2, 0, 'humans'); }
+    document.querySelectorAll('#whereNow .where-card').forEach(c => { c.style.order = String(order.indexOf(c.dataset.k)); });
+    const hc = document.querySelector('#pane-home .home-center'); if (hc) hc.classList.toggle('return-first', pfReturnFirst());
+  }
   function dkey(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
   function dayList(d) { const k = dkey(d); return events[k] || (events[k] = []); }
   // no sample events: a day starts empty. these are the old samples, removed from saved days too.
@@ -4091,12 +4333,13 @@
     const crumb = document.getElementById('nxDateCrumb');
     if (crumb) crumb.textContent = today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
     const list = dayList(today); list.forEach(normalizeEvent);
-    const all = list.slice().sort((a, b) => (a.anytime - b.anytime) || (a.start - b.start));
+    const all = list.slice().sort((a, b) => (!!a.anytime - !!b.anytime) || (a.start - b.start));
     const open = all.filter(e => !e.done);
     const mark = document.getElementById('nxHorizonCount'); if (mark) mark.textContent = open.length ? `${open.length} OPEN` : 'OPEN SPACE';
     const sT = document.getElementById('nxSummaryToday'); if (sT) sT.textContent = open.length ? `${open.length} in view` : 'Clear';
     const waiting = rooms.filter(r => !r.archived).reduce((n, r) => n + r.loops.filter(l => !l.resolved).length, 0);
-    const sR = document.getElementById('nxSummaryRooms'); if (sR) sR.textContent = `${waiting} open`;
+    const sR = document.getElementById('nxSummaryRooms'); if (sR) { sR.textContent = `${waiting} open`; sR.parentElement.hidden = pf('longList') === 'urgent'; } // everything feels urgent: no pile count
+    const sync = document.getElementById('nxSyncLink'); if (sync) sync.hidden = !pfTool('calendar');
     const sel = document.getElementById('nxDayRoom');
     if (sel) { const keep = sel.value; sel.innerHTML = `<option value="">No room</option>` + rooms.filter(r => !r.archived).map(r => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.name)}</option>`).join(''); sel.value = [...sel.options].some(o => o.value === keep) ? keep : ''; }
     const el = document.getElementById('nxHorizon');
@@ -4105,12 +4348,18 @@
         el.innerHTML = `<div class="nx-empty"><div class="nx-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M3 12h18"/></svg></div><h2>Your day is clear. Room to move.</h2><p>One step is enough to start.</p></div>`;
       } else {
         const nowH = nowHours();
+        // how much shows at once: a few open rows, the rest one tap away. done rows and the one happening now always show.
+        const cap = pfDayCap(), hidden = new Set();
+        if (cap && !dayShowAll) { let n = 0; all.forEach(e => { const isNow = !e.done && !e.anytime && e.start <= nowH && nowH < e.end; if (e.done || isNow) return; if (++n > cap) hidden.add(e); }); }
+        const hasNow = all.some(e => !e.done && !e.anytime && e.start <= nowH && nowH < e.end);
+        const startHere = pfStartHere() && !hasNow ? all.find(e => !e.done && !hidden.has(e)) : null; // NOW already says where to start
         const row = (e) => {
           const i = list.indexOf(e);
           const room = e.room ? rooms.find(r => r.id === e.room) : null;
           const isNow = !e.done && !e.anytime && e.start <= nowH && nowH < e.end;
           const slipped = !e.done && !e.anytime && e.start <= nowH;
-          const sub = [room ? escapeHtml(room.name) : '', e.anytime ? '' : `<span class="nx-time">${fmtRange(e)}</span>`].filter(Boolean).join('<span class="nx-dot">•</span>') || 'Anytime';
+          const sub = [room ? escapeHtml(room.name) : '', e.anytime ? '' : `<span class="nx-time">${fmtRange(e)}</span>`, !e.anytime && pfShowDur() ? `<span class="nx-dur">${fmtDur(e.end - e.start)}</span>` : ''].filter(Boolean).join('<span class="nx-dot">•</span>') || 'Anytime';
+          const bar = isNow && pf('time') === 'disappear' ? `<div class="nx-now-bar" aria-hidden="true"><i style="width:${Math.round(Math.max(0, Math.min(1, (nowH - e.start) / Math.max(0.01, e.end - e.start))) * 100)}%"></i></div>` : ''; // hours disappear: the block as space, not a countdown
           const link = room && room.link && room.link.url ? cleanLinkUrl(room.link.url) : null;
           const right = [
             slipped ? `<button type="button" class="nx-bump" onclick="bumpEvent(${i})" aria-label="Move 30 minutes later">+30m</button>` : '',
@@ -4119,19 +4368,31 @@
           ].join('');
           return `<div class="nx-task-row${isNow ? ' now' : ''}${e.done ? ' is-done' : ''}">
             <button type="button" class="nx-task-check${e.done ? ' completed' : ''}" onclick="nxToggleEvent(${i})" aria-label="${e.done ? 'Mark as open' : 'Mark as done'}">${e.done ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg>' : ''}</button>
-            <div class="nx-task-body"><div class="nx-task-name${e.done ? ' completed' : ''}">${escapeHtml(e.name)}${isNow ? '<span class="nx-now">NOW</span>' : ''}</div><div class="nx-task-sub">${sub}</div></div>
+            <div class="nx-task-body"><div class="nx-task-name${e.done ? ' completed' : ''}">${escapeHtml(e.name)}${isNow ? '<span class="nx-now">NOW</span>' : ''}${e === startHere ? '<span class="nx-start-here">Start here</span>' : ''}</div><div class="nx-task-sub">${sub}</div>${bar}</div>
             <div class="nx-task-right">${right}</div>
           </div>`;
         };
         el.innerHTML = SLOTS.map(sl => {
-          const items = all.filter(sl.test); if (!items.length) return '';
+          const items = all.filter(e => sl.test(e) && !hidden.has(e)); if (!items.length) return '';
           return `<div class="nx-slot"><div class="nx-slot-head">${sl.label}</div><div class="nx-horizon-list">${items.map(row).join('')}</div></div>`;
-        }).join('');
+        }).join('') + (hidden.size ? `<button type="button" class="nx-more" onclick="dayShowAll = true; renderCal();">${hidden.size} more resting</button>` : '');
       }
     }
     const clr = document.getElementById('clearDayBtn'); if (clr) clr.hidden = !all.length;
+    // they fit more into a day than it holds: one quiet line when the plan is bigger than what's left
+    const fit = document.getElementById('nxFit');
+    if (fit) {
+      const nowH = nowHours(), endH = 22;
+      const planned = open.reduce((h, e) => h + (e.anytime ? 0.5 : Math.max(0, e.end - Math.max(e.start, nowH))), 0);
+      const left = Math.max(0, endH - nowH);
+      const show = pf('time') === 'overfit' && planned > left + 0.01 && planned > 0;
+      fit.hidden = !show;
+      if (show) fit.textContent = `About ${fmtDur(planned)} planned, ${fmtDur(left)} left today.`;
+    }
     renderCarryPrompt();
   }
+  let dayShowAll = false;
+  function fmtDur(h) { const m = Math.round(h * 60); if (m < 60) return `${m}m`; const hh = Math.floor(m / 60), mm = m % 60; return mm ? `${hh}h ${mm}m` : `${hh}h`; }
   // slipped past its start? one tap moves it 30 minutes later. no red, no "passed", nothing counted.
   function bumpEvent(i) {
     const e = dayList(today)[i]; if (!e || e.anytime) return;
@@ -4154,6 +4415,7 @@
   function toastSeen(key) { return key in toastHist(); }
   function toastMark(key, val) { const h = toastHist(); h[key] = val == null ? Date.now() : val; toastHistSet(h); }
   function toastQuiet() {
+    if (document.getElementById('nxSplash')) return true; // the splash is still up
     if (document.querySelector('.nx-spot')) return true; // the first-move spotlight is talking; wait
     if (document.body.classList.contains('onboarding')) return true;
     const a = document.querySelector('.pane.active'); return !!(a && /pane-(stuck|lockdown|humans)$/.test(a.id));
@@ -4181,43 +4443,57 @@
     if (location.protocol === 'file:') return;
     const now = new Date(), dk = dkey(now), h = now.getHours() + now.getMinutes() / 60, ms = now.getTime();
     const list = events[dk] || [];
-    // 1. morning kickoff: 7:30–9:30, fewer than two blocks on today
-    if (h >= 7.5 && h < 9.5 && list.filter(e => !e.done).length < 2) queueToast({ key: 'morning:' + dk,
+    const style = pf('showUp');
+    // 1. morning kickoff: 7:30–9:30, fewer than two blocks on today (every morning for routines or structure; never for gentle)
+    if (style !== 'gentle' && h >= 7.5 && h < 9.5 && (list.filter(e => !e.done).length < 2 || pfTool('routines') || style === 'structure')) queueToast({ key: 'morning:' + dk,
       html: "Good morning. When you're ready, let’s pick one or two moves to anchor your day.",
       actions: [{ label: 'Open Horizon', primary: true, run: () => { go('day'); setTimeout(() => { const i = document.getElementById('nxDayInput'); if (i) i.focus(); }, 80); } }] });
     // 3. mid-day pause: one random moment between 11:30 and 1:30, once a day
     const hist = toastHist(); let lunchAt = hist['lunchAt:' + dk];
     if (lunchAt == null) { lunchAt = 11.5 + Math.random() * 2; toastMark('lunchAt:' + dk, lunchAt); }
-    if (h >= lunchAt && h < 13.5) queueToast({ key: 'lunch:' + dk,
+    if (style !== 'gentle' && h >= lunchAt && h < 13.5) queueToast({ key: 'lunch:' + dk,
       html: 'Mid-day pause: Have you eaten or stretched? Your tasks will stay right here while you fuel up.',
       actions: [{ label: 'Taking a break', primary: true, run: () => {} }] });
     list.forEach(e => {
       if (e.done) return;
       const name = `<b>${escapeHtml(e.name)}</b>`;
-      // 2. fifteen minutes before a timed block
-      if (!e.anytime && h >= e.start - 0.25 && h < e.start - 0.25 + 5 / 60) queueToast({ key: `pre:${dk}:${e.start}:${e.name}`, html: `In 15 minutes: ${name}. A sip of water might help the switch.` });
+      // 2. before a timed block: 15 minutes ahead (25 when switching is the hard part), plus 5 for people who lean on reminders
+      const lead = pf('tripsUp') === 'switch' ? 25 : 15;
+      if (!e.anytime && h >= e.start - lead / 60 && h < e.start - lead / 60 + 5 / 60) queueToast({ key: `pre:${dk}:${e.start}:${e.name}`, html: `In ${lead} minutes: ${name}. A sip of water might help the switch.` });
+      if (!e.anytime && (pfTool('alarms') || pfTool('hope')) && h >= e.start - 5 / 60 && h < e.start) queueToast({ key: `pre5:${dk}:${e.start}:${e.name}`, html: `In 5 minutes: ${name}.` });
       // 4. fifteen minutes after it ends (untimed: 45 minutes after it was added), still open, once per task
       const due = e.anytime ? (e.createdAt ? e.createdAt + 45 * 6e4 : null) : null;
       const past = e.anytime ? (due != null && ms >= due && dkey(new Date(e.createdAt)) === dk) : h >= e.end + 0.25;
-      if (past) queueToast({ key: `grace:${dk}:${e.name}`,
-        html: `${name} is still open. If today wasn't the day for it, that's completely fine.`,
-        actions: [
+      if (past) {
+        const acts = [
           { label: 'Done', primary: true, run: () => { e.done = true; save(); renderCal(); } },
           { label: 'Anytime', run: () => { e.anytime = true; e.start = 0; e.end = 0; delete e.time; delete e.point; e.createdAt = Date.now(); save(); renderCal(); } },
-        ] });
+        ];
+        if (style === 'structure' && !e.anytime) acts.splice(1, 0, { label: '+30m', run: () => { const i = dayList(today).indexOf(e); if (i >= 0) bumpEvent(i); } });
+        if (style === 'push') { acts[0].primary = false; acts.unshift({ label: 'Start focus', primary: true, run: () => { const room = e.room ? rooms.find(r => r.id === e.room) : null; if (room) { currentRoom = room; } else currentRoom = null; focusOnLoop(e.name); } }); }
+        queueToast({ key: `grace:${dk}:${e.name}`,
+          html: style === 'gentle' ? `${name} can wait. Nothing is lost.` : `${name} is still open. If today wasn't the day for it, that's completely fine.`,
+          actions: acts });
+      }
     });
     // 5. a room with open steps, unvisited for more than 34 hours; at most one of these a day
     const last = toastHist()['room:last'] || 0;
     if (ms - last > 864e5) {
       const resting = rooms.filter(r => !r.archived && !r.demo && r.loops.some(l => !l.resolved))
-        .map(r => ({ r, seen: r.lastVisited || lastTouch(r) || 0 })).filter(x => x.seen && ms - x.seen > 34 * 36e5)
+        .map(r => ({ r, seen: r.lastVisited || lastTouch(r) || 0 })).filter(x => x.seen && ms - x.seen > pfRestHours() * 36e5)
         .sort((a, b) => a.seen - b.seen)[0];
       if (resting) { toastMark('room:last', ms); queueToast({ key: `room:${resting.r.id}:${dk}`,
         html: `Your <b>${escapeHtml(resting.r.name)}</b> space is resting quietly. Want to take a quick peek, or leave it for tomorrow?`,
         actions: [{ label: 'View Room', primary: true, run: () => openRoom(resting.r.id) }, { label: 'Let it rest', run: () => {} }] }); }
     }
+    // the annual trial: day 5 of 7, a heads-up two days before it becomes the annual plan
+    const te = auth.trialEnd ? Date.parse(auth.trialEnd) : NaN;
+    if (auth.plan === 'paid' && te && ms >= te - 2 * 864e5 && ms < te) queueToast({ key: 'trial5:' + auth.trialEnd,
+      html: "Your NÈNÈMI trial becomes the annual plan in 2 days. Nothing to do if that's what you want.",
+      actions: [{ label: 'Manage', primary: true, run: () => manageFullAccess() }] });
     pumpToasts();
   }
+  document.addEventListener('nx-splash-done', () => setTimeout(pumpToasts, 300));
   setInterval(toastTick, 30000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) toastTick(); });
   setTimeout(toastTick, 4000);
@@ -4230,7 +4506,7 @@
     const ev = { name: text, kind: 'block', createdAt: Date.now(), ...(room ? { room } : {}) };
     if (st === null) Object.assign(ev, { anytime: true, start: 0, end: 0 });
     else if (en !== null && en > st) Object.assign(ev, { start: st, end: en });
-    else Object.assign(ev, { start: st, end: Math.min(24, st + 0.5), point: true });
+    else Object.assign(ev, { start: st, end: Math.min(24, st + (pf('time') === 'longer' ? 0.75 : 0.5)), point: true }); // things take longer: a start-only add holds 45 minutes
     normalizeEvent(ev);
     dayList(today).push(ev);
     inp.value = ''; sEl.value = ''; eEl.value = ''; eEl.disabled = true; save(); renderCal();
@@ -4428,7 +4704,7 @@
   function openFromYesterday() {
     const y = new Date(today); y.setDate(y.getDate() - 1);
     const fromDay = (events[dkey(y)] || []).filter(e => e.kind === 'block' && !e.done && !e.broughtOver).map(e => ({ name: e.name, dur: Math.max(0.25, e.end - e.start), src: e }));
-    return [...fromDay, ...carried.map(c => ({ name: c.name, dur: 0.5 }))];
+    return [...fromDay, ...carried.map(c => ({ name: c.name, dur: 0.5, c }))];
   }
   function renderCarryPrompt() {
     const box = document.getElementById('carryPrompt'); if (!box) return;
@@ -4442,8 +4718,18 @@
     const items = openFromYesterday(); if (!items.length) return;
     selectedDay = new Date(today);
     const list = dayList(today);
-    items.forEach(i => { list.push({ name: i.name, kind: 'block', anytime: true, start: 0, end: 0, createdAt: Date.now(), ...(i.src && i.src.room ? { room: i.src.room } : {}) }); if (i.src) i.src.broughtOver = true; });
-    carried = []; save(); renderCal();
+    const cap = pfDayCap(), used = new Set();
+    items.forEach((i, n) => {
+      if (cap && n >= cap) { // past the cap: it stays in its room as an open step, not on the day
+        const room = i.src && i.src.room ? rooms.find(r => r.id === i.src.room) : null;
+        if (room) { if (!room.loops.some(l => !l.resolved && l.text === i.name)) room.loops.push({ text: i.name, resolved: false }); i.src.broughtOver = true; }
+        return; // no room to hold it: it waits for the next "Bring them over"
+      }
+      list.push({ name: i.name, kind: 'block', anytime: true, start: 0, end: 0, createdAt: Date.now(), ...(i.src && i.src.room ? { room: i.src.room } : {}) });
+      if (i.src) i.src.broughtOver = true; else used.add(i.c);
+    });
+    carried = carried.filter(c => !used.has(c));
+    save(); renderCal();
   }
   function letRest() { try { localStorage.setItem(REST_KEY, dkey(today)); } catch (e) {} renderCarryPrompt(); }
   function clearDay() { events[dkey(today)] = []; save(); renderCal(); }
@@ -4644,7 +4930,7 @@
   // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
   const STORE_KEY = 'nenemi.v1';
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, checklist, savedAt: Date.now() })); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, checklist, profile, savedAt: Date.now() })); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     clearTimeout(syncTimer); syncTimer = setTimeout(pushState, 800);
   }
   function restore() {
@@ -4660,6 +4946,7 @@
       loose = Array.isArray(d.loose) ? d.loose : [];
       notes = d.notes && typeof d.notes === 'object' ? d.notes : {};
       checklist = Array.isArray(d.checklist) ? d.checklist : [];
+      profile = d.profile && typeof d.profile === 'object' && !Array.isArray(d.profile) ? d.profile : {};
       return true;
     } catch (e) { return false; }
   }
@@ -4675,7 +4962,7 @@
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
   // inside the iPhone app (Capacitor shell) nothing is sold: Apple requires in-app purchase for that, so the web paywall stays on the web.
   const IN_APP_SHELL = (() => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } })();
-  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 6, planSource: null, planUntil: null };
+  const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 10.99, priceAnnual: 59.99, planSource: null, planUntil: null, trialEnd: null };
   function ownRooms() { return rooms.filter(r => !r.demo && !r.archived).length; }
   function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
   function apiUrl() { return auth.signedIn ? '/api/state' : `/api/state?device=${encodeURIComponent(syncCode())}`; }
@@ -4694,8 +4981,8 @@
       const cfg = await (await fetch('/api/config')).json();
       if (cfg.freeRooms) auth.roomLimit = cfg.freeRooms;
       auth.smart = Boolean(cfg.smartRouting);
-      auth.billing = Boolean(cfg.billing) && !IN_APP_SHELL; if (cfg.price && cfg.price.monthly) auth.price = cfg.price.monthly;
-      if (!cfg.clerkPublishableKey || !cfg.authEnabled) { hideOnboard(); renderAccount(); return; } // no Clerk → no wall
+      auth.billing = Boolean(cfg.billing) && !IN_APP_SHELL; if (cfg.price && cfg.price.monthly) auth.price = cfg.price.monthly; if (cfg.price && cfg.price.annual) auth.priceAnnual = cfg.price.annual;
+      if (!cfg.clerkPublishableKey || !cfg.authEnabled) { if (!obFlow) hideOnboard(); renderAccount(); return; } // no Clerk → no wall
       auth.pk = cfg.clerkPublishableKey;
       const host = clerkHost(auth.pk);
       await loadScript(`https://${host}/npm/@clerk/clerk-js@5/dist/clerk.browser.js`, { 'data-clerk-publishable-key': auth.pk });
@@ -4717,7 +5004,7 @@
         if (!obFlow) gateOnboarding(); // sign-in via the modal (not our custom flow) → re-decide the wall
       });
       gateOnboarding(); // authoritative: now that Clerk state is known, show/hide/advance the wall
-    } catch (e) { console.warn('sign-in unavailable', e); hideOnboard(); }
+    } catch (e) { console.warn('sign-in unavailable', e); if (!obFlow) hideOnboard(); }
     renderAccount();
   }
   function initialsOf(u) {
@@ -4872,8 +5159,9 @@
     if ('fileLimit' in j) auth.fileLimit = j.fileLimit;
     if ('planSource' in j) auth.planSource = j.planSource;
     if ('planUntil' in j) auth.planUntil = j.planUntil;
+    if ('trialEnd' in j) auth.trialEnd = j.trialEnd;
   }
-  // ---------- Full access: $6 a month or $48 a year, rooms without a cap. Calendar, voice, sync stay free. ----------
+  // ---------- Full access: $10.99 a month or $59.99 a year (7 days free), rooms without a cap. Calendar, voice, sync stay free. ----------
   function fullAccessLine() { return auth.billing ? `Full access is $${auth.price} a month and opens more rooms.` : 'Full access opens more, soon.'; }
   function fullAccessBtn() { return auth.billing ? `<span class="mini-btn" onclick="openFullAccess()">Open full access</span>` : ''; }
   let limitNoted = false;
@@ -5042,74 +5330,266 @@
   document.getElementById('stuckInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); stuckSend(); } });
   document.getElementById('stuckInput').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.max(84, Math.min(this.scrollHeight, window.innerHeight * 0.4)) + 'px'; });
 
-  // ===== Onboarding (v5): five frames in one calm card. Welcome → three rules → one question → an
-  //       unhurried plan choice → straight into My day, with the first move spotlighted. No account needed;
-  //       an account is offered only when Full access is chosen. localStorage + /api/state underneath is untouched. =====
-  const obStepEl = { 1:'obf1', rules:'obf2', 2:'obs2', 3:'obs3', acct:'obsAcct', code:'obsCode', name:'obsName' };
-  const obDotFor = { 1:1, rules:2, 2:3, 3:4, acct:4, code:4, name:4 };
+  // ===== Onboarding (v6): one card at a time. Hello → how you work (each answer changes the app; see pf())
+  //       → a moment → the first room from their own words → what I'm learning → an unhurried plan choice → My day.
+  //       No account needed; one is offered only when a paid plan is chosen. =====
+  const OB_FLOW = [
+    ['ob-hello', 5, 'Hello'], ['ob-name', 10, 'Hello'],
+    ['ob-useful', 15, 'How you work'], ['ob-trips', 20, 'How you work'], ['ob-slips', 25, 'How you work'], ['ob-tools', 30, 'How you work'],
+    ['ob-showup', 35, 'How you work'], ['ob-long', 40, 'How you work'], ['ob-time', 45, 'How you work'], ['ob-energy', 50, 'How you work'],
+    ['ob-why', 55, 'How you work'], ['ob-words', 60, 'How you work'],
+    ['ob-moment', 65, 'A moment'],
+    ['ob-dump', 70, 'Your first room'], ['ob-check', 75, 'Your first room'], ['ob-start', 80, 'Your first room'], ['ob-small', 84, 'Your first room'], ['ob-today', 88, 'Your first room'],
+    ['ob-learn', 92, "What I'm learning"], ['ob-better', 96, "What I'm learning"],
+    ['ob-pay', 100, 'Keep it with you'], ['ob-acct', 100, 'Keep it with you'], ['ob-code', 100, 'Keep it with you'], ['ob-acctname', 100, 'Keep it with you'],
+  ];
+  const OB_META = Object.fromEntries(OB_FLOW.map(([id, p, c]) => [id, { p, c }]));
+  // 3–12, word for word. Values are short keys; pf() reads them back all over the app.
+  const OB_QS = [
+    { id: 'ob-useful', key: 'useful', next: 'ob-trips', title: 'What would make NÈNÈMI most useful to you right now?',
+      opts: [['track', 'Keeping track of everything'], ['next', 'Knowing what to do next'], ['resume', 'Picking back up where I left off'], ['lighter', 'Making my day feel less overwhelming'], ['all', 'A little bit of all of that']] },
+    { id: 'ob-trips', key: 'tripsUp', next: 'ob-slips', title: 'What usually trips you up first?',
+      opts: [['start', 'Getting started'], ['switch', 'Switching to something else'], ['remember', 'Remembering what I was doing'], ['matters', 'Figuring out what matters'], ['many', 'Too many things at once']] },
+    { id: 'ob-slips', key: 'slips', next: 'ob-tools', title: 'When something slips your mind, what usually happens?',
+      opts: [['eventually', 'I remember eventually'], ['reminded', 'Something reminds me and I’m like “oh shit”'], ['notes', 'I piece it back together from notes/messages'], ['where', 'I remember the thing, but not where I left off'], ['gone', 'Sometimes it’s just gone']] },
+    { id: 'ob-tools', key: 'tools', multi: true, next: 'ob-showup', title: 'What do you already use so things don’t disappear?', sub: 'Pick whatever applies.',
+      opts: [['notes', 'Notes everywhere'], ['calendar', 'Calendar'], ['alarms', 'Alarms/reminders'], ['text', 'Text myself'], ['visible', 'Leave things where I can see them'], ['someone', 'Ask someone to remind me'], ['routines', 'Routines'], ['hope', 'Honestly, I mostly hope I remember']] },
+    { id: 'ob-showup', key: 'showUp', next: 'ob-long', title: 'How can I best show up for you?',
+      opts: [['structure', 'Give me more structure'], ['gentle', 'Keep it gentle'], ['push', 'Give me a little push'], ['talk', 'Talk it through with me'], ['context', 'Help me remember the context'], ['depends', 'Depends on the day']] },
+    { id: 'ob-long', key: 'longList', next: 'ob-time', title: 'When your list gets long, what happens?',
+      opts: [['fine', 'I’m fine with it'], ['ignore', 'I start ignoring it'], ['pick', 'I don’t know what to pick'], ['urgent', 'Everything suddenly feels urgent'], ['stop', 'I stop looking at it completely']] },
+    { id: 'ob-time', key: 'time', next: 'ob-energy', title: 'How does time usually behave for you?',
+      opts: [['normal', 'Pretty normally'], ['longer', 'Things take longer than I think'], ['disappear', 'Hours disappear'], ['overfit', 'I think I can fit way more into a day than I actually can'], ['depends', 'Depends on the day']] },
+    { id: 'ob-energy', key: 'energy', next: 'ob-why', title: 'Should your plan change when your energy changes?',
+      opts: [['please', 'Please'], ['little', 'A little'], ['track', 'Keep me on track anyway'], ['ask', 'Ask me first']] },
+    { id: 'ob-why', key: 'why', next: 'ob-words', title: 'How much of the “why your brain does this” stuff do you want from me?',
+      opts: [['tell', 'Tell me the why'], ['little', 'A little context is nice'], ['just', 'Just help me deal with it'], ['depends', 'Depends on the moment']] },
+    { id: 'ob-words', key: 'words', next: 'ob-moment', title: 'Do words like ADHD, autism, AuDHD, or neurodivergent feel useful to you?',
+      opts: [['yes', 'Yeah, use them'], ['sometimes', 'Sometimes, when it helps explain something'], ['no', 'Not really'], ['figuring', 'I’m still figuring that out']] },
+  ];
+  const OB_TICK = '<span class="tick"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m4 10 4 4 8-8"/></svg></span>';
+  (function obBuildQs() {
+    const host = document.getElementById('obQs'); if (!host) return;
+    host.innerHTML = OB_QS.map(q => `<section class="card" id="${q.id}">
+      <h2>${escapeHtml(q.title)}</h2>${q.sub ? `<p>${escapeHtml(q.sub)}</p>` : '<div style="height:14px"></div>'}
+      <div class="ob-stack">${q.opts.map(([v, t]) => `<button type="button" class="pill" data-v="${v}" onclick="obPick(this, '${q.key}')">${escapeHtml(t)}${q.multi ? OB_TICK : ''}</button>`).join('')}</div>
+      ${q.multi ? `<button class="btn" type="button" onclick="obMultiDone('${q.key}')">Continue</button>` : ''}
+    </section>`).join('');
+  })();
   let obFlow = false; // true while our flow is driving, so the auth listener doesn't pull the card back
   let obPlan = 'annual';
-  const OB_INTAKE = 'nenemi.intake', OB_RESUME = 'nenemi.obResume';
+  let obAns = {}, obHist = [], obCur = null, obPicking = false;
+  let obRoom = null, obDraft = null, obEditing = false, obWantsMove = false, obDayEvs = [], obFirstEv = null;
+  const OB_RESUME = 'nenemi.obResume';
   function obEl(id) { return document.getElementById(id); }
-  function obStep(n) {
-    if (n === 3 && (IN_APP_SHELL || !auth.billing)) { obArrive(); return; } // no plan step in the iPhone app, or where billing is off
-    if (n !== 1) obFlow = true;
-    const cur = document.querySelector('#onboard .ob-step.active');
-    const next = obEl(obStepEl[n]); if (!next || next === cur) return;
-    const show = () => {
-      Object.values(obStepEl).forEach(id => { const el = obEl(id); if (el) el.classList.remove('active', 'leaving'); });
-      next.classList.add('active');
-      obRiseIn(next, obRiseBase); obRiseBase = 60;
-      const dot = obDotFor[n] || 1;
-      for (let i = 1; i <= 4; i++) { const d = obEl('obd' + i); if (d) { d.classList.toggle('on', i === dot); d.classList.toggle('past', i < dot); } }
-      const o = obEl('onboard'); if (o) o.scrollTop = 0;
-      if (n === 2) { const t = obEl('obThought'); if (t) setTimeout(() => t.focus(), 80); }
-    };
-    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (cur && !calm) { cur.classList.add('leaving'); setTimeout(show, 180); } else show();
+  function obCalm() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  // the engine: show one card, set the chapter and the fill, focus the first field
+  function advanceTo(stepId, progressPct, chapterName, isBack) {
+    if (stepId === 'ob-pay' && (IN_APP_SHELL || !auth.billing)) { obArrive(); return; } // no plan step in the iPhone app, or where billing is off
+    const next = obEl(stepId); if (!next) return;
+    if (stepId !== 'ob-hello') obFlow = true;
+    const m = OB_META[stepId] || {};
+    if (obCur && obCur !== stepId && !isBack) obHist.push(obCur);
+    obCur = stepId;
+    if (OB_ENTER[stepId]) OB_ENTER[stepId]();
+    document.querySelectorAll('#onboard .card').forEach(c => { if (c !== next) c.classList.remove('active'); });
+    next.classList.remove('active'); void next.offsetWidth; next.classList.add('active');
+    obEl('obChapter').textContent = chapterName || m.c || '';
+    obEl('obFill').style.width = (progressPct != null ? progressPct : (m.p || 0)) + '%';
+    obEl('obBack').hidden = !obHist.length;
+    const o = obEl('onboard'); if (o) o.scrollTop = 0;
+    const f = next.querySelector('input:not([hidden]), textarea');
+    if (f && !f.closest('[hidden]')) setTimeout(() => { try { f.focus({ preventScroll: true }); } catch (e) {} }, 60);
   }
-  let obSplashT = null, obSplashShown = false;
-  // the card floats up, then what's inside it follows, one piece at a time
-  let obRiseBase = 60;
-  function obRiseIn(stepEl, base) {
-    if (!stepEl) return;
-    const items = [];
-    [...stepEl.children].forEach(c => { if (c.matches('.ob-rules, .ob-chips, .ob-plans, .ob-oauth, .ob-row2')) items.push(...c.children); else if (!c.matches('.ob-err:empty')) items.push(c); });
-    items.forEach((el, i) => { el.classList.remove('rise-i'); void el.offsetWidth; el.style.animationDelay = (base + i * 70) + 'ms'; el.classList.add('rise-i'); });
+  // a pill: mark it, press it, then move on by itself after 180ms
+  function autoPick(nextStepId, progressPct) {
+    setTimeout(() => { obPicking = false; advanceTo(nextStepId, progressPct); }, 180);
   }
-  function obRiseCard(delay) {
-    const card = document.querySelector('#onboard .ob-card'); if (!card) return;
-    card.classList.remove('waiting', 'rise'); void card.offsetWidth;
-    card.style.animationDelay = (delay || 0) + 'ms'; card.classList.add('rise');
+  function obBackStep() { const prev = obHist.pop(); if (prev) advanceTo(prev, null, null, true); }
+  function obPick(btn, key) {
+    const q = OB_QS.find(x => x.key === key); if (!q) return;
+    if (q.multi) { btn.classList.toggle('on'); return; }
+    if (obPicking) return; obPicking = true;
+    obAns[key] = btn.dataset.v;
+    btn.parentElement.querySelectorAll('.pill').forEach(p => p.classList.toggle('on', p === btn));
+    btn.classList.add('press'); setTimeout(() => btn.classList.remove('press'), 160);
+    autoPick(q.next);
   }
+  function obMultiDone(key) {
+    const q = OB_QS.find(x => x.key === key); if (!q) return;
+    obAns[key] = [...obEl(q.id).querySelectorAll('.pill.on')].map(p => p.dataset.v);
+    advanceTo(q.next);
+  }
+  function obNameNext() { const n = (obEl('obName').value || '').trim().slice(0, 40); if (n) obAns.name = n; else delete obAns.name; advanceTo('ob-useful'); }
+  // answers become the profile the moment the questions end, so everything after already reflects them
+  function obCommitProfile() { profile = { ...obAns }; save(); applyProfileChrome(); }
+  // what runs as a card comes up
+  const OB_ENTER = {
+    'ob-moment': obCommitProfile,
+    'ob-check': () => obRenderCheck(),
+    'ob-start': () => { obEl('obStartLine').textContent = obRoom ? `“${obRoom.name}” is ready. Everything you said is in it.` : ''; obEl('ob-start').querySelectorAll('.pill').forEach(p => p.classList.remove('on')); },
+    'ob-small': () => obRenderMove(),
+    'ob-today': () => obRenderToday(),
+    'ob-learn': () => { obCommitProfile(); obEl('obLearnList').innerHTML = learnLines(profile).map(l => `<li>${escapeHtml(l)}</li>`).join(''); },
+    'ob-pay': () => { obPickPlan(obPlan); },
+    'ob-acctname': () => { const f = obEl('obFirst'); if (f && !f.value && profile.name) f.value = profile.name; },
+  };
+  // 14 → 15: their words, sorted into one room. Claude when it's reachable, plain splitting when it isn't.
+  function obSplitDump(text) {
+    const parts = String(text || '').split(/\n+|(?<=[.!?;])\s+|,\s+|\s+(?:and then|and also|also|plus)\s+/i)
+      .map(s => s.replace(/^[\s\-•*·]+|[\s.;,]+$/g, '').replace(/^(?:and then|and also|and|also|plus|then)\s+/i, '').trim()).filter(s => s.length > 2);
+    const seen = new Set(), out = [];
+    parts.forEach(s => { const t = s.length > 90 ? s.slice(0, 87).replace(/\s+\S*$/, '') + '…' : s; const k = t.toLowerCase(); if (!seen.has(k)) { seen.add(k); out.push(t.charAt(0).toUpperCase() + t.slice(1)); } });
+    return out.slice(0, 8);
+  }
+  function obNameFrom(text, items) {
+    const words = String(items[0] || text || '').replace(/[.!?,;:"“”]+/g, ' ').split(/\s+/).filter(Boolean);
+    const n = words.slice(0, 3).join(' ');
+    return n ? n.charAt(0).toUpperCase() + n.slice(1) : 'First room';
+  }
+  async function obOrganize(text) {
+    let name = null, items = [];
+    if (auth.smart && location.protocol !== 'file:') {
+      try {
+        const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 7000);
+        const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', signal: ctl.signal, headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ text, rooms: [] }) });
+        clearTimeout(t);
+        if (r.ok) { const d = await r.json(); name = (d.room_name || '').trim() || null; items = Array.isArray(d.loops_to_add) ? d.loops_to_add.map(s => String(s).trim()).filter(Boolean).slice(0, 8) : []; }
+      } catch (e) {}
+    }
+    if (!items.length) items = obSplitDump(text);
+    if (!name) name = obNameFrom(text, items);
+    return { name: name.slice(0, 60), items, text };
+  }
+  async function obDumpNext() {
+    const text = (obEl('obThought').value || '').trim();
+    if (!text) { obDraft = null; advanceTo('ob-learn'); return; } // nothing to hold yet; that's fine
+    const b = obEl('obDumpBtn'); b.disabled = true; b.textContent = 'Sorting it…';
+    const d = await obOrganize(text);
+    b.disabled = false; b.textContent = 'Continue';
+    obDraft = d; obEditing = false;
+    advanceTo('ob-check');
+  }
+  function obRenderCheck() {
+    const host = obEl('obCheckBody'); if (!host || !obDraft) return;
+    const d = obDraft;
+    if (!obEditing) {
+      host.innerHTML = `<div class="ob-sum"><div class="ob-k">Your first room</div><div class="ob-sum-name">${escapeHtml(d.name)}</div>
+        <ul>${d.items.map(i => `<li>${escapeHtml(i)}</li>`).join('') || `<li>${escapeHtml(d.text)}</li>`}</ul></div>
+        <div class="ob-two" style="margin-top:16px"><button type="button" class="pill" onclick="obCheckYes(this)">Yep</button><button type="button" class="pill" onclick="obCheckAlmost()">Almost</button></div>`;
+    } else {
+      host.innerHTML = `<form onsubmit="event.preventDefault(); obCheckSave();">
+        <label class="ob-f" for="obEdName">Room</label><input class="ob-input" id="obEdName" maxlength="60" value="${escapeHtml(d.name)}">
+        <label class="ob-f">What's in it</label>
+        <div id="obEdItems">${d.items.map(i => `<div class="ob-edit-row"><input class="ob-input" maxlength="160" value="${escapeHtml(i)}" aria-label="Item"><button type="button" class="ob-x" onclick="this.parentElement.remove()" aria-label="Remove">×</button></div>`).join('')}</div>
+        <div class="ob-edit-row"><input class="ob-input" id="obEdAdd" maxlength="160" placeholder="Something I missed" aria-label="Add something"><button type="button" class="ob-x" onclick="obEdAddRow()" aria-label="Add">+</button></div>
+        <button class="btn" type="submit">Save</button></form>`;
+    }
+  }
+  function obEdAddRow() {
+    const a = obEl('obEdAdd'); const v = (a.value || '').trim(); if (!v) return;
+    const row = document.createElement('div'); row.className = 'ob-edit-row';
+    row.innerHTML = `<input class="ob-input" maxlength="160" aria-label="Item"><button type="button" class="ob-x" onclick="this.parentElement.remove()" aria-label="Remove">×</button>`;
+    row.querySelector('input').value = v; obEl('obEdItems').appendChild(row); a.value = ''; a.focus();
+  }
+  function obCheckAlmost() { obEditing = true; obRenderCheck(); const n = obEl('obEdName'); if (n) n.focus(); }
+  function obCheckSave() {
+    const name = (obEl('obEdName').value || '').trim() || obDraft.name;
+    const items = [...document.querySelectorAll('#obEdItems input')].map(i => i.value.trim()).filter(Boolean);
+    const extra = (obEl('obEdAdd').value || '').trim(); if (extra) items.push(extra);
+    obDraft = { ...obDraft, name: name.slice(0, 60), items };
+    obEditing = false; obSaveRoom(); advanceTo('ob-start');
+  }
+  function obCheckYes(btn) { if (obPicking) return; obPicking = true; btn.classList.add('on', 'press'); obSaveRoom(); autoPick('ob-start'); }
+  // the room itself: made once, updated if they come back and change it
+  function obSaveRoom() {
+    const d = obDraft; if (!d) return;
+    const items = d.items.length ? d.items : [d.text.length > 90 ? d.text.slice(0, 87).replace(/\s+\S*$/, '') + '…' : d.text];
+    if (!obRoom) {
+      obRoom = { id: 'r' + Date.now(), name: d.name, one_liner: items[0] || d.text, brief: `First note: “${d.text}” The Brief grows from here.`,
+        loops: [], log: [{ source: 'typed', ts: Date.now(), text: d.text }], link: null, lastVisited: Date.now() };
+      rooms.unshift(obRoom);
+    }
+    obRoom.name = d.name; obRoom.one_liner = items[0] || d.text;
+    obRoom.loops = items.map(t => ({ text: t, resolved: false }));
+    lastRoomId = obRoom.id; try { localStorage.setItem('nenemi.lastRoom', obRoom.id); } catch (e) {}
+    save(); renderRoomList(); renderHomeReturn(); renderSideRooms();
+  }
+  function obStartPick(btn, yes) {
+    if (obPicking) return; obPicking = true;
+    btn.classList.add('on', 'press');
+    obWantsMove = !!yes;
+    autoPick(yes && obRoom && obRoom.loops.some(l => !l.resolved) ? 'ob-small' : 'ob-today');
+  }
+  function obRenderMove() {
+    const l = obRoom && obRoom.loops.find(x => !x.resolved);
+    obEl('obMove').textContent = l ? l.text : '';
+    obEl('obSmallForm').hidden = true; obEl('obSmallPills').hidden = false; obEl('obSmallNote').textContent = '';
+    obEl('ob-small').querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+  }
+  function obSmallYes(btn) { if (obPicking) return; obPicking = true; btn.classList.add('on', 'press'); autoPick('ob-today'); }
+  // smaller, as many times as it takes: Claude offers one when it can, otherwise they name it
+  async function obSmaller(btn) {
+    if (!obRoom) return;
+    const idx = obRoom.loops.findIndex(l => !l.resolved); if (idx < 0) return;
+    const cur = obRoom.loops[idx].text;
+    const ask = () => { obEl('obSmallPills').hidden = true; obEl('obSmallForm').hidden = false; const i = obEl('obSmallIn'); i.value = ''; i.focus(); };
+    if (!(auth.smart && location.protocol !== 'file:')) { ask(); return; }
+    btn.disabled = true; btn.textContent = 'One moment…';
+    try {
+      const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }),
+        body: JSON.stringify({ mode: 'shrink_move', pinned_room_id: obRoom.id, text: cur, rooms: [{ id: obRoom.id, name: obRoom.name, one_liner: obRoom.one_liner, brief: obRoom.brief, loops: obRoom.loops.filter(l => !l.resolved).map(l => l.text), recent: [] }] }) });
+      const d = r.ok ? await r.json() : null; const s = d && (d.note || d.reply || '').trim();
+      if (!s) throw new Error('empty');
+      obRoom.loops.splice(idx, 0, { text: s, resolved: false }); save();
+      obRenderMove();
+    } catch (e) { ask(); }
+    btn.disabled = false; btn.textContent = 'Smaller';
+  }
+  function obSmallSave() {
+    const t = (obEl('obSmallIn').value || '').trim(); if (!t || !obRoom) return;
+    const idx = obRoom.loops.findIndex(l => !l.resolved);
+    obRoom.loops.splice(idx < 0 ? 0 : idx, 0, { text: t, resolved: false }); save();
+    obRenderMove();
+  }
+  // 18: what fits today goes on My day; the next move (if they took one) sits at this quarter hour
+  function obRenderToday() {
+    const host = obEl('obTodayList'); if (!host) return;
+    const open = obRoom ? obRoom.loops.filter(l => !l.resolved) : [];
+    if (!open.length) { host.innerHTML = '<p>Nothing to sort yet. Your day can stay open.</p>'; return; }
+    const pre = new Set(obDayEvs.map(e => e.name));
+    if (!obDayEvs.length && obWantsMove) pre.add(open[0].text);
+    host.innerHTML = open.map((l, i) => `<button type="button" class="pill${pre.has(l.text) ? ' on' : ''}" data-i="${i}" onclick="this.classList.toggle('on')">${escapeHtml(l.text)}${OB_TICK}</button>`).join('');
+  }
+  function obTodayNext() {
+    const open = obRoom ? obRoom.loops.filter(l => !l.resolved) : [];
+    const picked = [...document.querySelectorAll('#obTodayList .pill.on')].map(p => open[+p.dataset.i]).filter(Boolean);
+    const list = dayList(today);
+    obDayEvs.forEach(e => { const i = list.indexOf(e); if (i >= 0) list.splice(i, 1); }); // came back and changed it
+    obDayEvs = []; obFirstEv = null;
+    picked.forEach((l, i) => {
+      let ev;
+      if (i === 0 && obWantsMove) {
+        const n = new Date(); const startH = Math.floor((n.getHours() + n.getMinutes() / 60) * 4) / 4;
+        ev = { name: l.text, kind: 'block', room: obRoom.id, start: startH, end: Math.min(24, startH + 0.5), point: true, createdAt: Date.now() };
+        obFirstEv = ev;
+      } else ev = { name: l.text, kind: 'block', room: obRoom.id, anytime: true, start: 0, end: 0, createdAt: Date.now() };
+      normalizeEvent(ev); list.push(ev); obDayEvs.push(ev);
+    });
+    save(); renderCal();
+    advanceTo('ob-learn');
+  }
+  function obAfterQuestions() { advanceTo('ob-pay'); } // 20 is never read, never stored
   function showOnboard(step) {
     const o = obEl('onboard'); if (!o) return;
-    const wasHidden = o.hidden;
-    let seen = false; try { seen = sessionStorage.getItem('nenemi.splashSeen') === '1'; } catch (e) {}
-    const splash = (step || 1) === 1 && wasHidden && !obSplashShown && !seen;
-    const card = document.querySelector('#onboard .ob-card');
-    if (splash && card) card.classList.add('waiting');        // held back until the splash eases away
-    else if (wasHidden) { obRiseCard(0); obRiseBase = 260; }
-    o.hidden = false; o.classList.remove('closing'); document.body.classList.add('onboarding'); obStep(step || 1);
-    if (splash) obSplash();
+    if (o.hidden && !window.__nxSplashDone) { // held under the splash, then floats up as it leaves
+      o.classList.add('hold');
+      document.addEventListener('nx-splash-done', () => o.classList.remove('hold'), { once: true });
+    }
+    o.hidden = false; o.classList.remove('closing'); document.body.classList.add('onboarding');
+    obHist = []; obCur = null; advanceTo(step || 'ob-hello');
   }
-  // the first thing anyone sees: the mark and the name. a tap, a key, or a couple of seconds moves on.
-  function obSplash() {
-    const sp = obEl('obSplash'); if (!sp) return;
-    obSplashShown = true; try { sessionStorage.setItem('nenemi.splashSeen', '1'); } catch (e) {}
-    sp.hidden = false; sp.classList.remove('away');
-    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    clearTimeout(obSplashT); obSplashT = setTimeout(obSplashDone, 1400); // 400ms in, 1000ms of quiet, then a 600ms fade out
-    document.addEventListener('keydown', obSplashKey);
-  }
-  function obSplashKey(e) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') obSplashDone(); }
-  function obSplashDone() {
-    const sp = obEl('obSplash'); if (!sp || sp.hidden || sp.classList.contains('away')) return;
-    clearTimeout(obSplashT); document.removeEventListener('keydown', obSplashKey);
-    sp.classList.add('away'); setTimeout(() => { sp.hidden = true; }, 620);
-    obRiseCard(180); obRiseIn(document.querySelector('#onboard .ob-step.active'), 440);
-  }
-  function hideOnboard() { const o = obEl('onboard'); if (!o) return; o.hidden = true; document.body.classList.remove('onboarding'); }
+  function hideOnboard() { const o = obEl('onboard'); if (!o) return; o.hidden = true; o.classList.remove('hold'); document.body.classList.remove('onboarding'); }
   function obDone() { try { return localStorage.getItem('nenemi.onboarded') === '1'; } catch (e) { return false; } }
   function obPriorUser() { try { return !!(localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY)); } catch (e) { return false; } }
   // authoritative decision, run once Clerk's real state is known
@@ -5121,10 +5601,10 @@
     let resume = null; try { resume = localStorage.getItem(OB_RESUME); } catch (e) {}
     if (auth.signedIn && resume) {                                   // back from Apple/Google on the way to Full access
       try { localStorage.removeItem(OB_RESUME); } catch (e) {}
-      showOnboard(3); obPickPlan(resume === 'monthly' ? 'monthly' : 'annual'); return;
+      obPlan = resume === 'monthly' ? 'monthly' : 'annual'; showOnboard('ob-pay'); return;
     }
     if (auth.signedIn || obDone() || obPriorUser()) { hideOnboard(); return; } // existing space or signed in: straight in
-    showOnboard(1);
+    showOnboard('ob-hello');
     if (window.__openSignIn) { window.__openSignIn = false; obSignIn(); } // arrived from a Log In link
   }
   function obShowErr(id, e) {
@@ -5147,13 +5627,11 @@
       await Clerk.client.signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
       if (obEl('obCodeEmail')) obEl('obCodeEmail').textContent = email;
       obBusy('obStartBtn', false, 'Continue');
-      obStep('code');
-      const c = obEl('obCode'); if (c) c.focus();
+      advanceTo('ob-code');
     } catch (e) {
       obBusy('obStartBtn', false, 'Continue');
-      obFlow = false;
       const code = e && e.errors && e.errors[0] && e.errors[0].code;
-      if (code === 'form_identifier_exists') obShowErr('obErr1', { message: 'That email already has a space. Sign in is just below.' });
+      if (code === 'form_identifier_exists') obShowErr('obErr1', { message: 'That email already has a space. Sign in is on the first screen.' });
       else obShowErr('obErr1', e);
     }
   }
@@ -5168,7 +5646,7 @@
       await su.attemptEmailAddressVerification({ code });
       obBusy('obCodeBtn', false, 'Confirm');
       if (su.status === 'complete') { await Clerk.setActive({ session: su.createdSessionId }); obAfterAccount(); }
-      else { obStep('name'); const f = obEl('obFirst'); if (f) f.focus(); } // this account needs a name before it can finish
+      else advanceTo('ob-acctname'); // this account needs a name before it can finish
     } catch (e) { obBusy('obCodeBtn', false, 'Confirm'); obShowErr('obErrCode', e); }
   }
   async function obResend() {
@@ -5200,94 +5678,45 @@
       obFlow = true;
       try { localStorage.setItem(OB_RESUME, obPlan); } catch (e) {} // come back to the plan step after Apple/Google
       await Clerk.client.signUp.authenticateWithRedirect({ strategy, redirectUrl: '/?start=1', redirectUrlComplete: '/?start=1' });
-    } catch (e) { obFlow = false; obShowErr('obErr1', e); }
+    } catch (e) { obShowErr('obErr1', e); }
   }
   function obSignIn() { try { if (window.Clerk && auth.pk) Clerk.openSignIn(); } catch (e) {} }
-  // step 2: one question, never a survey
-  function obChip(btn) {
-    const was = btn.classList.contains('on');
-    document.querySelectorAll('#onboard .ob-chip').forEach(c => c.classList.remove('on'));
-    if (!was) btn.classList.add('on');
-  }
-  function obIntake() {
-    const text = (obEl('obThought').value || '').trim();
-    const chip = document.querySelector('#onboard .ob-chip.on');
-    try { localStorage.setItem(OB_INTAKE, JSON.stringify({ text, topic: chip ? chip.textContent.trim() : '' })); } catch (e) {}
-    obFlow = true;
-    obStep(3);
-  }
-  // step 3: two honest choices, free as easy as paid
+  // the paywall: annual (7 days free) is the default; monthly and free are one tap each
+  function obPayLabel(p) { return p === 'annual' ? 'Start 7 days free' : p === 'monthly' ? 'Continue with monthly' : 'Continue free'; }
   function obPickPlan(p) {
     obPlan = p;
-    document.querySelectorAll('#onboard .ob-plan').forEach(b => { const on = b.dataset.plan === p; b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false'); });
-    obEl('obPaidBtn').textContent = p === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly';
+    document.querySelectorAll('#onboard .plan').forEach(b => { const on = b.dataset.plan === p; b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false'); });
+    const tr = obEl('obTrial'); if (tr) tr.hidden = p !== 'annual';
+    const b = obEl('obPaidBtn'); if (b && !b.disabled) b.textContent = obPayLabel(p);
+    const pa = obEl('obPriceAnnual'); if (pa) pa.innerHTML = `$${auth.priceAnnual}<small>/year</small>`;
+    const pm = obEl('obPriceMonthly'); if (pm) pm.innerHTML = `$${auth.price}<small>/month</small>`;
   }
-  function obChooseFree() { obArrive(); }
+  function obPayGo() { if (obPlan === 'free') obArrive(); else obChoosePaid(); }
   async function obChoosePaid() {
     obClearErr('obErr3');
-    if (!auth.signedIn) { obStep('acct'); return; }
+    if (!auth.signedIn) { advanceTo('ob-acct'); return; }
+    advanceTo('ob-pay');
     obBusy('obPaidBtn', true, 'Opening checkout…');
-    obApplyIntake();
+    obCommitProfile();
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     const ok = await openFullAccess(obPlan);
-    if (!ok) { obBusy('obPaidBtn', false, obPlan === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly'); obShowErr('obErr3', { message: "Checkout didn't open just now. Nothing was charged. Free works in the meantime." }); }
-  }
-  // step 4: the thought becomes a room, and its first small step sits on today at this hour
-  function obApplyIntake() {
-    let intake = null; try { intake = JSON.parse(localStorage.getItem(OB_INTAKE) || 'null'); } catch (e) {}
-    if (!intake || (!intake.text && !intake.topic)) return null;
-    try { localStorage.removeItem(OB_INTAKE); } catch (e) {}
-    const text = intake.text || '';
-    const words = text.replace(/[.!?,;:]+/g, ' ').split(/\s+/).filter(Boolean);
-    const name = intake.topic || (words.slice(0, 4).join(' ').replace(/^\w/, c => c.toUpperCase())) || 'First room';
-    const step = text ? (text.length > 90 ? text.slice(0, 87).replace(/\s+\S*$/, '') + '…' : text) : '';
-    const room = { id: 'r' + Date.now(), name, one_liner: text || intake.topic, brief: text ? `First note: “${text}” The Brief grows from here.` : 'A room for this. The Brief grows from what you add.',
-      loops: step ? [{ text: step, resolved: false }] : [], log: text ? [{ source: 'typed', ts: Date.now(), text }] : [], link: null };
-    rooms.unshift(room);
-    if (step) {
-      const n = new Date(); const startH = Math.floor((n.getHours() + n.getMinutes() / 60) * 4) / 4;
-      const ev = { name: step, kind: 'block', room: room.id, start: startH, end: Math.min(24, startH + 0.5), point: true };
-      normalizeEvent(ev); dayList(today).push(ev);
-    }
-    save(); renderRoomList(); renderHomeReturn(); renderSideRooms(); renderCal();
-    return room;
+    if (!ok) { obBusy('obPaidBtn', false, obPayLabel(obPlan)); obShowErr('obErr3', { message: "Checkout didn't open just now. Nothing was charged. Free works in the meantime." }); }
   }
   // after an account exists: straight on to checkout for the plan they picked
-  function obAfterAccount() { obStep(3); setTimeout(obChoosePaid, 260); }
-  // frame 5: the thought becomes a room, its first step sits on today right now, and a quiet spotlight points at it
-  function obApplyIntake() {
-    let intake = null; try { intake = JSON.parse(localStorage.getItem(OB_INTAKE) || 'null'); } catch (e) {}
-    if (!intake || (!intake.text && !intake.topic)) return null;
-    try { localStorage.removeItem(OB_INTAKE); } catch (e) {}
-    const text = intake.text || '';
-    const words = text.replace(/[.!?,;:]+/g, ' ').split(/\s+/).filter(Boolean);
-    const name = intake.topic || (words.slice(0, 4).join(' ').replace(/^\w/, c => c.toUpperCase())) || 'First room';
-    const step = text ? (text.length > 90 ? text.slice(0, 87).replace(/\s+\S*$/, '') + '…' : text) : '';
-    const room = { id: 'r' + Date.now(), name, one_liner: text || intake.topic, brief: text ? `First note: “${text}” The Brief grows from here.` : 'A room for this. The Brief grows from what you add.',
-      loops: step ? [{ text: step, resolved: false }] : [], log: text ? [{ source: 'typed', ts: Date.now(), text }] : [], link: null, lastVisited: Date.now() };
-    rooms.unshift(room);
-    if (step) {
-      const n = new Date(); const startH = Math.floor((n.getHours() + n.getMinutes() / 60) * 4) / 4;
-      const ev = { name: step, kind: 'block', room: room.id, start: startH, end: Math.min(24, startH + 0.5), point: true, createdAt: Date.now() };
-      normalizeEvent(ev); dayList(today).push(ev);
-    }
-    save(); renderRoomList(); renderHomeReturn(); renderSideRooms(); renderCal();
-    return room && step ? room : null;
-  }
+  function obAfterAccount() { setTimeout(obChoosePaid, 260); }
   function obArrive() {
-    const first = obApplyIntake();
+    if (obCur && OB_META[obCur] && OB_META[obCur].p >= 65) obCommitProfile(); // answered the questions (a ?welcome replay that stops early keeps the old profile)
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     obFlow = false;
+    const first = obFirstEv && dayList(today).includes(obFirstEv);
     const o = obEl('onboard');
     const land = () => {
       hideOnboard();
-      try { go('day'); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
+      try { go('day'); renderCal(); renderHomeReturn(); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
       if (first) setTimeout(showFirstMoveSpot, 420);
     };
-    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (o && !o.hidden && !calm) { o.classList.add('closing'); setTimeout(land, 320); } else land();
+    if (o && !o.hidden && !obCalm()) { o.classList.add('closing'); setTimeout(land, 320); } else land();
   }
-  function obFinish() { obArrive(); }
   // a small card that floats just above the first move and points at it; closes on ×, on a tap in the day, or when the move is checked
   function showFirstMoveSpot() {
     const row = document.querySelector('#pane-calendar .nx-task-row.now') || document.querySelector('#pane-calendar .nx-task-row');
@@ -5295,7 +5724,8 @@
     row.scrollIntoView({ block: 'center', behavior: 'smooth' });
     document.querySelectorAll('.nx-spot').forEach(x => x.remove());
     const spot = document.createElement('div'); spot.className = 'nx-spot'; spot.setAttribute('role', 'status');
-    spot.innerHTML = `<div class="nx-spot-msg">Here is your first move. The rest is resting safely inside your room. Tap the card when finished, or '+30m' if your day shifts.</div><button type="button" class="nx-toast-x" aria-label="Close">×</button><span class="nx-spot-arrow" aria-hidden="true"></span>`;
+    const nm = userFirstName();
+    spot.innerHTML = `<div class="nx-spot-msg">${nm ? `${escapeHtml(nm)}, here is your first move.` : 'Here is your first move.'} The rest is resting safely inside your room. Tap the card when finished, or '+30m' if your day shifts.</div><button type="button" class="nx-toast-x" aria-label="Close">×</button><span class="nx-spot-arrow" aria-hidden="true"></span>`;
     document.body.appendChild(spot);
     const place = () => {
       const r = (document.querySelector('#pane-calendar .nx-task-row.now') || row).getBoundingClientRect();
@@ -5319,7 +5749,7 @@
     requestAnimationFrame(() => spot.classList.add('in'));
   }
   // back from Stripe with the browser's Back button: the plan button is usable again
-  window.addEventListener('pageshow', () => { const b = obEl('obPaidBtn'); if (b && b.disabled) obBusy('obPaidBtn', false, obPlan === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly'); });
+  window.addEventListener('pageshow', () => { const b = obEl('obPaidBtn'); if (b && b.disabled) obBusy('obPaidBtn', false, obPayLabel(obPlan)); });
   attachVoice(obEl('obMic'), obEl('obThought'), null);
 
   // mynenemi.com (and www) is the landing page; the app lives on app.mynenemi.com.
@@ -5360,13 +5790,12 @@
   // finishes loading. initAuth()/gateOnboarding() then corrects it (auth-off hides it; a live session advances it).
   (function preGate() {
     if (location.protocol === 'file:' || location.pathname !== '/') return;
-    if (OB_PREVIEW) { try { sessionStorage.removeItem('nenemi.splashSeen'); } catch (e) {} obSplashShown = false; history.replaceState(null, '', '/'); obFlow = true; showOnboard(1); return; } // ?welcome: show the whole onboarding again
+    if (OB_PREVIEW) { history.replaceState(null, '', '/'); obFlow = true; obAns = {}; showOnboard('ob-hello'); return; } // ?welcome: the whole onboarding again, data untouched
     if (obDone()) return; // already through onboarding → straight to the app
     const uat = (document.cookie.match(/(?:^|;)\s*__client_uat=([^;]*)/) || [])[1];
     const signedInHint = uat && Number(uat) > 0;
-    if (signedInHint && obPriorUser()) return; // returning, signed-in user → no wall flash
     if (signedInHint) return; // signed in: straight in, gateOnboarding decides once Clerk is ready
-    showOnboard(1);
+    showOnboard('ob-hello');
   })();
   restore();
   renderCal();

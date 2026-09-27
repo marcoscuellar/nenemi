@@ -1,11 +1,11 @@
-// NENEMI billing — Full access, $6 a month or $48 a year (14-day trial), through Stripe on the web.
+// NENEMI billing — Full access, $10.99 a month or $59.99 a year (7 days free), through Stripe on the web.
 //
 // All calls need a signed-in Clerk user (Authorization: Bearer <token>). Sync-code users
 // get 401 { error: 'sign_in' }: a plan has to belong to an account so it can follow them.
 //
-// GET  /api/billing                 -> { plan, planSource, planUntil }   (the page polls this after checkout)
+// GET  /api/billing                 -> { plan, planSource, planUntil, trialEnd }   (the page polls this after checkout)
 // POST /api/billing?action=checkout[&plan=annual] -> { url }  Stripe Checkout, monthly by default;
-//                                    annual uses STRIPE_PRICE_ANNUAL with a 14-day trial
+//                                    annual uses STRIPE_PRICE_ANNUAL with a 7-day trial
 // POST /api/billing?action=portal   -> { url }  Stripe's own portal: cancel, change card, receipts
 //
 // The plan itself is written by the webhook (api/stripe-webhook.js) into Clerk publicMetadata,
@@ -17,7 +17,7 @@ import { getIdentity } from '../lib/auth.js';
 const SECRET = process.env.STRIPE_SECRET_KEY || '';
 const PRICE = process.env.STRIPE_PRICE_MONTHLY || '';
 const PRICE_ANNUAL = process.env.STRIPE_PRICE_ANNUAL || '';
-const ANNUAL_TRIAL_DAYS = 14;
+const ANNUAL_TRIAL_DAYS = 7;
 const SITE = process.env.NENEMI_SITE_URL || 'https://app.mynenemi.com';
 
 export default async function handler(req, res) {
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
   const meta = who.meta || {};
   if (req.method === 'GET') {
-    return res.status(200).json({ plan: who.plan, planSource: meta.planSource || null, planUntil: meta.planUntil || null });
+    return res.status(200).json({ plan: who.plan, planSource: meta.planSource || null, planUntil: meta.planUntil || null, trialEnd: meta.trialEnd || null });
   }
 
   if (req.method !== 'POST') { res.setHeader('Allow', 'GET, POST'); return res.status(405).json({ error: 'method not allowed' }); }

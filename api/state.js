@@ -61,7 +61,7 @@ export default async function handler(req, res) {
         data: rows[0] ? rows[0].data : null,
         updated_at: rows[0] ? rows[0].updated_at : null,
         plan: who.plan, roomLimit: limitOut, fileLimit: fileLimitFor(who.plan), signedIn: who.kind === 'user',
-        planSource: who.meta?.planSource || null, planUntil: who.meta?.planUntil || null,
+        planSource: who.meta?.planSource || null, planUntil: who.meta?.planUntil || null, trialEnd: who.meta?.trialEnd || null,
       });
     }
 
@@ -86,7 +86,7 @@ export default async function handler(req, res) {
       await sql`insert into nenemi_state (device_id, data, updated_at)
                 values (${who.key}, ${json}::jsonb, now())
                 on conflict (device_id) do update set data = excluded.data, updated_at = now()`;
-      return res.status(200).json({ ok: true, plan: who.plan, roomLimit: limitOut, fileLimit: fileLimitFor(who.plan), planSource: who.meta?.planSource || null, planUntil: who.meta?.planUntil || null });
+      return res.status(200).json({ ok: true, plan: who.plan, roomLimit: limitOut, fileLimit: fileLimitFor(who.plan), planSource: who.meta?.planSource || null, planUntil: who.meta?.planUntil || null, trialEnd: who.meta?.trialEnd || null });
     }
 
     res.setHeader('Allow', 'GET, PUT');
