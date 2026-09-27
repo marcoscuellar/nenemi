@@ -1415,9 +1415,19 @@
   #onboard h1, #onboard h2 { font-size:22px; line-height:1.25; letter-spacing:-.02em; font-weight:700; margin:0 0 6px; color:var(--ob-ink); }
   #onboard .ob-sub { color:var(--ob-dim); font-size:13.5px; line-height:1.55; margin:0 0 22px; }
   #onboard .ob-step { display:none; }
-  #onboard .ob-step.active { display:block; animation:obIn .22s ease; }
+  #onboard .ob-step.active { display:block; animation:obIn .32s cubic-bezier(.2,.7,.2,1); }
+  #onboard .ob-step.leaving { animation:obOut .18s ease forwards; }
+  @keyframes obOut { to { opacity:0; transform:translateY(-4px); } }
+  #onboard.closing { animation:obClose .32s ease forwards; }
+  @keyframes obClose { to { opacity:0; } }
+  #onboard .ob-hero { font-size:28px; letter-spacing:-.03em; line-height:1.15; margin-bottom:10px; }
+  #onboard .ob-lead { font-size:16px; font-weight:600; color:var(--ob-ink); letter-spacing:-.01em; margin:0 0 8px; }
+  #onboard .ob-rules { list-style:none; padding:0; margin:18px 0 4px; display:grid; gap:10px; }
+  #onboard .ob-rules li { display:flex; gap:12px; align-items:flex-start; border:1px solid var(--ob-line); border-radius:12px; padding:13px 14px; font-size:13.5px; line-height:1.5; color:var(--ob-dim); background:#fff; }
+  #onboard .ob-rules li b { color:var(--ob-ink); font-weight:650; }
+  #onboard .ob-rule-n { flex:none; width:24px; height:24px; border-radius:99px; background:var(--ob-cyan-wash); border:1px solid #CBEAF0; color:var(--ob-cyan-ink); font-size:12px; font-weight:700; display:grid; place-items:center; margin-top:1px; }
   @keyframes obIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
-  @media (prefers-reduced-motion: reduce) { #onboard .ob-step.active { animation:none; } }
+  @media (prefers-reduced-motion: reduce) { #onboard .ob-step.active, #onboard .ob-step.leaving, #onboard.closing { animation:none; } }
   #onboard .ob-oauth { display:grid; gap:10px; }
   #onboard .ob-oauth button, #onboard .ob-btn, #onboard .ob-btn-free { width:100%; min-height:46px; border-radius:12px; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .15s, box-shadow .15s, background .15s; }
   #onboard .ob-oauth button { border:1px solid var(--ob-line); background:#fff; color:var(--ob-ink); }
@@ -1938,6 +1948,16 @@
   .nx-toast-x:hover { color: #111827; background: #F5F6F5; }
   @media (prefers-reduced-motion: reduce) { .nx-toast, .nx-toast.in, .nx-toast.out { transform: none; transition: opacity .2s; } }
 
+  /* first-move spotlight after onboarding */
+  .nx-spot { position: fixed; z-index: 9998; background: #fff; border: 1px solid rgba(40,162,195,.35); border-radius: 12px; box-shadow: 0 8px 28px -4px rgba(40,162,195,.18), 0 2px 6px -1px rgba(0,0,0,.04);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13.5px; line-height: 1.5; color: #111827; padding: 13px 40px 13px 15px;
+    opacity: 0; transform: translateY(6px); transition: opacity .25s ease-out, transform .25s ease-out; }
+  .nx-spot.below { transform: translateY(-6px); }
+  .nx-spot.in { opacity: 1; transform: none; }
+  .nx-spot-arrow { position: absolute; bottom: -7px; width: 12px; height: 12px; margin-left: -6px; background: #fff; border-right: 1px solid rgba(40,162,195,.35); border-bottom: 1px solid rgba(40,162,195,.35); transform: rotate(45deg); }
+  .nx-spot.below .nx-spot-arrow { bottom: auto; top: -7px; transform: rotate(225deg); }
+  @media (prefers-reduced-motion: reduce) { .nx-spot, .nx-spot.below, .nx-spot.in { transform: none; transition: opacity .2s; } }
+
   /* phone (kept last so it wins) */
   @media (max-width: 720px) {
     body { background: #fff; }
@@ -2018,17 +2038,78 @@
   <h1 class="sr-only">Nenemi</h1>
 
 <!-- ============ ONBOARDING WALL (hidden until the gate shows it) ============ -->
-<div id="onboard" hidden aria-label="Where your head gets quiet">
+<div id="onboard" hidden aria-label="Welcome to NÈNÈMI">
   <div class="ob-card" role="dialog" aria-labelledby="obTitle">
     <div class="ob-top">
       <div class="ob-brand"><img src="/photos/icon/nenemi-mark-ink.png" alt=""><span>NENEMI</span></div>
       <div class="ob-dots" aria-hidden="true"><i class="on" id="obd1"></i><i id="obd2"></i><i id="obd3"></i><i id="obd4"></i></div>
     </div>
 
-    <!-- STEP 1: quiet entry -->
-    <div class="ob-step active" id="obs1">
-      <h1 id="obTitle">Where your head gets quiet.</h1>
-      <p class="ob-sub">A calm place to put everything down, so you can pick it back up later.</p>
+    <!-- FRAME 1: welcome -->
+    <div class="ob-step active" id="obf1">
+      <h1 id="obTitle" class="ob-hero">Welcome to NÈNÈMI.</h1>
+      <p class="ob-lead">Built for your brain, not their expectations.</p>
+      <p class="ob-sub">A quiet place to set down the open loops so you can pick them up when you're ready.</p>
+      <button class="ob-btn" type="button" onclick="obStep('rules')">Let's begin →</button>
+      <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
+    </div>
+
+    <!-- FRAME 2: the mental model -->
+    <div class="ob-step" id="obf2">
+      <div class="ob-eyebrow">How it works</div>
+      <h2>Three simple rules.</h2>
+      <ol class="ob-rules">
+        <li><span class="ob-rule-n">1</span><span><b>Dump the noise:</b> Drop thoughts without worrying where they go.</span></li>
+        <li><span class="ob-rule-n">2</span><span><b>Rooms hold context:</b> Projects stay intact so you never lose your thread.</span></li>
+        <li><span class="ob-rule-n">3</span><span><b>One move today:</b> We bring only what matters right now onto your schedule.</span></li>
+      </ol>
+      <button class="ob-btn" type="button" onclick="obStep(2)">Got it →</button>
+    </div>
+
+    <!-- STEP 2: one question -->
+    <div class="ob-step" id="obs2">
+      <div class="ob-eyebrow">Your first move</div>
+      <h2>What's taking up the most space in your head right now?</h2>
+      <p class="ob-sub">However it comes out is fine.</p>
+      <div class="ob-thought">
+        <textarea id="obThought" maxlength="600" aria-label="What's taking up the most space in your head" placeholder="The launch, the thing with the landlord, that email I keep not sending…"></textarea>
+        <button type="button" class="ob-mic mic-btn" id="obMic" title="Say it instead" aria-label="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="ob-chips" role="group" aria-label="Or start from one of these">
+        <button type="button" class="ob-chip" onclick="obChip(this)">Work &amp; Projects</button>
+        <button type="button" class="ob-chip" onclick="obChip(this)">Life Admin</button>
+        <button type="button" class="ob-chip" onclick="obChip(this)">Something I'm avoiding</button>
+      </div>
+      <button class="ob-btn" type="button" onclick="obIntake()">Organize this for me →</button>
+    </div>
+
+    <!-- FRAME 4: respectful pricing -->
+    <div class="ob-step" id="obs3">
+      <div class="ob-eyebrow">Whenever you're ready</div>
+      <h2>Keep it free, or unlock unlimited space.</h2>
+      <p class="ob-sub">2 rooms free forever. No countdown timers or surprise lockouts.</p>
+      <div class="ob-plans" role="radiogroup" aria-label="Full access billing">
+        <button type="button" class="ob-plan on" role="radio" aria-checked="true" data-plan="annual" onclick="obPickPlan('annual')">
+          <span class="ob-radio"></span>
+          <span class="ob-plan-main"><span class="ob-plan-name">Annual <span class="ob-badge">14-day free trial</span></span><span class="ob-plan-note">$4/mo, billed once a year</span></span>
+          <span class="ob-plan-price">$48<small>/yr</small></span>
+        </button>
+        <button type="button" class="ob-plan" role="radio" aria-checked="false" data-plan="monthly" onclick="obPickPlan('monthly')">
+          <span class="ob-radio"></span>
+          <span class="ob-plan-main"><span class="ob-plan-name">Monthly</span><span class="ob-plan-note">Cancel anytime</span></span>
+          <span class="ob-plan-price">$6<small>/mo</small></span>
+        </button>
+      </div>
+      <button class="ob-btn" id="obPaidBtn" type="button" onclick="obChoosePaid()">Start the 14-day trial</button>
+      <button class="ob-btn-free" type="button" onclick="obChooseFree()">Start with 2 free rooms</button>
+      <div class="ob-err" id="obErr3" role="status"></div>
+    </div>
+
+    <!-- FRAME 4b: an account, only when Full access is chosen -->
+    <div class="ob-step" id="obsAcct">
+      <div class="ob-eyebrow">One quick thing</div>
+      <h2>Full access lives on an account.</h2>
+      <p class="ob-sub">So it can follow you to every device. Your first room is already saved on this one.</p>
       <div class="ob-oauth">
         <button type="button" onclick="obOAuth('oauth_apple')"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.8-1.1-2.8-4.1zM14 5.1c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3-1.5z"/></svg>Continue with Apple</button>
         <button type="button" onclick="obOAuth('oauth_google')"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8c.9-2.6 3.3-4.4 6.2-4.4z"/></svg>Continue with Google</button>
@@ -2040,8 +2121,7 @@
       <input class="ob-in" id="obPass" type="password" autocomplete="new-password" placeholder="9+ characters" onkeydown="if (event.key === 'Enter') obCreate()">
       <button class="ob-btn" id="obStartBtn" type="button" onclick="obCreate()">Continue</button>
       <div class="ob-err" id="obErr1" role="status"></div>
-      <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
-      <button type="button" class="ob-escape" id="obGuestBtn" onclick="obGuest()">Try without an account →</button>
+      <div class="ob-fine"><button type="button" class="ob-link" onclick="obStep(3)">← Back to plans</button></div>
     </div>
 
     <!-- STEP 1a: confirm email -->
@@ -2067,54 +2147,6 @@
       <div class="ob-err" id="obErr2" role="status"></div>
     </div>
 
-    <!-- STEP 2: one question -->
-    <div class="ob-step" id="obs2">
-      <div class="ob-eyebrow">Just one question</div>
-      <h2>What's taking up the most space in your head right now?</h2>
-      <p class="ob-sub">However it comes out is fine.</p>
-      <div class="ob-thought">
-        <textarea id="obThought" maxlength="600" aria-label="What's taking up the most space in your head" placeholder="The launch, the thing with the landlord, that email I keep not sending…"></textarea>
-        <button type="button" class="ob-mic mic-btn" id="obMic" title="Say it instead" aria-label="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></button>
-      </div>
-      <div class="ob-chips" role="group" aria-label="Or start from one of these">
-        <button type="button" class="ob-chip" onclick="obChip(this)">Work &amp; Projects</button>
-        <button type="button" class="ob-chip" onclick="obChip(this)">Life Admin</button>
-        <button type="button" class="ob-chip" onclick="obChip(this)">Something I'm avoiding</button>
-      </div>
-      <button class="ob-btn" type="button" onclick="obIntake()">Organize this for me →</button>
-    </div>
-
-    <!-- STEP 3: respectful paywall -->
-    <div class="ob-step" id="obs3">
-      <div class="ob-eyebrow">Whenever you're ready</div>
-      <h2>Room to grow, no rush.</h2>
-      <p class="ob-sub">NÈNÈMI gives you 2 rooms free forever. Unlock unlimited space and voice memory when you're ready.</p>
-      <div class="ob-plans" role="radiogroup" aria-label="Full access billing">
-        <button type="button" class="ob-plan on" role="radio" aria-checked="true" data-plan="annual" onclick="obPickPlan('annual')">
-          <span class="ob-radio"></span>
-          <span class="ob-plan-main"><span class="ob-plan-name">Annual <span class="ob-badge">14-day free trial</span></span><span class="ob-plan-note">$4/mo, billed once a year</span></span>
-          <span class="ob-plan-price">$48<small>/yr</small></span>
-        </button>
-        <button type="button" class="ob-plan" role="radio" aria-checked="false" data-plan="monthly" onclick="obPickPlan('monthly')">
-          <span class="ob-radio"></span>
-          <span class="ob-plan-main"><span class="ob-plan-name">Monthly</span><span class="ob-plan-note">Cancel anytime</span></span>
-          <span class="ob-plan-price">$6<small>/mo</small></span>
-        </button>
-      </div>
-      <button class="ob-btn" id="obPaidBtn" type="button" onclick="obChoosePaid()">Start the 14-day trial</button>
-      <button class="ob-btn-free" type="button" onclick="obChooseFree()">Start with 2 free rooms</button>
-      <div class="ob-err" id="obErr3" role="status"></div>
-      <div class="ob-free-note">Calendar, voice, and your way back in stay free, always.</div>
-    </div>
-
-    <!-- STEP 4: handoff -->
-    <div class="ob-step" id="obs4">
-      <div class="ob-handoff">
-        <div class="ob-handoff-mark"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg></div>
-        <h2 id="obWelcomeHead">Your space is ready.</h2>
-        <p class="ob-sub" id="obWelcomeSub" style="margin-bottom:0">Opening your day…</p>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -4098,6 +4130,7 @@
   function toastSeen(key) { return key in toastHist(); }
   function toastMark(key, val) { const h = toastHist(); h[key] = val == null ? Date.now() : val; toastHistSet(h); }
   function toastQuiet() {
+    if (document.querySelector('.nx-spot')) return true; // the first-move spotlight is talking; wait
     if (document.body.classList.contains('onboarding')) return true;
     const a = document.querySelector('.pane.active'); return !!(a && /pane-(stuck|lockdown|humans)$/.test(a.id));
   }
@@ -4138,12 +4171,12 @@
       if (e.done) return;
       const name = `<b>${escapeHtml(e.name)}</b>`;
       // 2. fifteen minutes before a timed block
-      if (!e.anytime && h >= e.start - 0.25 && h < e.start - 0.25 + 5 / 60) queueToast({ key: `pre:${dk}:${e.start}:${e.name}`, html: `In 15 minutes: ${name}. Take a sip of water and shift gears when ready.` });
+      if (!e.anytime && h >= e.start - 0.25 && h < e.start - 0.25 + 5 / 60) queueToast({ key: `pre:${dk}:${e.start}:${e.name}`, html: `In 15 minutes: ${name}. A sip of water might help the switch.` });
       // 4. fifteen minutes after it ends (untimed: 45 minutes after it was added), still open, once per task
       const due = e.anytime ? (e.createdAt ? e.createdAt + 45 * 6e4 : null) : null;
       const past = e.anytime ? (due != null && ms >= due && dkey(new Date(e.createdAt)) === dk) : h >= e.end + 0.25;
       if (past) queueToast({ key: `grace:${dk}:${e.name}`,
-        html: `${name}<br>Don't forget to fill in your to-do. If you were not able to do it, that's completely fine—we can practice later!`,
+        html: `${name} is still open. If today wasn't the day for it, that's completely fine.`,
         actions: [
           { label: 'Done', primary: true, run: () => { e.done = true; save(); renderCal(); } },
           { label: 'Anytime', run: () => { e.anytime = true; e.start = 0; e.end = 0; delete e.time; delete e.point; e.createdAt = Date.now(); save(); renderCal(); } },
@@ -4985,40 +5018,47 @@
   document.getElementById('stuckInput').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); stuckSend(); } });
   document.getElementById('stuckInput').addEventListener('input', function () { this.style.height = 'auto'; this.style.height = Math.max(84, Math.min(this.scrollHeight, window.innerHeight * 0.4)) + 'px'; });
 
-  // ===== Onboarding (v4): one calm card. Entry → one question → an unhurried plan choice → straight into My day.
-  //       Wired to Clerk (custom, headless flow). The localStorage + /api/state engine underneath is untouched. =====
-  const obStepEl = { 1:'obs1', code:'obsCode', name:'obsName', 2:'obs2', 3:'obs3', 4:'obs4' };
-  const obDotFor = { 1:1, code:1, name:1, 2:2, 3:3, 4:4 };
-  let obFlow = false; // true while our flow is driving, so the auth listener doesn't pull the card back to step 1
+  // ===== Onboarding (v5): five frames in one calm card. Welcome → three rules → one question → an
+  //       unhurried plan choice → straight into My day, with the first move spotlighted. No account needed;
+  //       an account is offered only when Full access is chosen. localStorage + /api/state underneath is untouched. =====
+  const obStepEl = { 1:'obf1', rules:'obf2', 2:'obs2', 3:'obs3', acct:'obsAcct', code:'obsCode', name:'obsName' };
+  const obDotFor = { 1:1, rules:2, 2:3, 3:4, acct:4, code:4, name:4 };
+  let obFlow = false; // true while our flow is driving, so the auth listener doesn't pull the card back
   let obPlan = 'annual';
-  const OB_GUEST = 'nenemi.guest', OB_INTAKE = 'nenemi.intake';
+  const OB_INTAKE = 'nenemi.intake', OB_RESUME = 'nenemi.obResume';
   function obEl(id) { return document.getElementById(id); }
   function obStep(n) {
-    if (n === 3 && (IN_APP_SHELL || !auth.billing)) n = 4; // no plan step inside the iPhone app, or where billing isn't on
-    Object.values(obStepEl).forEach(id => { const el = obEl(id); if (el) el.classList.remove('active'); });
-    const el = obEl(obStepEl[n]); if (el) el.classList.add('active');
-    const dot = obDotFor[n] || 1;
-    for (let i = 1; i <= 4; i++) { const d = obEl('obd' + i); if (d) { d.classList.toggle('on', i === dot); d.classList.toggle('past', i < dot); } }
-    const o = obEl('onboard'); if (o) o.scrollTop = 0;
-    if (n === 2) { const t = obEl('obThought'); if (t) setTimeout(() => t.focus(), 60); }
-    if (n === 4) obHandoff();
+    if (n === 3 && (IN_APP_SHELL || !auth.billing)) { obArrive(); return; } // no plan step in the iPhone app, or where billing is off
+    if (n !== 1) obFlow = true;
+    const cur = document.querySelector('#onboard .ob-step.active');
+    const next = obEl(obStepEl[n]); if (!next || next === cur) return;
+    const show = () => {
+      Object.values(obStepEl).forEach(id => { const el = obEl(id); if (el) el.classList.remove('active', 'leaving'); });
+      next.classList.add('active');
+      const dot = obDotFor[n] || 1;
+      for (let i = 1; i <= 4; i++) { const d = obEl('obd' + i); if (d) { d.classList.toggle('on', i === dot); d.classList.toggle('past', i < dot); } }
+      const o = obEl('onboard'); if (o) o.scrollTop = 0;
+      if (n === 2) { const t = obEl('obThought'); if (t) setTimeout(() => t.focus(), 80); }
+    };
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (cur && !calm) { cur.classList.add('leaving'); setTimeout(show, 180); } else show();
   }
-  function showOnboard(step) { const o = obEl('onboard'); if (!o) return; o.hidden = false; document.body.classList.add('onboarding'); obStep(step || 1); }
+  function showOnboard(step) { const o = obEl('onboard'); if (!o) return; o.hidden = false; o.classList.remove('closing'); document.body.classList.add('onboarding'); obStep(step || 1); }
   function hideOnboard() { const o = obEl('onboard'); if (!o) return; o.hidden = true; document.body.classList.remove('onboarding'); }
   function obDone() { try { return localStorage.getItem('nenemi.onboarded') === '1'; } catch (e) { return false; } }
-  function obGuestMode() { try { return localStorage.getItem(OB_GUEST) === '1'; } catch (e) { return false; } }
   function obPriorUser() { try { return !!(localStorage.getItem('nenemi.seen') || localStorage.getItem(STORE_KEY) || localStorage.getItem(SYNC_KEY)); } catch (e) { return false; } }
   // authoritative decision, run once Clerk's real state is known
   function gateOnboarding() {
     if (obFlow) return;                                              // mid-flow: leave the card where it is
     if (location.protocol === 'file:') { hideOnboard(); return; }   // dev / no server: never wall
     if (!auth.pk) { hideOnboard(); return; }                        // auth unavailable: can't (and won't) wall
-    if (auth.signedIn) {
-      if (obDone() || obPriorUser()) { hideOnboard(); return; }      // existing user: never disrupt
-      showOnboard(2); return;                                        // fresh sign-up (e.g. back from Apple/Google)
+    let resume = null; try { resume = localStorage.getItem(OB_RESUME); } catch (e) {}
+    if (auth.signedIn && resume) {                                   // back from Apple/Google on the way to Full access
+      try { localStorage.removeItem(OB_RESUME); } catch (e) {}
+      showOnboard(3); obPickPlan(resume === 'monthly' ? 'monthly' : 'annual'); return;
     }
-    if (obGuestMode() && obDone()) { hideOnboard(); return; }        // chose to try it without an account
-    showOnboard(1);                                                  // auth on, not signed in
+    if (auth.signedIn || obDone() || obPriorUser()) { hideOnboard(); return; } // existing space or signed in: straight in
+    showOnboard(1);
     if (window.__openSignIn) { window.__openSignIn = false; obSignIn(); } // arrived from a Log In link
   }
   function obShowErr(id, e) {
@@ -5061,7 +5101,7 @@
       const su = Clerk.client.signUp;
       await su.attemptEmailAddressVerification({ code });
       obBusy('obCodeBtn', false, 'Confirm');
-      if (su.status === 'complete') { await Clerk.setActive({ session: su.createdSessionId }); obStep(2); }
+      if (su.status === 'complete') { await Clerk.setActive({ session: su.createdSessionId }); obAfterAccount(); }
       else { obStep('name'); const f = obEl('obFirst'); if (f) f.focus(); } // this account needs a name before it can finish
     } catch (e) { obBusy('obCodeBtn', false, 'Confirm'); obShowErr('obErrCode', e); }
   }
@@ -5085,23 +5125,18 @@
       }
       try { if (typeof renderAccount === 'function') renderAccount(); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
       obBusy('obNameBtn', false, 'Continue');
-      obStep(2);
+      obAfterAccount();
     } catch (e) { obBusy('obNameBtn', false, 'Continue'); obShowErr('obErr2', e); }
   }
   async function obOAuth(strategy) {
     if (!obReady()) { obShowErr('obErr1', { message: 'Sign-up is waking up. One moment, then again.' }); return; }
     try {
       obFlow = true;
+      try { localStorage.setItem(OB_RESUME, obPlan); } catch (e) {} // come back to the plan step after Apple/Google
       await Clerk.client.signUp.authenticateWithRedirect({ strategy, redirectUrl: '/?start=1', redirectUrlComplete: '/?start=1' });
     } catch (e) { obFlow = false; obShowErr('obErr1', e); }
   }
   function obSignIn() { try { if (window.Clerk && auth.pk) Clerk.openSignIn(); } catch (e) {} }
-  // no account: everything saves on this device first, like always. An account can come later.
-  function obGuest() {
-    try { localStorage.setItem(OB_GUEST, '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
-    obFlow = true;
-    obStep(2);
-  }
   // step 2: one question, never a survey
   function obChip(btn) {
     const was = btn.classList.contains('on');
@@ -5121,10 +5156,10 @@
     document.querySelectorAll('#onboard .ob-plan').forEach(b => { const on = b.dataset.plan === p; b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false'); });
     obEl('obPaidBtn').textContent = p === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly';
   }
-  function obChooseFree() { obStep(4); }
+  function obChooseFree() { obArrive(); }
   async function obChoosePaid() {
     obClearErr('obErr3');
-    if (!auth.signedIn) { obShowErr('obErr3', { message: 'Full access lives on an account, so it can follow you to every device. Free is all yours for now, and an account can come anytime.' }); return; }
+    if (!auth.signedIn) { obStep('acct'); return; }
     obBusy('obPaidBtn', true, 'Opening checkout…');
     obApplyIntake();
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
@@ -5151,23 +5186,75 @@
     save(); renderRoomList(); renderHomeReturn(); renderSideRooms(); renderCal();
     return room;
   }
-  let obHandoffT = null;
-  function obHandoff() {
-    const room = obApplyIntake();
-    const fn = (typeof userFirstName === 'function' && userFirstName()) || '';
-    if (obEl('obWelcomeHead')) obEl('obWelcomeHead').textContent = fn ? `Your space is ready, ${fn}.` : 'Your space is ready.';
-    if (obEl('obWelcomeSub')) obEl('obWelcomeSub').textContent = room ? `Made a room: ${room.name}. Opening your day…` : 'Opening your day…';
-    clearTimeout(obHandoffT); obHandoffT = setTimeout(obFinish, 1100);
+  // after an account exists: straight on to checkout for the plan they picked
+  function obAfterAccount() { obStep(3); setTimeout(obChoosePaid, 260); }
+  // frame 5: the thought becomes a room, its first step sits on today right now, and a quiet spotlight points at it
+  function obApplyIntake() {
+    let intake = null; try { intake = JSON.parse(localStorage.getItem(OB_INTAKE) || 'null'); } catch (e) {}
+    if (!intake || (!intake.text && !intake.topic)) return null;
+    try { localStorage.removeItem(OB_INTAKE); } catch (e) {}
+    const text = intake.text || '';
+    const words = text.replace(/[.!?,;:]+/g, ' ').split(/\s+/).filter(Boolean);
+    const name = intake.topic || (words.slice(0, 4).join(' ').replace(/^\w/, c => c.toUpperCase())) || 'First room';
+    const step = text ? (text.length > 90 ? text.slice(0, 87).replace(/\s+\S*$/, '') + '…' : text) : '';
+    const room = { id: 'r' + Date.now(), name, one_liner: text || intake.topic, brief: text ? `First note: “${text}” The Brief grows from here.` : 'A room for this. The Brief grows from what you add.',
+      loops: step ? [{ text: step, resolved: false }] : [], log: text ? [{ source: 'typed', ts: Date.now(), text }] : [], link: null, lastVisited: Date.now() };
+    rooms.unshift(room);
+    if (step) {
+      const n = new Date(); const startH = Math.floor((n.getHours() + n.getMinutes() / 60) * 4) / 4;
+      const ev = { name: step, kind: 'block', room: room.id, start: startH, end: Math.min(24, startH + 0.5), point: true, createdAt: Date.now() };
+      normalizeEvent(ev); dayList(today).push(ev);
+    }
+    save(); renderRoomList(); renderHomeReturn(); renderSideRooms(); renderCal();
+    return room && step ? room : null;
   }
-  function obFinish() {
+  function obArrive() {
+    const first = obApplyIntake();
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     obFlow = false;
-    hideOnboard();
-    try { if (typeof go === 'function') go('day'); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
+    const o = obEl('onboard');
+    const land = () => {
+      hideOnboard();
+      try { go('day'); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
+      if (first) setTimeout(showFirstMoveSpot, 420);
+    };
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (o && !o.hidden && !calm) { o.classList.add('closing'); setTimeout(land, 320); } else land();
   }
-  attachVoice(obEl('obMic'), obEl('obThought'), null);
+  function obFinish() { obArrive(); }
+  // a small card that floats just above the first move and points at it; closes on ×, on a tap in the day, or when the move is checked
+  function showFirstMoveSpot() {
+    const row = document.querySelector('#pane-calendar .nx-task-row.now') || document.querySelector('#pane-calendar .nx-task-row');
+    if (!row) return;
+    row.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    document.querySelectorAll('.nx-spot').forEach(x => x.remove());
+    const spot = document.createElement('div'); spot.className = 'nx-spot'; spot.setAttribute('role', 'status');
+    spot.innerHTML = `<div class="nx-spot-msg">Here is your first move. The rest is resting safely inside your room. Tap the card when finished, or '+30m' if your day shifts.</div><button type="button" class="nx-toast-x" aria-label="Close">×</button><span class="nx-spot-arrow" aria-hidden="true"></span>`;
+    document.body.appendChild(spot);
+    const place = () => {
+      const r = (document.querySelector('#pane-calendar .nx-task-row.now') || row).getBoundingClientRect();
+      if (!r.width) return;
+      const w = Math.min(360, window.innerWidth - 24);
+      spot.style.width = w + 'px';
+      const left = Math.max(12, Math.min(window.innerWidth - w - 12, r.left + r.width / 2 - w / 2));
+      spot.style.left = left + 'px';
+      const h = spot.offsetHeight;
+      const above = r.top - h - 14 > 8;
+      spot.style.top = (above ? r.top - h - 14 : r.bottom + 14) + 'px';
+      spot.classList.toggle('below', !above);
+      spot.querySelector('.nx-spot-arrow').style.left = Math.max(18, Math.min(w - 18, r.left + r.width / 2 - left)) + 'px';
+    };
+    const close = () => { if (!spot.isConnected) return; spot.classList.remove('in'); window.removeEventListener('resize', place); document.removeEventListener('scroll', place, true); document.removeEventListener('pointerdown', outside, true); setTimeout(() => { spot.remove(); if (typeof pumpToasts === 'function') pumpToasts(); }, 220); };
+    const outside = (e) => { if (!spot.contains(e.target)) setTimeout(close, 0); };
+    spot.querySelector('.nx-toast-x').onclick = close;
+    place(); setTimeout(place, 450);
+    window.addEventListener('resize', place); document.addEventListener('scroll', place, true);
+    setTimeout(() => document.addEventListener('pointerdown', outside, true), 600);
+    requestAnimationFrame(() => spot.classList.add('in'));
+  }
   // back from Stripe with the browser's Back button: the plan button is usable again
   window.addEventListener('pageshow', () => { const b = obEl('obPaidBtn'); if (b && b.disabled) obBusy('obPaidBtn', false, obPlan === 'annual' ? 'Start the 14-day trial' : 'Continue with monthly'); });
+  attachVoice(obEl('obMic'), obEl('obThought'), null);
 
   // mynenemi.com (and www) is the landing page; the app lives on app.mynenemi.com.
   // Browser storage is per address, so anything saved on www rides along in the link the first time.
@@ -5211,7 +5298,8 @@
     const uat = (document.cookie.match(/(?:^|;)\s*__client_uat=([^;]*)/) || [])[1];
     const signedInHint = uat && Number(uat) > 0;
     if (signedInHint && obPriorUser()) return; // returning, signed-in user → no wall flash
-    showOnboard(signedInHint ? 2 : 1);
+    if (signedInHint) return; // signed in: straight in, gateOnboarding decides once Clerk is ready
+    showOnboard(1);
   })();
   restore();
   renderCal();
