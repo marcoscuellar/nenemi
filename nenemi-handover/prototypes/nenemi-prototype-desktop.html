@@ -1458,12 +1458,12 @@
   #onboard .ob-err:empty { display:none; }
 
   /* splash before frame 1: white mark + name on ink, floating in, then easing away */
-  #onboard .ob-splash { position:fixed; inset:0; z-index:10; background:#111312; display:grid; place-items:center; cursor:pointer; transition:opacity .6s ease; }
+  #onboard .ob-splash { position:fixed; inset:0; z-index:10000; background:#0D0E11; display:grid; place-items:center; cursor:pointer; transition:opacity .6s ease; }
   #onboard .ob-splash[hidden] { display:none; }
   #onboard .ob-splash.away { opacity:0; pointer-events:none; }
-  #onboard .ob-splash-float { display:flex; flex-direction:column; align-items:center; gap:16px; animation:obIdle 4.8s ease-in-out 1.4s infinite; }
-  #onboard .ob-splash-mark { width:52px; height:auto; opacity:0; transform:translateY(18px) scale(.96); animation:obFloatIn .9s cubic-bezier(.2,.7,.2,1) .15s forwards; }
-  #onboard .ob-splash-word { font-family:'Archivo Black','Archivo',sans-serif; color:#fff; font-size:13px; letter-spacing:.36em; padding-left:.36em; opacity:0; transform:translateY(14px); animation:obFloatIn .9s cubic-bezier(.2,.7,.2,1) .55s forwards; }
+  #onboard .ob-splash-float { display:flex; flex-direction:column; align-items:center; gap:16px; }
+  #onboard .ob-splash-mark { width:52px; height:auto; opacity:0; transform:translateY(8px); animation:obFloatIn .4s ease-out forwards; }
+  #onboard .ob-splash-word { font-family:'Archivo Black','Archivo',sans-serif; color:#fff; font-size:13px; letter-spacing:.36em; padding-left:.36em; opacity:0; transform:translateY(8px); animation:obFloatIn .4s ease-out forwards; }
   @keyframes obFloatIn { to { opacity:1; transform:none; } }
   @keyframes obIdle { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-5px); } }
   @media (prefers-reduced-motion: reduce) {
@@ -5085,7 +5085,8 @@
   function showOnboard(step) {
     const o = obEl('onboard'); if (!o) return;
     const wasHidden = o.hidden;
-    const splash = (step || 1) === 1 && wasHidden && !obSplashShown;
+    let seen = false; try { seen = sessionStorage.getItem('nenemi.splashSeen') === '1'; } catch (e) {}
+    const splash = (step || 1) === 1 && wasHidden && !obSplashShown && !seen;
     const card = document.querySelector('#onboard .ob-card');
     if (splash && card) card.classList.add('waiting');        // held back until the splash eases away
     else if (wasHidden) { obRiseCard(0); obRiseBase = 260; }
@@ -5095,10 +5096,10 @@
   // the first thing anyone sees: the mark and the name. a tap, a key, or a couple of seconds moves on.
   function obSplash() {
     const sp = obEl('obSplash'); if (!sp) return;
-    obSplashShown = true;
+    obSplashShown = true; try { sessionStorage.setItem('nenemi.splashSeen', '1'); } catch (e) {}
     sp.hidden = false; sp.classList.remove('away');
     const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    clearTimeout(obSplashT); obSplashT = setTimeout(obSplashDone, calm ? 1400 : 2600);
+    clearTimeout(obSplashT); obSplashT = setTimeout(obSplashDone, 1400); // 400ms in, 1000ms of quiet, then a 600ms fade out
     document.addEventListener('keydown', obSplashKey);
   }
   function obSplashKey(e) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') obSplashDone(); }
