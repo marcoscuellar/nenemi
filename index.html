@@ -1469,6 +1469,9 @@
   #onboard .ob-sum ul { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
   #onboard .ob-sum li { position:relative; padding-left:16px; font-size:13px; color:var(--ob-ink); line-height:1.45; }
   #onboard .ob-sum li::before { content:""; position:absolute; left:2px; top:.55em; width:6px; height:6px; border-radius:50%; background:var(--ob-cyan); }
+  #onboard .ob-sum li.ob-sum-item { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  #onboard .ob-sum-x { flex:none; width:22px; height:22px; margin-top:-1px; border:0; border-radius:6px; background:none; color:var(--ob-help); font-size:15px; line-height:1; cursor:pointer; }
+  #onboard .ob-sum-x:hover { color:var(--ob-ink); background:var(--ob-ground); }
   #onboard .ob-edit-row { display:flex; gap:8px; align-items:center; margin-top:8px; }
   #onboard .ob-edit-row .ob-input { flex:1; }
   #onboard .ob-x { flex:none; width:32px; height:32px; border-radius:8px; border:1px solid var(--ob-line); background:#fff; color:var(--ob-body); cursor:pointer; font-size:16px; line-height:1; }
@@ -5479,6 +5482,7 @@
   let obFlow = false; // true while our flow is driving, so the auth listener doesn't pull the card back
   let obPlan = 'annual';
   let obAns = {}, obHist = [], obCur = null, obPicking = false;
+  let onboardingItems = []; // what came out of the dump (14), as confirmed on 15
   let obRoom = null, obDraft = null, obEditing = false, obWantsMove = false, obDayEvs = [], obFirstEv = null;
   const OB_RESUME = 'nenemi.obResume';
   function obEl(id) { return document.getElementById(id); }
@@ -5539,6 +5543,15 @@
     'ob-acctname': () => { const f = obEl('obFirst'); if (f && !f.value && profile.name) f.value = profile.name; },
   };
   // 14 → 15: their words, sorted into one room. Claude when it's reachable, plain splitting when it isn't.
+  // their own lines first: new lines and bullets, exactly as written
+  function obSplitLines(text) {
+    const seen = new Set(), out = [];
+    String(text || '').split(/\r?\n/).map(l => l.replace(/^\s*(?:[-•*·–]|\d+[.)])\s*/, '').trim()).filter(Boolean).forEach(l => {
+      const t = l.length > 90 ? l.slice(0, 87).replace(/\s+\S*$/, '') + '…' : l; const k = t.toLowerCase();
+      if (!seen.has(k)) { seen.add(k); out.push(t.charAt(0).toUpperCase() + t.slice(1)); }
+    });
+    return out.slice(0, 12);
+  }
   function obSplitDump(text) {
     const parts = String(text || '').split(/\n+|(?<=[.!?;])\s+|,\s+|\s+(?:and then|and also|also|plus)\s+/i)
       .map(s => s.replace(/^[\s\-•*·]+|[\s.;,]+$/g, '').replace(/^(?:and then|and also|and|also|plus|then)\s+/i, '').trim()).filter(s => s.length > 2);
@@ -5552,7 +5565,9 @@
     return n ? n.charAt(0).toUpperCase() + n.slice(1) : 'First room';
   }
   async function obOrganize(text) {
-    let name = null, items = [];
+    let name = null, items = obSplitLines(text);
+    if (items.length >= 2) return { name: obNameFrom(text, items).slice(0, 60), items, text }; // they already listed it: keep their words
+    items = [];
     if (auth.smart && location.protocol !== 'file:') {
       try {
         const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 7000);
@@ -5567,11 +5582,11 @@
   }
   async function obDumpNext() {
     const text = (obEl('obThought').value || '').trim();
-    if (!text) { obDraft = null; advanceTo('ob-learn'); return; } // nothing to hold yet; that's fine
+    if (!text) { obDraft = null; onboardingItems = []; advanceTo('ob-learn'); return; } // nothing to hold yet; that's fine
     const b = obEl('obDumpBtn'); b.disabled = true; b.textContent = 'Sorting it…';
     const d = await obOrganize(text);
     b.disabled = false; b.textContent = 'Continue';
-    obDraft = d; obEditing = false;
+    onboardingItems = d.items; obDraft = d; obEditing = false;
     advanceTo('ob-check');
   }
   function obRenderCheck() {
@@ -5579,7 +5594,7 @@
     const d = obDraft;
     if (!obEditing) {
       host.innerHTML = `<div class="ob-sum"><div class="ob-k">Your first room</div><div class="ob-sum-name">${escapeHtml(d.name)}</div>
-        <ul>${d.items.map(i => `<li>${escapeHtml(i)}</li>`).join('') || `<li>${escapeHtml(d.text)}</li>`}</ul></div>
+        <ul>${d.items.map((i, n) => `<li class="ob-sum-item"><span>${escapeHtml(i)}</span><button type="button" class="ob-sum-x" onclick="obDropItem(${n})" aria-label="Remove ${escapeHtml(i)}">×</button></li>`).join('') || `<li>${escapeHtml(d.text)}</li>`}</ul></div>
         <div class="ob-two" style="margin-top:16px"><button type="button" class="pill" onclick="obCheckYes(this)">Yep</button><button type="button" class="pill" onclick="obCheckAlmost()">Almost</button></div>`;
     } else {
       host.innerHTML = `<form onsubmit="event.preventDefault(); obCheckSave();">
@@ -5596,12 +5611,13 @@
     row.innerHTML = `<input class="ob-input" maxlength="160" aria-label="Item"><button type="button" class="ob-x" onclick="this.parentElement.remove()" aria-label="Remove">×</button>`;
     row.querySelector('input').value = v; obEl('obEdItems').appendChild(row); a.value = ''; a.focus();
   }
+  function obDropItem(n) { if (!obDraft) return; onboardingItems = obDraft.items.filter((_, i) => i !== n); obDraft = { ...obDraft, items: onboardingItems }; obRenderCheck(); }
   function obCheckAlmost() { obEditing = true; obRenderCheck(); const n = obEl('obEdName'); if (n) n.focus(); }
   function obCheckSave() {
     const name = (obEl('obEdName').value || '').trim() || obDraft.name;
     const items = [...document.querySelectorAll('#obEdItems input')].map(i => i.value.trim()).filter(Boolean);
     const extra = (obEl('obEdAdd').value || '').trim(); if (extra) items.push(extra);
-    obDraft = { ...obDraft, name: name.slice(0, 60), items };
+    onboardingItems = items; obDraft = { ...obDraft, name: name.slice(0, 60), items };
     obEditing = false; obSaveRoom(); advanceTo('ob-start');
   }
   function obCheckYes(btn) { if (obPicking) return; obPicking = true; btn.classList.add('on', 'press'); obSaveRoom(); autoPick('ob-start'); }
@@ -5662,7 +5678,7 @@
     const open = obRoom ? obRoom.loops.filter(l => !l.resolved) : [];
     if (!open.length) { host.innerHTML = '<p>Nothing to sort yet. Your day can stay open.</p>'; return; }
     const pre = new Set(obDayEvs.map(e => e.name));
-    if (!obDayEvs.length && obWantsMove) pre.add(open[0].text);
+    if (!obDayEvs.length) open.slice(0, 2).forEach(l => pre.add(l.text)); // first visit: the top one or two (the next move leads when they took one)
     host.innerHTML = open.map((l, i) => `<button type="button" class="pill${pre.has(l.text) ? ' on' : ''}" data-i="${i}" onclick="this.classList.toggle('on')">${escapeHtml(l.text)}${OB_TICK}</button>`).join('');
   }
   function obTodayNext() {
@@ -5912,7 +5928,7 @@
     const o = obEl('onboard');
     const land = () => {
       hideOnboard();
-      try { go('day'); renderCal(); renderHomeReturn(); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
+      try { go('day'); renderCal(); renderRoomList(); renderSideRooms(); renderHomeReturn(); applyProfileChrome(); if (typeof renderGreeting === 'function') renderGreeting(); } catch (e) {}
       if (first) setTimeout(showFirstMoveSpot, 420);
     };
     if (o && !o.hidden && !obCalm()) { o.classList.add('closing'); setTimeout(land, 320); } else land();
