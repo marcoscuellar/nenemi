@@ -1495,7 +1495,41 @@
   #onboard::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.035;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
   /* 1b: recognition on brand black, typography from welcome.html #mid (brand teal allowed here only) */
-  #onboard.dark-beat { background:#111312; }
+  #onboard { transition: background-color .4s ease, color .4s ease; }
+  #onboard #header-bar, #onboard .ob-chapter, #onboard .ob-track, #onboard .ob-track i { transition: background-color .4s ease, color .4s ease, border-color .4s ease, width .3s ease; }
+  #onboard.dark-beat { background:#111312; color:#f4f1ea; }
+  /* Acts I and III: every dark card sits straight on the canvas, no white container */
+  #onboard.dark-beat .card { background:transparent; border-color:transparent; box-shadow:none; }
+  #onboard.dark-beat h1, #onboard.dark-beat h2 { color:#f4f1ea; }
+  #onboard.dark-beat p { color:#c2c6c8; }
+  #onboard.dark-beat .ob-quiet { color:#9aa0a2; }
+  #onboard.dark-beat .btn { background:#fff; color:#111312; border-color:#fff; }
+  #onboard.dark-beat .btn:hover:not(:disabled) { background:#f4f1ea; }
+  #onboard.dark-beat .ob-link, #onboard.dark-beat .ob-fine { color:#c2c6c8; }
+  #onboard.dark-beat .ob-link { color:#f4f1ea; text-decoration-color:#565a5c; }
+  #onboard.dark-beat :focus-visible { outline-color:#f4f1ea; }
+  #onboard.dark-beat .ob-input { background:#1a1c1b; border-color:#2e3130; color:#f4f1ea; }
+  #onboard.dark-beat .ob-input::placeholder { color:#6b7072; }
+  #onboard.dark-beat .ob-input:focus { border-color:#f4f1ea; box-shadow:0 0 0 3px rgba(244,241,234,.08); }
+  #onboard.dark-beat .ob-learn li { background:#161817; border-color:#2a2d2c; color:#f4f1ea; }
+  /* 18b on the dark canvas */
+  #onboard.dark-beat .ob-commit-card { background:#161817; border-color:#2a2d2c; }
+  #onboard.dark-beat .ob-commit-badge { color:#3c8692; }
+  #onboard.dark-beat .ob-commit-item { background:#1c1e1d; border-color:#2e3130; color:#f4f1ea; }
+  #onboard.dark-beat .ob-commit-rest-note, #onboard.dark-beat .ob-hold-sub { color:#9aa0a2; }
+  #onboard.dark-beat .ob-hold-btn { background:#1a1c1b; border-color:#3a3d3c; color:#f4f1ea; }
+  #onboard.dark-beat .ob-hold-btn.holding { border-color:#f4f1ea; }
+  #onboard.dark-beat .ob-hold-fill { background:rgba(244,241,234,.14); }
+  #onboard.dark-beat .ob-hold-btn.completed { border-color:#f4f1ea; background:#232625; color:#f4f1ea; }
+  /* 19b on the dark canvas: Archivo Black, teal badge, light hairline, white Let's walk */
+  #onboard.dark-beat .nenemi-definition-card { max-width:640px; }
+  #onboard.dark-beat .def-badge { color:#3c8692; font-family:ui-monospace,Menlo,Consolas,monospace; letter-spacing:.2em; }
+  #onboard.dark-beat .def-title { font-family:"Archivo Black","Arial Black",sans-serif; font-weight:900; letter-spacing:-.03em; color:#f4f1ea; font-size:clamp(2.6rem,7vw,4.2rem); }
+  #onboard.dark-beat .def-phonetic { color:#9aa0a2; }
+  #onboard.dark-beat .def-divider { background:rgba(244,241,234,.35); }
+  #onboard.dark-beat .def-headline { color:#f4f1ea; }
+  #onboard.dark-beat .def-body { color:#c2c6c8; }
+  #onboard.dark-beat .def-cta { border-radius:99px; width:auto; padding:14px 28px; }
   #onboard.dark-beat #header-bar { background:rgba(17,19,18,.95); border-bottom-color:#232526; }
   #onboard.dark-beat .ob-chapter { color:#9aa0a2; }
   #onboard.dark-beat .ob-track { background:#2a2d2c; }
@@ -5439,6 +5473,8 @@
     ['ob-learn', 92, "What I'm learning"], ['ob-definition', 94, "What I'm learning"], ['ob-better', 96, "What I'm learning"],
     ['ob-pay', 100, 'Keep it with you'], ['ob-acct', 100, 'Keep it with you'], ['ob-code', 100, 'Keep it with you'], ['ob-acctname', 100, 'Keep it with you'],
   ];
+  // three acts: I opens dark (1, 1b), II is the light workspace (2–18), III returns dark (18b, 19, 19b, 20)
+  const OB_DARK = new Set(['ob-hello', 'ob-reality-check', 'ob-commit', 'ob-learn', 'ob-definition', 'ob-better']);
   const OB_META = Object.fromEntries(OB_FLOW.map(([id, p, c]) => [id, { p, c }]));
   // 3–12, word for word. Values are short keys; pf() reads them back all over the app.
   const OB_QS = [
@@ -5489,7 +5525,7 @@
     const m = OB_META[stepId] || {};
     if (obCur && obCur !== stepId && !isBack) obHist.push(obCur);
     obCur = stepId;
-    const ob = obEl('onboard'); if (ob) ob.classList.toggle('dark-beat', stepId === 'ob-reality-check'); // 1b sits on brand black, like welcome.html
+    const ob = obEl('onboard'); if (ob) ob.classList.toggle('dark-beat', OB_DARK.has(stepId)); // Acts I and III sit on brand black; Act II is warm paper
     if (OB_ENTER[stepId]) OB_ENTER[stepId]();
     document.querySelectorAll('#onboard .card').forEach(c => { if (c !== next) c.classList.remove('active'); });
     next.classList.remove('active'); void next.offsetWidth; next.classList.add('active');
