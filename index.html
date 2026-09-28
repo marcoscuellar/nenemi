@@ -1491,6 +1491,18 @@
   #onboard .def-meaning { font-size: 1.15rem; font-weight: 500; line-height: 1.4; margin: 0 0 10px; color: var(--text-main, #292524); }
   #onboard .def-note { font-size: 0.9rem; line-height: 1.5; color: var(--text-muted, #57534e); margin: 0 0 24px; }
   #onboard .nenemi-vibe-card .btn, #onboard .nenemi-definition-card .btn { margin-top: 0; }
+  /* screens 3–12: the question cards (gemini-code look) */
+  #onboard .card.ob-question-card { max-width: 440px; background: #FFFFFF; border-radius: 16px; border: 1px solid #E5E7EB; padding: 32px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.02); }
+  #onboard .ob-q-title { font-size: 20px; font-weight: 700; color: #0D0E11; line-height: 1.35; margin: 0 0 8px; }
+  #onboard .ob-q-sub { font-size: 13px; color: #6B7280; line-height: 1.5; margin: 0 0 24px; }
+  #onboard .ob-q-gap { height: 16px; }
+  #onboard .ob-pill-list { display: flex; flex-direction: column; gap: 10px; }
+  #onboard .ob-pill { border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px; font-size: 14px; font-weight: 500; color: #111827; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.15s ease; background: #FAFAFA; }
+  #onboard .ob-pill:hover, #onboard .ob-pill.on { border-color: #28A2C3; background: #FFFFFF; }
+  #onboard .ob-pill:active { transform: scale(0.99); }
+  #onboard .ob-pill .arrow { flex: none; color: #9CA3AF; font-size: 14px; transition: transform 0.15s ease, color 0.15s ease; }
+  #onboard .ob-pill:hover .arrow, #onboard .ob-pill.on .arrow { color: #28A2C3; transform: translateX(3px); }
+  #onboard .why-tag { font-size: 11px; color: #9CA3AF; margin: 16px 0 0; line-height: 1.4; }
   /* 18b: hold to claim the day */
   .ob-commit-card { background: var(--bg-card-subtle, #f9f8f6); border: 1px solid var(--border-subtle, #e7e5e4); border-radius: 16px; padding: 16px; margin: 20px 0; text-align: left; }
   .ob-commit-badge { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted, #78716c); margin-bottom: 8px; }
@@ -5422,34 +5434,35 @@
   const OB_META = Object.fromEntries(OB_FLOW.map(([id, p, c]) => [id, { p, c }]));
   // 3–12, word for word. Values are short keys; pf() reads them back all over the app.
   const OB_QS = [
-    { id: 'ob-useful', key: 'useful', next: 'ob-trips', title: 'What would make NÈNÈMI most useful to you right now?',
+    { id: 'ob-useful', key: 'useful', why: "Why NÈNÈMI asks: it decides what you see first when you open the app.", next: 'ob-trips', title: 'What would make NÈNÈMI most useful to you right now?',
       opts: [['track', 'Keeping track of everything'], ['next', 'Knowing what to do next'], ['resume', 'Picking back up where I left off'], ['lighter', 'Making my day feel less overwhelming'], ['all', 'A little bit of all of that']] },
-    { id: 'ob-trips', key: 'tripsUp', next: 'ob-slips', title: 'What usually trips you up first?',
+    { id: 'ob-trips', key: 'tripsUp', why: "Why NÈNÈMI asks: it shapes what happens when you tap I'm stuck.", next: 'ob-slips', title: 'What usually trips you up first?',
       opts: [['start', 'Getting started'], ['switch', 'Switching to something else'], ['remember', 'Remembering what I was doing'], ['matters', 'Figuring out what matters'], ['many', 'Too many things at once']] },
-    { id: 'ob-slips', key: 'slips', next: 'ob-tools', title: 'When something slips your mind, what usually happens?',
+    { id: 'ob-slips', key: 'slips', why: "Why NÈNÈMI asks: it sets how much of your trail each room keeps and shows.", next: 'ob-tools', title: 'When something slips your mind, what usually happens?',
       opts: [['eventually', 'I remember eventually'], ['reminded', 'Something reminds me and I’m like “oh shit”'], ['notes', 'I piece it back together from notes/messages'], ['where', 'I remember the thing, but not where I left off'], ['gone', 'Sometimes it’s just gone']] },
-    { id: 'ob-tools', key: 'tools', multi: true, next: 'ob-showup', title: 'What do you already use so things don’t disappear?', sub: 'Pick whatever applies.',
+    { id: 'ob-tools', key: 'tools', why: "Why NÈNÈMI asks: it works alongside what you already use, not instead of it.", multi: true, next: 'ob-showup', title: 'What do you already use so things don’t disappear?', sub: 'Pick whatever applies.',
       opts: [['notes', 'Notes everywhere'], ['calendar', 'Calendar'], ['alarms', 'Alarms/reminders'], ['text', 'Text myself'], ['visible', 'Leave things where I can see them'], ['someone', 'Ask someone to remind me'], ['routines', 'Routines'], ['hope', 'Honestly, I mostly hope I remember']] },
-    { id: 'ob-showup', key: 'showUp', next: 'ob-long', title: 'How can I best show up for you?',
+    { id: 'ob-showup', key: 'showUp', why: "Why NÈNÈMI asks: it sets how NÈNÈMI talks to you and how hard it nudges.", next: 'ob-long', title: 'How can I best show up for you?',
       opts: [['structure', 'Give me more structure'], ['gentle', 'Keep it gentle'], ['push', 'Give me a little push'], ['talk', 'Talk it through with me'], ['context', 'Help me remember the context'], ['depends', 'Depends on the day']] },
-    { id: 'ob-long', key: 'longList', next: 'ob-time', title: 'When your list gets long, what happens?',
+    { id: 'ob-long', key: 'longList', why: "Why NÈNÈMI asks: it sets how much My day shows at once.", next: 'ob-time', title: 'When your list gets long, what happens?',
       opts: [['fine', 'I’m fine with it'], ['ignore', 'I start ignoring it'], ['pick', 'I don’t know what to pick'], ['urgent', 'Everything suddenly feels urgent'], ['stop', 'I stop looking at it completely']] },
-    { id: 'ob-time', key: 'time', next: 'ob-energy', title: 'How does time usually behave for you?',
+    { id: 'ob-time', key: 'time', why: "Why NÈNÈMI asks: it decides how time shows up on your day.", next: 'ob-energy', title: 'How does time usually behave for you?',
       opts: [['normal', 'Pretty normally'], ['longer', 'Things take longer than I think'], ['disappear', 'Hours disappear'], ['overfit', 'I think I can fit way more into a day than I actually can'], ['depends', 'Depends on the day']] },
-    { id: 'ob-energy', key: 'energy', next: 'ob-why', title: 'Should your plan change when your energy changes?',
+    { id: 'ob-energy', key: 'energy', why: "Why NÈNÈMI asks: it decides whether your day shrinks, holds steady, or asks first.", next: 'ob-why', title: 'Should your plan change when your energy changes?',
       opts: [['please', 'Please'], ['little', 'A little'], ['track', 'Keep me on track anyway'], ['ask', 'Ask me first']] },
-    { id: 'ob-why', key: 'why', next: 'ob-words', title: 'How much of the “why your brain does this” stuff do you want from me?',
+    { id: 'ob-why', key: 'why', why: "Why NÈNÈMI asks: some people want the science, some just want the help.", next: 'ob-words', title: 'How much of the “why your brain does this” stuff do you want from me?',
       opts: [['tell', 'Tell me the why'], ['little', 'A little context is nice'], ['just', 'Just help me deal with it'], ['depends', 'Depends on the moment']] },
-    { id: 'ob-words', key: 'words', next: 'ob-moment', title: 'Do words like ADHD, autism, AuDHD, or neurodivergent feel useful to you?',
+    { id: 'ob-words', key: 'words', why: "Why NÈNÈMI asks: no diagnosis needed. It only picks the words NÈNÈMI uses with you.", next: 'ob-moment', title: 'Do words like ADHD, autism, AuDHD, or neurodivergent feel useful to you?',
       opts: [['yes', 'Yeah, use them'], ['sometimes', 'Sometimes, when it helps explain something'], ['no', 'Not really'], ['figuring', 'I’m still figuring that out']] },
   ];
   const OB_TICK = '<span class="tick"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m4 10 4 4 8-8"/></svg></span>';
   (function obBuildQs() {
     const host = document.getElementById('obQs'); if (!host) return;
-    host.innerHTML = OB_QS.map(q => `<section class="card" id="${q.id}">
-      <h2>${escapeHtml(q.title)}</h2>${q.sub ? `<p>${escapeHtml(q.sub)}</p>` : '<div style="height:14px"></div>'}
-      <div class="ob-stack">${q.opts.map(([v, t]) => `<button type="button" class="pill" data-v="${v}" onclick="obPick(this, '${q.key}')">${escapeHtml(t)}${q.multi ? OB_TICK : ''}</button>`).join('')}</div>
+    host.innerHTML = OB_QS.map(q => `<section class="card ob-question-card" id="${q.id}">
+      <h2 class="ob-q-title">${escapeHtml(q.title)}</h2>${q.sub ? `<p class="ob-q-sub">${escapeHtml(q.sub)}</p>` : '<div class="ob-q-gap"></div>'}
+      <div class="ob-stack ob-pill-list">${q.opts.map(([v, t]) => `<button type="button" class="pill ob-pill" data-v="${v}" onclick="obPick(this, '${q.key}')"><span>${escapeHtml(t)}</span>${q.multi ? OB_TICK : '<span class="arrow" aria-hidden="true">→</span>'}</button>`).join('')}</div>
       ${q.multi ? `<button class="btn" type="button" onclick="obMultiDone('${q.key}')">Continue</button>` : ''}
+      ${q.why ? `<p class="why-tag">${escapeHtml(q.why)}</p>` : ''}
     </section>`).join('');
   })();
   let obFlow = false; // true while our flow is driving, so the auth listener doesn't pull the card back
