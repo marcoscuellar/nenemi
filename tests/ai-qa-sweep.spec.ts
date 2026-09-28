@@ -24,7 +24,7 @@ const TYPES: Record<string, string> = {
 };
 
 // ---------- harness ----------
-async function serve(context: BrowserContext, { billing = false } = {}) {
+async function serve(context: BrowserContext, { billing = false, iap = false } = {}) {
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
     if (url.origin !== ORIGIN) {
@@ -33,7 +33,9 @@ async function serve(context: BrowserContext, { billing = false } = {}) {
       return route.fulfill({ status: 200, contentType: TYPES[ext] ?? 'text/plain', body: '' });
     }
     if (url.pathname === '/api/config')
-      return route.fulfill({ json: { billing, smartRouting: false, authEnabled: false, price: { monthly: 10.99, annual: 59.99 } } });
+      return route.fulfill({ json: { billing, smartRouting: false, authEnabled: false, price: { monthly: 10.99, annual: 59.99 }, revenuecatIosKey: iap ? 'appl_test_key' : null } });
+    if (url.pathname === '/api/iap')
+      return route.fulfill({ json: { plan: 'paid', planSource: 'apple', planUntil: null, trialEnd: null, roomLimit: null } });
     if (url.pathname.startsWith('/api/')) return route.fulfill({ json: {} });
     const file = path.join(ROOT, url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname));
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return route.fulfill({ status: 200, body: '' });
@@ -293,4 +295,106 @@ test('critical path + storage', async ({ context, page }, info) => {
     const cls = await page.evaluate(() => (window as any).__cls as number);
     expect(cls, 'cumulative layout shift after reload').toBeLessThan(0.1);
   }, 'body');
+});
+
+// ---------- 3. the iPhone paywall: Apple in-app purchase through RevenueCat ----------
+// A stand-in for the native bridge: the page believes it's inside the iPhone app, and a fake RevenueCat
+// plugin answers like the App Store (sandbox prices, a purchase, a restore) and records every call.
+async function asIPhoneApp(context: BrowserContext, { restoreHasPurchase = true } = {}) {
+  await context.addInitScript((restoreHasPurchase) => {
+    const calls: any[] = []; (window as any).__iapCalls = calls;
+    const pkg = (id: string, type: string, price: string) => ({ identifier: type, packageType: type.replace('$rc_', '').toUpperCase(), presentedOfferingContext: { offeringIdentifier: 'default' }, product: { identifier: id, priceString: price } });
+    const active = { entitlements: { active: { full_access: { identifier: 'full_access', isActive: true } } } };
+    const none = { entitlements: { active: {} } };
+    const Purchases = {
+      isConfigured: async () => ({ isConfigured: calls.some(c => c[0] === 'configure') }),
+      configure: async (o: any) => { calls.push(['configure', o]); },
+      getOfferings: async () => { calls.push(['getOfferings']); const p = [pkg('nenemi_monthly_1099', '$rc_monthly', '$10.99'), pkg('nenemi_annual_5999', '$rc_annual', '$59.99')]; return { current: { identifier: 'default', availablePackages: p }, all: { default: { identifier: 'default', availablePackages: p } } }; },
+      logIn: async (o: any) => { calls.push(['logIn', o]); return { customerInfo: none, created: false }; },
+      logOut: async () => { calls.push(['logOut']); return { customerInfo: none }; },
+      purchasePackage: async (o: any) => { calls.push(['purchasePackage', o.aPackage.product.identifier]); return { customerInfo: active, productIdentifier: o.aPackage.product.identifier }; },
+      restorePurchases: async () => { calls.push(['restorePurchases']); return { customerInfo: restoreHasPurchase ? active : none }; },
+    };
+    (window as any).Capacitor = { isNativePlatform: () => true, getPlatform: () => 'ios', Plugins: { Purchases } };
+  }, restoreHasPurchase);
+}
+async function signInForTest(page: Page) {
+  // a signed-in account, the way Clerk would leave it, so purchases can be tied to the user id
+  await page.evaluate(`auth.signedIn = true; window.Clerk = { user: { id: 'user_reviewer' }, session: null }`);
+}
+
+test('iPhone paywall: store prices, buy, restore, terms', async ({ context, page }, info) => {
+  await serve(context, { iap: true });
+  await asIPhoneApp(context);
+  const errors = watchConsole(page);
+  await page.goto(ORIGIN + '/?welcome', { waitUntil: 'domcontentloaded' });
+  await pastSplash(page);
+  await expect.poll(() => page.evaluate('iap.ready'), { message: 'RevenueCat offerings loaded' }).toBe(true);
+  const configured = await page.evaluate(`__iapCalls.find(c => c[0] === 'configure')[1].apiKey`);
+  expect(configured).toBe('appl_test_key');
+
+  // the paywall is no longer skipped inside the iPhone app
+  await obStep(page, 'ob-pay');
+  await expect(page.locator('#ob-pay')).toBeVisible();
+  await expect(page.locator('#obPriceMonthly')).toContainText('$10.99');
+  await expect(page.locator('#obPriceAnnual')).toContainText('$59.99');
+  await expect(page.locator('#onboard .ob-badge')).toHaveText('7 days free');
+  // Apple's requirements: a restore button, the auto-renew terms, EULA and privacy links
+  await expect(page.locator('#obRestoreBtn')).toBeVisible();
+  await expect(page.locator('#onboard .ob-legal .ob-legal-ios')).toBeVisible();
+  await expect(page.locator('#onboard .ob-legal .ob-legal-ios')).toContainText('24 hours');
+  await expect(page.locator('#onboard .ob-legal a[href="/terms.html"]')).toHaveText('Terms of Use (EULA)');
+  await expect(page.locator('#onboard .ob-legal a[href="/privacy.html"]')).toHaveText('Privacy Policy');
+  const audit = await colorAudit(page, '#onboard');
+
+  // buy the annual plan (the default): the right product, tied to the account, Full access on
+  await signInForTest(page);
+  await page.locator('#obPaidBtn').click();
+  await expect.poll(() => page.evaluate(`JSON.stringify(__iapCalls.filter(c => c[0] === 'purchasePackage' || c[0] === 'logIn'))`))
+    .toBe(JSON.stringify([['logIn', { appUserID: 'user_reviewer' }], ['purchasePackage', 'nenemi_annual_5999']]));
+  await expect.poll(() => page.evaluate('auth.plan')).toBe('paid');
+  await expect(page.locator('#onboard')).toBeHidden();
+  expect(await page.evaluate('canAddRoom()')).toBe(true);
+
+  // monthly maps to its own product
+  await page.evaluate(`obPickPlan('monthly'); iapBuy('monthly')`);
+  await expect.poll(() => page.evaluate(`__iapCalls.filter(c => c[0] === 'purchasePackage').map(c => c[1]).join(',')`)).toBe('nenemi_annual_5999,nenemi_monthly_1099');
+
+  // restore
+  const restored = await page.evaluate('iapRestore()');
+  expect(restored).toBe('Full access is back on.');
+
+  const ok = audit.length === 0 && errors.length === 0;
+  record(info, { view: 'iPhone paywall: prices, buy, restore, terms', consoleErrors: errors.length, tokenAudit: fmtAudit(audit), status: ok ? 'PASS' : 'FAIL' });
+  expect(errors, 'console errors').toEqual([]);
+  expect(audit, 'banned colors on the iPhone paywall').toEqual([]);
+});
+
+test('iPhone paywall: restore with nothing to restore, and the web paywall stays web', async ({ context, page }, info) => {
+  await serve(context, { iap: true });
+  await asIPhoneApp(context, { restoreHasPurchase: false });
+  const errors = watchConsole(page);
+  await page.goto(ORIGIN + '/?welcome', { waitUntil: 'domcontentloaded' });
+  await pastSplash(page);
+  await expect.poll(() => page.evaluate('iap.ready')).toBe(true);
+  await obStep(page, 'ob-pay');
+  await signInForTest(page);
+  await page.locator('#obRestoreBtn').click();
+  await expect(page.locator('#obErr3')).toHaveText('No purchases to restore on this Apple ID.');
+  expect(await page.evaluate('auth.plan')).not.toBe('paid');
+
+  // the website: no restore button, web renewal line, Stripe untouched
+  const web = await context.browser()!.newPage();
+  await serve(web.context(), { billing: true });
+  await web.goto(ORIGIN + '/?welcome', { waitUntil: 'domcontentloaded' });
+  await pastSplash(web);
+  await obStep(web, 'ob-pay');
+  await expect(web.locator('#obRestoreBtn')).toBeHidden();
+  await expect(web.locator('#onboard .ob-legal .ob-legal-web')).toBeVisible();
+  await expect(web.locator('#onboard .ob-legal .ob-legal-ios')).toBeHidden();
+  await web.close();
+
+  const ok = errors.length === 0;
+  record(info, { view: 'iPhone restore (none) + web paywall', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
+  expect(errors, 'console errors').toEqual([]);
 });

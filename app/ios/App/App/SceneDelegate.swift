@@ -1,5 +1,15 @@
 import UIKit
 import Capacitor
+import NenemiSpeechPlugin
+
+// Capacitor 8 auto-registers only plugins that come from npm (the list `cap sync` writes).
+// Our speech plugin is a local Swift package, so it's registered here by hand, or the mic never reaches the app.
+// RevenueCat (npm: @revenuecat/purchases-capacitor) registers itself through that list.
+class NenemiViewController: CAPBridgeViewController {
+    override func capacitorDidLoad() {
+        bridge?.registerPluginInstance(SpeechRecognition())
+    }
+}
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -8,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = CAPBridgeViewController()
+        window?.rootViewController = NenemiViewController()
         window?.makeKeyAndVisible()
 
         SceneDelegateProxy.shared.scene(scene, willConnectTo: session, options: connectionOptions)

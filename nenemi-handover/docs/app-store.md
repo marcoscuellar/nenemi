@@ -10,8 +10,57 @@ One screen at a time. Do the step, come back, say "done". Nothing here needs to 
 - **One real blocker left:** Clerk must be switched to its production instance on mynenemi.com, and **Sign in with Apple** added (Apple requires it because Google sign-in is offered). ~20 minutes, with you at the keyboard. See "Still to do" at the bottom.
 - **Store screenshots refreshed 2026-09-23** to match the current look (reference restyle, time-of-day greeting, My Day). Five screens each for the 6.7" and 6.5" slots, at exact App Store sizes (1290×2796 and 1242×2688), in `nenemi-handover/store/screenshots/`.
 
-### Money: the iOS app ships **free** — do not add in-app purchase
-Full access ($10/mo) is **web only**, through Stripe. The iPhone app offers **no purchase at all**, so Apple's in-app-purchase rule (3.1.1) does not apply and there is nothing to build for review. **Never wire Stripe checkout or a "Full access" buy button into the app** — that is an automatic rejection. If you ever want the subscription available inside the app, it has to go through Apple's own in-app purchase, which is a separate, larger piece of work.
+### Money: Full access is sold inside the iPhone app through Apple (Sep 2026)
+The same paywall as the web, sold by Apple through RevenueCat. Never Stripe inside the app.
+- **Monthly:** $10.99, product `nenemi_monthly_1099`, no trial.
+- **Annual:** $59.99, product `nenemi_annual_5999`, 7-day free trial.
+- **Entitlement:** `full_access` (RevenueCat). The RevenueCat app user id is the Clerk user id, so a purchase unlocks the account on the web and every device.
+- **Where it lives:** `index.html` (the `IAP` block and `obChoosePaid`), `api/iap.js` (sync + RevenueCat webhook → Clerk `publicMetadata` `{ plan, planSource: 'apple', planUntil, trialEnd }`), `app/` (`@revenuecat/purchases-capacitor`).
+- **The paywall shows:** store prices, Restore purchases, Apple's auto-renew terms, and Terms of Use (EULA) + Privacy Policy links. If the store doesn't answer, the paywall is skipped rather than shown broken.
+
+## Subscriptions: one-time setup (do these in order)
+
+1. **Paid Apps agreement.** App Store Connect → Business → sign the Paid Apps agreement and fill in bank and tax info. Apple won't sell anything until this is Active.
+2. **Create the subscriptions.** App Store Connect → the app → Monetization → Subscriptions → create a group called `Full access`. Inside it, add two products:
+   - `nenemi_monthly_1099`: 1 month, $10.99.
+   - `nenemi_annual_5999`: 1 year, $59.99, with an Introductory Offer of a 7-day free trial.
+
+   Give each a display name and description, plus the review screenshot of the paywall.
+3. **RevenueCat.** At app.revenuecat.com, create the project, then:
+   - Add the iOS app (bundle id `com.ollinos.nenemi`) and upload the In-App Purchase key from App Store Connect (Users and Access → Integrations → In-App Purchase).
+   - Products: import both product ids.
+   - Entitlements: create `full_access` and attach both products.
+   - Offerings: `default` (current), with a Monthly package → `nenemi_monthly_1099` and an Annual package → `nenemi_annual_5999`.
+4. **Vercel env vars** (Production), then redeploy:
+   - `REVENUECAT_IOS_KEY`: the public Apple API key (starts `appl_`).
+   - `REVENUECAT_SECRET_KEY`: the secret key (starts `sk_`).
+   - `REVENUECAT_WEBHOOK_AUTH`: any long random string.
+5. **RevenueCat webhook.** Integrations → Webhooks, then:
+   - URL: `https://app.mynenemi.com/api/iap?action=webhook`
+   - Authorization header: the same string as `REVENUECAT_WEBHOOK_AUTH`
+6. **Sandbox test.** App Store Connect → Users and Access → Sandbox → add a tester. On the iPhone build:
+   - Sign in, buy annual, and check the app shows Full access.
+   - Delete the app, reinstall, sign in, tap Restore purchases.
+7. **Demo account for the reviewer.** Leave it on the free plan, so the reviewer can see and test the purchase with their sandbox account.
+8. **Attach the subscriptions to the version.** On the 1.0 version page under In-App Purchases and Subscriptions, add both products. The first subscriptions must be submitted with a build.
+
+## Rebuild the native binary (on the Mac)
+
+```
+cd nenemi && git pull
+cd app
+npm install
+npx cap sync ios
+npx cap open ios
+```
+
+In Xcode:
+1. Select the App target → Signing & Capabilities → **+ Capability → In-App Purchase**, if it isn't listed already.
+2. File → Packages → Resolve Package Versions. The first time, this downloads RevenueCat.
+3. General → bump **Build** by one (for example 1.0 (3)).
+4. Pick "Any iOS Device (arm64)" → Product → Archive → Distribute App → App Store Connect → Upload.
+
+The mic's speech plugin is now registered by hand in `SceneDelegate.swift` (`NenemiViewController`). Capacitor 8 only auto-registers npm plugins, so without this the mic would never reach the app.
 
 ## What is already built
 
@@ -118,7 +167,8 @@ Everything below is ready to paste. Screenshots are in `nenemi-handover/store/sc
 | User content: photos or videos | Collected, linked to the user, only when they attach one to a room. Purpose: app functionality. |
 | Identifiers: user ID | Collected, linked. Purpose: app functionality. |
 | Used for tracking? | No |
-| Everything else (location, health, purchases, browsing, diagnostics, contacts) | Not collected |
+| Purchases: purchase history | Collected, linked to the user (Apple and RevenueCat, to unlock Full access). Purpose: app functionality. |
+| Everything else (location, health, browsing, diagnostics, contacts) | Not collected |
 
 ## Review notes, paste into "Notes" for the reviewer
 

@@ -1577,6 +1577,14 @@
   #onboard .ob-tl li i { width:8px; height:8px; border-radius:50%; background:var(--ob-line); flex:none; }
   #onboard .ob-tl li:first-child i { background:#111312; }
   #onboard .ob-sponsor { margin-top:22px; padding-top:18px; border-top:1px solid var(--ob-line); }
+  /* paywall: Restore purchases + auto-renew terms and the EULA / privacy links. Apple-only lines show in the iPhone app. */
+  #onboard .ob-restore { display:none; margin:14px auto 0; font-size:13px; }
+  .in-shell #onboard .ob-restore { display:block; }
+  #onboard .ob-legal { margin:14px 0 0; font-size:11px; line-height:1.5; color:var(--ob-body); text-align:center; }
+  #onboard .ob-legal a { color:var(--ob-ink); text-decoration:underline; text-underline-offset:2px; }
+  #onboard .ob-legal .ob-legal-ios { display:none; }
+  .in-shell #onboard .ob-legal .ob-legal-ios { display:inline; }
+  .in-shell #onboard .ob-legal .ob-legal-web { display:none; }
   #onboard .ob-sponsor b { display:block; font-size:13px; color:var(--ob-ink); margin-bottom:4px; }
   #onboard .ob-sponsor p { font-size:12px; margin:0 0 8px; }
   #onboard .ob-sponsor a { color:var(--ob-ink); font-weight:600; font-size:12.5px; text-decoration:underline; text-underline-offset:3px; text-decoration-color:#D1D5DB; }
@@ -2408,6 +2416,12 @@
     </div>
     <button class="btn" id="obPaidBtn" type="button" onclick="obPayGo()">Start 7 days free</button>
     <div class="ob-err" id="obErr3" role="status"></div>
+    <button type="button" class="ob-link ob-restore" id="obRestoreBtn" onclick="obRestore()">Restore purchases</button>
+    <p class="ob-legal">
+      <span class="ob-legal-ios">Payment is charged to your Apple ID at confirmation. Subscriptions renew automatically at the price shown unless canceled at least 24 hours before the period ends, and the renewal is charged within the 24 hours before. The free trial ends when the annual plan starts. Manage or cancel anytime in Settings, Apple ID, Subscriptions.</span>
+      <span class="ob-legal-web">Subscriptions renew automatically until canceled. Cancel anytime.</span>
+      <a href="/terms.html" target="_blank" rel="noopener">Terms of Use (EULA)</a> · <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
+    </p>
     <div class="ob-sponsor">
       <b>Can't afford NÈNÈMI right now? Reach out. We got you.</b>
       <p>We keep sponsored memberships available, funded by us and by people who donate access for someone else.</p>
@@ -5180,6 +5194,7 @@
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
   // inside the iPhone app (Capacitor shell) nothing is sold: Apple requires in-app purchase for that, so the web paywall stays on the web.
   const IN_APP_SHELL = (() => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } })();
+  document.documentElement.classList.toggle('in-shell', IN_APP_SHELL); // the paywall's Apple-only lines (restore, auto-renew terms)
   const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 10.99, priceAnnual: 59.99, planSource: null, planUntil: null, trialEnd: null };
   function ownRooms() { return rooms.filter(r => !r.demo && !r.archived).length; }
   function canAddRoom() { return auth.roomLimit == null || ownRooms() < auth.roomLimit; }
@@ -5199,7 +5214,10 @@
       const cfg = await (await fetch('/api/config')).json();
       if (cfg.freeRooms) auth.roomLimit = cfg.freeRooms;
       auth.smart = Boolean(cfg.smartRouting);
-      auth.billing = Boolean(cfg.billing) && !IN_APP_SHELL; if (cfg.price && cfg.price.monthly) auth.price = cfg.price.monthly; if (cfg.price && cfg.price.annual) auth.priceAnnual = cfg.price.annual;
+      // the web sells through Stripe; the iPhone app through Apple (RevenueCat), once the store answers
+      auth.billing = IN_APP_SHELL ? false : Boolean(cfg.billing);
+      if (IN_APP_SHELL && cfg.revenuecatIosKey) { auth.iapKey = cfg.revenuecatIosKey; iapInit(cfg.revenuecatIosKey); }
+      if (cfg.price && cfg.price.monthly) auth.price = cfg.price.monthly; if (cfg.price && cfg.price.annual) auth.priceAnnual = cfg.price.annual;
       if (!cfg.clerkPublishableKey || !cfg.authEnabled) { if (!obFlow) hideOnboard(); renderAccount(); return; } // no Clerk → no wall
       auth.pk = cfg.clerkPublishableKey;
       const host = clerkHost(auth.pk);
@@ -5264,13 +5282,14 @@
       `<div class="mi" onclick="exportRooms(); toggleAcctMenu()">Export my data<span class="k">json</span></div>`,
       IN_APP_SHELL ? '' : `<div class="mi" onclick="window.open('${APP_STORE_URL}', '_blank'); toggleAcctMenu()">Find Nenemi in the App Store</div>`,
       auth.signedIn ? '' : `<div class="mi" onclick="changeSync(); toggleAcctMenu()">Sync code<span class="k">${escapeHtml(syncCode())}</span></div>`,
+      IAP && auth.signedIn ? `<div class="mi" onclick="toggleAcctMenu(); menuRestore()">Restore purchases</div>` : '',
     ];
     let items;
     if (!auth.signedIn) items = auth.pk ? [...more, `<div class="sep"></div>`, `<div class="mi" onclick="Clerk.openSignIn(); toggleAcctMenu()">Sign in</div>`] : more;
     else if (acctView === 'more') items = [`<div class="mi back" onclick="acctGo(event, 'main')">\u2039 Manage account</div>`, `<div class="sep"></div>`, ...more.slice(2)];
     else items = [
       `<div class="mi" onclick="acctGo(event, 'more')">Manage account<span class="k">\u203a</span></div>`,
-      `<div class="mi danger" onclick="toggleAcctMenu(); Clerk.signOut()">Sign out</div>`,
+      `<div class="mi danger" onclick="toggleAcctMenu(); iapLogOut(); Clerk.signOut()">Sign out</div>`,
       `<div class="mi danger" onclick="toggleAcctMenu(); deleteAccount()">Delete my account</div>`,
     ];
     if (auth.signedIn && acctView === 'more') items.splice(2, 0, planRow, `<div class="sep"></div>`);
@@ -5282,12 +5301,14 @@
   // Removes the account and everything synced to it (rooms, files, any subscription), then this device's copy.
   async function deleteAccount() {
     if (!auth.signedIn) return;
-    if (!confirm('Delete your account and everything in it?\n\nRooms, notes, and files go for good. This can’t be undone.')) return;
+    const appleNote = auth.planSource === 'apple' ? '\n\nAn Apple subscription keeps billing until it’s canceled in Settings, Apple ID, Subscriptions. Deleting the account doesn’t cancel it.' : '';
+    if (!confirm('Delete your account and everything in it?\n\nRooms, notes, and files go for good. This can’t be undone.' + appleNote)) return;
     try {
       const r = await fetch('/api/account', { method: 'DELETE', headers: await authHeaders() });
       if (!r.ok) throw new Error(r.status);
     } catch (e) { alert('That didn’t go through. Nothing was deleted.\n\nIf it keeps happening, marcos@ollinos.com can do it by hand.'); return; }
     try { Object.keys(localStorage).filter(k => k.startsWith('nenemi')).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    await iapLogOut();
     try { await Clerk.signOut(); } catch (e) {}
     location.reload();
   }
@@ -5380,7 +5401,7 @@
     if ('trialEnd' in j) auth.trialEnd = j.trialEnd;
   }
   // ---------- Full access: $10.99 a month or $59.99 a year (7 days free), rooms without a cap. Calendar, voice, sync stay free. ----------
-  function fullAccessLine() { return auth.billing ? `Full access is $${auth.price} a month and opens more rooms.` : 'Full access opens more, soon.'; }
+  function fullAccessLine() { return auth.billing ? `Full access is ${iap.priceMonthly || '$' + auth.price} a month and opens more rooms.` : 'Full access opens more, soon.'; }
   function fullAccessBtn() { return auth.billing ? `<span class="mini-btn" onclick="openFullAccess()">Open full access</span>` : ''; }
   let limitNoted = false;
   function noteRoomLimit() {
@@ -5392,6 +5413,7 @@
   function billingUrl(action) { return `/api/billing${action ? '?action=' + action : ''}`; }
   async function openFullAccess(plan) {
     if (!auth.billing) return false;
+    if (IN_APP_SHELL) { obFlow = true; showOnboard('ob-pay'); return true; } // the paywall, sold by Apple
     if (!auth.signedIn) { const log = document.getElementById('chatLog'); if (log) { log.innerHTML += `<div class="bubble dos">Full access lives on an account, so it can follow you to every device. Sign in and it's one step.</div>`; log.scrollTop = log.scrollHeight; } return false; }
     try {
       const r = await fetch(billingUrl('checkout') + (plan === 'annual' ? '&plan=annual' : ''), { method: 'POST', headers: await authHeaders() });
@@ -5409,6 +5431,75 @@
       throw new Error(j.error || r.status);
     } catch (e) { alert("Couldn't open billing right now. Email marcos@ollinos.com and a person will sort it."); }
   }
+  // ---------- Full access inside the iPhone app: Apple in-app purchase, through RevenueCat ----------
+  // Same paywall, same prices, sold by Apple: nenemi_monthly_1099 ($10.99 a month) and nenemi_annual_5999
+  // ($59.99 a year, 7 days free). RevenueCat's app user id is the Clerk user id, so api/iap.js can confirm
+  // the purchase with RevenueCat and switch the account to Full access everywhere.
+  const IAP = (() => { try { const C = window.Capacitor; return IN_APP_SHELL && C && C.Plugins && C.Plugins.Purchases ? C.Plugins.Purchases : null; } catch (e) { return null; } })();
+  const IAP_PRODUCTS = { monthly: 'nenemi_monthly_1099', annual: 'nenemi_annual_5999' };
+  const IAP_ENTITLEMENT = 'full_access';
+  const iap = { ready: false, packages: {}, user: null, priceMonthly: '', priceAnnual: '' };
+  function iapUserId() { try { return (auth.signedIn && window.Clerk && Clerk.user && Clerk.user.id) || null; } catch (e) { return null; } }
+  async function iapInit(apiKey) {
+    if (!IAP || !apiKey) return false;
+    try {
+      const c = await IAP.isConfigured().catch(() => ({ isConfigured: false }));
+      if (!c || !c.isConfigured) await IAP.configure({ apiKey, appUserID: iapUserId() });
+      const o = await IAP.getOfferings();
+      const pkgs = [...((o && o.current && o.current.availablePackages) || [])];
+      Object.values((o && o.all) || {}).forEach(off => (off.availablePackages || []).forEach(p => pkgs.push(p)));
+      for (const [plan, id] of Object.entries(IAP_PRODUCTS)) {
+        const p = pkgs.find(x => x && x.product && x.product.identifier === id);
+        if (p) iap.packages[plan] = p;
+      }
+      if (iap.packages.monthly) iap.priceMonthly = iap.packages.monthly.product.priceString;
+      if (iap.packages.annual) iap.priceAnnual = iap.packages.annual.product.priceString;
+      iap.ready = Boolean(iap.packages.monthly || iap.packages.annual);
+      if (iap.ready) { auth.billing = true; try { obPickPlan(obPlan); renderAccount(); } catch (e) {} }
+      return iap.ready;
+    } catch (e) { console.warn('nenemi iap', e); return false; }
+  }
+  // purchases belong to the account, so they follow it to the web and every device
+  async function iapLink() {
+    const id = iapUserId(); if (!IAP || !id || iap.user === id) return;
+    try { await IAP.logIn({ appUserID: id }); iap.user = id; } catch (e) {}
+  }
+  async function iapLogOut() { if (!IAP || !iap.user) return; try { await IAP.logOut(); } catch (e) {} iap.user = null; }
+  const iapActive = ci => Boolean(ci && ci.entitlements && ci.entitlements.active && ci.entitlements.active[IAP_ENTITLEMENT]);
+  const iapCancelled = e => Boolean(e && (e.code === '1' || e.code === 1 || e.userCancelled || (e.data && e.data.userCancelled)));
+  // Apple said yes: open it up here at once, then have the server confirm with RevenueCat
+  async function iapSettle(ci) {
+    if (!iapActive(ci)) return false;
+    auth.plan = 'paid'; auth.planSource = 'apple'; auth.roomLimit = null;
+    try { const r = await fetch('/api/iap?action=sync', { method: 'POST', headers: await authHeaders() }); const j = await r.json(); if (r.ok && j.plan === 'paid') applyPlan(j); } catch (e) {}
+    auth.plan = 'paid'; auth.roomLimit = null;
+    try { await pullState(true); renderRoomList(); renderAccount(); } catch (e) {}
+    return true;
+  }
+  async function iapBuy(plan) {
+    if (!iap.ready) await iapInit(auth.iapKey);
+    const pkg = iap.packages[plan];
+    if (!pkg) return { ok: false, message: "The App Store didn't answer just now. Nothing was charged." };
+    await iapLink();
+    try {
+      const r = await IAP.purchasePackage({ aPackage: pkg });
+      if (await iapSettle(r && r.customerInfo)) return { ok: true };
+      return { ok: false, message: "Apple finished, but Full access isn't showing yet. Restore purchases will pick it up." };
+    } catch (e) {
+      if (iapCancelled(e)) return { ok: false, cancelled: true };
+      return { ok: false, message: "That didn't go through. Nothing was charged." };
+    }
+  }
+  async function iapRestore() {
+    if (!IAP) return "Restore works inside the iPhone app.";
+    if (!iap.ready) await iapInit(auth.iapKey);
+    await iapLink();
+    try {
+      const r = await IAP.restorePurchases();
+      return (await iapSettle(r && r.customerInfo)) ? 'Full access is back on.' : 'No purchases to restore on this Apple ID.';
+    } catch (e) { return "Restore didn't go through just now. One more try in a moment?"; }
+  }
+  async function menuRestore() { const msg = await iapRestore(); alert(msg); }
   // back from Stripe: wait for the webhook to land, then say so once
   async function afterCheckout() {
     for (let i = 0; i < 10; i++) {
@@ -5607,7 +5698,7 @@
   function obCalm() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
   // the engine: show one card, set the chapter and the fill, focus the first field
   function advanceTo(stepId, progressPct, chapterName, isBack) {
-    if (stepId === 'ob-pay' && (IN_APP_SHELL || !auth.billing)) { obArrive(); return; } // no plan step in the iPhone app, or where billing is off
+    if (stepId === 'ob-pay' && !auth.billing) { obArrive(); return; } // nothing to sell here (billing off, or the App Store didn't answer)
     const next = obEl(stepId); if (!next) return;
     if (stepId !== 'ob-hello') obFlow = true;
     const m = OB_META[stepId] || {};
@@ -6023,22 +6114,43 @@
     document.querySelectorAll('#onboard .plan').forEach(b => { const on = b.dataset.plan === p; b.classList.toggle('on', on); b.setAttribute('aria-checked', on ? 'true' : 'false'); });
     const tr = obEl('obTrial'); if (tr) tr.hidden = p !== 'annual';
     const b = obEl('obPaidBtn'); if (b && !b.disabled) b.textContent = obPayLabel(p);
-    const pa = obEl('obPriceAnnual'); if (pa) pa.innerHTML = `$${auth.priceAnnual}<small>/year</small>`;
-    const pm = obEl('obPriceMonthly'); if (pm) pm.innerHTML = `$${auth.price}<small>/month</small>`;
+    const pa = obEl('obPriceAnnual'); if (pa) pa.innerHTML = `${escapeHtml(iap.priceAnnual || '$' + auth.priceAnnual)}<small>/year</small>`;
+    const pm = obEl('obPriceMonthly'); if (pm) pm.innerHTML = `${escapeHtml(iap.priceMonthly || '$' + auth.price)}<small>/month</small>`;
   }
   function obPayGo() { if (obPlan === 'free') obArrive(); else obChoosePaid(); }
   async function obChoosePaid() {
     obClearErr('obErr3');
     if (!auth.signedIn) { advanceTo('ob-acct'); return; }
     advanceTo('ob-pay');
-    obBusy('obPaidBtn', true, 'Opening checkout…');
     obCommitProfile();
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    if (IN_APP_SHELL) {
+      obBusy('obPaidBtn', true, 'One moment…');
+      const r = await iapBuy(obPlan);
+      obBusy('obPaidBtn', false, obPayLabel(obPlan));
+      if (r.ok) { obArrive(); return; }
+      if (!r.cancelled) obShowErr('obErr3', { message: r.message });
+      return;
+    }
+    obBusy('obPaidBtn', true, 'Opening checkout…');
     const ok = await openFullAccess(obPlan);
     if (!ok) { obBusy('obPaidBtn', false, obPayLabel(obPlan)); obShowErr('obErr3', { message: "Checkout didn't open just now. Nothing was charged. Free works in the meantime." }); }
   }
-  // after an account exists: straight on to checkout for the plan they picked
-  function obAfterAccount() { setTimeout(obChoosePaid, 260); }
+  // Restore purchases (Apple requires it). Purchases belong to an account, so a new face makes one first.
+  let obRestoring = false;
+  async function obRestore() {
+    obClearErr('obErr3');
+    if (!auth.signedIn) { obRestoring = true; advanceTo('ob-acct'); return; }
+    obRestoring = false;
+    advanceTo('ob-pay');
+    const b = obEl('obRestoreBtn'); if (b) b.disabled = true;
+    const msg = await iapRestore();
+    if (b) b.disabled = false;
+    if (auth.plan === 'paid') { obShowErr('obErr3', { message: msg }); setTimeout(obArrive, 900); return; }
+    obShowErr('obErr3', { message: msg });
+  }
+  // after an account exists: straight on to checkout for the plan they picked (or back to the restore they asked for)
+  function obAfterAccount() { setTimeout(obRestoring ? obRestore : obChoosePaid, 260); }
   function obArrive() {
     if (obCur && OB_META[obCur] && OB_META[obCur].p >= 65) obCommitProfile(); // answered the questions (a ?welcome replay that stops early keeps the old profile)
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
