@@ -1494,15 +1494,13 @@
   /* ambient paper noise, onboarding only (the app's dark screens stay untouched) */
   #onboard::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.035;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
-  /* 1b: reality check */
-  #onboard .nenemi-editorial-card { text-align: left; padding: 36px 32px 32px; }
-  #onboard .editorial-title { font-size: 1.55rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; color: var(--text-main, #1c1917); margin: 0 0 24px 0; }
-  #onboard .editorial-timeline { display: flex; flex-direction: column; gap: 14px; border-left: 2px solid var(--border-subtle, #f0eee9); padding-left: 18px; margin-bottom: 24px; }
-  #onboard .tl-row { display: flex; align-items: baseline; gap: 16px; }
-  #onboard .tl-time { font-size: 0.82rem; font-weight: 600; color: var(--text-muted, #a8a29e); letter-spacing: 0.02em; min-width: 65px; }
-  #onboard .tl-event { font-size: 1rem; font-weight: 500; color: var(--text-main, #292524); }
-  #onboard .editorial-callout { font-size: 1.25rem; font-weight: 600; font-style: italic; color: #111827; margin-bottom: 12px; }
-  #onboard .editorial-sub { font-size: 0.95rem; line-height: 1.55; color: var(--text-muted, #78716c); margin: 0 0 28px 0; }
+  /* 1b: reality check (streamlined editorial) */
+  #onboard .nenemi-editorial-card { text-align: left; padding: 40px 32px 32px !important; max-width: 440px; margin: auto; }
+  #onboard .editorial-story { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+  #onboard .story-beat { font-size: 1.05rem; font-weight: 500; color: #27272a; line-height: 1.4; margin: 0; display: flex; align-items: baseline; gap: 14px; }
+  #onboard .story-time { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em; color: #71717a; min-width: 72px; }
+  #onboard .editorial-hook { font-family: var(--font-serif, Georgia, serif); font-size: 1.75rem; font-weight: 700; font-style: italic; letter-spacing: -0.02em; color: #111827; margin: 0 0 14px 0; line-height: 1.2; }
+  #onboard .editorial-body { font-size: 0.95rem; line-height: 1.6; color: #52525b; margin: 0 0 32px 0; }
   #onboard .nenemi-editorial-card .btn { margin-top: 0; }
   /* 18b: grounding hold */
   #onboard .ob-commit-card { background: var(--bg-card-subtle, #f9f8f6); border: 1px solid var(--border-subtle, #e7e5e4); border-radius: 16px; padding: 16px; margin: 20px 0; text-align: left; }
@@ -2185,23 +2183,17 @@
     <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
   </section>
 
-  <!-- 1b: reality check -->
+  <!-- 1b: reality check (streamlined editorial) -->
   <section class="card nenemi-editorial-card" id="ob-reality-check">
-    <h2 class="editorial-title">Lose your to-do list by 10:10 AM?</h2>
-    <div class="editorial-timeline">
-      <div class="tl-row">
-        <span class="tl-time">1:00 PM</span>
-        <span class="tl-event">Hit the invisible wall</span>
-      </div>
-      <div class="tl-row">
-        <span class="tl-time">5:00 PM</span>
-        <span class="tl-event">Completely depleted</span>
-      </div>
+    <div class="editorial-story">
+      <p class="story-beat"><span class="story-time">10:10 AM</span> Lost the to-do list.</p>
+      <p class="story-beat"><span class="story-time">1:00 PM</span> Hit the invisible wall.</p>
+      <p class="story-beat"><span class="story-time">5:00 PM</span> Completely depleted.</p>
     </div>
-    <div class="editorial-callout">
-      <span>Yeah. Same.</span>
-    </div>
-    <p class="editorial-sub">We don't build for the day you wish you were having. We build for the day you actually have.</p>
+    <h2 class="editorial-hook">Yeah. Same.</h2>
+    <p class="editorial-body">
+      We don't build for the day you wish you were having. We build for the day you actually have.
+    </p>
     <button type="button" class="btn" onclick="obGoNext()">Keep going</button>
   </section>
 
