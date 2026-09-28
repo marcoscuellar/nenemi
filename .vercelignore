@@ -1,0 +1,5 @@
+# QA sweep lives in the repo, not on the site
+tests/
+playwright.config.ts
+test-results/
+playwright-report/

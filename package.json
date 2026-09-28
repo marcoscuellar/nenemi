@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "NENEMI — a memory app for ADHD brains. Static prototype + one Vercel function for sync.",
+  "description": "NENEMI \u2014 a memory app for ADHD brains. Static prototype + one Vercel function for sync.",
+  "scripts": {
+    "test:qa": "playwright test"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.124.0",
     "@clerk/backend": "^2.33.6",
@@ -11,5 +14,8 @@
     "@vercel/blob": "^2.8.0",
     "stripe": "^22.6.1",
     "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
   }
 }

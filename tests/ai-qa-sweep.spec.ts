@@ -1,0 +1,277 @@
+import { test, expect, type Page, type BrowserContext, type TestInfo } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// NÈNÈMI AI QA sweep (see CLAUDE.md). Two parts, run at phone and desktop size:
+//   1. Regression color audit: every primary view is strictly monochrome ink / paper / carbon.
+//      Maíz is allowed; brand teal only on the onboarding kickers (1b, 19b); a room's own
+//      color only where the person picked it. Anything else chromatic is a FAIL.
+//   2. Critical path: splash → Front Porch → "I'm overwhelmed" → Stuck → Place → My day →
+//      check a task off → reload, and the state, the layout, and the console all hold.
+// The page is served from this folder under the app host; /api is mocked, the outside world stubbed.
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// the real app host, so the page behaves exactly as in production. Every request is intercepted by serve():
+// nothing reaches the live site.
+const ORIGIN = 'https://app.mynenemi.com';
+const INK = 'rgb(17, 19, 18)';
+const CARBON = 'rgb(113, 113, 122)';
+const TYPES: Record<string, string> = {
+  '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.json': 'application/json',
+  '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.ico': 'image/x-icon',
+};
+
+// ---------- harness ----------
+async function serve(context: BrowserContext, { billing = false } = {}) {
+  await context.route('**/*', async route => {
+    const url = new URL(route.request().url());
+    if (url.origin !== ORIGIN) {
+      // fonts, Clerk, analytics: answered empty so nothing leaves the machine and nothing logs an error
+      const ext = path.extname(url.pathname);
+      return route.fulfill({ status: 200, contentType: TYPES[ext] ?? 'text/plain', body: '' });
+    }
+    if (url.pathname === '/api/config')
+      return route.fulfill({ json: { billing, smartRouting: false, authEnabled: false, price: { monthly: 10.99, annual: 59.99 } } });
+    if (url.pathname.startsWith('/api/')) return route.fulfill({ json: {} });
+    const file = path.join(ROOT, url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname));
+    if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return route.fulfill({ status: 200, body: '' });
+    return route.fulfill({ body: fs.readFileSync(file), contentType: TYPES[path.extname(file)] ?? 'application/octet-stream' });
+  });
+}
+
+function watchConsole(page: Page) {
+  const errors: string[] = [];
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', e => errors.push(e.message));
+  return errors;
+}
+
+// a returning person: skips the questions (never the splash). Also counts layout shifts for the reload check.
+async function asReturning(context: BrowserContext) {
+  await context.addInitScript(() => {
+    try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    (window as any).__cls = 0;
+    try {
+      new PerformanceObserver(list => {
+        for (const e of list.getEntries() as any[]) if (!e.hadRecentInput) (window as any).__cls += e.value;
+      }).observe({ type: 'layout-shift', buffered: true });
+    } catch (e) {}
+  });
+}
+
+async function pastSplash(page: Page) {
+  await page.locator('#nxSplash').waitFor({ state: 'detached', timeout: 6_000 });
+}
+
+async function show(page: Page, pane: string) {
+  await page.evaluate(`go(${JSON.stringify(pane)})`); // the page's own globals (some are top-level let/const, not window props)
+  await expect(page.locator(`#pane-${pane}`)).toHaveClass(/\bactive\b/);
+  await page.waitForTimeout(350); // let transitions settle before computing styles
+}
+
+function record(info: TestInfo, row: { view: string; consoleErrors: number | string; tokenAudit: string; status: 'PASS' | 'FAIL' }) {
+  info.annotations.push({ type: 'qa-row', description: JSON.stringify(row) });
+}
+
+// ---------- 1. the color audit, run inside the page ----------
+type Violation = { where: string; prop: string; value: string };
+
+async function colorAudit(page: Page, rootSel = 'body'): Promise<Violation[]> {
+  return page.evaluate((sel) => {
+    const out: { where: string; prop: string; value: string }[] = [];
+    const root = document.querySelector(sel);
+    if (!root) return [{ where: sel, prop: 'missing', value: 'root not found' }];
+    // allowed on purpose: brand teal on the 1b / 19b kickers, a room color the person picked, Google's own logo
+    const allowed = (el: Element) =>
+      !!el.closest('#onboard .recog-kicker, #onboard .recog-same, #onboard .name-kicker, [style*="--rc"], .rs-dots, #ob-acct svg, .ob-google svg, [data-qa-allow]');
+    const colors = (v: string) => [...v.matchAll(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/g)]
+      .map(m => ({ r: +m[1], g: +m[2], b: +m[3], a: m[4] === undefined ? 1 : +m[4], raw: m[0] }));
+    // ink, paper and carbon are neutral. Maíz (#E9BE55, hue ~43) is the one warm accent.
+    // Everything else with real chroma is banned: cyans, blues, greens, neons, reds, corals, oranges.
+    const banned = ({ r, g, b, a }: { r: number; g: number; b: number; a: number }) => {
+      if (a < 0.03) return false;
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), chroma = mx - mn;
+      if (chroma * a < 24) return false; // a neutral, or a tint too faint to read as color
+      let h = 0;
+      if (mx === r) h = ((g - b) / chroma) % 6; else if (mx === g) h = (b - r) / chroma + 2; else h = (r - g) / chroma + 4;
+      h = (h * 60 + 360) % 360;
+      const maiz = h >= 36 && h <= 56;
+      return !maiz;
+    };
+    const visible = (el: Element) => {
+      const s = getComputedStyle(el);
+      return el.getClientRects().length > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0.05;
+    };
+    const ownText = (el: Element) => [...el.childNodes].some(n => n.nodeType === 3 && n.textContent!.trim());
+    const els = [root, ...root.querySelectorAll('*')];
+    for (const el of els) {
+      if (!visible(el) || allowed(el)) continue;
+      const s = getComputedStyle(el);
+      const check: [string, string][] = [['background-color', s.backgroundColor], ['box-shadow', s.boxShadow]];
+      if (ownText(el) || el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) check.push(['color', s.color]);
+      for (const side of ['Top', 'Right', 'Bottom', 'Left'] as const)
+        if (parseFloat((s as any)[`border${side}Width`]) > 0 && (s as any)[`border${side}Style`] !== 'none') check.push([`border-${side.toLowerCase()}`, (s as any)[`border${side}Color`]]);
+      if (s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0) check.push(['outline', s.outlineColor]);
+      if (el instanceof SVGElement && !(el instanceof SVGSVGElement)) { check.push(['fill', s.fill], ['stroke', s.stroke]); }
+      for (const [prop, value] of check)
+        for (const c of colors(value)) if (banned(c)) {
+          const id = el.id ? '#' + el.id : '';
+          const cls = typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : '';
+          out.push({ where: `${el.tagName.toLowerCase()}${id}${cls}`.slice(0, 90), prop, value: c.raw });
+        }
+    }
+    return out;
+  }, rootSel);
+}
+
+const fmtAudit = (v: Violation[]) => (v.length ? `${v.length} banned` : 'clean');
+
+// ---------- views ----------
+type View = { name: string; billing?: boolean; open: (page: Page) => Promise<void>; root?: string; fresh?: boolean };
+
+const VIEWS: View[] = [
+  {
+    name: 'Splash', root: '#nxSplash',
+    open: async page => { await expect(page.locator('#nxSplash')).toBeVisible(); await expect(page.locator('#nxSplash')).toHaveCSS('background-color', INK); },
+  },
+  { name: 'Front Porch', open: async page => { await pastSplash(page); await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/); } },
+  { name: 'Place', open: async page => { await pastSplash(page); await show(page, 'place'); } },
+  {
+    name: 'My day (NOW + done)',
+    open: async page => {
+      await pastSplash(page); await show(page, 'calendar');
+      const h = new Date().getHours(), pad = (n: number) => String(n).padStart(2, '0');
+      await addDayTask(page, 'QA block happening now', `${pad(h)}:00`, `${pad(Math.min(23, h + 1))}:59`);
+      await addDayTask(page, 'QA finished item');
+      await page.locator('.nx-task-row', { hasText: 'QA finished item' }).locator('.nx-task-check').click();
+      await page.waitForTimeout(350);
+    },
+  },
+  { name: 'Rooms', open: async page => { await pastSplash(page); await show(page, 'rooms'); } },
+  {
+    name: 'Room (example)',
+    open: async page => {
+      await pastSplash(page);
+      await page.evaluate(`openRoom((rooms.find(x => x.demo) || rooms[0]).id)`);
+      await expect(page.locator('#pane-roomview')).toHaveClass(/\bactive\b/); await page.waitForTimeout(350);
+    },
+  },
+  { name: 'Stuck Rescue', open: async page => { await pastSplash(page); await show(page, 'stuck'); } },
+  { name: 'Onboarding 1b (teal kicker)', fresh: true, root: '#onboard', open: async page => { await pastSplash(page); await obStep(page, 'ob-reality-check'); } },
+  { name: 'Onboarding 19 (dark)', fresh: true, root: '#onboard', open: async page => { await pastSplash(page); await obStep(page, 'ob-learn'); await expect(page.locator('#onboard')).toHaveCSS('background-color', INK); } },
+  { name: 'Onboarding 19b (teal kicker)', fresh: true, root: '#onboard', open: async page => { await pastSplash(page); await obStep(page, 'ob-definition'); } },
+  {
+    name: 'Paywall', fresh: true, billing: true, root: '#onboard',
+    open: async page => {
+      await pastSplash(page); await obStep(page, 'ob-pay');
+      await expect(page.locator('#ob-pay')).toBeVisible();
+      await expect(page.locator('#onboard .ob-badge')).toHaveCSS('background-color', INK);
+    },
+  },
+];
+
+async function obStep(page: Page, id: string) {
+  await page.evaluate(`advanceTo(${JSON.stringify(id)})`);
+  await expect(page.locator('#' + id)).toBeVisible();
+  await page.waitForTimeout(600); // the act change eases over .4s
+}
+
+async function addDayTask(page: Page, name: string, start?: string, end?: string) {
+  await page.fill('#nxDayInput', name);
+  if (start) {
+    await page.$$eval('#pane-calendar input[type=time]', (els, [s, e]) => {
+      const set = (el: Element, v: string) => { (el as HTMLInputElement).value = v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); };
+      set(els[0], s!); if (els[1] && e) set(els[1], e);
+    }, [start, end]);
+  }
+  await page.press('#nxDayInput', 'Enter');
+  await expect(page.locator('.nx-task-row', { hasText: name })).toBeVisible();
+}
+
+// ---------- 1. regression color audit ----------
+test.describe('color audit', () => {
+  for (const view of VIEWS) {
+    test(view.name, async ({ context, page }, info) => {
+      await serve(context, { billing: view.billing });
+      if (!view.fresh) await asReturning(context);
+      const errors = watchConsole(page);
+      await page.goto(ORIGIN + (view.fresh ? '/?welcome' : '/'), { waitUntil: 'domcontentloaded' });
+      await view.open(page);
+      const violations = await colorAudit(page, view.root);
+      const ok = violations.length === 0 && errors.length === 0;
+      record(info, { view: view.name, consoleErrors: errors.length, tokenAudit: fmtAudit(violations), status: ok ? 'PASS' : 'FAIL' });
+      expect.soft(errors, 'console errors').toEqual([]);
+      expect(violations, 'banned colors (see where / prop / value)').toEqual([]);
+    });
+  }
+});
+
+// ---------- 2. critical path + storage ----------
+test('critical path + storage', async ({ context, page }, info) => {
+  await serve(context);
+  await asReturning(context);
+  const errors = watchConsole(page);
+  const step = async (view: string, body: () => Promise<void>, audit?: string) => {
+    const before = errors.length;
+    let status: 'PASS' | 'FAIL' = 'PASS', tokenAudit = '—';
+    try {
+      await body();
+      if (audit) { const v = await colorAudit(page, audit); tokenAudit = fmtAudit(v); if (v.length) status = 'FAIL'; }
+    } catch (e) { status = 'FAIL'; record(info, { view: `Path: ${view}`, consoleErrors: errors.length - before, tokenAudit, status }); throw e; }
+    if (errors.length > before) status = 'FAIL';
+    record(info, { view: `Path: ${view}`, consoleErrors: errors.length - before, tokenAudit, status });
+    expect(errors.slice(before), `console errors during "${view}"`).toEqual([]);
+  };
+
+  await step('open → dark splash → Front Porch', async () => {
+    await page.goto(ORIGIN + '/', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('#nxSplash')).toHaveCSS('background-color', INK);
+    await pastSplash(page);
+    await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
+    await expect(page.locator('#greetingText')).toContainText("What's going on today?");
+  }, 'body');
+
+  await step('"I\'m overwhelmed" → Stuck Rescue', async () => {
+    await page.fill('#composerInput', "I'm overwhelmed");
+    await page.press('#composerInput', 'Enter');
+    await expect(page.locator('#pane-stuck')).toHaveClass(/\bactive\b/, { timeout: 4_000 });
+  }, 'body');
+
+  await step('Place → 4 portal buttons', async () => {
+    // mid-conversation the Porch hides Go to Place on purpose; a clean Porch (what every open shows) has it
+    await page.evaluate('porchFresh()');
+    await expect(page.locator('.porch-place')).toBeVisible();
+    await page.locator('.porch-place').click();
+    await expect(page.locator('#pane-place')).toHaveClass(/\bactive\b/);
+    const cards = page.locator('#pane-place .where-card');
+    await expect(cards).toHaveCount(4);
+    for (const k of ['rooms', 'day', 'stuck', 'humans']) await expect(page.locator(`#pane-place .where-card[data-k="${k}"]`)).toBeVisible();
+  }, 'body');
+
+  await step('My day → check off → ink check + carbon strike', async () => {
+    await page.locator('#pane-place .where-card[data-k="day"]').click();
+    await expect(page.locator('#pane-calendar')).toHaveClass(/\bactive\b/);
+    await addDayTask(page, 'QA path task');
+    const row = page.locator('.nx-task-row', { hasText: 'QA path task' });
+    await row.locator('.nx-task-check').click();
+    await expect(row.locator('.nx-task-check')).toHaveClass(/completed/);
+    await expect(row.locator('.nx-task-check')).toHaveCSS('background-color', INK);
+    await expect(row.locator('.nx-task-name')).toHaveCSS('color', CARBON);
+    await expect(row.locator('.nx-task-name')).toHaveCSS('text-decoration-line', 'line-through');
+  }, 'body');
+
+  await step('reload → state persists, no layout shift', async () => {
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await pastSplash(page);
+    await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/); // every open lands on the Porch
+    await show(page, 'calendar');
+    const row = page.locator('.nx-task-row', { hasText: 'QA path task' });
+    await expect(row).toBeVisible();
+    await expect(row.locator('.nx-task-check')).toHaveClass(/completed/);
+    await expect(row.locator('.nx-task-name')).toHaveCSS('text-decoration-line', 'line-through');
+    await page.waitForTimeout(500);
+    const cls = await page.evaluate(() => (window as any).__cls as number);
+    expect(cls, 'cumulative layout shift after reload').toBeLessThan(0.1);
+  }, 'body');
+});
