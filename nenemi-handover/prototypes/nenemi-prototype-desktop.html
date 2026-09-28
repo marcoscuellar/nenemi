@@ -1388,7 +1388,7 @@
 
   /* ===== Splash (every load, everyone): the mark and the name, white on #0D0E11. 400ms in, 1000ms of quiet,
      600ms out; a tap or a key skips it. Lives above everything, including the onboarding. ===== */
-  #nxSplash { position:fixed; inset:0; z-index:10001; background:#0D0E11; display:grid; place-items:center; cursor:pointer; transition:opacity .6s ease; }
+  #nxSplash { position:fixed; inset:0; z-index:10001; background:#111312; display:grid; place-items:center; cursor:pointer; transition:opacity .4s ease; }
   #nxSplash.away { opacity:0; pointer-events:none; }
   #nxSplash .nx-splash-float { display:flex; flex-direction:column; align-items:center; gap:16px; }
   #nxSplash .nx-splash-mark { width:52px; height:auto; opacity:0; transform:translateY(8px); animation:nxSplashIn .4s ease-out forwards; }
@@ -2099,7 +2099,7 @@
   .nx-fit[hidden] { display: none; }
 
   /* ---- Front Porch (concierge, Home) and Place (button hub) ---- */
-  .porch-place { display: inline-flex; align-items: center; gap: 8px; align-self: center; margin: 16px auto 0; padding: 9px 16px; border: 1px solid var(--line); border-radius: 99px; background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .porch-place { display: inline-flex; align-items: center; gap: 10px; align-self: center; margin: 18px auto 0; padding: 12px 22px; border: 1px solid var(--ink); border-radius: 99px; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: var(--card-shadow); }
   .porch-place:hover { border-color: var(--ink); }
   .app.talking .porch-place { display: none; }
   .porch-moves { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 14px auto 0; }
@@ -2209,7 +2209,7 @@
   function end() {
     if (over) return; over = true; clearTimeout(t); document.removeEventListener('keydown', key);
     s.classList.add('away');
-    setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); window.__nxSplashDone = true; document.dispatchEvent(new Event('nx-splash-done')); }, 600);
+    setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); window.__nxSplashDone = true; document.dispatchEvent(new Event('nx-splash-done')); }, 400);
   }
   function key(e) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') end(); }
   s.addEventListener('click', end); document.addEventListener('keydown', key);
@@ -3124,7 +3124,6 @@
   // an app left open from afternoon into evening says so when they come back to it (unless a conversation is on screen)
   document.addEventListener('visibilitychange', () => { if (!document.hidden && !document.querySelector('.app.talking')) renderGreeting(); });
   function renderGreetingSoon() { clearTimeout(greetTimer); greetTimer = setTimeout(() => { if (!document.getElementById('greetingText').dataset.named && userFirstName()) { document.getElementById('greetingText').dataset.named = '1'; renderGreeting(); } }, 50); }
-  let porchLine = null; // one-time line after onboarding: "Your day is set. What feels doable right now?"
   function renderGreeting() {
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
@@ -3132,14 +3131,14 @@
     const name = userFirstName();
     const line = g.line.replace(/\*/g, '');
     const timeWord = g.hello.split(' · ')[0];
-    const small = name ? `${timeWord}, ${name}` : timeWord;
+    const small = timeWord;
     const sublines = {
       Morning: "Let's get the day started on the right foot.",
       Afternoon: "How's the day been treating you?",
       Evening: "Almost done with the day — let's recap it together.",
       Hey: "No rush. Put it down whenever."
     };
-    const sub = porchLine || "What's going on today?"; // the concierge opens with a question, not a plan
+    const sub = `${name ? `Hey ${name}.` : 'Hey.'} What's going on today?`; // the concierge's greeting, every open
     el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="accent">${escapeHtml(sub)}</span>`;
   }
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
@@ -3967,30 +3966,38 @@
     const t = text.toLowerCase().trim().replace(/^(hey|ok|okay|um+|so|please|can you|could you|i want to|i wanna|i need to|let'?s)[,\s]+/g, '').replace(/^(please|can you|could you)\s+/, '');
     if (t.length > 60 || /\n/.test(text)) return false; // real dumps are longer: they go to capture
     const say = (html) => { log.innerHTML += `<div class="bubble dos">${html}<span class="b-time">${nowTime()}</span></div>`; log.scrollTop = log.scrollHeight; };
-    // "take me to my day / today / schedule"
-    if (/^(take me|bring me|go|open|show( me)?|back)\b(?:\s+\w+){0,3}\s+(my day|today|schedule|calendar|the day)\W*$/.test(t) || /^(my day|today)\W*$/.test(t)) {
-      say('Here’s your day.'); setTimeout(() => go('calendar'), 500); return true;
+    // focus / work / my day → My day, where the NOW card is
+    if (/^(take me|bring me|go|open|show( me)?|back)\b(?:\s+\w+){0,3}\s+(my day|today|schedule|calendar|the day|work|my work|focus)\W*$/.test(t)
+      || /^(my day|today|focus|work|let'?s work|get to work|i want to focus|help me focus|focus mode|work mode|what'?s next|what now)\W*$/.test(t)) {
+      say('Here’s your day. The one happening now is up top.'); setTimeout(() => go('calendar'), 500); return true;
     }
-    // "take me to my work" → where they left off; "take me to / open / find <room>"
+    // "find / open <room>" → that room
     const nav = t.match(/^(?:take me to|bring me to|go to|open|find|show me|where(?:'s| is))\s+(?:my\s+|the\s+)?(.+?)[.?!]*$/);
     if (nav) {
-      const want = nav[1].trim();
-      const mine = rooms.filter(r => !r.archived);
-      const generic = /^(work|room|stuff|thing|things|project|last room|where i left off|what i was doing)$/.test(want);
-      const own = mine.filter(r => !r.demo);
-      let room = generic ? ((lastRoomId && own.find(r => r.id === lastRoomId)) || own[0]) : null; // "my work" = where they left off
-      if (!room && !generic) room = mine.find(r => r.name.toLowerCase() === want) || own.find(r => r.name.toLowerCase().includes(want) || want.includes(r.name.toLowerCase()))
+      const want = nav[1].trim(), mine = rooms.filter(r => !r.archived), own = mine.filter(r => !r.demo);
+      if (/^rooms?$/.test(want)) { say('Here are your rooms.'); setTimeout(() => go('rooms'), 500); return true; }
+      const room = mine.find(r => r.name.toLowerCase() === want) || own.find(r => r.name.toLowerCase().includes(want) || want.includes(r.name.toLowerCase()))
         || own.find(r => want.split(/\s+/).some(w => w.length > 3 && r.name.toLowerCase().includes(w)));
       if (room) { say(`Opening ${escapeHtml(room.name)}.`); setTimeout(() => openRoom(room.id), 500); return true; }
-      if (/^rooms?$/.test(want)) { say('Here are your rooms.'); setTimeout(() => go('rooms'), 500); return true; }
     }
     // "I need to dump / reset my day / start over"
-    if (/^(dump|brain ?dump|do a brain ?dump|reset (my )?day|restart (my )?day|start (my day )?over|clear my head|get it (all )?out)\W*$/.test(t)) {
-      say('I’m listening. All of it, in any order. I’ll sort it after.');
+    if (/^(dump|brain ?dump|do a brain ?dump|new list|fresh list|a new list|start a list|reset (my )?day|restart (my )?day|start (my day )?over|clear my head|get it (all )?out)\W*$/.test(t)) {
+      say('I’m listening. All of it, in any order. It becomes a fresh room.');
       const ci = document.getElementById('composerInput'); if (ci) { ci.placeholder = 'Everything that’s in there…'; ci.dataset.dump = '1'; setTimeout(() => ci.focus(), 60); }
       return true;
     }
     return false;
+  }
+  function porchNewRoom(text, source, log) {
+    if (!canAddRoom()) { heuristicCapture(text, source, log); return; } // room limit: hold it the usual way
+    let items = obSplitLines(text); if (items.length < 2) items = obSplitDump(text);
+    const name = obNameFrom(text, items).slice(0, 60);
+    const room = { id: 'r' + Date.now(), name, one_liner: items[0] || text, brief: `First note: “${text}” The Brief grows from here.`,
+      loops: items.map(t => ({ text: t, resolved: false })), log: [{ source, ts: Date.now(), text }], link: null, lastVisited: Date.now() };
+    rooms.unshift(room); lastRoomId = room.id; try { localStorage.setItem('nenemi.lastRoom', room.id); } catch (e) {}
+    save(); renderRoomList(); renderHomeReturn(); renderSideRooms();
+    log.innerHTML += `<div class="bubble dos confirm">Made a fresh room: ${escapeHtml(name)}. ${items.length} thing${items.length === 1 ? '' : 's'} in it, all held.<br><span class="mini-btn" onclick="openRoom('${room.id}')">Open ${escapeHtml(name)}</span></div>`;
+    log.scrollTop = log.scrollHeight;
   }
   function sendCapture() {
     const input = document.getElementById('composerInput');
@@ -4021,9 +4028,10 @@
     log.innerHTML += `<div class="bubble user">${escapeHtml(text)}<span class="b-time">${nowTime()}</span></div>`;
     log.scrollTop = log.scrollHeight;
     if (log.id === 'chatLog') {
-      porchLine = null; const pm = document.getElementById('porchMoves'); if (pm) pm.hidden = true;
+      const pm = document.getElementById('porchMoves'); if (pm) pm.hidden = true;
       const ci = document.getElementById('composerInput'); const dumping = ci && ci.dataset.dump; if (ci) delete ci.dataset.dump;
-      if (!mode && !dumping && porchIntent(text, log)) return; // a dump always goes to capture, never to navigation
+      if (dumping && !mode) { porchNewRoom(text, source, log); return; } // a fresh list becomes its own room
+      if (!mode && porchIntent(text, log)) return;
     }
 
     const demo = rooms.find(r => r.demo); if (demo) { const l = demo.loops.find(x => /messy thought/i.test(x.text) && !x.resolved); if (l) { l.resolved = true; save(); } }
@@ -4059,7 +4067,7 @@
 
   // the no-key fallback: first-word matching and a question
   function heuristicCapture(text, source, log) {
-    const stuckWords = ['stuck', "can't start", 'overwhelmed', 'paralyzed', "don't know where", 'too much', 'freez', 'frozen', 'shut down', 'shutting down'];
+    const stuckWords = ['stuck', "can't start", 'overwhelmed', 'paralyzed', "don't know where", 'too much', 'freez', 'frozen', 'shut down', 'shutting down', 'panic', 'spiral'];
     if (stuckWords.some(w => text.toLowerCase().includes(w))) { setTimeout(() => go('stuck'), 350); return; }
     const match = rooms.find(r => text.toLowerCase().includes(r.name.toLowerCase().split(' ')[0]));
     setTimeout(() => {
@@ -6024,7 +6032,6 @@
       hideOnboard();
       try {
         renderCal(); renderRoomList(); renderSideRooms(); renderHomeReturn(); applyProfileChrome();
-        porchLine = obDayEvs.length ? 'Your day is set. What feels doable right now?' : 'What feels doable right now?';
         renderPorchMoves(first ? obFirstEv : null); porchFresh();
       } catch (e) {}
     };
@@ -6036,7 +6043,7 @@
     const room = ev && ev.room ? rooms.find(r => r.id === ev.room) : null;
     el.innerHTML = (ev ? `<button type="button" class="primary" data-a="focus">Start: ${escapeHtml(ev.name)}</button>` : '') + `<button type="button" data-a="day">Open my day</button>`;
     el.querySelectorAll('button').forEach(b => b.onclick = () => {
-      el.hidden = true; porchLine = null;
+      el.hidden = true;
       if (b.dataset.a === 'day') { go('day'); return; }
       if (room) { currentRoom = room; openRoom(room.id); } focusOnLoop(ev.name);
     });
@@ -6123,6 +6130,7 @@
     showOnboard('ob-hello');
   })();
   restore();
+  if (obDone() || obPriorUser()) { document.querySelectorAll('.pane').forEach(p => p.classList.toggle('active', p.id === 'pane-home')); } // every open lands on the Front Door
   renderCal();
   renderRoomList();
   renderHomeReturn();
