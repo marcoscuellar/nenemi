@@ -73,8 +73,8 @@
     --radius: 12px;        /* cards and containers */
     --radius-sm: 8px;      /* buttons, chips, inputs inside a card */
     --ground: #F5F6F5;     /* the canvas modular cards sit on */
-    --link: #28A2C3;       /* context cyan: only for links out to the user's own work */
-    --link-ink: #16708A;   /* cyan text that stays readable on white */
+    --link: #111312;       /* monochrome (Sep 2026): links out to the user's own work are ink */
+    --link-ink: #111312;
     --win: #0EBE82;        /* soft mint: only for completion */
     --win-soft: rgba(14,190,130,0.10);
     --win-ink: #08845A;
@@ -89,9 +89,9 @@
      Keeps every screen coherent while the redesign rolls out one page at a time. */
   #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay {
     --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #F4F1EA; --muted: #A4A099; --faint: #6F6B64;
-    --line: #26262A; --line2: #34343A; --sage: #5AA6B0; --sage-text: #5AA6B0; --sage-fill: rgba(90,166,176,0.14); --on-sage: #06201C;
+    --line: #26262A; --line2: #34343A; --sage: #5AA6B0; --sage-text: #5AA6B0; --sage-fill: rgba(161,161,170,0.14); --on-sage: #06201C;
     --teal: #5AA6B0; --teal-soft: #A9CDD2; --teal-deep: #2C6670; --maiz: #E9BE55; --maiz-deep: #B98F2A; --glow2: #161618; --btn: #5AA6B0; --btn-ink: #06201C;
-    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(90,166,176,0.22); --hg2: rgba(44,102,112,0.12);
+    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(161,161,170,0.22); --hg2: rgba(44,102,112,0.12);
     --evt-block: #1E1E1E; --evt-fixed: #151515; --evt-fixed-line: #7A7A75; --evt-buffer: #1A1A1A;
     background: #0A0A0A; color: var(--ink);
   }
@@ -592,15 +592,15 @@
   #pane-stuck .doors, #pane-stuck .stuck-inner { margin: auto; padding-top: 48px; padding-bottom: 40px; }
   .stuck-close { position: absolute; top: 24px; right: 32px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   .stuck-inner { display: flex; flex-direction: column; align-items: center; }
-  .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(90,166,176,0.28); }
+  .stuck-mark { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--sage); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 46px rgba(161,161,170,0.28); }
   .stuck-mark::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--sage); }
   .doors { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; padding: 0 20px; }
-  .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(90,166,176,0.45); margin-bottom: 28px; }
+  .doors-mark { width: 14px; height: 14px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 36px rgba(161,161,170,0.45); margin-bottom: 28px; }
   .doors-title { font-family: var(--font-black); font-weight: 900; font-size: 34px; text-align: center; letter-spacing: -0.015em; line-height: 1.05; }
   .doors-sub { color: var(--muted); font-size: 14px; text-align: center; margin-top: 10px; }
   .doors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; width: 100%; }
   .door { border-radius: 4px; padding: 22px 22px 18px; cursor: pointer; background: linear-gradient(160deg, #161618 0%, #0d0d0f 100%); border: 1px solid rgba(255,255,255,0.08); transition: transform 140ms ease, border-color 140ms ease; }
-  .door:hover { transform: translateY(-2px); border-color: rgba(90,166,176,0.4); }
+  .door:hover { transform: translateY(-2px); border-color: rgba(161,161,170,0.4); }
   .door-icon { display: block; color: var(--faint); margin-bottom: 10px; }
   .door-label { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--ink); }
   .door-sub { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
@@ -619,7 +619,7 @@
   .support-for { color: var(--muted); font-size: 13.5px; line-height: 1.5; margin-top: 6px; }
   .support-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
   .support-links a { font-family: var(--font-body); font-weight: 600; font-size: 13px; color: var(--muted); text-decoration: none; padding: 9px 14px; border-radius: 4px; border: 1px solid var(--line2); }
-  .support-links a:hover { color: var(--ink); border-color: rgba(90,166,176,0.4); }
+  .support-links a:hover { color: var(--ink); border-color: rgba(161,161,170,0.4); }
   .doors-back:hover { color: var(--sage-text); }
   @media (max-width: 720px) { .doors-grid { grid-template-columns: 1fr; } .doors-title { font-size: 24px; } }
   .stuck-tag { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); margin-top: 12px; }
@@ -628,7 +628,7 @@
   .stuck-quote { max-width: 440px; margin: 18px auto 0; padding: 2px 0 2px 16px; border-left: 1px solid var(--line2); color: var(--muted); font-size: 14px; line-height: 1.55; text-align: left; }
   .stuck-quote .where { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
   .stuck-sub { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 12px; max-width: 340px; }
-  .stuck-box { width: 560px; max-width: 92vw; margin-top: 26px; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 4px; padding: 18px 16px 12px; box-shadow: 0 0 70px rgba(90,166,176,0.14); }
+  .stuck-box { width: 560px; max-width: 92vw; margin-top: 26px; display: flex; flex-direction: column; gap: 8px; background: var(--card); border: 1px solid var(--line2); border-radius: 4px; padding: 18px 16px 12px; box-shadow: 0 0 70px rgba(161,161,170,0.14); }
   .stuck-box textarea { width: 100%; box-sizing: border-box; min-height: 84px; max-height: 40vh; resize: none; border: none; background: transparent; outline: none; font-family: var(--font-body); font-size: 15.5px; line-height: 1.5; color: var(--ink); padding: 0; margin: 0; }
   .stuck-box textarea::placeholder { color: var(--faint); }
   .stuck-log { width: 560px; max-width: 92vw; margin-top: 16px; }
@@ -1039,13 +1039,13 @@
   .re-done:hover { background: rgba(14,190,130,0.12); }
   .re-done.won { background: var(--win); border-color: var(--win); color: #fff; }
   .ctx-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 16px; }
-  .ctx-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 8px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: rgba(40,162,195,0.06); color: var(--link-ink); font-family: var(--font-body); font-weight: 600; font-size: 14px; text-decoration: none; }
+  .ctx-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 8px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: rgba(17,19,18,0.06); color: var(--link-ink); font-family: var(--font-body); font-weight: 600; font-size: 14px; text-decoration: none; }
   .ctx-chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ctx-chip svg { flex-shrink: 0; }
-  .ctx-chip:hover { background: rgba(40,162,195,0.13); }
+  .ctx-chip:hover { background: rgba(17,19,18,0.13); }
   .ctx-edit, .ctx-add { background: none; border: none; padding: 6px 0; color: var(--faint); font-family: var(--font-body); font-size: 13px; cursor: pointer; }
   .ctx-edit:hover, .ctx-add:hover { color: var(--link-ink); }
-  .ctx-input { width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-family: var(--font-body); font-size: 15px; outline: none; box-shadow: 0 0 0 3px rgba(40,162,195,0.12); }
+  .ctx-input { width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-family: var(--font-body); font-size: 15px; outline: none; box-shadow: 0 0 0 3px rgba(17,19,18,0.12); }
   .ctx-input.bad { border-color: var(--faint); box-shadow: none; }
   #pane-roomview .shrink-row { text-align: center; margin-top: 12px; }
   #pane-roomview .shrink-link { font-family: var(--font-body); font-size: 14px; color: var(--muted); cursor: pointer; text-transform: none; letter-spacing: 0; }
@@ -1514,7 +1514,7 @@
   #onboard.dark-beat .ob-learn li { background:#161817; border-color:#2a2d2c; color:#f4f1ea; }
   /* 18b on the dark canvas */
   #onboard.dark-beat .ob-commit-card { background:#161817; border-color:#2a2d2c; }
-  #onboard.dark-beat .ob-commit-badge { color:#3c8692; }
+  #onboard.dark-beat .ob-commit-badge { color:#A1A1AA; }
   #onboard.dark-beat .ob-commit-item { background:#1c1e1d; border-color:#2e3130; color:#f4f1ea; }
   #onboard.dark-beat .ob-commit-rest-note, #onboard.dark-beat .ob-hold-sub { color:#9aa0a2; }
   #onboard.dark-beat .ob-hold-btn { background:#1a1c1b; border-color:#3a3d3c; color:#f4f1ea; }
@@ -1567,7 +1567,7 @@
   #onboard .plan-note { font-size:12px; color:var(--ob-body); margin-top:2px; }
   #onboard .plan-price { font-weight:700; font-size:14px; white-space:nowrap; }
   #onboard .plan-price small { font-weight:500; color:var(--ob-body); font-size:12px; }
-  #onboard .ob-badge { font-size:10px; font-weight:700; letter-spacing:.04em; color:var(--ob-mint-ink); background:var(--ob-mint-wash); border:1px solid #C7EFDF; border-radius:99px; padding:2px 8px; }
+  #onboard .ob-badge { font-size:10px; font-weight:700; letter-spacing:.04em; color:#fff; background:#111312; border:1px solid #111312; border-radius:99px; padding:2px 8px; }
   #onboard .ob-trial { margin-top:14px; border:1px solid var(--ob-line); border-radius:12px; padding:14px 16px; }
   #onboard .ob-trial[hidden] { display:none; }
   #onboard .ob-trial-line { font-size:13px; color:var(--ob-ink); font-weight:600; margin-bottom:10px; }
@@ -1575,7 +1575,7 @@
   #onboard .ob-tl li { display:flex; align-items:center; gap:10px; font-size:12.5px; color:var(--ob-body); }
   #onboard .ob-tl li b { color:var(--ob-ink); font-weight:600; min-width:48px; }
   #onboard .ob-tl li i { width:8px; height:8px; border-radius:50%; background:var(--ob-line); flex:none; }
-  #onboard .ob-tl li:first-child i { background:var(--ob-mint); }
+  #onboard .ob-tl li:first-child i { background:#111312; }
   #onboard .ob-sponsor { margin-top:22px; padding-top:18px; border-top:1px solid var(--ob-line); }
   #onboard .ob-sponsor b { display:block; font-size:13px; color:var(--ob-ink); margin-bottom:4px; }
   #onboard .ob-sponsor p { font-size:12px; margin:0 0 8px; }
@@ -1655,7 +1655,7 @@
   .rgp-card:first-child { background: var(--rl-black); color: #fff; border-color: var(--rl-black); }
   .rgp-card:first-child * { color: inherit; }
   .rgp-card:first-child .rgp-meta { color: #aeb2ac; }
-  .bubble.dos.confirm { background: var(--rl-pale); border-color: var(--rl-pale); color: #174f55; font-family: var(--font-body); }
+  .bubble.dos.confirm { background: var(--rl-pale); border-color: var(--rl-pale); color: var(--ink); font-family: var(--font-body); }
 
   /* ---------- Rooms ---------- */
   .room-card { border-radius: 4px; box-shadow: none; border: 1px solid var(--line); background: #fff; transition: transform .2s, box-shadow .2s; }
@@ -1685,7 +1685,7 @@
   #pane-roomview .rv-action-btn { border-radius: var(--radius-sm); box-shadow: none; }
   .rv-status-label { font-family: var(--font-body); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--rl-teal); background: var(--rl-pale); padding: 9px 12px; border-radius: var(--radius-sm); }
   .rv-status-label::before { width: 7px; height: 7px; }
-  .rv-status-label.open { color: var(--link-ink); background: rgba(40,162,195,0.10); box-shadow: inset 0 0 0 1px rgba(40,162,195,0.35); }
+  .rv-status-label.open { color: var(--link-ink); background: rgba(17,19,18,0.10); box-shadow: inset 0 0 0 1px rgba(17,19,18,0.35); }
   .rv-status-label.open::before { background: var(--link); }
   .rv-capture-panel textarea { border-radius: var(--radius-sm); background: #fff; border-color: var(--line); }
   #pane-roomview .loop-check { border-radius: 50%; }
@@ -1748,8 +1748,8 @@
   .sheet-mini { color: var(--rl-teal); }
 
   /* ---------- dark sanctuary: stays dark, picks up the reference's stuck panel ---------- */
-  #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay { --teal: #8ac7be; --sage: #8ac7be; --sage-text: #8ac7be; --btn: #fff; --btn-ink: #080908; }
-  .doors-eyebrow { font-family: var(--font-body); font-weight: 700; font-size: 10px; letter-spacing: .2em; color: #8ac7be; }
+  #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay { --teal: #A1A1AA; --teal-soft: #A1A1AA; --sage: #A1A1AA; --sage-text: #A1A1AA; --sage-fill: rgba(255,255,255,0.08); --btn: #fff; --btn-ink: #080908; }
+  .doors-eyebrow { font-family: var(--font-body); font-weight: 700; font-size: 10px; letter-spacing: .2em; color: #A1A1AA; }
   #pane-stuck .doors-title, #pane-humans .doors-title { font-family: var(--font-black); font-weight: 400; letter-spacing: -.055em; }
   #pane-stuck .door, .door { background: #151615; border: 1px solid #3a3c39; border-radius: 3px; }
   #pane-stuck .door:hover, .door:hover { border-color: #84c8bc; }
@@ -1784,7 +1784,7 @@
 
   /* ===================== DESIGN SYSTEM v4 (Sep 2026) =====================
      Modular white cards on the ground, 12px corners, ambient shadow, pill navigation,
-     functional color: cyan = context/active/category, mint = completion, ink = headlines + primary actions.
+     functional color: ink = headlines, primary actions, active, context; carbon = quiet; mint = completion.
      One layer, placed last before phone so it wins over the older passes above. See CLAUDE.md. */
   :root {
     --ink: #111312; --ink-2: #111312; --btn: #111312; --rl-black: #111312;
@@ -1792,7 +1792,10 @@
     --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
     --card-shadow-hover: 0 2px 6px rgba(0,0,0,0.05), 0 10px 24px rgba(0,0,0,0.04);
     --pill: 999px;
-    --link-tint: rgba(40,162,195,0.12);
+    --link-tint: rgba(113,113,122,0.12);
+    /* strictly monochrome (Sep 2026): no cyan, and brand teal only on the onboarding kickers (1b, 19b) */
+    --teal: #71717A; --teal-soft: #71717A; --teal-deep: #111312; --sage: #111312; --sage-fill: #F3F4F6; --rl-teal: #71717A; --rl-pale: #F3F4F6;
+    --hg1: rgba(113,113,122,0.05); --hg2: rgba(113,113,122,0.02);
   }
   .app, #pane-home, #pane-rooms, #pane-calendar, #pane-notes, #pane-roomview { background: var(--ground); }
 
@@ -1880,15 +1883,15 @@
 
   @media (min-width: 900px) {
     .tab { border-radius: var(--pill); }
-    .tab.active { background: var(--link-tint); box-shadow: none; }
-    .tab.active .tab-ic, .tab.active .tab-lb { color: var(--link-ink); }
+    .tab.active { background: rgba(113,113,122,0.12); box-shadow: none; }
+    .tab.active .tab-ic, .tab.active .tab-lb { color: #111312; }
     .tab-stuck, .app.dark-pane .tab-stuck { border-radius: var(--pill); }
     .tab-stuck:hover, .tab-stuck.active, .app.dark-pane .tab-stuck.active { background: #26292A; box-shadow: none; }
     .side-room { border-radius: var(--pill); }
   }
 
   /* ============ Day + Room: ported from the finalized clean reference (gemini-code-1790440308003.html) ============ */
-  #pane-calendar, #pane-roomview { --cyan: #28A2C3; --cyan-wash: #EAF7FA; --mint: #0EBE82; --mint-wash: #EAFBF4; --slate: #6B7280; --nx-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.02);
+  #pane-calendar, #pane-roomview { --cyan: #111312; --cyan-wash: #F3F4F6; --mint: #0EBE82; --mint-wash: #EAFBF4; --slate: #6B7280; --nx-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.02);
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; line-height: 1.48; color: var(--ink); background: var(--ground); }
   #pane-calendar.active, #pane-roomview.active { display: block; }
   #pane-calendar::before, #pane-roomview::before { display: none; }
@@ -1919,7 +1922,7 @@
   .nx-section-header > .nx-section-title { margin-top: 0; }
   .nx-meta { font-size: 11px; color: var(--slate); }
   .nx-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8A9296; }
-  .nx-day-mark { font-size: 11px; color: #177E98; font-weight: 700; border: 1px solid #CEECF2; background: var(--cyan-wash); border-radius: 99px; padding: 4px 10px; white-space: nowrap; }
+  .nx-day-mark { font-size: 11px; color: #111312; font-weight: 700; border: 1px solid #E5E7EB; background: var(--cyan-wash); border-radius: 99px; padding: 4px 10px; white-space: nowrap; }
   .nx-rollover { background: #FBFDFD; border-color: #D8E9E9; }
   .nx-rollover .nx-eyebrow { color: #2684A0; }
   .nx-rollover h2 { font-size: 17px; letter-spacing: -0.02em; line-height: 1.35; font-weight: 650; max-width: 520px; margin: 12px 0 8px; color: var(--ink); }
@@ -1971,7 +1974,7 @@
   .nx-head-tools { display: flex; gap: 6px; }
   #pane-roomview .nx-head-tools .rv-action-btn { width: 34px; height: 34px; border-radius: 8px; box-shadow: none; }
   #pane-roomview .nx-head-tools .rv-action-btn svg { width: 16px; height: 16px; }
-  .nx-room-status { border-radius: 99px; background: var(--cyan-wash); border: 1px solid #D3EBF1; color: #137F9D; padding: 6px 10px; white-space: nowrap; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; }
+  .nx-room-status { border-radius: 99px; background: var(--cyan-wash); border: 1px solid #E5E7EB; color: #111312; padding: 6px 10px; white-space: nowrap; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; }
   .nx-room-status.all-done { background: var(--mint-wash); border-color: #CFEFE0; color: #0B9467; }
   .nx-room-status .dot { display: inline-block; background: currentColor; border-radius: 50%; width: 6px; height: 6px; margin-right: 6px; vertical-align: 1px; }
   .nx-brief-copy { font-size: 14px; line-height: 1.65; max-width: 660px; margin: 0 0 20px; color: var(--ink); }
@@ -1979,7 +1982,7 @@
   #pane-roomview .nx-brief-copy .anchor-highlight { font-weight: 600; }
   .nx-context-row { border-top: 1px solid #EEF0F0; padding-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .nx-context-actions { display: flex; align-items: center; gap: 8px; }
-  .nx-context-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #CBEAF0; background: var(--cyan-wash); color: #117D9B; border-radius: 8px; padding: 8px 12px; text-decoration: none; font-weight: 650; font-size: 12px; }
+  .nx-context-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #E5E7EB; background: var(--cyan-wash); color: #111312; border-radius: 8px; padding: 8px 12px; text-decoration: none; font-weight: 650; font-size: 12px; }
   .nx-context-chip.disabled { color: var(--slate); border-color: var(--line); background: var(--ground); }
   .nx-url-editor { display: flex; flex-wrap: wrap; gap: 8px; border-top: 1px solid #EFF1F1; margin-top: 16px; padding-top: 16px; }
   .nx-url-editor input { flex: 1; min-width: 200px; }
@@ -2007,13 +2010,13 @@
   .nx-task-sub { font-size: 12px; color: #6B7280; margin-top: 3px; }
   .nx-dot { margin: 0 7px; color: #B6BDC0; }
   .nx-time { white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .nx-task-row.now { margin: 4px -12px; padding-left: 11px; padding-right: 11px; background: rgba(40, 162, 195, 0.04); border: 1px solid rgba(40, 162, 195, 0.35); border-radius: 12px; box-shadow: 0 4px 16px -2px rgba(40, 162, 195, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.03); }
+  .nx-task-row.now { margin: 4px -12px; padding-left: 11px; padding-right: 11px; background: rgba(17,19,18,0.04); border: 1px solid rgba(17,19,18,0.35); border-radius: 12px; box-shadow: 0 4px 16px -2px rgba(17,19,18,0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.03); }
   .nx-task-row.now + .nx-task-row { border-top-color: transparent; }
-  .nx-now { display: inline-block; margin-left: 8px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; color: #137F9D; background: #fff; border: 1px solid #CEECF2; border-radius: 99px; padding: 2px 7px; vertical-align: 2px; }
+  .nx-now { display: inline-block; margin-left: 8px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; color: #111312; background: #fff; border: 1px solid #E5E7EB; border-radius: 99px; padding: 2px 7px; vertical-align: 2px; }
   .nx-task-right { display: flex; align-items: center; gap: 8px; }
   .nx-bump { border: 1px solid var(--line); background: #fff; color: #6B7280; border-radius: 99px; padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-  .nx-bump:hover { border-color: var(--cyan); color: #137F9D; }
-  .nx-row-link { display: inline-flex; align-items: center; gap: 4px; border: 1px solid #CBEAF0; background: var(--cyan-wash); color: #117D9B; border-radius: 8px; padding: 5px 9px; font-size: 11px; font-weight: 650; text-decoration: none; white-space: nowrap; }
+  .nx-bump:hover { border-color: var(--cyan); color: #111312; }
+  .nx-row-link { display: inline-flex; align-items: center; gap: 4px; border: 1px solid #E5E7EB; background: var(--cyan-wash); color: #111312; border-radius: 8px; padding: 5px 9px; font-size: 11px; font-weight: 650; text-decoration: none; white-space: nowrap; }
   .nx-row-jump { border: 0; background: none; color: #9AA3A6; font-size: 20px; line-height: 1; padding: 2px 6px; cursor: pointer; }
   .nx-row-jump:hover { color: var(--ink); }
   .nx-task-row.is-done .nx-task-sub { color: #9AA3A6; }
@@ -2059,12 +2062,12 @@
   @media (prefers-reduced-motion: reduce) { .nx-toast, .nx-toast.in, .nx-toast.out { transform: none; transition: opacity .2s; } }
 
   /* first-move spotlight after onboarding */
-  .nx-spot { position: fixed; z-index: 9998; background: #fff; border: 1px solid rgba(40,162,195,.35); border-radius: 12px; box-shadow: 0 8px 28px -4px rgba(40,162,195,.18), 0 2px 6px -1px rgba(0,0,0,.04);
+  .nx-spot { position: fixed; z-index: 9998; background: #fff; border: 1px solid rgba(17,19,18,.35); border-radius: 12px; box-shadow: 0 8px 28px -4px rgba(17,19,18,.18), 0 2px 6px -1px rgba(0,0,0,.04);
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 13.5px; line-height: 1.5; color: #111827; padding: 13px 40px 13px 15px;
     opacity: 0; transform: translateY(6px); transition: opacity .25s ease-out, transform .25s ease-out; }
   .nx-spot.below { transform: translateY(-6px); }
   .nx-spot.in { opacity: 1; transform: none; }
-  .nx-spot-arrow { position: absolute; bottom: -7px; width: 12px; height: 12px; margin-left: -6px; background: #fff; border-right: 1px solid rgba(40,162,195,.35); border-bottom: 1px solid rgba(40,162,195,.35); transform: rotate(45deg); }
+  .nx-spot-arrow { position: absolute; bottom: -7px; width: 12px; height: 12px; margin-left: -6px; background: #fff; border-right: 1px solid rgba(17,19,18,.35); border-bottom: 1px solid rgba(17,19,18,.35); transform: rotate(45deg); }
   .nx-spot.below .nx-spot-arrow { bottom: auto; top: -7px; transform: rotate(225deg); }
   @media (prefers-reduced-motion: reduce) { .nx-spot, .nx-spot.below, .nx-spot.in { transform: none; transition: opacity .2s; } }
 
@@ -2093,12 +2096,14 @@
   .nx-start-here { display: inline-block; margin-left: 8px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 99px; padding: 2px 7px; vertical-align: 2px; }
   .nx-more { display: block; width: 100%; margin-top: 10px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: var(--radius-sm); background: none; color: var(--slate); font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; text-align: center; }
   .nx-more:hover { color: var(--ink); border-color: #CED5D6; }
-  .nx-now-bar { margin-top: 8px; height: 4px; border-radius: 99px; background: rgba(40, 162, 195, 0.14); overflow: hidden; max-width: 260px; }
-  .nx-now-bar i { display: block; height: 100%; background: #28A2C3; border-radius: 99px; }
+  .nx-now-bar { margin-top: 8px; height: 4px; border-radius: 99px; background: rgba(17,19,18,0.14); overflow: hidden; max-width: 260px; }
+  .nx-now-bar i { display: block; height: 100%; background: #111312; border-radius: 99px; }
   .nx-fit { margin: 2px 0 10px; font-size: 12.5px; color: var(--slate); }
   .nx-fit[hidden] { display: none; }
 
   /* ---- Front Porch (concierge, Home) and Place (button hub) ---- */
+  #greetingText { font-family: 'Archivo Black', 'Arial Black', sans-serif; font-weight: 900; text-transform: none; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(1.75rem, 5vw, 2.75rem); }
+  .app.talking #greetingText { font-size: clamp(1.25rem, 3.5vw, 1.75rem); }
   .porch-place { display: inline-flex; align-items: center; gap: 10px; align-self: center; margin: 18px auto 0; padding: 12px 22px; border: 1px solid var(--ink); border-radius: 99px; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: var(--card-shadow); }
   .porch-place:hover { border-color: var(--ink); }
   .app.talking .porch-place { display: none; }
@@ -2128,9 +2133,9 @@
     .app.dark-pane .tabbar { background: #131315; border-top-color: #26262A; }
     .tab { border-radius: 3px; }
     .tab .tab-lb { font-size: 10px; }
-    .tab.active:not(.tab-stuck) { background: var(--link-tint); box-shadow: inset 0 3px 0 var(--link); }
-    .tab.active:not(.tab-stuck) .tab-ic, .tab.active:not(.tab-stuck) .tab-lb { color: var(--link-ink); }
-    .app.dark-pane .tab.active:not(.tab-stuck) { background: rgba(255,255,255,0.08); box-shadow: inset 0 3px 0 #8ac7be; }
+    .tab.active:not(.tab-stuck) { background: transparent; box-shadow: inset 0 -2px 0 #71717A; }
+    .tab.active:not(.tab-stuck) .tab-ic, .tab.active:not(.tab-stuck) .tab-lb { color: #111312; }
+    .app.dark-pane .tab.active:not(.tab-stuck) { background: rgba(255,255,255,0.08); box-shadow: inset 0 -2px 0 #71717A; }
     .app.dark-pane .tab.active:not(.tab-stuck) .tab-ic, .app.dark-pane .tab.active:not(.tab-stuck) .tab-lb { color: #F4F1EA; }
     .tab-stuck, .tab-stuck.active, .app.dark-pane .tab-stuck { background: var(--rl-black); border-radius: 12px; }
     .tab-stuck .stuck-tile, .app.dark-pane .tab-stuck .stuck-tile { background: transparent; }
@@ -2541,7 +2546,7 @@
         <div class="greeting-big" id="greetingText"><span class="hello">Morning</span><span class="accent">Whatever's in your head, put it here.</span></div>
 
         <div class="composer-pill" id="composerPill">
-          <textarea id="composerInput" rows="1" placeholder="Doesn't have to be organized. Just dump it here — we take care of the rest."></textarea>
+          <textarea id="composerInput" rows="1" placeholder="Just dump it here. We'll sort it."></textarea>
           <div class="capture-cta" id="captureCta">
             <button type="button" class="cap-btn write" onclick="focusWrite()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
@@ -3991,7 +3996,7 @@
   function porchNewRoom(text, source, log) {
     if (!canAddRoom()) { heuristicCapture(text, source, log); return; } // room limit: hold it the usual way
     let items = obSplitLines(text); if (items.length < 2) items = obSplitDump(text);
-    const name = obNameFrom(text, items).slice(0, 60);
+    const name = obNameFrom(text, items);
     const room = { id: 'r' + Date.now(), name, one_liner: items[0] || text, brief: `First note: “${text}” The Brief grows from here.`,
       loops: items.map(t => ({ text: t, resolved: false })), log: [{ source, ts: Date.now(), text }], link: null, lastVisited: Date.now() };
     rooms.unshift(room); lastRoomId = room.id; try { localStorage.setItem('nenemi.lastRoom', room.id); } catch (e) {}
@@ -4128,7 +4133,7 @@
         log.innerHTML += `<div class="bubble dos">That's your ${auth.roomLimit} free rooms, so I can't start a new one. I can hold this loose. ${fullAccessLine()}<br><span class="mini-btn" onclick="keepLoose(this)">Keep it loose</span>${fullAccessBtn()}</div>`;
         return;
       }
-      const room = { id: 'r' + Date.now(), name: d.room_name || note.split(/\s+/).slice(0, 4).join(' '), one_liner: d.one_liner || note,
+      const room = { id: 'r' + Date.now(), name: d.room_name || obNameFrom(note, obSplitLines(note).concat(obSplitDump(note))), one_liner: d.one_liner || note,
         brief: d.brief || `New room. First note: \u201c${note}\u201d — the Brief will grow from here.`,
         loops: (d.loops_to_add || []).filter(Boolean).map(t => ({ text: t, resolved: false })), log: [{ source, ts: Date.now(), text: note }], link: null };
       rooms.unshift(room); save(); renderRoomList(); renderHomeReturn();
@@ -4452,7 +4457,7 @@
     const ci = document.getElementById('composerInput');
     if (ci) ci.placeholder = pf('showUp') === 'talk' ? "Talk it through here. I'll keep up."
       : (pfTool('notes') || pfTool('text')) ? "Anything you'd text yourself can land here."
-      : "Doesn't have to be organized. Just dump it here — we take care of the rest.";
+      : "Just dump it here. We'll sort it.";
     // Home cards: what they said matters most leads
     const order = ['rooms', 'day', 'stuck', 'humans'];
     const lead = { track: 'rooms', next: 'day', lighter: 'day' }[pf('useful')];
@@ -5662,13 +5667,13 @@
     return out.slice(0, 8);
   }
   function obNameFrom(text, items) {
-    const words = String(items[0] || text || '').replace(/[.!?,;:"“”]+/g, ' ').split(/\s+/).filter(Boolean);
-    const n = words.slice(0, 3).join(' ');
+    const first = String(items[0] || String(text || '').split(/\n/)[0] || '');
+    const n = first.replace(/^[\s\-•*·]+|[\s.!?,;:]+$/g, '').replace(/\s+/g, ' ').trim(); // the whole first line, as they wrote it
     return n ? n.charAt(0).toUpperCase() + n.slice(1) : 'First room';
   }
   async function obOrganize(text) {
     let name = null, items = obSplitLines(text);
-    if (items.length >= 2) return { name: obNameFrom(text, items).slice(0, 60), items, text }; // they already listed it: keep their words
+    if (items.length >= 2) return { name: obNameFrom(text, items), items, text }; // they already listed it: keep their words
     items = [];
     if (auth.smart && location.protocol !== 'file:') {
       try {
