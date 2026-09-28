@@ -1475,6 +1475,20 @@
   #onboard .ob-two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   #onboard .ob-learn { list-style:none; padding:0; margin:14px 0 0; display:grid; gap:10px; }
   #onboard .ob-learn li { border:1px solid var(--ob-line); border-radius:12px; padding:14px 16px; font-size:13.5px; color:var(--ob-ink); line-height:1.45; }
+  /* 18b: hold to claim the day */
+  .ob-commit-card { background: var(--bg-card-subtle, #f9f8f6); border: 1px solid var(--border-subtle, #e7e5e4); border-radius: 16px; padding: 16px; margin: 20px 0; text-align: left; }
+  .ob-commit-badge { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted, #78716c); margin-bottom: 8px; }
+  .ob-commit-item { background: #ffffff; border: 1px solid var(--border-subtle, #e7e5e4); border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; margin-bottom: 6px; color: var(--text-main, #292524); }
+  #onboard .ob-commit-rest-note { font-size: 0.8rem; color: var(--text-muted, #78716c); font-style: italic; margin: 8px 0 0; }
+  .ob-hold-container { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 24px; }
+  .ob-hold-btn { position: relative; width: 100%; max-width: 340px; height: 56px; border-radius: 9999px; border: 2px solid var(--border-accent, #d6d3d1); background: var(--bg-btn, #fafaf9); color: var(--text-main, #292524); overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: none; cursor: pointer; transition: transform 0.15s ease, border-color 0.2s ease; }
+  .ob-hold-btn:active { transform: scale(0.98); }
+  .ob-hold-btn.holding { border-color: #28A2C3; }
+  .ob-hold-btn.completed { border-color: #0EBE82; background: #EAFBF4; color: #078F61; }
+  .ob-hold-fill { position: absolute; top: 0; left: 0; bottom: 0; width: 0%; background: rgba(40, 162, 195, 0.22); pointer-events: none; }
+  .ob-hold-btn.completed .ob-hold-fill { background: rgba(14, 190, 130, 0.18); }
+  .ob-hold-label { position: relative; z-index: 2; font-weight: 500; font-size: 0.95rem; }
+  .ob-hold-sub { font-size: 0.75rem; color: var(--text-muted, #a8a29e); }
   /* the paywall */
   #onboard .ob-plans { display:grid; gap:10px; margin-top:16px; }
   #onboard .plan { display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:1px solid var(--ob-line); border-radius:12px; background:#FAFAFA; padding:14px 16px; cursor:pointer; color:var(--ob-ink); }
@@ -2205,6 +2219,24 @@
     <p>The rest stays safe in your room.</p>
     <div class="ob-stack" id="obTodayList"></div>
     <button class="btn" type="button" onclick="obTodayNext()">Continue</button>
+  </section>
+
+  <!-- 18b: hold to claim the day -->
+  <section class="card" id="ob-commit">
+    <h2>Claim your day.</h2>
+    <p class="ob-sub">No pressure to fix everything today. Just these few things. Hold below when you're ready to claim them.</p>
+    <div class="ob-commit-card">
+      <div class="ob-commit-badge">Chosen for today</div>
+      <div id="obCommitList" class="ob-commit-items"></div>
+      <p class="ob-commit-rest-note">Everything else is safely resting in your rooms.</p>
+    </div>
+    <div class="ob-hold-container">
+      <button type="button" class="ob-hold-btn" id="obHoldBtn" aria-label="Hold for 3 seconds to commit">
+        <span class="ob-hold-fill" id="obHoldFill"></span>
+        <span class="ob-hold-label" id="obHoldLabel">Hold to set your day (3s)</span>
+      </button>
+      <span class="ob-hold-sub" id="obHoldSub">Release anytime to pause</span>
+    </div>
   </section>
 
   <!-- 19 -->
@@ -5339,7 +5371,7 @@
     ['ob-showup', 35, 'How you work'], ['ob-long', 40, 'How you work'], ['ob-time', 45, 'How you work'], ['ob-energy', 50, 'How you work'],
     ['ob-why', 55, 'How you work'], ['ob-words', 60, 'How you work'],
     ['ob-moment', 65, 'A moment'],
-    ['ob-dump', 70, 'Your first room'], ['ob-check', 75, 'Your first room'], ['ob-start', 80, 'Your first room'], ['ob-small', 84, 'Your first room'], ['ob-today', 88, 'Your first room'],
+    ['ob-dump', 70, 'Your first room'], ['ob-check', 75, 'Your first room'], ['ob-start', 80, 'Your first room'], ['ob-small', 84, 'Your first room'], ['ob-today', 88, 'Your first room'], ['ob-commit', 90, 'Your first room'],
     ['ob-learn', 92, "What I'm learning"], ['ob-better', 96, "What I'm learning"],
     ['ob-pay', 100, 'Keep it with you'], ['ob-acct', 100, 'Keep it with you'], ['ob-code', 100, 'Keep it with you'], ['ob-acctname', 100, 'Keep it with you'],
   ];
@@ -5430,6 +5462,7 @@
     'ob-start': () => { obEl('obStartLine').textContent = obRoom ? `“${obRoom.name}” is ready. Everything you said is in it.` : ''; obEl('ob-start').querySelectorAll('.pill').forEach(p => p.classList.remove('on')); },
     'ob-small': () => obRenderMove(),
     'ob-today': () => obRenderToday(),
+    'ob-commit': () => { const b = obEl('obHoldBtn'); if (b && b._obReset) b._obReset(); }, // came back: a fresh hold
     'ob-learn': () => { obCommitProfile(); obEl('obLearnList').innerHTML = learnLines(profile).map(l => `<li>${escapeHtml(l)}</li>`).join(''); },
     'ob-pay': () => { obPickPlan(obPlan); },
     'ob-acctname': () => { const f = obEl('obFirst'); if (f && !f.value && profile.name) f.value = profile.name; },
@@ -5577,8 +5610,104 @@
       normalizeEvent(ev); list.push(ev); obDayEvs.push(ev);
     });
     save(); renderCal();
-    advanceTo('ob-learn');
+    populateCommitScreen(picked.map(l => l.text));
+    advanceTo('ob-commit');
   }
+  // 18b: hold for 3 seconds to claim the day; letting go resets it, no harm done
+  let holdRaf = null;
+  let holdStart = null;
+  const HOLD_DURATION = 3000;
+  function populateCommitScreen(selectedItems) {
+    const listEl = document.getElementById('obCommitList');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    if (!selectedItems || selectedItems.length === 0) {
+      listEl.innerHTML = '<div class="ob-commit-item">Just exploring today</div>';
+    } else {
+      selectedItems.forEach(text => {
+        const item = document.createElement('div');
+        item.className = 'ob-commit-item';
+        item.textContent = text;
+        listEl.appendChild(item);
+      });
+    }
+  }
+  function initHoldButton(onComplete) {
+    const btn = document.getElementById('obHoldBtn');
+    const fill = document.getElementById('obHoldFill');
+    const label = document.getElementById('obHoldLabel');
+    const sub = document.getElementById('obHoldSub');
+    if (!btn) return;
+    let isComplete = false;
+    const haptic = (style) => {
+      if ('vibrate' in navigator) {
+        if (style === 'tick') navigator.vibrate(15);
+        if (style === 'done') navigator.vibrate([40, 50, 80]);
+      }
+    };
+    const reset = () => {
+      if (isComplete) return;
+      btn.classList.remove('holding');
+      if (holdRaf) cancelAnimationFrame(holdRaf);
+      holdStart = null;
+      fill.style.width = '0%';
+      fill.style.transition = 'width 250ms ease-out';
+      label.textContent = 'Hold to set your day (3s)';
+      sub.textContent = 'Release anytime to pause';
+    };
+    const start = () => {
+      if (isComplete) return;
+      btn.classList.add('holding');
+      fill.style.transition = 'none';
+      holdStart = performance.now();
+      const loop = (now) => {
+        if (!holdStart) return;
+        const elapsed = now - holdStart;
+        const progress = Math.min((elapsed / HOLD_DURATION) * 100, 100);
+        fill.style.width = progress + '%';
+        if (progress < 40) label.textContent = 'Holding space for today...';
+        else if (progress < 85) label.textContent = 'Letting go of the rest...';
+        else label.textContent = 'Almost there...';
+        if (progress > 33 && progress < 36) haptic('tick');
+        if (progress > 66 && progress < 69) haptic('tick');
+        if (progress < 100) {
+          holdRaf = requestAnimationFrame(loop);
+        } else {
+          isComplete = true;
+          btn.classList.remove('holding');
+          btn.classList.add('completed');
+          label.textContent = 'Set for today.';
+          sub.textContent = 'Saved to My Day';
+          haptic('done');
+          setTimeout(() => {
+            if (typeof onComplete === 'function') onComplete();
+          }, 500);
+        }
+      };
+      holdRaf = requestAnimationFrame(loop);
+    };
+    // coming back to this card (the back arrow) starts a fresh hold
+    btn._obReset = () => { isComplete = false; btn.classList.remove('completed'); reset(); };
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('mouseup', reset);
+    btn.addEventListener('mouseleave', reset);
+    btn.addEventListener('touchstart', (e) => { e.preventDefault(); start(); }, { passive: false });
+    btn.addEventListener('touchend', reset);
+    btn.addEventListener('touchcancel', reset);
+    btn.addEventListener('keydown', (e) => {
+      if ((e.code === 'Space' || e.code === 'Enter') && !holdStart) {
+        e.preventDefault();
+        start();
+      }
+    });
+    btn.addEventListener('keyup', (e) => {
+      if (e.code === 'Space' || e.code === 'Enter') {
+        e.preventDefault();
+        reset();
+      }
+    });
+  }
+  initHoldButton(() => advanceTo('ob-learn'));
   function obAfterQuestions() { advanceTo('ob-pay'); } // 20 is never read, never stored
   function showOnboard(step) {
     const o = obEl('onboard'); if (!o) return;
