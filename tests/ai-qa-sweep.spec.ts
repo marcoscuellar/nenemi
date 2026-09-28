@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url';
 //   1. Regression color audit: every primary view is strictly monochrome ink / paper / carbon.
 //      Maíz is allowed; brand teal only on the onboarding kickers (1b, 19b); a room's own
 //      color only where the person picked it. Anything else chromatic is a FAIL.
-//   2. Critical path: splash → Front Porch → "I'm overwhelmed" → Stuck → Place → My day →
+//   2. Critical path: splash → Front Porch → "I'm overwhelmed" → Stuck → back to the Porch, where the
+//      mid-conversation Place escape is on screen → Place → My day →
 //      check a task off → reload, and the state, the layout, and the console all hold.
 // The page is served from this folder under the app host; /api is mocked, the outside world stubbed.
 
@@ -136,6 +137,20 @@ const VIEWS: View[] = [
     open: async page => { await expect(page.locator('#nxSplash')).toBeVisible(); await expect(page.locator('#nxSplash')).toHaveCSS('background-color', INK); },
   },
   { name: 'Front Porch', open: async page => { await pastSplash(page); await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/); } },
+  {
+    name: 'Front Porch (mid-conversation)',
+    open: async page => {
+      await pastSplash(page);
+      await page.fill('#composerInput', 'Remember to call the dentist about Thursday');
+      await page.press('#composerInput', 'Enter');
+      await expect(page.locator('.app')).toHaveClass(/\btalking\b/);
+      await expect(page.locator('.composer-place')).toBeInViewport();
+      await page.waitForTimeout(600);
+      // the chat box stays clear of the headline (it once sat on it on desktop)
+      const [box, head] = await Promise.all([page.locator('#composerPill').boundingBox(), page.locator('#greetingText').boundingBox()]);
+      expect(box!.y, 'chat box overlaps the headline').toBeGreaterThanOrEqual(head!.y + head!.height);
+    },
+  },
   { name: 'Place', open: async page => { await pastSplash(page); await show(page, 'place'); } },
   {
     name: 'My day (NOW + done)',
@@ -238,11 +253,15 @@ test('critical path + storage', async ({ context, page }, info) => {
     await expect(page.locator('#pane-stuck')).toHaveClass(/\bactive\b/, { timeout: 4_000 });
   }, 'body');
 
-  await step('Place → 4 portal buttons', async () => {
-    // mid-conversation the Porch hides Go to Place on purpose; a clean Porch (what every open shows) has it
-    await page.evaluate('porchFresh()');
-    await expect(page.locator('.porch-place')).toBeVisible();
-    await page.locator('.porch-place').click();
+  await step('mid-conversation escape → Place → 4 portal buttons', async () => {
+    // back on the Porch the conversation is still going; the way out to the buttons has to be right there
+    await page.locator('#nav-home:visible, #tn-home:visible').first().click();
+    await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
+    await expect(page.locator('.app')).toHaveClass(/\btalking\b/);
+    const escape = page.locator('.composer-place');
+    await expect(escape).toBeVisible();
+    await expect(escape).toBeInViewport();
+    await escape.click();
     await expect(page.locator('#pane-place')).toHaveClass(/\bactive\b/);
     const cards = page.locator('#pane-place .where-card');
     await expect(cards).toHaveCount(4);
