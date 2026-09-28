@@ -2,7 +2,7 @@
 // available offline. Network-first for the page so updates flow through;
 // the API is never cached (sync handles offline on its own via localStorage).
 
-const VERSION = 'nenemi-shell-v4';
+const VERSION = 'nenemi-shell-v5'; // v5: the corrected N mark in the icons
 const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/icons/n-192.png', '/icons/n-512.png', '/icons/n-180.png', '/icons/nenemi-mark.woff2', '/welcome.html'];
 
 self.addEventListener('install', (event) => {
