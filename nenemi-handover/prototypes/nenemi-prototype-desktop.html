@@ -1494,14 +1494,21 @@
   /* ambient paper noise, onboarding only (the app's dark screens stay untouched) */
   #onboard::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.035;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
-  /* 1b: reality check (streamlined editorial) */
-  #onboard .nenemi-editorial-card { text-align: left; padding: 40px 32px 32px !important; max-width: 440px; margin: auto; }
-  #onboard .editorial-story { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
-  #onboard .story-beat { font-size: 1.05rem; font-weight: 500; color: #27272a; line-height: 1.4; margin: 0; display: flex; align-items: baseline; gap: 14px; }
-  #onboard .story-time { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.02em; color: #71717a; min-width: 72px; }
-  #onboard .editorial-hook { font-family: var(--font-serif, Georgia, serif); font-size: 1.75rem; font-weight: 700; font-style: italic; letter-spacing: -0.02em; color: #111827; margin: 0 0 14px 0; line-height: 1.2; }
-  #onboard .editorial-body { font-size: 0.95rem; line-height: 1.6; color: #52525b; margin: 0 0 32px 0; }
-  #onboard .nenemi-editorial-card .btn { margin-top: 0; }
+  /* 1b: recognition on brand black, typography from welcome.html #mid (brand teal allowed here only) */
+  #onboard.dark-beat { background:#111312; }
+  #onboard.dark-beat #header-bar { background:rgba(17,19,18,.95); border-bottom-color:#232526; }
+  #onboard.dark-beat .ob-chapter { color:#9aa0a2; }
+  #onboard.dark-beat .ob-track { background:#2a2d2c; }
+  #onboard.dark-beat .ob-track i { background:#f4f1ea; }
+  #onboard.dark-beat .ob-back { color:#9aa0a2; }
+  #onboard.dark-beat .ob-back:hover { color:#f4f1ea; background:#1c1e1d; }
+  #onboard .nenemi-editorial-card { text-align:left; max-width:980px; background:transparent; border:0; box-shadow:none; padding:24px 8px !important; }
+  #onboard .recog-kicker { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:#3c8692; font-weight:700; margin:0 0 18px; }
+  #onboard .recog-q { font-family:"Archivo Black","Arial Black",sans-serif; font-weight:900; color:#f4f1ea; font-size:clamp(2rem,4.4vw,3.6rem); line-height:1.04; letter-spacing:-.03em; margin:0; }
+  #onboard .recog-same { font-family:"Archivo Black","Arial Black",sans-serif; font-weight:900; color:#3c8692; letter-spacing:-.03em; line-height:.95; font-size:clamp(3.4rem,9vw,7.5rem); margin:44px 0 36px; }
+  #onboard .recog-lead { font-family:"Helvetica Neue",Arial,system-ui,sans-serif; color:#c2c6c8; font-size:clamp(1.08rem,1.6vw,1.35rem); line-height:1.55; max-width:640px; margin:0 0 36px; }
+  #onboard .recog-btn { background:#fff; color:#111312; border-color:#fff; border-radius:99px; width:auto; padding:14px 28px; margin-top:0; }
+  #onboard .recog-btn:hover { background:#f4f1ea; }
   /* 18b: grounding hold */
   #onboard .ob-commit-card { background: var(--bg-card-subtle, #f9f8f6); border: 1px solid var(--border-subtle, #e7e5e4); border-radius: 16px; padding: 16px; margin: 20px 0; text-align: left; }
   #onboard .ob-commit-badge { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted, #78716c); margin-bottom: 8px; }
@@ -2183,18 +2190,13 @@
     <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
   </section>
 
-  <!-- 1b: reality check (streamlined editorial) -->
+  <!-- 1b: recognition, the same moment as welcome.html #mid -->
   <section class="card nenemi-editorial-card" id="ob-reality-check">
-    <div class="editorial-story">
-      <p class="story-beat"><span class="story-time">10:10 AM</span> Lost the to-do list.</p>
-      <p class="story-beat"><span class="story-time">1:00 PM</span> Hit the invisible wall.</p>
-      <p class="story-beat"><span class="story-time">5:00 PM</span> Completely depleted.</p>
-    </div>
-    <h2 class="editorial-hook">Yeah. Same.</h2>
-    <p class="editorial-body">
-      We don't build for the day you wish you were having. We build for the day you actually have.
-    </p>
-    <button type="button" class="btn" onclick="obGoNext()">Keep going</button>
+    <p class="recog-kicker">You know the day</p>
+    <h2 class="recog-q">Ever lose your list by 10 AM, hit a wall by 1 PM, and feel spent by 5?</h2>
+    <div class="recog-same">Yeah. Same.</div>
+    <p class="recog-lead">Most tools help you plan the day. NENEMI helps you get back into it when the day goes somewhere else. When things fall apart, you don’t need to reconstruct everything before you can take the next step.</p>
+    <button type="button" class="btn recog-btn" onclick="obGoNext()">Keep going</button>
   </section>
 
   <!-- 2 -->
@@ -5487,6 +5489,7 @@
     const m = OB_META[stepId] || {};
     if (obCur && obCur !== stepId && !isBack) obHist.push(obCur);
     obCur = stepId;
+    const ob = obEl('onboard'); if (ob) ob.classList.toggle('dark-beat', stepId === 'ob-reality-check'); // 1b sits on brand black, like welcome.html
     if (OB_ENTER[stepId]) OB_ENTER[stepId]();
     document.querySelectorAll('#onboard .card').forEach(c => { if (c !== next) c.classList.remove('active'); });
     next.classList.remove('active'); void next.offsetWidth; next.classList.add('active');
