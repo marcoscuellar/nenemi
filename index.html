@@ -58,8 +58,8 @@
 
     --glow: transparent;
     --glow-stop: 62%;
-    --hg1: rgba(60,134,146,0.05);
-    --hg2: rgba(60,134,146,0.02);
+    --hg1: rgba(113,113,122,0.05);
+    --hg2: rgba(113,113,122,0.02);
     --glow2: #F4F4F4;
     --evt-block: #FFFFFF;
     --evt-fixed: #FFFFFF;
@@ -75,9 +75,9 @@
     --ground: #F5F6F5;     /* the canvas modular cards sit on */
     --link: #111312;       /* monochrome (Sep 2026): links out to the user's own work are ink */
     --link-ink: #111312;
-    --win: #0EBE82;        /* soft mint: only for completion */
-    --win-soft: rgba(14,190,130,0.10);
-    --win-ink: #08845A;
+    --win: #111312;        /* completion is ink (Sep 2026); done text is carbon */
+    --win-soft: rgba(113,113,122,0.10);
+    --win-ink: #111312;
 
     --font-display: 'Archivo', sans-serif;
     --font-black: 'Archivo Black', 'Archivo', sans-serif;
@@ -91,7 +91,7 @@
     --sanctuary: #0A0A0A; --surface: #111113; --surface2: #161618; --card: #161618; --ink: #F4F1EA; --muted: #A4A099; --faint: #6F6B64;
     --line: #26262A; --line2: #34343A; --sage: #5AA6B0; --sage-text: #5AA6B0; --sage-fill: rgba(161,161,170,0.14); --on-sage: #06201C;
     --teal: #5AA6B0; --teal-soft: #A9CDD2; --teal-deep: #2C6670; --maiz: #E9BE55; --maiz-deep: #B98F2A; --glow2: #161618; --btn: #5AA6B0; --btn-ink: #06201C;
-    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(161,161,170,0.22); --hg2: rgba(44,102,112,0.12);
+    --pill-bg: rgba(17,17,19,0.8); --shadow: rgba(0,0,0,0.5); --hg1: rgba(161,161,170,0.22); --hg2: rgba(161,161,170,0.12);
     --evt-block: #1E1E1E; --evt-fixed: #151515; --evt-fixed-line: #7A7A75; --evt-buffer: #1A1A1A;
     background: #0A0A0A; color: var(--ink);
   }
@@ -652,7 +652,7 @@
   .lockdown-hint { color: var(--muted); font-size: 13.5px; text-align: center; margin-top: 16px; }
   .lockdown-room { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 14px; text-align: center; }
   .lockdown-done { margin-top: 30px; padding: 13px 26px; border-radius: var(--radius-sm); border: 1px solid var(--win); background: none; color: var(--win); font-family: var(--font-body); font-weight: 700; font-size: 15px; cursor: pointer; }
-  .lockdown-done:hover { background: rgba(14, 190, 130, 0.14); }
+  .lockdown-done:hover { background: rgba(255,255,255,0.08); }
   .lockdown-check { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; color: var(--win); }
   #pane-lockdown.finished .lockdown-check { opacity: 1; }
   #pane-lockdown.finished .lockdown-inner, #pane-lockdown.finished .lockdown-exit { opacity: 0; transition: opacity 0.2s ease; }
@@ -948,14 +948,14 @@
   .tab.active .tab-ic svg { stroke-width: 2.4; }
   .tab-stuck { }
   .tab-stuck .stuck-tile { width: 42px; height: 42px; border-radius: 4px; background: transparent; display: flex; align-items: center; justify-content: center; }
-  .tab-stuck .stuck-tile svg { stroke: #10B7A7; }
-  .tab-stuck .tab-lb { color: #10B7A7; font-weight: 700; }
+  .tab-stuck .stuck-tile svg { stroke: #fff; }
+  .tab-stuck .tab-lb { color: #fff; font-weight: 700; }
   .tab-stuck.active { background: none; }
   /* keep the sanctuary quiet: the bright bar recedes on dark panes */
   .app.dark-pane .tabbar { background: #131315; border-color: #26262A; }
   .app.dark-pane .tab-stuck .stuck-tile { background: transparent; }
-  .app.dark-pane .tab-stuck .stuck-tile svg { stroke: #10B7A7; }
-  .app.dark-pane .tab-stuck .tab-lb { color: #10B7A7; }
+  .app.dark-pane .tab-stuck .stuck-tile svg { stroke: #fff; }
+  .app.dark-pane .tab-stuck .tab-lb { color: #fff; }
   .app.dark-pane .tab.active { background: rgba(255,255,255,0.08); }
   .app.dark-pane .tab.active .tab-ic, .app.dark-pane .tab.active .tab-lb { color: #F4F1EA; }
 
@@ -1035,8 +1035,8 @@
   .re-dock { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   #pane-roomview .re-btn { display: block; width: 100%; text-align: center; background: var(--btn); color: var(--btn-ink); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 16px; border-radius: var(--radius-sm); text-transform: none; letter-spacing: 0; }
   #pane-roomview .re-btn:hover { background: #222524; }
-  .re-done { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: rgba(14,190,130,0.05); color: var(--ink); border: 1px solid var(--win); border-radius: var(--radius-sm); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 15px; cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
-  .re-done:hover { background: rgba(14,190,130,0.12); }
+  .re-done { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: rgba(17,19,18,0.05); color: var(--ink); border: 1px solid var(--win); border-radius: var(--radius-sm); font-family: var(--font-body); font-weight: 700; font-size: 16px; padding: 15px; cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
+  .re-done:hover { background: rgba(17,19,18,0.12); }
   .re-done.won { background: var(--win); border-color: var(--win); color: #fff; }
   .ctx-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; margin-top: 16px; }
   .ctx-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; padding: 8px 13px; border: 1px solid var(--link); border-radius: var(--radius-sm); background: rgba(17,19,18,0.06); color: var(--link-ink); font-family: var(--font-body); font-weight: 600; font-size: 14px; text-decoration: none; }
@@ -1401,7 +1401,7 @@
   body.onboarding { overflow: hidden; }
   #onboard {
     --ob-ink:#0D0E11; --ob-body:#6B7280; --ob-help:#9CA3AF; --ob-line:#E5E7EB; --ob-field:#D1D5DB; --ob-ground:#F5F6F5;
-    --ob-cyan:#111827; --ob-cyan-ink:#111827; /* warm monochrome: every onboarding accent is ink (Sep 2026) */ --ob-mint:#0EBE82; --ob-mint-ink:#078F61; --ob-mint-wash:#EAFBF4;
+    --ob-cyan:#111827; --ob-cyan-ink:#111827; /* warm monochrome: every onboarding accent is ink (Sep 2026) */ --ob-mint:#111312; --ob-mint-ink:#111312; --ob-mint-wash:#F3F4F6;
     --ob-font:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     position:fixed; inset:0; z-index:9999; background:var(--ob-ground); color:var(--ob-ink);
     font-family:var(--ob-font); font-size:13px; line-height:1.5; overflow-y:auto; -webkit-font-smoothing:antialiased;
@@ -1743,16 +1743,16 @@
   .sheet-title, .sheet-h { font-family: var(--font-black); font-weight: 400; letter-spacing: -.045em; }
   .sheet-h { font-size: 28px; line-height: 1; }
   .sheet input[type=time], .sheet input[type=number], .sheet select, .sheet-input, .sheet-link, .sheet-notes { border-radius: 3px; }
-  .sheet-input:focus, .sheet-notes:focus, .sheet-link:focus { border-color: var(--rl-teal); box-shadow: 0 0 0 2px rgba(44,102,112,.12); }
+  .sheet-input:focus, .sheet-notes:focus, .sheet-link:focus { border-color: var(--rl-teal); box-shadow: 0 0 0 2px rgba(113,113,122,.12); }
   .sheet-btn, .kind-chip { border-radius: 3px; }
   .sheet-mini { color: var(--rl-teal); }
 
   /* ---------- dark sanctuary: stays dark, picks up the reference's stuck panel ---------- */
-  #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay { --teal: #A1A1AA; --teal-soft: #A1A1AA; --sage: #A1A1AA; --sage-text: #A1A1AA; --sage-fill: rgba(255,255,255,0.08); --btn: #fff; --btn-ink: #080908; }
+  #pane-stuck, #pane-lockdown, #pane-humans, .friction-overlay { --win: #F4F1EA; --win-ink: #F4F1EA; --win-soft: rgba(255,255,255,0.08); --teal: #A1A1AA; --teal-soft: #A1A1AA; --teal-deep: #71717A; --sage: #A1A1AA; --sage-text: #A1A1AA; --sage-fill: rgba(255,255,255,0.08); --btn: #fff; --btn-ink: #080908; }
   .doors-eyebrow { font-family: var(--font-body); font-weight: 700; font-size: 10px; letter-spacing: .2em; color: #A1A1AA; }
   #pane-stuck .doors-title, #pane-humans .doors-title { font-family: var(--font-black); font-weight: 400; letter-spacing: -.055em; }
   #pane-stuck .door, .door { background: #151615; border: 1px solid #3a3c39; border-radius: 3px; }
-  #pane-stuck .door:hover, .door:hover { border-color: #84c8bc; }
+  #pane-stuck .door:hover, .door:hover { border-color: #A1A1AA; }
   #pane-stuck .door-label { font-weight: 700; }
   #pane-humans .support-card, .support-card { border-radius: 3px; background: #151615; border-color: #3a3c39; }
   #pane-humans .support-card.urgent { background: var(--rl-black); border-color: #3a3c39; }
@@ -1784,7 +1784,7 @@
 
   /* ===================== DESIGN SYSTEM v4 (Sep 2026) =====================
      Modular white cards on the ground, 12px corners, ambient shadow, pill navigation,
-     functional color: ink = headlines, primary actions, active, context; carbon = quiet; mint = completion.
+     functional color: ink = headlines, primary actions, active, context, completion; carbon = quiet and done text.
      One layer, placed last before phone so it wins over the older passes above. See CLAUDE.md. */
   :root {
     --ink: #111312; --ink-2: #111312; --btn: #111312; --rl-black: #111312;
@@ -1795,6 +1795,8 @@
     --link-tint: rgba(113,113,122,0.12);
     /* strictly monochrome (Sep 2026): no cyan, and brand teal only on the onboarding kickers (1b, 19b) */
     --teal: #71717A; --teal-soft: #71717A; --teal-deep: #111312; --sage: #111312; --sage-fill: #F3F4F6; --rl-teal: #71717A; --rl-pale: #F3F4F6;
+    /* completion is a quiet notebook strike-through (Sep 2026): crisp ink check, carbon text, no mint */
+    --win: #111312; --win-ink: #111312; --win-soft: rgba(113,113,122,0.10);
     --hg1: rgba(113,113,122,0.05); --hg2: rgba(113,113,122,0.02);
   }
   .app, #pane-home, #pane-rooms, #pane-calendar, #pane-notes, #pane-roomview { background: var(--ground); }
@@ -1877,9 +1879,10 @@
   .rc-dot { background: var(--link); }
   .side-room .sr-dot { background: var(--link-tint); color: var(--link-ink); }
   .rv-status-label { border-radius: var(--pill); }
-  .rv-status-label:not(.open) { color: var(--win-ink); background: var(--win-soft); box-shadow: inset 0 0 0 1px rgba(14,190,130,0.35); }
+  .rv-status-label:not(.open) { color: var(--win-ink); background: var(--win-soft); box-shadow: inset 0 0 0 1px rgba(17,19,18,0.35); }
   .rv-status-label:not(.open)::before { background: var(--win); }
   .cl-row.done .cl-check { background: var(--win); border-color: var(--win); }
+  .cl-row.done .cl-text, #pane-roomview .loop-row.resolved .loop-text, .loop-row.resolved .loop-text { color: #71717A; text-decoration: line-through; }
 
   @media (min-width: 900px) {
     .tab { border-radius: var(--pill); }
@@ -1891,7 +1894,7 @@
   }
 
   /* ============ Day + Room: ported from the finalized clean reference (gemini-code-1790440308003.html) ============ */
-  #pane-calendar, #pane-roomview { --cyan: #111312; --cyan-wash: #F3F4F6; --mint: #0EBE82; --mint-wash: #EAFBF4; --slate: #6B7280; --nx-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.02);
+  #pane-calendar, #pane-roomview { --cyan: #111312; --cyan-wash: #F3F4F6; --mint: #111312; --mint-wash: #F3F4F6; --slate: #6B7280; --nx-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.02);
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; line-height: 1.48; color: var(--ink); background: var(--ground); }
   #pane-calendar.active, #pane-roomview.active { display: block; }
   #pane-calendar::before, #pane-roomview::before { display: none; }
@@ -1924,14 +1927,14 @@
   .nx-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8A9296; }
   .nx-day-mark { font-size: 11px; color: #111312; font-weight: 700; border: 1px solid #E5E7EB; background: var(--cyan-wash); border-radius: 99px; padding: 4px 10px; white-space: nowrap; }
   .nx-rollover { background: #FBFDFD; border-color: #D8E9E9; }
-  .nx-rollover .nx-eyebrow { color: #2684A0; }
+  .nx-rollover .nx-eyebrow { color: #71717A; }
   .nx-rollover h2 { font-size: 17px; letter-spacing: -0.02em; line-height: 1.35; font-weight: 650; max-width: 520px; margin: 12px 0 8px; color: var(--ink); }
   .nx-rollover p { margin: 0 0 18px; color: var(--slate); font-size: 12px; }
   .nx-action-row { display: flex; flex-wrap: wrap; gap: 9px; }
   .nx-button { min-height: 40px; border-radius: 8px; padding: 9px 16px; font-weight: 600; font-size: 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: transform 0.15s, background 0.15s, box-shadow 0.15s; }
   .nx-button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
   .nx-button.dark { background: var(--ink); border-color: var(--ink); color: #fff; }
-  .nx-button.mint { color: #078F61; background: #F2FCF7; border-color: #C7EFDF; }
+  .nx-button.mint { color: #111312; background: #fff; border-color: #111312; }
   .nx-button.mint.done { background: var(--mint); color: #fff; border-color: var(--mint); }
   .nx-button svg { width: 14px; height: 14px; }
   .nx-horizon-list { display: grid; gap: 0; }
@@ -1942,9 +1945,9 @@
   .nx-task-check.completed { background: var(--mint); border-color: var(--mint); }
   .nx-task-check svg { width: 12px; height: 12px; }
   .nx-task-name { font-size: 13px; font-weight: 600; line-height: 1.35; }
-  .nx-task-name.completed { color: #89938F; text-decoration: line-through; }
+  .nx-task-name.completed { color: #71717A; text-decoration: line-through; }
   .nx-task-sub { font-size: 11px; color: var(--slate); margin-top: 4px; }
-  .nx-task-room { border: 1px solid #DAEEF2; background: #F2F9FA; color: #2484A0; border-radius: 99px; padding: 4px 8px; font-size: 10px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .nx-task-room { border: 1px solid #E5E7EB; background: #F3F4F6; color: #111312; border-radius: 99px; padding: 4px 8px; font-size: 10px; font-weight: 600; white-space: nowrap; cursor: pointer; }
   .nx-quick-add { display: flex; gap: 9px; margin-top: 18px; border-top: 1px solid #EFF1F1; padding-top: 18px; }
   .nx-quick-add input, .nx-quick-add select, .nx-url-editor input, .nx-shrink-form input, .nx-room-add input { border: 1px solid var(--line); border-radius: 8px; background: #fff; min-height: 40px; padding: 9px 12px; color: var(--ink); min-width: 0; font-size: 13px; }
   .nx-quick-add { flex-wrap: wrap; }
@@ -1955,7 +1958,7 @@
   .nx-view .nx-quick-add .nx-time-field input { width: 86px; }
   .nx-quick-add select { max-width: 175px; color: #4F5A5A; }
   .nx-empty { padding: 36px 14px; text-align: center; }
-  .nx-empty-icon { height: 38px; width: 38px; border: 1px solid #E1EFE9; border-radius: 10px; display: grid; place-items: center; margin: 0 auto 12px; color: #16A676; background: #F5FCF9; }
+  .nx-empty-icon { height: 38px; width: 38px; border: 1px solid #E5E7EB; border-radius: 10px; display: grid; place-items: center; margin: 0 auto 12px; color: #71717A; background: #F3F4F6; }
   .nx-empty-icon svg { width: 18px; height: 18px; }
   .nx-empty h2 { font-size: 16px; margin: 0 0 4px; font-weight: 650; color: var(--ink); }
   .nx-empty p { margin: 0; color: var(--slate); font-size: 12px; }
@@ -1975,7 +1978,7 @@
   #pane-roomview .nx-head-tools .rv-action-btn { width: 34px; height: 34px; border-radius: 8px; box-shadow: none; }
   #pane-roomview .nx-head-tools .rv-action-btn svg { width: 16px; height: 16px; }
   .nx-room-status { border-radius: 99px; background: var(--cyan-wash); border: 1px solid #E5E7EB; color: #111312; padding: 6px 10px; white-space: nowrap; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; }
-  .nx-room-status.all-done { background: var(--mint-wash); border-color: #CFEFE0; color: #0B9467; }
+  .nx-room-status.all-done { background: var(--mint-wash); border-color: #E5E7EB; color: #71717A; }
   .nx-room-status .dot { display: inline-block; background: currentColor; border-radius: 50%; width: 6px; height: 6px; margin-right: 6px; vertical-align: 1px; }
   .nx-brief-copy { font-size: 14px; line-height: 1.65; max-width: 660px; margin: 0 0 20px; color: var(--ink); }
   #pane-roomview .nx-brief-copy .anchor-text { font-family: inherit; font-size: 14px; line-height: 1.65; color: var(--ink); }
@@ -1992,7 +1995,7 @@
   .nx-next-dock .nx-button { min-width: 130px; }
   #pane-roomview .nx-next-dock .re-btn, #pane-roomview .nx-next-dock .re-done { width: auto; display: inline-flex; font-size: 12px; padding: 9px 16px; border-radius: 8px; text-align: center; }
   .nx-shrink { color: var(--slate); font-size: 12px; margin: 16px 0 0; }
-  .nx-shrink button { background: none; border: 0; padding: 0; color: #1889A6; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; cursor: pointer; }
+  .nx-shrink button { background: none; border: 0; padding: 0; color: #111312; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; cursor: pointer; }
   .nx-shrink-form { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
   .nx-shrink-form[hidden] { display: none; }
   .nx-shrink-form input { flex: 1; min-width: 170px; }
