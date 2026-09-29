@@ -75,6 +75,13 @@ const SEED = () => {
     await p.evaluate(() => go('humans')); await shot('06-humans');
     await p.evaluate(() => { go('notes'); const t = document.getElementById('notesInput'); if (t) { t.value = 'The client call went better than I thought.\nOnboarding copy finally feels right.\nStill need to order the scarf.'; t.dispatchEvent(new Event('input', { bubbles: true })); } });
     await shot('07-recap');
+    // the last slide is the app's own name screen (19b), full-bleed, without the onboarding top bar
+    const q = await ctx.newPage(); q.on('pageerror', e => errs.push(e.message));
+    await q.goto(ORIGIN + '/?welcome', { waitUntil: 'domcontentloaded' });
+    await q.locator('#nxSplash').waitFor({ state: 'detached', timeout: 8000 });
+    await q.evaluate(() => advanceTo('ob-definition')); await q.evaluate(() => document.fonts.ready);
+    await q.addStyleTag({ content: '#header-bar{display:none !important}' });
+    await q.waitForTimeout(900); await q.screenshot({ path: path.join(out, '08-name.png') }); await q.close();
     console.log(slot, 'page errors:', errs.length ? errs : 'none');
     await ctx.close();
   }

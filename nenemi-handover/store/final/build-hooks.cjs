@@ -13,8 +13,9 @@ const HOOKS = [
   { shot: '03-day', photo: 'photos/originals/office-hand-in-hair.jpeg', pos: '50% center', h: 'Lost the list<br>by 10 AM<b>?</b>', sub: 'Yeah. Same. Say it all, in any order. Nenemi turns it into a day you can actually do.' },
   { shot: '04-stuck', photo: 'photos/originals/floor-mms.png', pos: '62% center', h: 'Frozen?<br>One way back in<b>.</b>', sub: 'No new plan. No guilt. Just the smallest next step.' },
 ];
-// then the rest of the story, from the clean set: room, close the day, people, closer, the name
-const REST = ['02', '04', '05', '06', '07'];
+// then the rest of the story, from the clean set: room, close the day, people, closer
+// and last, the name exactly as the app shows it (screen 19b, from capture-v4.cjs)
+const REST = ['02', '04', '05', '06'];
 const page = (f, slot) => `<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}html,body{width:100vw;height:100vh;overflow:hidden}
 body{background:#0a0b0b;position:relative;font-family:Archivo,sans-serif}
@@ -42,6 +43,7 @@ h1 b{color:#5AA6B0}
       await p.screenshot({ path: path.join(out, `NENEMI-PHONE-0${i + 1}.png`) });
     }
     REST.forEach((n, j) => fs.copyFileSync(path.join(S, 'frames', 'clean-' + slot, n + '.png'), path.join(out, `NENEMI-PHONE-0${HOOKS.length + j + 1}.png`)));
+    fs.copyFileSync(path.join(S, 'store2', slot, '08-name.png'), path.join(out, `NENEMI-PHONE-0${HOOKS.length + REST.length + 1}.png`));
     await p.close();
   }
   await b.close();
