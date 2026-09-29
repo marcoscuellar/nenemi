@@ -144,6 +144,13 @@
     #shift .door-tx b{color:#fff}
     #shift .door-tx i{color:#aeb2b4}
     .feat-media{display:flex;justify-content:center}
+    .feat-media.pair{gap:clamp(12px,2.5vw,26px);align-items:flex-start}
+    #day .feat-media.pair .device{width:min(260px,43vw);border-radius:38px;padding:7px}
+    #day .feat-media.pair .device .scr{border-radius:32px}
+    #day .feat-media.pair .device:before{width:74px;height:20px;top:13px}
+    #day .feat-media.pair .device + .device{margin-top:48px}
+    .ways-shot{margin:34px 0 0;display:flex}
+    .ways-shot .device{width:min(250px,64vw)}
     /* device frame */
     .device{width:min(300px,78vw);border-radius:46px;padding:9px;background:#0a0a0a;box-shadow:0 55px 120px -26px rgba(6,7,10,.62),0 18px 44px -20px rgba(6,7,10,.5);position:relative}
     .device:before{content:"";position:absolute;top:16px;left:50%;transform:translateX(-50%);width:112px;height:26px;background:#0a0a0a;border-radius:16px;z-index:2}
@@ -381,7 +388,10 @@
         <li>If yesterday didn’t go to plan, you can carry something into today.</li>
       </ul>
     </div>
-    <div class="feat-media"><div class="device"><span class="scr"><img src="/photos/landing/app-day.png" alt="Nenemi My Day — the day laid out in gentle blocks"></span></div></div>
+    <div class="feat-media pair">
+      <div class="device"><span class="scr"><img src="/photos/landing/v7-porch.jpg" alt="The Porch in NÈNÈMI: a messy thought typed in, sorted into Today and a room"></span></div>
+      <div class="device"><span class="scr"><img src="/photos/landing/v7-day.jpg" alt="My day in NÈNÈMI: what's happening now, and what's next"></span></div>
+    </div>
   </div></section>
 
   <!-- 02 ROOMS -->
@@ -392,7 +402,7 @@
       <p>That project, the conversation you need to finish, the thing you meant to do next—give each its own Room. NENEMI keeps the context together, so you can leave when you need to and come back knowing where you were.</p>
       <p class="second">Walk in. See what matters. Pick up where you left off.</p>
     </div>
-    <div class="feat-media"><div class="device"><span class="scr"><img src="/photos/landing/app-rooms.png" alt="Nenemi Rooms — your spaces, held between visits"></span></div></div>
+    <div class="feat-media"><div class="device"><span class="scr"><img src="/photos/landing/v7-room.jpg" alt="A room in NÈNÈMI: where you left off, and the next small move"></span></div></div>
   </div></section>
 
   <!-- FOUR WAYS BACK IN (white — the Rooms phone tucks behind its top edge) -->
@@ -402,6 +412,7 @@
       <h2>You had a plan. Then the day happened.</h2>
       <p class="lead">A plan can make sense at 9 AM and feel impossible by 1 PM. Tell NENEMI where you are right now. It helps you find one small way back in.</p>
       <div class="move-eg"><span class="mono teal">One small move</span><b>Open the doc.</b></div>
+      <div class="ways-shot"><div class="device"><span class="scr"><img src="/photos/landing/v7-stuck.jpg" alt="The Stuck screen in NÈNÈMI: four ways back in"></span></div></div>
     </div>
     <div class="ways-grid">
       <div class="door">
