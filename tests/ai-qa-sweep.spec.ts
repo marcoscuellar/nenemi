@@ -148,6 +148,11 @@ const VIEWS: View[] = [
       await expect(page.locator('#composerInput')).toHaveAttribute('placeholder', 'Type or hold to talk');
       await expect(page.locator('#homeMic')).toBeVisible();
       await expect(page.locator('#tabbar')).toBeHidden();
+      // the zero-state hero: glyph, "Morning." (or the time word), centered
+      await expect(page.locator('#greetingText .pb-glyph')).toBeVisible();
+      await expect(page.locator('#greetingText .pb-hello')).toHaveText(/^(Morning|Afternoon|Evening|Hey)\.$/);
+      await expect(page.locator('#greetingText')).toHaveCSS('text-align', 'center');
+      await expect(page.locator('.nx-toast', { hasText: 'Open Horizon' })).toHaveCount(0); // the morning banner is gone
     },
   },
   {
@@ -158,6 +163,12 @@ const VIEWS: View[] = [
       await page.press('#composerInput', 'Enter');
       await expect(page.locator('.app')).toHaveClass(/\btalking\b/);
       await expect(page.locator('#secondHomeBtn')).toBeInViewport(); // always a way out to the structure
+      // the bot sorts on its own: no question, where it went, three chips; the hero is out of the way
+      const reply = page.locator('#chatLog .bubble.sorted').last();
+      await expect(reply).toContainText('Slotted into Today');
+      expect(await reply.textContent(), 'the Porch asked a question instead of sorting').not.toContain('?');
+      for (const c of ['Open Today', 'Move to Room', "I'm Stuck"]) await expect(page.locator('#chatLog .chip', { hasText: c }).last()).toBeVisible();
+      await expect(page.locator('#greetingText')).toBeHidden();
       await page.waitForTimeout(600);
       // the composer stays in view and never covers the thread
       const bar = (await page.locator('#composerPill').boundingBox())!;

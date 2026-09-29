@@ -2136,15 +2136,28 @@
   /* the thread grows up from the composer, so the bot's opener sits right above it */
   #pane-home .porch-thread { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
     width: 100%; max-width: 680px; margin: 0 auto; padding: 16px 20px 18px; -webkit-overflow-scrolling: touch; }
-  #pane-home .porch-thread > :first-child { margin-top: auto; }
-  #pane-home .pb-bot { color: #E5E5E5; font: 400 17px/1.55 var(--font-body); letter-spacing: 0; text-transform: none; margin: 0 0 18px; }
-  #pane-home .pb-bot p { margin: 0 0 6px; color: #E5E5E5; max-width: none; }
-  #pane-home .pb-bot .pb-hello { font-weight: 600; margin-bottom: 10px; }
+  /* zero state: a centered hero in the upper-middle third; it fades out on the first message */
+  #pane-home .pb-hero { margin: auto 0 !important; padding: 0 8px 14vh; text-align: center; transition: opacity .25s ease, transform .25s ease; }
+  #pane-home .pb-hero.leaving { opacity: 0; transform: translateY(-10px); }
+  #pane-home .pb-hero[hidden] { display: none; }
+  #pane-home .pb-glyph { display: block; height: 36px; width: auto; margin: 0 auto 18px; fill: #FFFFFF; }
+  #pane-home .pb-hero .pb-hello { margin: 0; font: 700 28px/1.2 var(--font-body); letter-spacing: -0.01em; color: #FFFFFF; text-transform: none; }
+  #pane-home .pb-hero .pb-sub { margin: 8px auto 0; max-width: 34ch; font: 400 16px/1.45 var(--font-body); color: #8E8E93; }
+  #pane-home .pb-hero .pb-sub + .pb-sub { margin-top: 4px; }
+  #pane-home .porch-thread.has-thread .porch-log { margin-top: auto; }
+  @media (prefers-reduced-motion: reduce) { #pane-home .pb-hero { transition: none; } }
   #pane-home .porch-log { display: flex; flex-direction: column; gap: 14px; }
   #pane-home .porch-log .bubble { background: transparent; border: 0; box-shadow: none; padding: 0; margin: 0; border-radius: 0; max-width: 100%;
     color: #E5E5E5; font: 400 16px/1.55 var(--font-body); }
   #pane-home .porch-log .bubble::before { display: none; }
-  #pane-home .porch-log .bubble.user { align-self: flex-end; max-width: 82%; background: #161616; border-radius: 18px 18px 6px 18px; padding: 10px 14px; white-space: pre-wrap; }
+  #pane-home .porch-log .bubble.user { align-self: flex-end; max-width: 82%; background: #1C1C1E; color: #FFFFFF; border-radius: 18px 18px 6px 18px; padding: 10px 14px; white-space: pre-wrap; }
+  #pane-home .porch-log .bubble.sorted { margin-top: -2px; }
+  /* action chips right under the bot's line: small dark pills, crisp white text */
+  #pane-home .porch-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
+  #pane-home .porch-chips:empty { display: none; }
+  #pane-home .porch-log .porch-chips .chip { display: inline-flex; align-items: center; margin: 0; background: #2C2C2E; color: #FFFFFF; border: 0; border-radius: var(--pill); font: 600 13px/1 var(--font-body); letter-spacing: 0; text-transform: none; padding: 9px 12px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  #pane-home .porch-log .porch-chips .chip:hover { background: #3A3A3C; border: 0; }
+  #pane-home .porch-log .porch-chips .chip:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
   #pane-home .porch-log .b-time { display: none; }
   #pane-home .porch-log .mini-btn, #pane-home .porch-log button, #pane-home .porch-moves button, #pane-home .porch-log .choice {
     background: transparent; color: #E5E5E5; border: 1px solid #2E2E2E; border-radius: var(--radius-sm); font: 600 14px/1 var(--font-body); padding: 11px 14px; cursor: pointer; }
@@ -2156,17 +2169,17 @@
   /* the one composer: fixed above the home indicator, with a white mic pill inside */
   #pane-home .porch-bar { flex: 0 0 auto; position: relative; display: flex; align-items: flex-end; gap: 8px;
     width: calc(100% - 24px); max-width: 680px; margin: 0 auto calc(12px + env(safe-area-inset-bottom, 0px));
-    background: #161616; border: 1px solid #262626; border-radius: 26px; padding: 6px 6px 6px 18px; box-shadow: none; }
+    background: #1C1C1E; border: 0; border-radius: var(--pill); padding: 6px 6px 6px 20px; box-shadow: none; }
   #pane-home .porch-bar textarea { flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: 0; box-shadow: none; resize: none;
     color: #E5E5E5; caret-color: #E5E5E5; font: 400 16px/1.4 var(--font-body); padding: 10px 0; margin: 0; min-height: 24px; max-height: 140px; }
-  #pane-home .porch-bar textarea::placeholder { color: #7A7A7A; }
+  #pane-home .porch-bar textarea::placeholder { color: #8E8E93; }
   #pane-home .pb-pill { flex: 0 0 auto; height: 40px; min-width: 52px; padding: 0 16px; border-radius: var(--pill); border: 0; background: #FFFFFF; color: #0A0A0A;
     display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; }
   #pane-home .pb-send { display: none; }
   #pane-home .porch-bar.has-text .pb-send { display: flex; }
   #pane-home .porch-bar.has-text .pb-mic { display: none; }
   /* listening: the input steps back, a quiet waveform and one line take its place */
-  #pane-home .pb-listen { display: none; flex: 1 1 auto; min-width: 0; align-items: center; gap: 12px; height: 40px; color: #B8B8B8; font-size: 13.5px; }
+  #pane-home .pb-listen { display: none; flex: 1 1 auto; min-width: 0; align-items: center; gap: 12px; height: 40px; color: #8E8E93; font-size: 13.5px; }
   #pane-home .porch-bar.listening .pb-listen { display: flex; }
   #pane-home .porch-bar.listening textarea { position: absolute; opacity: 0; pointer-events: none; width: 1px; }
   #pane-home .porch-bar.listening .pb-mic { display: flex; }
@@ -2187,7 +2200,7 @@
   .second-home { position: fixed; inset: 0; z-index: 70; }
   .second-home[hidden] { display: none; }
   .second-home .sh-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.55); opacity: 0; transition: opacity .22s ease; }
-  .second-home .sh-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 560px; background: #111111; color: #E5E5E5;
+  .second-home .sh-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 560px; background: #161616; color: #E5E5E5;
     border-radius: 20px 20px 0 0; border: 1px solid #222; border-bottom: 0; padding: 10px 16px calc(20px + env(safe-area-inset-bottom, 0px));
     transform: translateY(100%); transition: transform .22s ease; font-family: var(--font-body); }
   .second-home.open .sh-scrim { opacity: 1; }
@@ -2198,13 +2211,13 @@
   .second-home .sh-k { font-family: 'Archivo Black', 'Arial Black', sans-serif; font-size: 18px; letter-spacing: -.01em; }
   .second-home .sh-x { width: 36px; height: 36px; border-radius: var(--pill); border: 0; background: #1C1C1C; color: #E5E5E5; font-size: 20px; line-height: 1; cursor: pointer; }
   .second-home .sh-tile { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; margin: 0 0 10px; padding: 16px; border-radius: var(--radius);
-    border: 1px solid #242424; background: #161616; color: #E5E5E5; font: inherit; cursor: pointer; }
+    border: 1px solid #2A2A2C; background: #1C1C1E; color: #E5E5E5; font: inherit; cursor: pointer; }
   .second-home .sh-tile:hover { border-color: #E5E5E5; }
   .second-home .sh-tile span { flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; }
   .second-home .sh-tile b { font-size: 16px; font-weight: 700; }
   .second-home .sh-tile small { font-size: 13px; color: #9A9A9A; }
   .second-home .sh-tile i { font-style: normal; font-size: 22px; color: #7A7A7A; }
-  .second-home .sh-stuck { background: #E5E5E5; color: #0A0A0A; border-color: #E5E5E5; }
+  .second-home .sh-stuck { background: #FFFFFF; color: #0A0A0A; border-color: #FFFFFF; }
   .second-home .sh-stuck small, .second-home .sh-stuck i { color: #3A3A3A; }
 
   /* ---- Front Porch (concierge, Home) and Place (button hub) ---- */
@@ -2672,7 +2685,7 @@
       </header>
 
       <div class="porch-thread" id="porchThread">
-        <div class="pb-bot" id="greetingText"><p class="pb-hello">Morning.</p><p>Dump whatever's in your head. Messy is the point.</p><p>I'll sort it into today, a room, or a next step.</p></div>
+        <div class="pb-hero" id="greetingText"><svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><h1 class="pb-hello">Morning.</h1><p class="pb-sub">Dump whatever's in your head. Messy is the point.</p><p class="pb-sub">I'll sort it into today, a room, or a next step.</p></div>
         <div class="porch-moves" id="porchMoves" hidden></div>
         <div class="porch-log" id="chatLog" aria-live="polite"></div>
       </div>
@@ -3263,7 +3276,7 @@
     };
     // the Porch: the bot speaks first, every open (Marcos's copy, Sep 2026)
     const word = /^(Morning|Afternoon|Evening)$/.test(timeWord) ? timeWord : 'Hey';
-    el.innerHTML = `<p class="pb-hello">${escapeHtml(word)}.</p><p>Dump whatever's in your head. Messy is the point.</p><p>I'll sort it into today, a room, or a next step.</p>`;
+    el.innerHTML = `<svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><h1 class="pb-hello">${escapeHtml(word)}.</h1><p class="pb-sub">Dump whatever's in your head. Messy is the point.</p><p class="pb-sub">I'll sort it into today, a room, or a next step.</p>`;
     const pt = document.getElementById('porchTime'); if (pt) pt.textContent = word === 'Hey' ? '' : word;
   }
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
@@ -4085,7 +4098,17 @@
   function closeSecondHome() { const s = document.getElementById('secondHome'); if (!s || s.hidden) return; s.classList.remove('open'); setTimeout(() => { if (!s.classList.contains('open')) s.hidden = true; }, 220); }
   function shGo(id) { closeSecondHome(); go(id); }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSecondHome(); });
+  document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('chip')) { e.preventDefault(); e.target.click(); } });
+  function porchHeroOut() {
+    const t = document.getElementById('porchThread'), h = document.getElementById('greetingText'); if (!t || !h || t.classList.contains('has-thread')) return;
+    t.classList.add('has-thread'); h.classList.add('leaving'); setTimeout(() => { if (t.classList.contains('has-thread')) h.hidden = true; }, 260);
+  }
+  function porchHeroIn() {
+    const t = document.getElementById('porchThread'), h = document.getElementById('greetingText'); if (!t || !h) return;
+    t.classList.remove('has-thread'); h.classList.remove('leaving'); h.hidden = false;
+  }
   function porchFresh() {
+    porchHeroIn();
     const a = document.querySelector('.app'); if (a) a.classList.remove('talking');
     const log = document.getElementById('chatLog'); if (log) log.innerHTML = '';
     const ci = document.getElementById('composerInput'); if (ci) { applyProfileChrome(); delete ci.dataset.dump; }
@@ -4152,7 +4175,7 @@
   function captureText(text, source, log, mode) {
     if (log.id === 'chatLog') {
       const a = document.querySelector('.app'); if (a) a.classList.add('talking');
-      // the Porch keeps its opener at the top of the thread; the conversation just continues under it
+      porchHeroOut(); // the hero fades out on the first message; the thread takes the space
     }
     log.innerHTML += `<div class="bubble user">${escapeHtml(text)}<span class="b-time">${nowTime()}</span></div>`;
     log.scrollTop = log.scrollHeight;
@@ -4190,11 +4213,56 @@
       if (auth.smart && location.protocol !== 'file:') smartCapture(text, source, log, null); else heuristicCapture(text, source, log);
       return;
     }
+    if (log.id === 'chatLog') { sortedReply(log, out.note, [chipBtn('Open Today', "go('calendar')"), chipBtn("I'm Stuck", "go('stuck')")]); return; }
     log.innerHTML += `<div class="bubble dos confirm">${escapeHtml(out.note)}<br><span class="mini-btn" onclick="go('calendar')">Open my day</span></div>`;
     log.scrollTop = log.scrollHeight;
   }
 
-  // the no-key fallback: first-word matching and a question
+  // ---------- the Porch sorts on its own (Sep 2026): no open questions, just where it went and three chips ----------
+  const roomChip = r => (r.name.length > 22 ? 'Open room' : `Open ${r.name}`); // a chip stays a chip, not a sentence
+  const chipBtn = (label, js) => `<span class="mini-btn chip" role="button" tabindex="0" onclick="${js}">${escapeHtml(label)}</span>`;
+  function sortedReply(log, text, chips) {
+    log.insertAdjacentHTML('beforeend', `<div class="bubble dos sorted">${escapeHtml(text)}</div><div class="porch-chips">${chips.join('')}</div>`);
+    log.scrollTop = log.scrollHeight;
+  }
+  // anything that doesn't obviously belong somewhere goes on Today, as an anytime item, with its words intact
+  function slotToday(text, source, log, lead) {
+    const clean = String(text).replace(/\s+/g, ' ').trim();
+    const first = clean.split(/(?<=[.!?])\s+/)[0];
+    const name = (first.length > 90 ? first.slice(0, 87).replace(/\s+\S*$/, '') + '…' : first).replace(/[.!?]+$/, '');
+    const ev = { name: name.charAt(0).toUpperCase() + name.slice(1), kind: 'block', anytime: true, start: 0, end: 0, createdAt: Date.now(), source, ...(clean !== name ? { notes: clean } : {}) };
+    normalizeEvent(ev); dayList(today).push(ev); save(); try { renderCal(); } catch (e) {}
+    const day = new Date().toLocaleDateString(undefined, { weekday: 'long' });
+    sortedReply(log, lead ? lead : `Got it. Slotted into Today (${day}).`, [
+      chipBtn('Open Today', "go('calendar')"),
+      chipBtn('Move to Room', `porchMoveMenu(this, ${ev.createdAt})`),
+      chipBtn("I'm Stuck", "go('stuck')"),
+    ]);
+    return ev;
+  }
+  // Move to Room: the rooms as chips, plus a fresh one; the item leaves Today and lands in the room's next steps
+  function porchMoveMenu(btn, id) {
+    const row = btn && btn.closest('.porch-chips'); if (!row) return;
+    const mine = rooms.filter(r => !r.archived && !r.demo);
+    row.innerHTML = mine.map(r => chipBtn(r.name, `porchMoveTo(this, ${id}, '${r.id}')`)).join('') + chipBtn('New room', `porchMoveTo(this, ${id}, null)`);
+  }
+  function porchMoveTo(btn, id, roomId) {
+    const list = dayList(today), i = list.findIndex(e => e.createdAt === id); if (i < 0) return;
+    const ev = list[i], text = ev.notes || ev.name, row = btn.closest('.porch-chips'), log = btn.closest('.porch-log') || document.getElementById('chatLog');
+    let room = roomId ? rooms.find(r => r.id === roomId) : null;
+    if (!room) {
+      if (!canAddRoom()) { if (row) row.innerHTML = ''; sortedReply(log, `That's your ${auth.roomLimit} free rooms, so it stays on Today.`, [chipBtn('Open Today', "go('calendar')")]); return; }
+      room = { id: 'r' + Date.now(), name: obNameFrom(text, [ev.name]), one_liner: ev.name, brief: `First note: “${text}” The Brief grows from here.`, loops: [], log: [], link: null, lastVisited: Date.now() };
+      rooms.unshift(room);
+    }
+    list.splice(i, 1);
+    room.loops.push({ text: ev.name, resolved: false }); room.log.unshift({ source: ev.source || 'typed', ts: Date.now(), text });
+    save(); try { renderCal(); renderRoomList(); renderSideRooms(); renderHomeReturn(); } catch (e) {}
+    if (row) row.remove();
+    sortedReply(log, `Moved to ${room.name}.`, [chipBtn(roomChip(room), `openRoom('${room.id}')`), chipBtn("I'm Stuck", "go('stuck')")]);
+  }
+
+  // the no-key fallback: first-word matching, and Today for everything else
   function heuristicCapture(text, source, log) {
     const stuckWords = ['stuck', "can't start", 'overwhelmed', 'paralyzed', "don't know where", 'too much', 'freez', 'frozen', 'shut down', 'shutting down', 'panic', 'spiral'];
     if (stuckWords.some(w => text.toLowerCase().includes(w))) { setTimeout(() => go('stuck'), 350); return; }
@@ -4202,7 +4270,9 @@
     setTimeout(() => {
       if (match) {
         match.log.unshift({ source, ts: Date.now(), text }); save();
-        log.innerHTML += `<div class="bubble dos confirm">Got it — logged to ${escapeHtml(match.name)}.</div>`;
+        sortedReply(log, `Got it. Filed in ${match.name}.`, [chipBtn(roomChip(match), `openRoom('${match.id}')`), chipBtn("I'm Stuck", "go('stuck')")]);
+      } else if (log.id === 'chatLog') {
+        slotToday(text, source, log);
       } else {
         pendingCapture = { text, source };
         log.innerHTML += `<div class="bubble dos">Okay. I've got it. Want to plan it into your day, or tuck it in a room?<span class="b-time">${nowTime()}</span></div><div class="chat-actions"><span class="mini-btn" onclick="closeMenuAnd('calendar')">Plan my day</span><span class="mini-btn" onclick="createRoomFromCapture(this)">Save to a room</span></div>`;
@@ -4248,10 +4318,12 @@
       (d.loops_to_resolve || []).forEach(t => { const l = room.loops.find(l => l.text.toLowerCase() === String(t).toLowerCase()); if (l) l.resolved = true; });
       if (d.brief) room.brief = d.brief;
       save(); renderRoomList(); renderHomeReturn(); if (currentRoom && currentRoom.id === room.id) renderRoomView();
+      if (log.id === 'chatLog') { sortedReply(log, `Got it. Filed in ${room.name}.`, [chipBtn(roomChip(room), `openRoom('${room.id}')`), chipBtn("I'm Stuck", "go('stuck')")]); return; }
       log.innerHTML += `<div class="bubble dos confirm">${reply || 'Filed under ' + escapeHtml(room.name) + '.'}<br><span class="mini-btn" onclick="openRoom('${room.id}')">Open ${escapeHtml(room.name)}</span></div>`;
       return;
     }
     if (d.action === 'new_room') {
+      if (!canAddRoom() && log.id === 'chatLog') { slotToday(note, source, log, `That's your ${auth.roomLimit} free rooms, so this one's on Today.`); return; }
       if (!canAddRoom()) {
         pendingCapture = { text: note, source };
         log.innerHTML += `<div class="bubble dos">That's your ${auth.roomLimit} free rooms, so I can't start a new one. I can hold this loose. ${fullAccessLine()}<br><span class="mini-btn" onclick="keepLoose(this)">Keep it loose</span>${fullAccessBtn()}</div>`;
@@ -4261,9 +4333,11 @@
         brief: d.brief || `New room. First note: \u201c${note}\u201d — the Brief will grow from here.`,
         loops: (d.loops_to_add || []).filter(Boolean).map(t => ({ text: t, resolved: false })), log: [{ source, ts: Date.now(), text: note }], link: null };
       rooms.unshift(room); save(); renderRoomList(); renderHomeReturn();
+      if (log.id === 'chatLog') { sortedReply(log, `Got it. Made a room: ${room.name}.`, [chipBtn(roomChip(room), `openRoom('${room.id}')`), chipBtn("I'm Stuck", "go('stuck')")]); return; }
       log.innerHTML += `<div class="bubble dos confirm">${reply || 'Made a room: ' + escapeHtml(room.name) + '.'}<br><span class="mini-btn" onclick="openRoom('${room.id}')">Open ${escapeHtml(room.name)}</span></div>`;
       return;
     }
+    if (log.id === 'chatLog') { slotToday(note, source, log); return; } // the Porch never leaves it hanging: Today
     loose.unshift({ text: note, source, ts: Date.now() }); save(); renderLoose();
     log.innerHTML += `<div class="bubble dos">${reply || "Holding it loose. It's on the Rooms page whenever you want it."}<br><span class="mini-btn" onclick="looseToRoomText(${JSON.stringify(note).replace(/"/g, '&quot;')})">Make it a room</span></div>`;
   }
@@ -4772,10 +4846,8 @@
     const now = new Date(), dk = dkey(now), h = now.getHours() + now.getMinutes() / 60, ms = now.getTime();
     const list = events[dk] || [];
     const style = pf('showUp');
-    // 1. morning kickoff: 7:30–9:30, fewer than two blocks on today (every morning for routines or structure; never for gentle)
-    if (style !== 'gentle' && h >= 7.5 && h < 9.5 && (list.filter(e => !e.done).length < 2 || pfTool('routines') || style === 'structure')) queueToast({ key: 'morning:' + dk,
-      html: "Good morning. When you're ready, let’s pick one or two moves to anchor your day.",
-      actions: [{ label: 'Open Horizon', primary: true, run: () => { go('day'); setTimeout(() => { const i = document.getElementById('nxDayInput'); if (i) i.focus(); }, 80); } }] });
+    // 1. (the morning kickoff banner is gone, Marcos's call Sep 2026: the Porch already opens with the day)
+    void style; void list;
     // 3. mid-day pause: one random moment between 11:30 and 1:30, once a day
     const hist = toastHist(); let lunchAt = hist['lunchAt:' + dk];
     if (lunchAt == null) { lunchAt = 11.5 + Math.random() * 2; toastMark('lunchAt:' + dk, lunchAt); }
