@@ -2144,24 +2144,30 @@
   #pane-home .pb-hero .pb-hello { margin: 0; font: 700 28px/1.2 var(--font-body); letter-spacing: -0.01em; color: #FFFFFF; text-transform: none; }
   #pane-home .pb-hero .pb-sub { margin: 8px auto 0; max-width: 34ch; font: 400 16px/1.45 var(--font-body); color: #8E8E93; }
   #pane-home .pb-hero .pb-sub + .pb-sub { margin-top: 4px; }
-  #pane-home .porch-thread.has-thread .porch-log { margin-top: auto; }
-  @media (prefers-reduced-motion: reduce) { #pane-home .pb-hero { transition: none; } }
-  #pane-home .porch-log { display: flex; flex-direction: column; gap: 14px; }
-  #pane-home .porch-log .bubble { background: transparent; border: 0; box-shadow: none; padding: 0; margin: 0; border-radius: 0; max-width: 100%;
-    color: #E5E5E5; font: 400 16px/1.55 var(--font-body); }
+  /* the thread reads top to bottom from the upper part of the screen, and scrolls naturally as it grows */
+  #pane-home .porch-thread.has-thread { padding-top: 8px; }
+  #pane-home .porch-log { display: flex; flex-direction: column; gap: 12px; }
+  #pane-home .porch-log .bubble { box-shadow: none; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
   #pane-home .porch-log .bubble::before { display: none; }
-  #pane-home .porch-log .bubble.user { align-self: flex-end; max-width: 82%; background: #1C1C1E; color: #FFFFFF; border-radius: 18px 18px 6px 18px; padding: 10px 14px; white-space: pre-wrap; }
-  #pane-home .porch-log .bubble.sorted { margin-top: -2px; }
-  /* action chips right under the bot's line: small dark pills, crisp white text */
-  #pane-home .porch-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: -4px; }
+  /* your words: a light bubble on the right, tighter bottom-right corner */
+  #pane-home .porch-log .bubble.user { align-self: flex-end; max-width: 82%; background: #FFFFFF; color: #0A0A0A; border: 0;
+    border-radius: 18px 18px 6px 18px; padding: 12px 16px; font: 500 15px/1.45 var(--font-body); }
+  /* NÈNÈMI: a raised charcoal container on the left, tighter bottom-left corner */
+  #pane-home .porch-log .bubble.dos { align-self: flex-start; max-width: 86%; background: #1A1A1C; color: #EDEDED; border: 1px solid #2C2C2E;
+    border-radius: 18px 18px 18px 6px; padding: 14px 16px; font: 400 15px/1.5 var(--font-body); }
+  /* chips sit right under the bot's container, one row that scrolls sideways before it ever wraps */
+  #pane-home .porch-chips { display: flex; flex-wrap: nowrap; gap: 6px; margin-top: -4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+  #pane-home .porch-chips::-webkit-scrollbar { display: none; }
   #pane-home .porch-chips:empty { display: none; }
-  #pane-home .porch-log .porch-chips .chip { display: inline-flex; align-items: center; margin: 0; background: #2C2C2E; color: #FFFFFF; border: 0; border-radius: var(--pill); font: 600 13px/1 var(--font-body); letter-spacing: 0; text-transform: none; padding: 9px 12px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
-  #pane-home .porch-log .porch-chips .chip:hover { background: #3A3A3C; border: 0; }
-  #pane-home .porch-log .porch-chips .chip:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
+  #pane-home .porch-log .chip, #pane-home .porch-log .bubble .mini-btn { flex: 0 0 auto; display: inline-flex; align-items: center; margin: 0; background: #262629; color: #FFFFFF;
+    border: 1px solid #3A3A3C; border-radius: var(--pill); font: 600 13px/1 var(--font-body); letter-spacing: 0; text-transform: none; padding: 8px 12px; white-space: nowrap; cursor: pointer; }
+  #pane-home .porch-log .bubble .mini-btn { margin: 10px 8px 0 0; }
+  #pane-home .porch-log .chip:hover, #pane-home .porch-log .bubble .mini-btn:hover { background: #323235; border-color: #4A4A4D; }
+  #pane-home .porch-log .chip:focus-visible, #pane-home .porch-log .bubble .mini-btn:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
   #pane-home .porch-log .b-time { display: none; }
-  #pane-home .porch-log .mini-btn, #pane-home .porch-log button, #pane-home .porch-moves button, #pane-home .porch-log .choice {
-    background: transparent; color: #E5E5E5; border: 1px solid #2E2E2E; border-radius: var(--radius-sm); font: 600 14px/1 var(--font-body); padding: 11px 14px; cursor: pointer; }
-  #pane-home .porch-log .mini-btn:hover, #pane-home .porch-log button:hover, #pane-home .porch-moves button:hover { border-color: #E5E5E5; }
+  #pane-home .porch-log button, #pane-home .porch-moves button, #pane-home .porch-log .choice {
+    background: #262629; color: #FFFFFF; border: 1px solid #3A3A3C; border-radius: var(--pill); font: 600 13px/1 var(--font-body); padding: 8px 14px; cursor: pointer; }
+  #pane-home .porch-log button:hover, #pane-home .porch-moves button:hover { background: #323235; }
   #pane-home .porch-moves { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; justify-content: flex-start; }
   #pane-home .porch-moves[hidden] { display: none; }
   #pane-home .porch-moves button.primary { background: #E5E5E5; color: #0A0A0A; border-color: #E5E5E5; }
@@ -4099,6 +4105,8 @@
   function shGo(id) { closeSecondHome(); go(id); }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSecondHome(); });
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('chip')) { e.preventDefault(); e.target.click(); } });
+  (function () { const t = document.getElementById('porchThread'), log = document.getElementById('chatLog'); if (!t || !log || !window.MutationObserver) return;
+    new MutationObserver(() => { t.scrollTop = t.scrollHeight; }).observe(log, { childList: true, subtree: true }); })();
   function porchHeroOut() {
     const t = document.getElementById('porchThread'), h = document.getElementById('greetingText'); if (!t || !h || t.classList.contains('has-thread')) return;
     t.classList.add('has-thread'); h.classList.add('leaving'); setTimeout(() => { if (t.classList.contains('has-thread')) h.hidden = true; }, 260);
