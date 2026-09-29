@@ -19,7 +19,12 @@ async function serve(ctx) {
       catch (e) { return route.abort(); }
     }
     if (u.origin !== ORIGIN) return route.fulfill({ status: 200, body: '' });
-    if (u.pathname === '/api/config') return route.fulfill({ json: { authEnabled: false, freeRooms: 2, smartRouting: false, billing: false } });
+    if (u.pathname === '/api/config') return route.fulfill({ json: { authEnabled: false, freeRooms: 2, smartRouting: true, billing: false } });
+    // the Porch sorting one messy thought (the reply Claude gives for it, fixed so the shot is the same every time)
+    if (u.pathname === '/api/route') return route.fulfill({ json: { kind: 'mixed', go_to: null, go_room_id: null, new_room: null, reply: "Two things on Today, the scarf is in Mom's 60th. The rest I heard.", items: [
+      { text: 'Call the dentist', dest: 'today', start: '15:00', end: null, room_id: null },
+      { text: 'Text Dani back', dest: 'today', start: null, end: null, room_id: null },
+      { text: 'Check the scarf is in stock', dest: 'room', start: null, end: null, room_id: 'r-mom' } ] } });
     if (u.pathname.startsWith('/api/')) return route.fulfill({ json: {} });
     const f = path.join(ROOT, u.pathname === '/' ? 'index.html' : decodeURIComponent(u.pathname));
     if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) return route.fulfill({ status: 200, body: '' });
@@ -67,7 +72,9 @@ const SEED = () => {
     await p.evaluate(SEED); await p.evaluate(() => document.fonts.ready);
     const shot = async (name) => { await p.waitForTimeout(700); await p.screenshot({ path: path.join(out, name + '.png') }); };
 
-    await p.evaluate(() => { go('home'); porchFresh(); renderGreeting(); }); await shot('01-home');
+    await p.evaluate(() => { go('home'); porchFresh(); renderGreeting(); });
+    await p.fill('#composerInput', 'ugh ok. call the dentist at 3, text dani back, and make sure the blue scarf is still in stock for mom');
+    await p.press('#composerInput', 'Enter'); await p.waitForTimeout(1200); await shot('01-home');
     await p.evaluate(() => openRoom('r-mom')); await shot('02-room');
     await p.evaluate(() => go('calendar')); await shot('03-day');
     await p.evaluate(() => go('stuck')); await shot('04-stuck');

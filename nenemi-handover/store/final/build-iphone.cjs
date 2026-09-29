@@ -2,9 +2,10 @@ const {chromium}=require(process.env.PWP);const fs=require('fs');const {execFile
 const R='/home/user/nenemi/', S=process.env.S, SH=S+'/store2/'+process.env.SLOT+'/';
 const MARK=fs.readFileSync(R+'photos/logo/nenemi-mark.svg','utf8');
 const SL=[
- {h:'Get the noise out.<br>Get a day back<b>.</b>', sub:'Type it, say it, start in the middle. You don&rsquo;t have to organize your thoughts before putting them here. NENEMI helps you see what matters today and find a place to begin.', shot:'03-day'},
+ {h:'Get the noise out.<br>Get a day back<b>.</b>', sub:'Type it, say it, start in the middle. You don&rsquo;t have to organize your thoughts before putting them here. NENEMI helps you see what matters today and find a place to begin.', shot:'01-home'},
  {fs:40, h:'Never pretend<br>you remembered<b>.</b>', sub:'That project, the conversation you need to finish, the thing you meant to do next&mdash;give each its own Room. NENEMI keeps the context together, so you can leave when you need to and come back knowing where you were.', shot:'02-room'},
  {fs:40, h:'You had a plan.<br>Then the day<br>happened<b>.</b>', sub:'A plan can make sense at 9 AM and feel impossible by 1 PM. Tell NENEMI where you are right now. It helps you find one small way back in.', shot:'04-stuck', dark:true},
+ {fs:40, h:'Your day,<br>with room<br>to move<b>.</b>', sub:'Say it however it comes out. If yesterday didn&rsquo;t go to plan, you can carry something into today.', shot:'03-day'},
  {fs:40, h:'The day ends.<br>What mattered<br>stays<b>.</b>', sub:'Say what happened, messy is fine. NENEMI holds what matters, gives one leftover a home, and lets the rest go. Nothing carries over unless you choose it.', shot:'07-recap'},
  {fs:42, h:'Systems help.<br>People heal<b>.</b>', sub:'NENEMI can help you hold the day. Sometimes the next step is talking to someone who understands. Finding support should be as easy to reach as everything else here.', shot:'06-humans', photos:[['photos/reality-market.jpeg','45% 35%'],['photos/conversation-human.jpg','55% 30%']]},
  {fs:46, h:'It&rsquo;s okay.<br>Nenemi has it<b>.</b>', sub:'Whatever&rsquo;s taking up space, put it here. Start with one thought. You can figure out the rest together.', closer:true},
@@ -12,9 +13,9 @@ const SL=[
 ];
 const page=x=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}html,body{width:414px;height:896px;overflow:hidden}
-body{background:${x.dark||x.def?'#111312':'#F5F6F5'};position:relative;font-family:Archivo,sans-serif}
+body{background:${x.dark||x.def?'#111312':'#FFFFFF'};position:relative;font-family:Archivo,sans-serif}
 .copy{position:absolute;left:26px;right:26px;top:40px}
-h1{font:${x.fs||36}px/1 'Archivo Black',sans-serif;letter-spacing:-.02em;color:${x.dark?'#F5F6F5':'#111312'}}h1 b{color:${x.dark?'#5AA6B0':'#3C8692'}}
+h1{font:${x.fs||36}px/1 'Archivo Black',sans-serif;letter-spacing:-.02em;color:${x.dark?'#FFFFFF':'#111312'}}h1 b{color:${x.dark?'#5AA6B0':'#3C8692'}}
 .sub{margin-top:12px;font:500 14.5px/1.42 Archivo,sans-serif;color:${x.dark?'#B9BEBD':'#63696A'}}
 .pad{position:absolute;left:48px;width:318px;padding:9px;background:#0b0b0b;border-radius:54px;z-index:3;
  box-shadow:0 50px 90px -16px rgba(17,19,18,${x.dark?'.85':'.5'}),0 22px 40px -8px rgba(17,19,18,.3),0 0 0 2px rgba(255,255,255,${x.dark?'.2':'.1'})}
