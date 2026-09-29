@@ -44,6 +44,21 @@ The same paywall as the web, sold by Apple through RevenueCat. Never Stripe insi
 7. **Demo account for the reviewer.** Leave it on the free plan, so the reviewer can see and test the purchase with their sandbox account.
 8. **Attach the subscriptions to the version.** On the 1.0 version page under In-App Purchases and Subscriptions, add both products. The first subscriptions must be submitted with a build.
 
+## Rebuild the native binary without a Mac (GitHub Actions)
+
+GitHub builds it on its own Mac and uploads it to App Store Connect. Everything below works from a phone.
+
+1. **API key:** App Store Connect → Users and Access → Integrations → App Store Connect API → Team Keys → **+**. Name it `github`, set Access to **Admin**, and Generate. Note the **Key ID** and the **Issuer ID** (shown above the list), then **Download** the `.p8`. It can only be downloaded once.
+2. **Team ID:** developer.apple.com/account → Membership details → Team ID (10 characters).
+3. **GitHub secrets:** github.com/marcoscuellar/nenemi → Settings → Secrets and variables → Actions → New repository secret, four times:
+   - `APPLE_TEAM_ID`
+   - `ASC_KEY_ID`
+   - `ASC_ISSUER_ID`
+   - `ASC_KEY_P8`: the whole text of the `.p8` file, including the `-----BEGIN PRIVATE KEY-----` and `-----END PRIVATE KEY-----` lines
+4. **Run it:** GitHub → Actions → **iOS build and upload** → Run workflow. It takes about 15–25 minutes. The build then shows up in App Store Connect → TestFlight about 10–30 minutes later. Select it on the 1.0 version page.
+
+The workflow is `.github/workflows/ios-build.yml`. The build number is set automatically from the date and time, so every run is higher than the last.
+
 ## Rebuild the native binary (on the Mac)
 
 ```
