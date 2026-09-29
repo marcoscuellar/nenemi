@@ -2248,6 +2248,12 @@
   @keyframes pbWave { 0%, 100% { height: 25%; } 50% { height: 100%; } }
   @media (prefers-reduced-motion: reduce) { #pane-home .pb-wave i { animation: none; height: 60%; } }
 
+  /* the sample space: one quiet line under the header, and the way into a real one */
+  #pane-home .porch-demo { flex:0 0 auto; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:6px 10px; margin:0 auto; padding:0 20px 6px; max-width:680px; font:400 13px/1.4 var(--font-body); color:#A1A1AA; text-align:center; }
+  #pane-home .porch-demo[hidden] { display:none; }
+  #pane-home .porch-demo button { border:0; background:none; padding:4px 2px; color:#FFFFFF; font:600 13px/1.4 var(--font-body); cursor:pointer; text-decoration:underline; text-underline-offset:3px; text-decoration-color:#52525B; }
+  #onboard .ob-demo-link { margin-top:14px; }
+  #onboard .ob-demo-link + .ob-fine { margin-top:6px; }
   /* pop-ups on the Porch start below its header, so the menu and Second Home stay reachable */
   body:has(.app.porch-mode) .nx-toasts { top: calc(64px + env(safe-area-inset-top, 0px)) !important; }
 
@@ -2418,6 +2424,7 @@
     <p class="ob-hello-lead">I’m a calm workspace for non-linear and ADHD minds.</p>
     <p>I don’t push you into a rigid calendar or a loud task list. I catch messy thoughts, hold onto your project memory so you don’t lose your place, and make it easier to start when you freeze.</p>
     <button class="btn" type="button" onclick="advanceTo('ob-name')">Let me show you around →</button>
+    <div class="ob-fine ob-demo-link"><button type="button" class="ob-link" id="obDemoBtn" onclick="obDemo()">I just want to check it out</button></div>
     <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
   </section>
 
@@ -2720,6 +2727,8 @@
           <button type="button" class="ph-btn ph-more" onclick="toggleAcctMenu(event)" aria-label="Menu" title="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
         </div>
       </header>
+
+      <div class="porch-demo" id="porchDemo" hidden><span>You're looking around a sample space.</span><button type="button" onclick="demoMakeItYours()">Make it yours →</button></div>
 
       <div class="porch-thread" id="porchThread">
         <div class="pb-hero" id="greetingText"><svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">Morning.</p><h1 class="pb-hello">What's on today?</h1><p class="pb-sub">Dump everything in your head. I'll sort it into your day.</p></div>
@@ -5488,6 +5497,50 @@
       return true;
     } catch (e) { return false; }
   }
+  // ---------- "I just want to check it out" (Sep 2026): a sample space to look around in ----------
+  // It lives on this device only (no sync), sets aside whatever was there before, and "Make it yours" puts that back
+  // and starts the real onboarding. Nothing from the sample ever mixes with a real space.
+  const DEMO_KEY = 'nenemi.demo', DEMO_BACKUP = 'nenemi.demoBackup';
+  function inDemo() { try { return localStorage.getItem(DEMO_KEY) === '1'; } catch (e) { return false; } }
+  function demoSample() {
+    const now = Date.now(), h = x => now - x * 3600e3;
+    const d = new Date(), hr = d.getHours() + d.getMinutes() / 60, at = x => Math.max(0, Math.min(23.5, Math.round(x * 4) / 4));
+    const smp = [
+      { id: 's-mom', sample: true, name: "Mom's 60th", one_liner: "Dinner at Rosa's on the 12th", brief: "Table for eight at Rosa's is booked for 7. Still need the gift. She keeps mentioning that blue scarf from the market.", loops: [{ text: 'Order the blue scarf', resolved: false }, { text: 'Ask Dani to split the cake', resolved: false }, { text: 'Book the table', resolved: true }], log: [{ source: 'voice', ts: h(9), text: "She brought up the blue scarf again. That's the gift." }], link: null, lastVisited: h(9) },
+      { id: 's-pitch', sample: true, name: 'Pitch deck', one_liner: 'Friday with the Harbor team', brief: "Tuesday's draft had the better opener. Slides 4 to 7 need the new numbers.", loops: [{ text: 'Swap in the new numbers on slide 4', resolved: false }], log: [{ source: 'typed', ts: h(20), text: 'Kept the Tuesday draft in case the new one goes sideways.' }], link: { url: 'https://figma.com/', title: 'Deck in Figma' }, lastVisited: h(2) },
+      { id: 's-home', sample: true, name: 'Home', one_liner: 'The lease, the leak, the landlord', brief: 'Leak photos sent. No reply yet.', loops: [{ text: 'Follow up with the landlord', resolved: false }], log: [{ source: 'typed', ts: h(30), text: 'Sent the photos of the ceiling.' }], link: null, lastVisited: h(3) },
+      { id: 's-email', sample: true, name: 'Email I never sent', one_liner: 'To Dana, about Friday', brief: 'Draft is written. Hovering over send.', loops: [{ text: 'Read it once, then send', resolved: false }], log: [{ source: 'typed', ts: h(40), text: 'Draft is in my notes.' }], link: null, lastVisited: h(4) },
+    ];
+    const day = [
+      { name: 'Reply to Ana', kind: 'block', start: at(hr - 2), end: at(hr - 1.5), done: true, room: 's-email' },
+      { name: 'Swap in the new numbers', kind: 'block', start: at(Math.floor(hr)), end: at(Math.floor(hr) + 1.5), room: 's-pitch' },
+      { name: 'A walk, away from the desk', kind: 'block', start: at(hr + 2), end: at(hr + 2.5) },
+      { name: 'Order the blue scarf', kind: 'block', anytime: true, start: 0, end: 0, room: 's-mom' },
+    ];
+    day.forEach(normalizeEvent);
+    return { rooms: smp, events: { [dkey(today)]: day } };
+  }
+  function obDemo() {
+    try { localStorage.setItem(DEMO_BACKUP, localStorage.getItem(STORE_KEY) || ''); localStorage.setItem(DEMO_KEY, '1'); } catch (e) {}
+    const d = demoSample();
+    rooms.splice(0, rooms.length, ...d.rooms);
+    Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events);
+    loose = []; carried = []; profile = {};
+    save();
+    try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    obFlow = false; hideOnboard();
+    try { renderCal(); renderRoomList(); renderSideRooms(); renderHomeReturn(); applyProfileChrome(); } catch (e) {}
+    go('home'); porchFresh(); renderGreeting(); renderDemoBar();
+  }
+  function demoMakeItYours() {
+    try {
+      const b = localStorage.getItem(DEMO_BACKUP);
+      if (b) localStorage.setItem(STORE_KEY, b); else localStorage.removeItem(STORE_KEY);
+      [DEMO_KEY, DEMO_BACKUP, 'nenemi.onboarded'].forEach(k => localStorage.removeItem(k));
+    } catch (e) {}
+    location.href = '/?welcome';
+  }
+  function renderDemoBar() { const b = document.getElementById('porchDemo'); if (b) b.hidden = !inDemo(); }
   function resetDemo() { try { localStorage.removeItem(STORE_KEY); } catch (e) {} location.reload(); }
 
   // ---------- sync (Vercel function + Neon at /api/state; falls back to this device only) ----------
@@ -5817,7 +5870,7 @@
     if (log) { log.innerHTML += `<div class="bubble dos">${auth.plan === 'paid' ? 'Full access is on. Make as many rooms as the day needs.' : "Payment went through on Stripe's side. Full access will show up here within a few minutes."}</div>`; log.scrollTop = log.scrollHeight; }
   }
   async function pushState() {
-    if (location.protocol === 'file:') return;
+    if (location.protocol === 'file:' || inDemo()) return; // a sample space never leaves this device
     try {
       const body = localStorage.getItem(STORE_KEY); if (!body) return;
       const r = await fetch(apiUrl(), { method: 'PUT', headers: await authHeaders({ 'content-type': 'application/json' }), body });
@@ -5833,7 +5886,7 @@
     if (currentRoom) { currentRoom = rooms.find(r => r.id === currentRoom.id) || null; if (currentRoom) renderRoomView(); else go('rooms'); }
   }
   async function pullState(force) {
-    if (location.protocol === 'file:') { renderSyncBadge(); return; }
+    if (location.protocol === 'file:' || inDemo()) { renderSyncBadge(); return; } // nor does anything replace it
     try {
       const r = await fetch(apiUrl(), { headers: await authHeaders() });
       if (!r.ok) { syncOn = false; renderSyncBadge(); return; }
@@ -6532,6 +6585,7 @@
   renderHomeReturn();
   renderSideRooms();
   renderGreeting();
+  renderDemoBar();
   initAuth().then(() => { renderGreeting(); return pullState(); }).then(() => { if (window.__afterCheckout) afterCheckout(); });
 
   // installable: register the service worker on real https

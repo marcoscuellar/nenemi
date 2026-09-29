@@ -526,3 +526,32 @@ test('Onboarding walk: chapters, give-back cards, first room, promise', async ({
   record(info, { view: 'Onboarding walk (v7)', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
   expect(errors, 'console errors').toEqual([]);
 });
+
+// ---------- 5. "I just want to check it out": a sample space that never syncs, and "Make it yours" puts everything back ----------
+test('Demo: sample space, no sync, make it yours', async ({ context, page }, info) => {
+  await serve(context);
+  const errors = watchConsole(page);
+  const puts: string[] = []; page.on('request', r => { if (r.url().includes('/api/state') && r.method() === 'PUT') puts.push(r.url()); });
+  await page.goto(ORIGIN + '/?welcome', { waitUntil: 'domcontentloaded' });
+  await pastSplash(page);
+  await page.locator('#obDemoBtn').click();
+  await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
+  await expect(page.locator('#porchDemo')).toBeVisible();
+  await expect(page.locator('#porchDemo')).toContainText("You're looking around a sample space.");
+  expect(await page.evaluate('rooms.map(r => r.name)')).toEqual(["Mom's 60th", 'Pitch deck', 'Home', 'Email I never sent']);
+  expect(await page.evaluate('dayList(today).length')).toBe(4);
+  // it holds across a reload and never reaches the server
+  await page.reload({ waitUntil: 'domcontentloaded' }); await pastSplash(page);
+  await expect(page.locator('#porchDemo')).toBeVisible();
+  await page.waitForTimeout(1200);
+  expect(puts, 'the sample space synced').toEqual([]);
+  // make it yours: the sample is gone and the real onboarding starts
+  await page.locator('#porchDemo button').click();
+  await page.waitForURL(/\?welcome|\/$/); await pastSplash(page);
+  await expect(page.locator('#ob-hello')).toBeVisible();
+  expect(await page.evaluate("localStorage.getItem('nenemi.demo')")).toBeNull();
+  expect(await page.evaluate('rooms.some(r => r.sample)')).toBe(false);
+  const ok = errors.length === 0;
+  record(info, { view: 'Demo: sample space, no sync, make it yours', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
+  expect(errors, 'console errors').toEqual([]);
+});
