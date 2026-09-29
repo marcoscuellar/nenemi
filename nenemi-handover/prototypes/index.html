@@ -2144,6 +2144,8 @@
   }
 
   @media (max-width: 720px) {
+    /* the Front Porch sits in the middle of the phone, not stacked under the header (auto margins never push it off the top) */
+    .app:not(.talking) #pane-home > .home-center { margin-top: auto; margin-bottom: auto; }
     body { background: #fff; }
     .main::before { background: #fff; height: 64px; border-bottom: 3px solid var(--ink); }
     .app.dark-pane .main::before { background: #050506; border-bottom-color: #26262A; }
