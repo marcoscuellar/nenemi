@@ -7,6 +7,13 @@
 //              thread?: [{ said, reply }] }
 //   returns: { action, room_id, room_name, one_liner, note, loops_to_add, loops_to_resolve, brief, reply, follow_up }
 //
+// mode "porch" is the Porch (Home) talking: Claude is the primary router there, not a fallback.
+//   body adds local_time ("14:05") and weekday; returns
+//   { kind: 'day'|'project'|'mixed'|'stuck'|'go', go_to, go_room_id, items: [{ text, dest, start, end, room_id }],
+//     new_room: { name, one_liner } | null, reply }
+//   One dump can become many items, each with its own place: today (Today's horizon, timed or anytime),
+//   room (a project's steps, grouped), parked (big-picture, a room or held loose), held (venting: heard, not stored).
+//
 // pinned_room_id locks the decision to that one room (used when the person is
 // typing/tapping inside a room's own box, where routing is already decided) —
 // enforced server-side, not just prompted for. mode "wrap_up" needs no typed
@@ -94,6 +101,82 @@ When mode is "room_update", the person is typing an update inside pinned_room_id
 
 Never invent facts that aren't in what they said or in the room data. When unsure between filing and a new room, file.`;
 
+const PorchItem = z.object({
+  text: z.string(),
+  dest: z.enum(['today', 'room', 'parked', 'held']),
+  start: z.string().nullable(),
+  end: z.string().nullable(),
+  room_id: z.string().nullable(),
+});
+const PorchPlan = z.object({
+  kind: z.enum(['day', 'project', 'mixed', 'stuck', 'go']),
+  go_to: z.enum(['day', 'rooms', 'room']).nullable(),
+  go_room_id: z.string().nullable(),
+  items: z.array(PorchItem),
+  new_room: z.object({ name: z.string(), one_liner: z.string() }).nullable(),
+  reply: z.string(),
+});
+
+const PORCH_SYSTEM = `You are the router on the Porch, the home screen of NENEMI, an app for people with ADHD. The person types or says whatever is in their head, in any shape: one thing, a list, a timed plan, a run-on stream with no commas. Read it for meaning, context and intent, the way a friend who knows their life would. Never rely on punctuation or keywords; a messy sentence can hold five separate things.
+
+NENEMI never tells them what to do and never asks where something goes. You decide.
+
+Pick one kind:
+- "day": they want to plan or organize today, or they list things to do today, with or without times. Every to-do becomes an item with dest "today".
+- "project": the dump is the steps or pieces of one piece of work (e.g. "rebrand the pitch deck, gather assets, draft copy"). Every step becomes an item with dest "room". Use room_id of the existing room it clearly belongs to. If none fits, set room_id null on each step and fill new_room with a short name (2 to 4 words, their words) and a one_liner.
+- "mixed": a stream of consciousness. Pull out every separate to-do. Things to do today or soon go to "today". Steps that clearly belong to one of their rooms go to "room" with that room_id. Big-picture ideas, someday plans and backlog go to "parked" (with a room_id if one clearly fits, else null). Feelings, venting, worries and commentary are "held": they are heard, never turned into a task.
+- "stuck": they say they are frozen, overwhelmed, can't start, spiralling. items empty.
+- "go": a short request to open something ("my day", "show my rooms", "open the pitch deck"). go_to is "day", "rooms" or "room" (with go_room_id). items empty.
+
+Each item:
+- text: one short task in their own words, fillers removed, starting with a capital letter, no trailing period. Keep names, places and times they said. Never add anything they didn't say.
+- start / end: 24-hour "HH:MM" only when they gave a time for that item ("at 3" in the afternoon context means "15:00"; "by 5" is a deadline, not a start, so leave start null). Use local_time to read "in an hour" or "after lunch" only when it's clear. Otherwise null.
+- room_id: only ids from the rooms list, else null.
+
+reply: what NENEMI says back, calm, short, specific, no exclamation marks, no therapy language, no praise, never a question, under 40 words. For "day": "Got it. Slotted into Today." For "project": "Grouped these N steps into ROOM." (N and ROOM real). For "mixed": one tight summary of where things went, e.g. "Two things on Today, the app idea is parked in Side projects. The rest I heard, not filing it." For "stuck" and "go": one short line.`;
+
+function hhmm(v) { const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(String(v || '').trim()); return m ? `${m[1].padStart(2, '0')}:${m[2]}` : null; }
+
+async function porchRoute(client, { text, rooms, loose, localTime, weekday }) {
+  const response = await client.messages.parse({
+    model: MODEL,
+    max_tokens: 4096,
+    thinking: { type: 'adaptive' },
+    output_config: { effort: 'low', format: zodOutputFormat(PorchPlan) },
+    system: [{ type: 'text', text: PORCH_SYSTEM, cache_control: { type: 'ephemeral' } }],
+    messages: [{ role: 'user', content: JSON.stringify({ rooms, loose_thoughts: loose, local_time: localTime, weekday, they_said: text }) }],
+  });
+  if (response.stop_reason === 'refusal') return { kind: 'mixed', go_to: null, go_room_id: null, items: [], new_room: null, reply: 'Heard. Holding that one.' };
+  const d = response.parsed_output;
+  if (!d) return null;
+
+  // nothing the model says is trusted on its own: real room ids, real times, only words they (or their rooms) used
+  const ids = new Set(rooms.map(r => r.id));
+  const vocab = sourceVocabulary([text, rooms.map(r => [r.name, r.one_liner]), d.new_room ? [d.new_room.name, d.new_room.one_liner] : []]);
+  if (d.go_room_id && !ids.has(d.go_room_id)) d.go_room_id = null;
+  if (d.go_to === 'room' && !d.go_room_id) d.go_to = 'rooms';
+  if (d.kind !== 'go') { d.go_to = null; d.go_room_id = null; }
+  if (d.kind === 'stuck' || d.kind === 'go') d.items = [];
+  d.items = d.items.slice(0, 20).map(it => {
+    const t = trim(String(it.text || '').trim(), 140);
+    const start = hhmm(it.start), end = start ? hhmm(it.end) : null;
+    let room_id = it.room_id && ids.has(it.room_id) ? it.room_id : null;
+    let dest = it.dest;
+    if (dest === 'room' && !room_id && !d.new_room) dest = 'parked';
+    if (dest !== 'room' && dest !== 'parked') room_id = null;
+    return { text: t, dest, start: dest === 'today' ? start : null, end: dest === 'today' && end && end > start ? end : null, room_id };
+  }).filter(it => it.text && (it.dest === 'held' || isGrounded(it.text, vocab)));
+  if (d.new_room) {
+    if (!d.items.some(it => it.dest === 'room' && !it.room_id)) d.new_room = null;
+    else d.new_room = { name: trim(d.new_room.name, 60) || trim(text.split(/\s+/).slice(0, 4).join(' '), 60), one_liner: trim(d.new_room.one_liner, 160) };
+  }
+  // the reply may also use the app's own words and small counts ("3 steps", "Today")
+  const replyVocab = new Set([...vocab, ...rooms.map(r => r.name.toLowerCase()), 'today', 'tomorrow', 'room', 'rooms', 'parked', 'loose', 'day',
+    ...Array.from({ length: 21 }, (_, i) => String(i))]);
+  d.reply = calm(isGrounded(d.reply, replyVocab) ? trim(d.reply, 280) : '');
+  return d;
+}
+
 function trim(s, n) { return typeof s === 'string' ? (s.length > n ? s.slice(0, n) + '…' : s) : ''; }
 
 function roomsForPrompt(rooms) {
@@ -117,7 +200,7 @@ export default async function handler(req, res) {
   if (who.error) return res.status(who.status).json({ error: who.error });
 
   const body = req.body || {};
-  const MODES = ['end_of_day_recap', 'wrap_up', 'shrink_move', 'room_update'];
+  const MODES = ['end_of_day_recap', 'wrap_up', 'shrink_move', 'room_update', 'porch'];
   const mode = MODES.includes(body.mode) ? body.mode : null;
   const pinnedRoomId = body.pinned_room_id ? String(body.pinned_room_id) : null;
   const text = trim(String(body.text || '').trim(), MAX_TEXT);
@@ -130,6 +213,18 @@ export default async function handler(req, res) {
   const thread = mode === 'room_update' ? (Array.isArray(body.thread) ? body.thread : []).slice(-4).map(t => ({ said: trim(t?.said, 400), reply: trim(t?.reply, 240) })) : [];
 
   const client = new Anthropic({ apiKey: API_KEY });
+  if (mode === 'porch') {
+    try {
+      const d = await porchRoute(client, { text, rooms, loose, localTime: hhmm(body.local_time), weekday: trim(String(body.weekday || ''), 12) || null });
+      if (!d) return res.status(502).json({ error: 'could not read the model reply' });
+      return res.status(200).json(d);
+    } catch (err) {
+      if (err instanceof Anthropic.RateLimitError) return res.status(429).json({ error: 'busy, try again in a moment' });
+      if (err instanceof Anthropic.AuthenticationError) { console.error('nenemi route: bad ANTHROPIC_API_KEY'); return res.status(503).json({ error: 'smart routing misconfigured' }); }
+      console.error('nenemi /api/route porch', err?.message || err);
+      return res.status(502).json({ error: 'routing failed' });
+    }
+  }
   try {
     const response = await client.messages.parse({
       model: MODEL,
@@ -191,3 +286,4 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'routing failed' });
   }
 }
+export { porchRoute }; // exported for local checks

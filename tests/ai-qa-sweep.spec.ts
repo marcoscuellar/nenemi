@@ -24,7 +24,8 @@ const TYPES: Record<string, string> = {
 };
 
 // ---------- harness ----------
-async function serve(context: BrowserContext, { billing = false, iap = false } = {}) {
+async function serve(context: BrowserContext, { billing = false, iap = false, route = null as null | ((body: any) => any) } = {}) {
+  const routeFn = route;
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
     if (url.origin !== ORIGIN) {
@@ -33,9 +34,10 @@ async function serve(context: BrowserContext, { billing = false, iap = false } =
       return route.fulfill({ status: 200, contentType: TYPES[ext] ?? 'text/plain', body: '' });
     }
     if (url.pathname === '/api/config')
-      return route.fulfill({ json: { billing, smartRouting: false, authEnabled: false, price: { monthly: 10.99, annual: 59.99 }, revenuecatIosKey: iap ? 'appl_test_key' : null } });
+      return route.fulfill({ json: { billing, smartRouting: !!routeFn, authEnabled: false, price: { monthly: 10.99, annual: 59.99 }, revenuecatIosKey: iap ? 'appl_test_key' : null } });
     if (url.pathname === '/api/iap')
       return route.fulfill({ json: { plan: 'paid', planSource: 'apple', planUntil: null, trialEnd: null, roomLimit: null } });
+    if (url.pathname === '/api/route' && routeFn) return route.fulfill({ json: routeFn(JSON.parse(route.request().postData() || '{}')) });
     if (url.pathname.startsWith('/api/')) return route.fulfill({ json: {} });
     const file = path.join(ROOT, url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname));
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return route.fulfill({ status: 200, body: '' });
@@ -426,5 +428,58 @@ test('iPhone paywall: restore with nothing to restore, and the web paywall stays
 
   const ok = errors.length === 0;
   record(info, { view: 'iPhone restore (none) + web paywall', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
+  expect(errors, 'console errors').toEqual([]);
+});
+
+// ---------- 3. the Porch router: Claude reads the dump first (mocked here), one dump can land in many places ----------
+test('Porch router: day, project, mixed dump', async ({ context, page }, info) => {
+  const seen: string[] = [];
+  await serve(context, { route: body => {
+    seen.push(body.mode);
+    const t = String(body.text || '');
+    const deck = (body.rooms || []).find((r: any) => /demo|example/i.test(r.name)) || (body.rooms || [])[0];
+    if (/plan my day/i.test(t)) return { kind: 'day', go_to: null, go_room_id: null, new_room: null, reply: 'Got it. Slotted into Today.', items: [
+      { text: 'Call the dentist', dest: 'today', start: '15:00', end: null, room_id: null },
+      { text: 'Laundry', dest: 'today', start: null, end: null, room_id: null } ] };
+    if (/rebrand/i.test(t)) return { kind: 'project', go_to: null, go_room_id: null, new_room: { name: 'Pitch rebrand', one_liner: 'Rebrand the pitch deck' }, reply: '', items: [
+      { text: 'Rebrand the pitch deck', dest: 'room', start: null, end: null, room_id: null },
+      { text: 'Gather assets', dest: 'room', start: null, end: null, room_id: null },
+      { text: 'Draft copy', dest: 'room', start: null, end: null, room_id: null } ] };
+    return { kind: 'mixed', go_to: null, go_room_id: null, new_room: null, reply: 'One thing on Today, the podcast is held loose. The rest I heard.', items: [
+      { text: 'Text mom back', dest: 'today', start: null, end: null, room_id: null },
+      { text: 'Start a podcast someday', dest: 'parked', start: null, end: null, room_id: null },
+      { text: 'So tired of everything', dest: 'held', start: null, end: null, room_id: null } ] };
+  } });
+  await asReturning(context);
+  const errors = watchConsole(page);
+  await page.goto(ORIGIN + '/', { waitUntil: 'domcontentloaded' });
+  await pastSplash(page);
+  const say = async (t: string) => { await page.fill('#composerInput', t); await page.press('#composerInput', 'Enter'); };
+  const lastReply = () => page.locator('#chatLog .bubble.sorted').last();
+  const today = () => page.evaluate('dayList(today).map(e => e.name)') as Promise<string[]>;
+
+  // 1. planning the day: every to-do on Today, one chip
+  await say('ok plan my day, dentist at 3 and laundry');
+  await expect(lastReply()).toHaveText('Got it. Slotted into Today.');
+  expect(await today()).toEqual(expect.arrayContaining(['Call the dentist', 'Laundry']));
+  expect(await page.evaluate("dayList(today).find(e => e.name === 'Call the dentist').start")).toBe(15);
+  await expect(page.locator('#chatLog .porch-chips').last().locator('.chip')).toHaveText(['Open Today']);
+
+  // 2. a project: the steps grouped into one room
+  await say('rebrand the pitch deck gather assets draft copy');
+  await expect(lastReply()).toHaveText('Grouped these 3 steps into Pitch rebrand.');
+  expect(await page.evaluate("rooms.find(r => r.name === 'Pitch rebrand').loops.map(l => l.text)")).toEqual(['Rebrand the pitch deck', 'Gather assets', 'Draft copy']);
+  await expect(page.locator('#chatLog .porch-chips').last().locator('.chip')).toHaveText(['Open Pitch rebrand']);
+
+  // 3. a messy stream: the to-do on Today, the idea held loose, the venting not filed anywhere
+  await say('ugh so tired of everything i need to text mom back and i keep thinking i should start a podcast someday');
+  await expect(lastReply()).toHaveText('One thing on Today, the podcast is held loose. The rest I heard.');
+  expect(await today()).toContain('Text mom back');
+  expect(await page.evaluate('loose.map(t => t.text)')).toContain('Start a podcast someday');
+  expect(JSON.stringify(await page.evaluate('[events, rooms, loose]'))).not.toContain('So tired of everything');
+
+  expect(seen.every(m => m === 'porch'), 'Claude read every Porch message first').toBe(true);
+  const ok = errors.length === 0;
+  record(info, { view: 'Porch router: day, project, mixed', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
   expect(errors, 'console errors').toEqual([]);
 });

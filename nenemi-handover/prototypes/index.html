@@ -4201,6 +4201,8 @@
       const pm = document.getElementById('porchMoves'); if (pm) pm.hidden = true;
       const ci = document.getElementById('composerInput'); const dumping = ci && ci.dataset.dump; if (ci) delete ci.dataset.dump;
       if (dumping && !mode) { porchNewRoom(text, source, log); return; } // a fresh list becomes its own room
+      // Claude reads the Porch first; the local rules below only run when it can't answer (offline, no key)
+      if (!mode && auth.smart && location.protocol !== 'file:') { porchSmart(text, source, log); return; }
       if (!mode && porchIntent(text, log)) return;
     }
 
@@ -4278,6 +4280,91 @@
     save(); try { renderCal(); renderRoomList(); renderSideRooms(); renderHomeReturn(); } catch (e) {}
     if (row) row.remove();
     sortedReply(log, `Moved to ${room.name}.`, [chipBtn(roomChip(room), `openRoom('${room.id}')`), chipBtn("I'm Stuck", "go('stuck')")]);
+  }
+
+  // ---------- the Porch router (Sep 2026): Claude reads meaning, context and intent, and one dump can land in many places ----------
+  function porchLocal(text, source, log) { // offline / no key: the old local rules, never while Claude answers
+    if (porchIntent(text, log)) return;
+    if (looksLikeDay(text)) { dayCapture(text, source, log, /\btomorrow\b/i.test(text) ? 'tomorrow' : 'today'); return; }
+    heuristicCapture(text, source, log);
+  }
+  async function porchSmart(text, source, log) {
+    const wait = document.createElement('div'); wait.className = 'bubble dos'; wait.textContent = 'Reading that…'; log.appendChild(wait); log.scrollTop = log.scrollHeight;
+    let d = null;
+    try {
+      const now = new Date(), pad = n => String(n).padStart(2, '0');
+      const ctx = {
+        mode: 'porch', text,
+        local_time: `${pad(now.getHours())}:${pad(now.getMinutes())}`,
+        weekday: now.toLocaleDateString('en-US', { weekday: 'long' }),
+        rooms: rooms.filter(r => !r.archived).map(r => ({ id: r.id, name: r.name, one_liner: r.one_liner, brief: r.brief, loops: r.loops.filter(l => !l.resolved).map(l => l.text), recent: r.log.slice(0, 4).map(e => e.text) })),
+        loose: loose.map(t => t.text),
+      };
+      const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
+      if (r.ok) d = await r.json();
+    } catch (e) { d = null; }
+    wait.remove();
+    if (!d || !d.kind || !Array.isArray(d.items)) { porchLocal(text, source, log); return; }
+    applyPorchPlan(d, text, source, log);
+  }
+  function applyPorchPlan(d, text, source, log) {
+    const say = (line, chips) => sortedReply(log, line, chips || []);
+    if (d.kind === 'stuck') { say(d.reply || 'One small move, coming up.'); setTimeout(() => go('stuck'), 700); return; }
+    if (d.kind === 'go') {
+      const room = d.go_room_id && rooms.find(r => r.id === d.go_room_id);
+      say(d.reply || (room ? `Opening ${room.name}.` : d.go_to === 'rooms' ? 'Here are your rooms.' : 'Here’s your day.'));
+      setTimeout(() => room ? openRoom(room.id) : go(d.go_to === 'rooms' ? 'rooms' : 'calendar'), 500); return;
+    }
+    const hrs = t => { const m = /^(\d{2}):(\d{2})$/.exec(t || ''); return m ? +m[1] + (+m[2]) / 60 : null; };
+    let fresh = null, onToday = 0; const touched = [], parkedLoose = [];
+    const roomFor = it => {
+      if (it.room_id) return rooms.find(r => r.id === it.room_id) || null;
+      if (it.dest !== 'room' || !d.new_room) return null;
+      if (!fresh && canAddRoom()) {
+        fresh = { id: 'r' + Date.now(), name: d.new_room.name, one_liner: d.new_room.one_liner || it.text, brief: `First note: “${text}” The Brief grows from here.`, loops: [], log: [{ source, ts: Date.now(), text }], link: null, lastVisited: Date.now() };
+        rooms.unshift(fresh);
+      }
+      return fresh;
+    };
+    const toToday = it => {
+      const a = hrs(it.start), b = hrs(it.end);
+      const ev = { name: it.text, kind: 'block', createdAt: Date.now() + onToday, source };
+      if (a !== null) { ev.start = a; ev.end = b !== null && b > a ? b : a + 0.5; } else { ev.anytime = true; ev.start = 0; ev.end = 0; }
+      normalizeEvent(ev); dayList(today).push(ev); onToday++;
+    };
+    for (const it of d.items) {
+      if (it.dest === 'held') continue; // venting is heard, not filed
+      if (it.dest === 'today') { toToday(it); continue; }
+      const room = roomFor(it);
+      if (room) {
+        if (!room.loops.some(l => l.text.toLowerCase() === it.text.toLowerCase())) room.loops.push({ text: it.text, resolved: false });
+        if (!touched.includes(room)) touched.push(room);
+        continue;
+      }
+      if (it.dest === 'room') { toToday(it); continue; } // free room limit: the step waits on Today
+      parkedLoose.push(it.text); loose.unshift({ text: it.text, source, ts: Date.now() });
+    }
+    touched.forEach(r => { if (r !== fresh) r.log.unshift({ source, ts: Date.now(), text }); });
+    save(); try { renderCal(); renderRoomList(); renderSideRooms(); renderHomeReturn(); renderLoose(); } catch (e) {}
+    const kept = d.items.filter(it => it.dest !== 'held').length;
+    const chips = [];
+    if (onToday) chips.push(chipBtn('Open Today', "go('calendar')"));
+    touched.slice(0, 2).forEach(r => chips.push(chipBtn(roomChip(r), `openRoom('${r.id}')`)));
+    let line;
+    if (d.kind === 'day' && onToday && !touched.length) line = 'Got it. Slotted into Today.';
+    else if (d.kind === 'project' && touched.length === 1 && !onToday) {
+      const n = d.items.filter(it => it.dest === 'room').length;
+      line = n > 1 ? `Grouped these ${n} steps into ${touched[0].name}.` : `Filed in ${touched[0].name}.`;
+    } else if (d.reply) line = d.reply;
+    else {
+      const bits = [];
+      if (onToday) bits.push(`${onToday} on Today`);
+      touched.forEach(r => bits.push(`${r.loops.length && r === fresh ? 'a new room, ' + r.name : r.name}`));
+      if (parkedLoose.length) bits.push(`${parkedLoose.length} held loose`);
+      line = bits.length ? `Got it. ${bits.join(', ')}.` : 'Heard. Nothing to file.';
+    }
+    if (!kept && !d.reply) line = 'Heard. Nothing to file.';
+    say(line, chips);
   }
 
   // the no-key fallback: first-word matching, and Today for everything else
