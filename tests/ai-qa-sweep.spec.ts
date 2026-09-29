@@ -143,15 +143,15 @@ const VIEWS: View[] = [
       await pastSplash(page); await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
       // the Porch (v5): dark, the bot speaks first, one composer, no tab bar
       await expect(page.locator('#pane-home')).toHaveCSS('background-color', 'rgb(10, 10, 10)');
-      await expect(page.locator('#greetingText .pb-time')).toHaveText(/^(good (morning|afternoon|evening)|hello)$/);
-      await expect(page.locator('#greetingText')).toContainText("Say anything. Messy is fine. I'll hold onto it.");
+      await expect(page.locator('#greetingText .pb-time')).toHaveText(/^(Morning|Afternoon|Evening|Hey)(, [^.]+)?\.$/);
+      await expect(page.locator('#greetingText .pb-sub')).toContainText("I'll sort it");
       await expect(page.locator('#composerInput')).toHaveAttribute('placeholder', 'Type or hold to talk');
       await expect(page.locator('#homeMic')).toBeVisible();
       await expect(page.locator('#tabbar')).toBeHidden();
-      // the zero-state hero: glyph, the welcome question, centered
+      // the zero-state hero: glyph, "Morning, {name}.", the welcome question, left-aligned
       await expect(page.locator('#greetingText .pb-glyph')).toBeVisible();
-      await expect(page.locator('#greetingText .pb-hello')).toHaveText('Where are you right now?');
-      await expect(page.locator('#greetingText')).toHaveCSS('text-align', 'center');
+      await expect(page.locator('#greetingText .pb-hello')).toHaveText(/^(What's on today\?|What's on your mind\?|Anything still up there\?)$/);
+      await expect(page.locator('#greetingText')).toHaveCSS('text-align', 'left');
       await expect(page.locator('.nx-toast', { hasText: 'Open Horizon' })).toHaveCount(0); // the morning banner is gone
     },
   },
@@ -279,7 +279,7 @@ test('critical path + storage', async ({ context, page }, info) => {
     await expect(page.locator('#nxSplash')).toHaveCSS('background-color', INK);
     await pastSplash(page);
     await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
-    await expect(page.locator('#greetingText')).toContainText('Where are you right now?');
+    await expect(page.locator('#greetingText')).toContainText("I'll sort it");
   }, 'body');
 
   await step('"I\'m overwhelmed" → Stuck Rescue', async () => {

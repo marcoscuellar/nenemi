@@ -2139,13 +2139,13 @@
   #pane-home .porch-thread { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
     width: 100%; max-width: 680px; margin: 0 auto; padding: 16px 20px 18px; -webkit-overflow-scrolling: touch; }
   /* zero state: a centered hero in the upper-middle third; it fades out on the first message */
-  #pane-home .pb-hero { margin: auto 0 !important; padding: 0 8px 14vh; text-align: center; transition: opacity .25s ease, transform .25s ease; }
+  #pane-home .pb-hero { margin: auto 0 !important; padding: 0 4px 14vh; text-align: left; transition: opacity .25s ease, transform .25s ease; }
   #pane-home .pb-hero.leaving { opacity: 0; transform: translateY(-10px); }
   #pane-home .pb-hero[hidden] { display: none; }
-  #pane-home .pb-glyph { display: block; height: 36px; width: auto; margin: 0 auto 18px; fill: #FFFFFF; }
-  #pane-home .pb-hero .pb-time { margin: 0 0 8px; font: 400 14px/1.3 var(--font-body); color: #71717A; }
+  #pane-home .pb-glyph { display: block; height: 36px; width: auto; margin: 0 0 18px; fill: #FFFFFF; }
+  #pane-home .pb-hero .pb-time { margin: 0 0 8px; font: 500 15px/1.3 var(--font-body); color: #A1A1AA; }
   #pane-home .pb-hero .pb-hello { margin: 0; font: 700 28px/1.2 'Archivo', system-ui, sans-serif; letter-spacing: -0.01em; color: #FFFFFF; text-transform: none; }
-  #pane-home .pb-hero .pb-sub { margin: 8px auto 0; max-width: 34ch; font: 400 16px/1.45 var(--font-body); color: #8E8E93; }
+  #pane-home .pb-hero .pb-sub { margin: 8px 0 0; max-width: 34ch; font: 400 16px/1.45 var(--font-body); color: #8E8E93; }
   #pane-home .pb-hero .pb-sub + .pb-sub { margin-top: 4px; }
   /* the thread reads top to bottom from the upper part of the screen, and scrolls naturally as it grows */
   #pane-home .porch-thread.has-thread { padding-top: 8px; }
@@ -2694,7 +2694,7 @@
       </header>
 
       <div class="porch-thread" id="porchThread">
-        <div class="pb-hero" id="greetingText"><svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">good morning</p><h1 class="pb-hello">Where are you right now?</h1><p class="pb-sub">Say anything. Messy is fine. I'll hold onto it.</p></div>
+        <div class="pb-hero" id="greetingText"><svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">Morning.</p><h1 class="pb-hello">What's on today?</h1><p class="pb-sub">Dump everything in your head. I'll sort it into your day.</p></div>
         <div class="porch-moves" id="porchMoves" hidden></div>
         <div class="porch-log" id="chatLog" aria-live="polite"></div>
       </div>
@@ -3269,6 +3269,13 @@
   // an app left open from afternoon into evening says so when they come back to it (unless a conversation is on screen)
   document.addEventListener('visibilitychange', () => { if (!document.hidden && !document.querySelector('.app.talking')) renderGreeting(); });
   function renderGreetingSoon() { clearTimeout(greetTimer); greetTimer = setTimeout(() => { if (!document.getElementById('greetingText').dataset.named && userFirstName()) { document.getElementById('greetingText').dataset.named = '1'; renderGreeting(); } }, 50); }
+  // the Porch's welcome, by time of day: mornings build the day, later it just catches what's up there
+  const PORCH_ASK = {
+    Morning: ["What's on today?", "Dump everything in your head. I'll sort it into your day."],
+    Afternoon: ["What's on your mind?", "Dump it here. I'll sort it out."],
+    Evening: ["Anything still up there?", "Dump it here. I'll sort it out."],
+    Hey: ["What's on your mind?", "Dump it here. I'll sort it out."],
+  };
   function renderGreeting() {
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
@@ -3285,7 +3292,7 @@
     };
     // the Porch: the same welcome every open (Marcos's copy, Sep 2026)
     const word = /^(Morning|Afternoon|Evening)$/.test(timeWord) ? timeWord : 'Hey';
-    el.innerHTML = `<svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">${word === 'Hey' ? 'hello' : 'good ' + word.toLowerCase()}</p><h1 class="pb-hello">Where are you right now?</h1><p class="pb-sub">Say anything. Messy is fine. I'll hold onto it.</p>`;
+    el.innerHTML = `<svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">${escapeHtml(word + (name ? ', ' + name.split(' ')[0] : '') + '.')}</p><h1 class="pb-hello">${escapeHtml(PORCH_ASK[word][0])}</h1><p class="pb-sub">${escapeHtml(PORCH_ASK[word][1])}</p>`;
     const pt = document.getElementById('porchTime'); if (pt) pt.textContent = word === 'Hey' ? '' : word;
   }
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
