@@ -483,3 +483,46 @@ test('Porch router: day, project, mixed dump', async ({ context, page }, info) =
   record(info, { view: 'Porch router: day, project, mixed', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
   expect(errors, 'console errors').toEqual([]);
 });
+
+// ---------- 4. onboarding v7: three chapters that ask a little and give something back, then the first room ----------
+test('Onboarding walk: chapters, give-back cards, first room, promise', async ({ context, page }, info) => {
+  await serve(context);
+  const errors = watchConsole(page);
+  await page.goto(ORIGIN + '/?welcome', { waitUntil: 'domcontentloaded' });
+  await pastSplash(page);
+  const tap = (sel: string) => page.locator(sel).filter({ visible: true }).first().click();
+  await tap('#ob-hello .btn');
+  await page.fill('#obName', 'Maya'); await tap('#ob-name .btn');
+  await expect(page.locator('#ob-plan .ob-q-eyebrow')).toHaveText('Good to meet you, Maya.');
+  // the why sits right under the question, above the answers
+  const title = (await page.locator('#ob-plan .ob-q-title').boundingBox())!, why = (await page.locator('#ob-plan .why-tag').boundingBox())!, first = (await page.locator('#ob-plan .ob-pill').first().boundingBox())!;
+  expect(why.y).toBeGreaterThan(title.y); expect(first.y).toBeGreaterThan(why.y);
+  await tap('#ob-plan .ob-pill[data-v="morning"]');
+  await tap('#ob-long .ob-pill[data-v="pick"]');
+  await expect(page.locator('#ob-info-day')).toBeVisible(); await tap('#ob-info-day .btn');
+  await tap('#ob-slips .ob-pill[data-v="where"]');
+  await tap('#ob-tools .ob-pill[data-v="notes"]'); await tap('#ob-tools .btn');
+  await expect(page.locator('#ob-info-rooms')).toBeVisible(); await tap('#ob-info-rooms .btn');
+  await tap('#ob-trips .ob-pill[data-v="start"]');
+  await tap('#ob-energy .ob-pill[data-v="ask"]');
+  await expect(page.locator('#ob-info-shift')).toBeVisible(); await tap('#ob-info-shift .btn');
+  await expect(page.locator('#ob-reality-check')).toBeVisible(); await tap('#ob-reality-check .btn');
+  await page.fill('#obThought', 'finish the pitch deck\nemail dana\nbook the dentist'); await tap('#obDumpBtn');
+  // the confirm card is the demo: their words, the room, the Stuck line; the top two start on Today
+  await expect(page.locator('#obCheckBody .ob-demo-you')).toContainText('finish the pitch deck');
+  await expect(page.locator('#obCheckBody .ob-today.on')).toHaveCount(2);
+  await expect(page.locator('#obCheckBody .ob-stuck-line')).toContainText('Stuck? One small move');
+  await tap('#obCheckBody .btn');
+  await expect(page.locator('#obLearnList .ob-lb')).toHaveCount(4);
+  await expect(page.locator('#obLearnList .ob-lb b').first()).toHaveText('Starting is the hard part.');
+  await tap('#ob-learn .btn'); await tap('#ob-definition .btn');
+  await expect(page.locator('#ob-commit .ob-promise-h')).toHaveText('A promise to each other.');
+  const hb = (await page.locator('#obHoldBtn').boundingBox())!;
+  await page.mouse.move(hb.x + hb.width / 2, hb.y + hb.height / 2); await page.mouse.down(); await page.waitForTimeout(3300); await page.mouse.up();
+  await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/, { timeout: 5_000 }); // no billing here: straight to the Porch
+  expect(await page.evaluate('dayList(today).map(e => e.name)')).toEqual(['Finish the pitch deck', 'Email dana']);
+  expect(await page.evaluate('profile.planDay')).toBe('morning');
+  const ok = errors.length === 0;
+  record(info, { view: 'Onboarding walk (v7)', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
+  expect(errors, 'console errors').toEqual([]);
+});

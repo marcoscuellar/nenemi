@@ -133,18 +133,20 @@ Each item:
 - start / end: 24-hour "HH:MM" only when they gave a time for that item ("at 3" in the afternoon context means "15:00"; "by 5" is a deadline, not a start, so leave start null). Use local_time to read "in an hour" or "after lunch" only when it's clear. Otherwise null.
 - room_id: only ids from the rooms list, else null.
 
+today_cap: when set, it's how many things this person can hold on Today. If more do-now items come up than fit, the most pressing ones go to "today" and the rest become "parked".
+
 reply: what NENEMI says back, calm, short, specific, no exclamation marks, no therapy language, no praise, never a question, under 40 words. For "day": "Got it. Slotted into Today." For "project": "Grouped these N steps into ROOM." (N and ROOM real). For "mixed": one tight summary of where things went, e.g. "Two things on Today, the app idea is parked in Side projects. The rest I heard, not filing it." For "stuck" and "go": one short line.`;
 
 function hhmm(v) { const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(String(v || '').trim()); return m ? `${m[1].padStart(2, '0')}:${m[2]}` : null; }
 
-async function porchRoute(client, { text, rooms, loose, localTime, weekday }) {
+async function porchRoute(client, { text, rooms, loose, localTime, weekday, todayCap }) {
   const response = await client.messages.parse({
     model: MODEL,
     max_tokens: 4096,
     thinking: { type: 'adaptive' },
     output_config: { effort: 'low', format: zodOutputFormat(PorchPlan) },
     system: [{ type: 'text', text: PORCH_SYSTEM, cache_control: { type: 'ephemeral' } }],
-    messages: [{ role: 'user', content: JSON.stringify({ rooms, loose_thoughts: loose, local_time: localTime, weekday, they_said: text }) }],
+    messages: [{ role: 'user', content: JSON.stringify({ rooms, loose_thoughts: loose, local_time: localTime, weekday, today_cap: todayCap, they_said: text }) }],
   });
   if (response.stop_reason === 'refusal') return { kind: 'mixed', go_to: null, go_room_id: null, items: [], new_room: null, reply: 'Heard. Holding that one.' };
   const d = response.parsed_output;
@@ -166,6 +168,7 @@ async function porchRoute(client, { text, rooms, loose, localTime, weekday }) {
     if (dest !== 'room' && dest !== 'parked') room_id = null;
     return { text: t, dest, start: dest === 'today' ? start : null, end: dest === 'today' && end && end > start ? end : null, room_id };
   }).filter(it => it.text && (it.dest === 'held' || isGrounded(it.text, vocab)));
+  if (todayCap) { let n = 0; d.items.forEach(it => { if (it.dest === 'today' && ++n > todayCap) it.dest = 'parked'; }); } // their own limit, held even if the model forgets it
   if (d.new_room) {
     if (!d.items.some(it => it.dest === 'room' && !it.room_id)) d.new_room = null;
     else d.new_room = { name: trim(d.new_room.name, 60) || trim(text.split(/\s+/).slice(0, 4).join(' '), 60), one_liner: trim(d.new_room.one_liner, 160) };
@@ -215,7 +218,7 @@ export default async function handler(req, res) {
   const client = new Anthropic({ apiKey: API_KEY });
   if (mode === 'porch') {
     try {
-      const d = await porchRoute(client, { text, rooms, loose, localTime: hhmm(body.local_time), weekday: trim(String(body.weekday || ''), 12) || null });
+      const d = await porchRoute(client, { text, rooms, loose, localTime: hhmm(body.local_time), todayCap: [3, 5].includes(Number(body.today_cap)) ? Number(body.today_cap) : null, weekday: trim(String(body.weekday || ''), 12) || null });
       if (!d) return res.status(502).json({ error: 'could not read the model reply' });
       return res.status(200).json(d);
     } catch (err) {

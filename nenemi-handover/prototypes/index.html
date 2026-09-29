@@ -1555,6 +1555,49 @@
   #onboard .name-say { font-family:"Archivo Black","Arial Black",sans-serif; font-weight:900; letter-spacing:-.03em; line-height:1; font-size:clamp(2.5rem,6vw,3.5rem); color:#f4f1ea; margin:0 0 22px; }
   #onboard .name-body { color:#c2c6c8; font-size:.95rem; line-height:1.6; max-width:440px; margin:0 auto 36px; }
   #onboard .name-cta { width:auto; margin:0 auto; padding:14px 28px; border-radius:99px; background:#fff; color:#111312; border-color:#fff; }
+  /* ===== Onboarding v7 (Sep 2026): three chapters that ask a little and give something back ===== */
+  #onboard .card.active { animation:obCardIn .45s cubic-bezier(.16,1,.3,1) both; }
+  #onboard { transition: background-color .45s cubic-bezier(.16,1,.3,1), color .45s cubic-bezier(.16,1,.3,1); }
+  /* question cards: the question, then why right under it, then the answers */
+  #onboard .ob-q-eyebrow { font-size:13px; color:#71717A; margin:0 0 6px; }
+  #onboard .ob-question-card .ob-q-title { margin:0 0 6px; }
+  #onboard .ob-question-card .why-tag { font-size:13px; color:#71717A; line-height:1.45; margin:0 0 20px; }
+  #onboard .ob-question-card .ob-q-sub { margin:-12px 0 16px; }
+  /* the give-back cards: a picture from mynenemi.com and one thing worth knowing */
+  #onboard .ob-info-k { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#71717A; margin:0 0 14px; }
+  #onboard .ob-info-shot { border:1px solid #E5E7EB; border-radius:12px; overflow:hidden; background:#F5F6F5; height:200px; margin:0 0 20px; }
+  #onboard .ob-info-shot img { display:block; width:100%; height:100%; object-fit:cover; object-position:top center; }
+  #onboard .ob-info-card h2 { font-family:'Archivo', system-ui, sans-serif; font-size:22px; line-height:1.25; letter-spacing:-.015em; margin:0 0 10px; }
+  #onboard .ob-info-card p { font-size:14px; color:#6B7280; line-height:1.55; margin:0 0 6px; }
+  #onboard .ob-info-card .ob-info-so { color:#111312; font-weight:600; margin:12px 0 0; }
+  /* the dump: three pills for when typing is too much */
+  #onboard .ob-presets { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 4px; }
+  #onboard .ob-preset { border:1px solid #E5E7EB; background:#fff; color:#111312; border-radius:99px; padding:9px 14px; font-family:inherit; font-size:13px; font-weight:500; line-height:1.2; cursor:pointer; }
+  #onboard .ob-preset:hover { border-color:#111312; }
+  /* the confirm card doubles as the demo: a tiny Porch, the room, the Stuck line */
+  #onboard .ob-demo { display:flex; flex-direction:column; gap:8px; margin:14px 0 4px; }
+  #onboard .ob-demo-you { align-self:flex-end; max-width:86%; background:#111312; color:#fff; border-radius:16px 16px 4px 16px; padding:10px 14px; font-size:13px; line-height:1.45; white-space:pre-wrap; overflow-wrap:anywhere; }
+  #onboard .ob-demo-bot { align-self:flex-start; max-width:86%; background:#F3F4F6; color:#111312; border-radius:16px 16px 16px 4px; padding:10px 14px; font-size:13px; line-height:1.45; }
+  #onboard .ob-sum li.ob-sum-item { padding-left:0; align-items:center; }
+  #onboard .ob-sum li.ob-sum-item::before { display:none; }
+  #onboard .ob-sum-item > span { flex:1 1 auto; }
+  #onboard .ob-today { flex:none; border:1px solid #E5E7EB; background:#fff; color:#9CA3AF; border-radius:99px; padding:3px 9px; font-family:inherit; font-size:11px; font-weight:600; line-height:1.3; cursor:pointer; }
+  #onboard .ob-today.on { background:#111312; border-color:#111312; color:#fff; }
+  #onboard .ob-stuck-line { font-size:13px; color:#6B7280; margin:14px 0 4px; }
+  #onboard .ob-stuck-line b { color:#111312; font-weight:600; }
+  /* 19: stacked type, a bold white lead-in and a quieter line under it */
+  #onboard .ob-learn { display:block; margin:18px 0 22px; }
+  #onboard .ob-lb { padding:16px 0; border-bottom:1px solid #2a2d2c; opacity:0; animation:obLineIn .5s cubic-bezier(.16,1,.3,1) forwards; }
+  #onboard .ob-lb:first-child { border-top:1px solid #2a2d2c; }
+  #onboard .ob-lb:nth-child(2) { animation-delay:.12s; } #onboard .ob-lb:nth-child(3) { animation-delay:.24s; } #onboard .ob-lb:nth-child(4) { animation-delay:.36s; }
+  #onboard .ob-lb b { display:block; font-family:'Archivo', system-ui, sans-serif; font-size:17px; font-weight:700; color:#FFFFFF; letter-spacing:-.01em; }
+  #onboard .ob-lb span { display:block; font-size:14px; color:#A1A1AA; line-height:1.5; margin-top:4px; }
+  @keyframes obLineIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) { #onboard .ob-lb { animation:none; opacity:1; } }
+  /* the promise */
+  #onboard .ob-promise-k { font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#A1A1AA; margin:0 0 12px; }
+  #onboard .ob-promise-h { font-family:'Archivo', system-ui, sans-serif; font-size:26px; line-height:1.2; letter-spacing:-.015em; margin:0 0 14px; }
+  #onboard .ob-promise-p { font-size:15px; line-height:1.6; margin:0 0 10px; }
   /* the paywall */
   #onboard .ob-plans { display:grid; gap:10px; margin-top:16px; }
   #onboard .plan { display:flex; align-items:center; gap:12px; width:100%; text-align:left; border:1px solid var(--ob-line); border-radius:12px; background:#FAFAFA; padding:14px 16px; cursor:pointer; color:var(--ob-ink); }
@@ -2369,8 +2412,8 @@
   <!-- 1 -->
   <section class="card" id="ob-hello" role="dialog" aria-labelledby="obTitle">
     <h1 id="obTitle">Hey, I'm NÈNÈMI.</h1>
-    <p>I help you keep track of what's going on, figure out what matters today, and pick things back up when you lose the thread.</p>
-    <button class="btn" type="button" onclick="advanceTo('ob-reality-check')">Continue</button>
+    <p>A quiet place that catches what's in your head when it gets full.</p>
+    <button class="btn" type="button" onclick="advanceTo('ob-name')">Continue</button>
     <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
   </section>
 
@@ -2385,7 +2428,7 @@
 
   <!-- 2 -->
   <section class="card" id="ob-name">
-    <h2>What should I call you?</h2>
+    <h2>To start off, what should I call you?</h2>
     <p>First name or nickname is perfect.</p>
     <form onsubmit="event.preventDefault(); obNameNext();">
       <input class="ob-input" id="obName" type="text" maxlength="40" autocomplete="given-name" aria-label="Your first name or nickname">
@@ -2396,21 +2439,46 @@
   <!-- 3–12 are built from OB_QS -->
   <div id="obQs" style="display:contents"></div>
 
-  <!-- 13 -->
-  <section class="card" id="ob-moment">
-    <p class="ob-quiet">You don't need to answer this right now, but…</p>
-    <h2>Are you planning for the day you actually have, or the day you wish you were having?</h2>
-    <button class="btn" type="button" onclick="advanceTo('ob-dump')">Continue</button>
+  <!-- give-back cards: after each chapter's questions, one picture from mynenemi.com and one thing worth knowing -->
+  <section class="card ob-info-card" id="ob-info-day">
+    <p class="ob-info-k">01 · Your day</p>
+    <div class="ob-info-shot"><img src="/photos/landing/app-day.png" alt="" loading="lazy"></div>
+    <h2>Time can feel slippery with ADHD.</h2>
+    <p>“Later” and “now” blur together, so the day gets away from you.</p>
+    <p>It's called time blindness, and it's common.</p>
+    <p class="ob-info-so">So NÈNÈMI keeps Today short. The rest waits safely.</p>
+    <button class="btn" type="button" onclick="obGoNext()">Continue</button>
+  </section>
+  <section class="card ob-info-card" id="ob-info-rooms">
+    <p class="ob-info-k">02 · Your rooms</p>
+    <div class="ob-info-shot"><img src="/photos/landing/app-rooms.png" alt="" loading="lazy"></div>
+    <h2>ADHD brains hold less in working memory at once.</h2>
+    <p>Every switch drops a little context. It's wiring, not a character flaw.</p>
+    <p class="ob-info-so">So each room holds it for you. Where you left off, and one small next move.</p>
+    <button class="btn" type="button" onclick="obGoNext()">Continue</button>
+  </section>
+  <section class="card ob-info-card" id="ob-info-shift">
+    <p class="ob-info-k">03 · When the day changes</p>
+    <div class="ob-info-shot"><img src="/photos/landing/app-stuck.png" alt="" loading="lazy"></div>
+    <h2>A plan can make sense at 9 AM and feel impossible by 1 PM.</h2>
+    <p>Starting is its own hurdle with ADHD. It's not laziness.</p>
+    <p class="ob-info-so">So when you freeze, NÈNÈMI shrinks the first step until it feels doable.</p>
+    <button class="btn" type="button" onclick="obGoNext()">Continue</button>
   </section>
 
   <!-- 14 -->
   <section class="card" id="ob-dump">
-    <h2>Okay. What's in your head right now?</h2>
-    <p>Doesn't have to be organized. Just get it out.</p>
+    <h2>What's one thing taking up space in your head?</h2>
+    <p>Work, a move, a side gig, life admin. Messy is fine. NÈNÈMI names the room and finds the first step.</p>
     <form onsubmit="event.preventDefault(); obDumpNext();">
       <div class="ob-field">
         <textarea class="ob-input" id="obThought" maxlength="1500" aria-label="What's in your head right now"></textarea>
         <button type="button" class="ob-mic mic-btn" id="obMic" title="Say it instead" aria-label="Say it instead"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="ob-presets" role="group" aria-label="Or pick one">
+        <button type="button" class="ob-preset" onclick="obPreset('fires')">Clear today's fires</button>
+        <button type="button" class="ob-preset" onclick="obPreset('avoid')">A project I've been avoiding</button>
+        <button type="button" class="ob-preset" onclick="obPreset('clean')">Start with a clean slate</button>
       </div>
       <button class="btn" id="obDumpBtn" type="submit">Continue</button>
     </form>
@@ -2418,66 +2486,14 @@
 
   <!-- 15 -->
   <section class="card" id="ob-check">
-    <h2>Did I get that right?</h2>
+    <h2>Here's your first room.</h2>
     <div id="obCheckBody"></div>
   </section>
 
-  <!-- 16 -->
-  <section class="card" id="ob-start">
-    <p class="ob-quiet" id="obStartLine"></p>
-    <h2>Want somewhere easy to start?</h2>
-    <div class="ob-stack" style="margin-top:16px">
-      <button type="button" class="pill" onclick="obStartPick(this, true)">Yeah</button>
-      <button type="button" class="pill" onclick="obStartPick(this, false)">Not right now</button>
-    </div>
-  </section>
-
-  <!-- 17 -->
-  <section class="card" id="ob-small">
-    <div class="ob-k">Your next move</div>
-    <div class="ob-move" id="obMove"></div>
-    <h2>Does that feel small enough?</h2>
-    <div class="ob-two" style="margin-top:16px" id="obSmallPills">
-      <button type="button" class="pill" onclick="obSmallYes(this)">Yep</button>
-      <button type="button" class="pill" onclick="obSmaller(this)">Smaller</button>
-    </div>
-    <form id="obSmallForm" hidden onsubmit="event.preventDefault(); obSmallSave();" style="margin-top:16px">
-      <input class="ob-input" id="obSmallIn" maxlength="160" placeholder="What's the smallest first piece?" aria-label="What's the smallest first piece?">
-      <button class="btn" type="submit">That's it</button>
-    </form>
-    <div class="ob-help" id="obSmallNote"></div>
-  </section>
-
-  <!-- 18 -->
-  <section class="card" id="ob-today">
-    <h2>What actually feels realistic today?</h2>
-    <p>The rest stays safe in your room.</p>
-    <div class="ob-stack" id="obTodayList"></div>
-    <button class="btn" type="button" onclick="obTodayNext()">Continue</button>
-  </section>
-
-  <!-- 18b: grounding hold -->
-  <section class="card" id="ob-commit">
-    <h2>Claim your day.</h2>
-    <p class="ob-sub">No pressure to fix everything today. Just these few things. When you're ready, hold to set them in place.</p>
-    <div class="ob-commit-card">
-      <div class="ob-commit-badge">Chosen for today</div>
-      <div id="obCommitList" class="ob-commit-items"></div>
-      <p class="ob-commit-rest-note">Everything else is safely resting in your rooms.</p>
-    </div>
-    <div class="ob-hold-container">
-      <button type="button" class="ob-hold-btn" id="obHoldBtn" aria-label="Hold for 3 seconds to commit">
-        <span class="ob-hold-fill" id="obHoldFill"></span>
-        <span class="ob-hold-label" id="obHoldLabel">Hold to set your day (3s)</span>
-      </button>
-      <span class="ob-hold-sub" id="obHoldSub">Release anytime to reset</span>
-    </div>
-  </section>
-
-  <!-- 19 -->
+  <!-- 19: what their answers changed, as stacked type -->
   <section class="card" id="ob-learn">
     <h2>Here's what I'm learning about you.</h2>
-    <ul class="ob-learn" id="obLearnList"></ul>
+    <div class="ob-learn" id="obLearnList"></div>
     <button class="btn" type="button" onclick="advanceTo('ob-definition')">Continue</button>
   </section>
 
@@ -2491,14 +2507,19 @@
     <button type="button" class="btn name-cta" onclick="obGoNext()">Let's walk →</button>
   </section>
 
-  <!-- 20: never stored -->
-  <section class="card" id="ob-better">
-    <p class="ob-quiet">You don't need to answer this now, but…</p>
-    <h2>What would a better day actually feel like?</h2>
-    <form onsubmit="event.preventDefault(); obAfterQuestions();">
-      <textarea class="ob-input" id="obBetter" maxlength="600" aria-label="What would a better day actually feel like" style="min-height:110px;padding-right:12px;margin-top:14px"></textarea>
-      <button class="btn" type="submit">Continue</button>
-    </form>
+  <!-- the promise: the 3-second hold, right before the paywall -->
+  <section class="card" id="ob-commit">
+    <p class="ob-promise-k">A quiet commitment</p>
+    <h2 class="ob-promise-h">A promise to each other.</h2>
+    <p class="ob-promise-p">NÈNÈMI stays out of your way, holds your context when life gets loud, and never shames you for a derailed plan.</p>
+    <p class="ob-promise-p">You show up, keep it realistic, and take the first step when you're ready.</p>
+    <div class="ob-hold-container">
+      <button type="button" class="ob-hold-btn" id="obHoldBtn" aria-label="Hold for 3 seconds to commit">
+        <span class="ob-hold-fill" id="obHoldFill"></span>
+        <span class="ob-hold-label" id="obHoldLabel">Hold to commit (3s)</span>
+      </button>
+      <span class="ob-hold-sub" id="obHoldSub">Press and hold to step in.</span>
+    </div>
   </section>
 
   <!-- paywall -->
@@ -4299,6 +4320,7 @@
         weekday: now.toLocaleDateString('en-US', { weekday: 'long' }),
         rooms: rooms.filter(r => !r.archived).map(r => ({ id: r.id, name: r.name, one_liner: r.one_liner, brief: r.brief, loops: r.loops.filter(l => !l.resolved).map(l => l.text), recent: r.log.slice(0, 4).map(e => e.text) })),
         loose: loose.map(t => t.text),
+        today_cap: pfDayCap() || null, // from onboarding: how much fits on Today before it shuts them down
       };
       const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
       if (r.ok) d = await r.json();
@@ -4739,20 +4761,24 @@
   function pfReturnFirst() { return pf('useful') === 'resume' || pfTool('visible'); }
   function pfLeadDoor() { const s = pf('showUp'); if (s === 'talk') return 'full'; return { start: 'start', switch: 'broke', remember: 'broke', matters: 'full', many: 'tired' }[pf('tripsUp')] || null; }
   // what screen 19 says, from the same answers the app reads
-  function learnLines(p) {
+  function learnBlocks(p) {
     const out = [];
-    const u = { track: "I'll keep all your rooms in view.", next: "I'll put your next move where you'll see it first.", resume: "I'll open with where you left off.", lighter: "I'll keep your day lighter." }[p.useful];
-    const s = { structure: "I'll keep things structured.", gentle: "I'll keep it gentle.", push: "I'll give you a little push.", talk: "When you're stuck, I'll start by listening.", context: "I'll help you remember the context." }[p.showUp];
-    const t = { start: "When starting is hard, I'll go smaller first.", switch: "I'll give you more time before a switch.", remember: "I'll keep your trail visible in each room.", matters: "I'll point to one place to start.", many: "When it's too much, I'll help shrink the day." }[p.tripsUp];
-    const l = ['ignore', 'pick', 'urgent', 'stop'].includes(p.longList) ? "I'll show a few things at a time. The rest waits safely in rooms." : null;
-    const tm = p.time && p.time !== 'normal' ? "I'll make time easier to see." : null;
-    const sl = ['notes', 'where', 'gone'].includes(p.slips) ? "I'll give you context when things come back." : p.slips === 'reminded' ? "I'll bring resting things back a little sooner." : null;
-    const e = { little: "When energy drops, I'll lighten the day a little.", track: "When energy drops, I'll keep your plan steady.", ask: "I'll ask before changing your plan." }[p.energy];
-    const w = p.why === 'tell' ? "I'll tell you the why." : p.why === 'just' ? "I'll skip the explanations." : null;
-    const v = p.words === 'yes' ? "I'll use words like ADHD when they help." : ['no', 'figuring'].includes(p.words) ? "I'll keep it in plain words." : null;
-    [u, s, t, l, tm, sl, e, w, v].forEach(x => { if (x && out.length < 5) out.push(x); });
-    if (!out.length) out.push("I'll keep things the way they are and learn as we go.");
-    if (p.name) out.unshift(`Good to meet you, ${p.name}.`);
+    const cap = p.longList === 'fine' ? 0 : p.longList === 'urgent' ? 5 : p.longList ? 3 : 0;
+    const t = { start: ['Starting is the hard part.', 'When you freeze, the first step gets smaller.'],
+      switch: ['Switching costs you.', 'You get a little more time before each switch.'],
+      remember: ['You lose the thread.', 'Every room opens with where you left off.'],
+      matters: ['Picking what matters is hard.', "There's always one clear place to start."],
+      many: ['Too much at once shuts you down.', 'One thing at a time. The rest waits.'] }[p.tripsUp];
+    const l = cap ? ['Long lists shut you down.', `Today holds ${cap} things. The rest waits in rooms.`] : null;
+    const sl = ['notes', 'where', 'gone'].includes(p.slips) && p.tripsUp !== 'remember' ? ['You lose the thread.', 'Every room opens with where you left off.']
+      : p.slips === 'reminded' ? ['Things come back at the last second.', 'Resting rooms come back a little sooner.'] : null;
+    const e = { please: ['Low days happen.', 'Your day gets lighter when your energy drops.'], little: ['Low days happen.', 'Your day gets a little lighter when your energy drops.'],
+      track: ['You like to stay on track.', 'Your plan holds steady, even on low days.'], ask: ['Low days happen.', 'Your plan asks before it changes.'] }[p.energy];
+    const pd = { morning: ['You plan in the morning.', "Mornings start with what's on today."], flow: ['You go as things come up.', 'Nothing gets locked in. Things slot in as they come.'],
+      calendar: ['Your calendar runs the day.', 'My day works right next to the calendar you already use.'], ignored: ["Plans don't survive the day.", "When the day changes, there's always a way back in."],
+      none: ["You don't really plan.", "That's fine. Dump it, and NÈNÈMI sorts it."] }[p.planDay];
+    [t, l, sl, e, pd].forEach(x => { if (x && out.length < 4) out.push({ lead: x[0], line: x[1] }); });
+    if (!out.length) out.push({ lead: 'Still learning.', line: 'NÈNÈMI keeps things simple and learns as you go.' });
     return out;
   }
   // the parts of the app that change shape from the answers, applied wherever they show
@@ -5927,56 +5953,47 @@
   //       → a moment → the first room from their own words → what I'm learning → an unhurried plan choice → My day.
   //       No account needed; one is offered only when a paid plan is chosen. =====
   const OB_FLOW = [
-    ['ob-hello', 5, 'Hello'], ['ob-reality-check', 7, 'Hello'], ['ob-name', 10, 'Hello'],
-    ['ob-useful', 15, 'How you work'], ['ob-trips', 20, 'How you work'], ['ob-slips', 25, 'How you work'], ['ob-tools', 30, 'How you work'],
-    ['ob-showup', 35, 'How you work'], ['ob-long', 40, 'How you work'], ['ob-time', 45, 'How you work'], ['ob-energy', 50, 'How you work'],
-    ['ob-why', 55, 'How you work'], ['ob-words', 60, 'How you work'],
-    ['ob-moment', 65, 'A moment'],
-    ['ob-dump', 70, 'Your first room'], ['ob-check', 75, 'Your first room'], ['ob-start', 80, 'Your first room'], ['ob-small', 84, 'Your first room'], ['ob-today', 88, 'Your first room'], ['ob-commit', 90, 'Your first room'],
-    ['ob-learn', 92, "What I'm learning"], ['ob-definition', 94, "What I'm learning"], ['ob-better', 96, "What I'm learning"],
+    ['ob-hello', 4, 'Hello'], ['ob-name', 8, 'Hello'],
+    ['ob-plan', 14, 'Your day'], ['ob-long', 20, 'Your day'], ['ob-info-day', 26, 'Your day'],
+    ['ob-slips', 32, 'Your rooms'], ['ob-tools', 38, 'Your rooms'], ['ob-info-rooms', 44, 'Your rooms'],
+    ['ob-trips', 50, 'When the day changes'], ['ob-energy', 56, 'When the day changes'], ['ob-info-shift', 62, 'When the day changes'],
+    ['ob-reality-check', 68, 'Your first room'], ['ob-dump', 74, 'Your first room'], ['ob-check', 80, 'Your first room'],
+    ['ob-learn', 86, "What I'm learning"], ['ob-definition', 91, "What I'm learning"], ['ob-commit', 96, 'A promise'],
     ['ob-pay', 100, 'Keep it with you'], ['ob-acct', 100, 'Keep it with you'], ['ob-code', 100, 'Keep it with you'], ['ob-acctname', 100, 'Keep it with you'],
   ];
-  // three acts: I opens dark (1, 1b), II is the light workspace (2–18), III returns dark (18b, 19, 19b, 20)
-  const OB_DARK = new Set(['ob-hello', 'ob-reality-check', 'ob-commit', 'ob-learn', 'ob-definition', 'ob-better']);
+  // the dark beats: "Yeah. Same." before the dump, then what I'm learning, the name and the promise
+  const OB_DARK = new Set(['ob-reality-check', 'ob-learn', 'ob-definition', 'ob-commit']);
   const OB_META = Object.fromEntries(OB_FLOW.map(([id, p, c]) => [id, { p, c }]));
-  // 3–12, word for word. Values are short keys; pf() reads them back all over the app.
+  // three chapters, each a main question and a smaller follow-up. Values are short keys; pf() reads them back all over the app.
   const OB_QS = [
-    { id: 'ob-useful', key: 'useful', why: "Why NÈNÈMI asks: it decides what you see first when you open the app.", next: 'ob-trips', title: 'What would make NÈNÈMI most useful to you right now?',
-      opts: [['track', 'Keeping track of everything'], ['next', 'Knowing what to do next'], ['resume', 'Picking back up where I left off'], ['lighter', 'Making my day feel less overwhelming'], ['all', 'A little bit of all of that']] },
-    { id: 'ob-trips', key: 'tripsUp', why: "Why NÈNÈMI asks: it shapes what happens when you tap I'm stuck.", next: 'ob-slips', title: 'What usually trips you up first?',
-      opts: [['start', 'Getting started'], ['switch', 'Switching to something else'], ['remember', 'Remembering what I was doing'], ['matters', 'Figuring out what matters'], ['many', 'Too many things at once']] },
-    { id: 'ob-slips', key: 'slips', why: "Why NÈNÈMI asks: it sets how much of your trail each room keeps and shows.", next: 'ob-tools', title: 'When something slips your mind, what usually happens?',
-      opts: [['eventually', 'I remember eventually'], ['reminded', 'Something reminds me and I’m like “oh shit”'], ['notes', 'I piece it back together from notes/messages'], ['where', 'I remember the thing, but not where I left off'], ['gone', 'Sometimes it’s just gone']] },
-    { id: 'ob-tools', key: 'tools', why: "Why NÈNÈMI asks: it works alongside what you already use, not instead of it.", multi: true, next: 'ob-showup', title: 'What do you already use so things don’t disappear?', sub: 'Pick whatever applies.',
-      opts: [['notes', 'Notes everywhere'], ['calendar', 'Calendar'], ['alarms', 'Alarms/reminders'], ['text', 'Text myself'], ['visible', 'Leave things where I can see them'], ['someone', 'Ask someone to remind me'], ['routines', 'Routines'], ['hope', 'Honestly, I mostly hope I remember']] },
-    { id: 'ob-showup', key: 'showUp', why: "Why NÈNÈMI asks: it sets how NÈNÈMI talks to you and how hard it nudges.", next: 'ob-long', title: 'How can I best show up for you?',
-      opts: [['structure', 'Give me more structure'], ['gentle', 'Keep it gentle'], ['push', 'Give me a little push'], ['talk', 'Talk it through with me'], ['context', 'Help me remember the context'], ['depends', 'Depends on the day']] },
-    { id: 'ob-long', key: 'longList', why: "Why NÈNÈMI asks: it sets how much My day shows at once.", next: 'ob-time', title: 'When your list gets long, what happens?',
+    { id: 'ob-plan', key: 'planDay', eyebrow: true, why: "Why NÈNÈMI asks: it shapes how your day gets set up each morning.", next: 'ob-long', title: 'How do your days usually get planned?',
+      opts: [['morning', 'I plan in the morning'], ['flow', 'As things come up'], ['calendar', 'My calendar runs my day'], ['ignored', 'I plan, then the day ignores it'], ['none', 'Honestly, I don’t']] },
+    { id: 'ob-long', key: 'longList', why: "Why NÈNÈMI asks: it decides how much sits on Today at once.", next: 'ob-info-day', title: 'When your list gets long, what happens?',
       opts: [['fine', 'I’m fine with it'], ['ignore', 'I start ignoring it'], ['pick', 'I don’t know what to pick'], ['urgent', 'Everything suddenly feels urgent'], ['stop', 'I stop looking at it completely']] },
-    { id: 'ob-time', key: 'time', why: "Why NÈNÈMI asks: it decides how time shows up on your day.", next: 'ob-energy', title: 'How does time usually behave for you?',
-      opts: [['normal', 'Pretty normally'], ['longer', 'Things take longer than I think'], ['disappear', 'Hours disappear'], ['overfit', 'I think I can fit way more into a day than I actually can'], ['depends', 'Depends on the day']] },
-    { id: 'ob-energy', key: 'energy', why: "Why NÈNÈMI asks: it decides whether your day shrinks, holds steady, or asks first.", next: 'ob-why', title: 'Should your plan change when your energy changes?',
-      opts: [['please', 'Please'], ['little', 'A little'], ['track', 'Keep me on track anyway'], ['ask', 'Ask me first']] },
-    { id: 'ob-why', key: 'why', why: "Why NÈNÈMI asks: some people want the science, some just want the help.", next: 'ob-words', title: 'How much of the “why your brain does this” stuff do you want from me?',
-      opts: [['tell', 'Tell me the why'], ['little', 'A little context is nice'], ['just', 'Just help me deal with it'], ['depends', 'Depends on the moment']] },
-    { id: 'ob-words', key: 'words', why: "Why NÈNÈMI asks: no diagnosis needed. It only picks the words NÈNÈMI uses with you.", next: 'ob-moment', title: 'Do words like ADHD, autism, AuDHD, or neurodivergent feel useful to you?',
-      opts: [['yes', 'Yeah, use them'], ['sometimes', 'Sometimes, when it helps explain something'], ['no', 'Not really'], ['figuring', 'I’m still figuring that out']] },
+    { id: 'ob-slips', key: 'slips', why: "Why NÈNÈMI asks: it decides how much of your trail each room shows when you come back.", next: 'ob-tools', title: 'When you come back to something, how much is still there?',
+      opts: [['eventually', 'I remember eventually'], ['reminded', 'Something reminds me and I’m like “oh shit”'], ['notes', 'I piece it back together from notes/messages'], ['where', 'I remember the thing, but not where I left off'], ['gone', 'Sometimes it’s just gone']] },
+    { id: 'ob-tools', key: 'tools', why: "Why NÈNÈMI asks: it works alongside what you already use, not instead of it.", multi: true, next: 'ob-info-rooms', title: 'What do you do now so things don’t disappear?', sub: 'Pick whatever applies.',
+      opts: [['notes', 'Notes everywhere'], ['calendar', 'Calendar'], ['alarms', 'Alarms/reminders'], ['text', 'Text myself'], ['visible', 'Leave things where I can see them'], ['someone', 'Ask someone to remind me'], ['routines', 'Routines'], ['hope', 'Honestly, I mostly hope I remember']] },
+    { id: 'ob-trips', key: 'tripsUp', why: "Why NÈNÈMI asks: it decides which way back in shows up first when you're stuck.", next: 'ob-energy', title: 'What usually gets in the way first?',
+      opts: [['start', 'Getting started'], ['switch', 'Switching to something else'], ['remember', 'Remembering what I was doing'], ['matters', 'Figuring out what matters'], ['many', 'Too many things at once']] },
+    { id: 'ob-energy', key: 'energy', why: "Why NÈNÈMI asks: it decides whether your day shrinks, holds steady, or asks first.", next: 'ob-info-shift', title: 'On a low-energy day, what should your plan do?',
+      opts: [['please', 'Get lighter'], ['little', 'A little'], ['track', 'Keep me on track anyway'], ['ask', 'Ask me first']] },
   ];
   const OB_TICK = '<span class="tick"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m4 10 4 4 8-8"/></svg></span>';
   (function obBuildQs() {
     const host = document.getElementById('obQs'); if (!host) return;
     host.innerHTML = OB_QS.map(q => `<section class="card ob-question-card" id="${q.id}">
-      <h2 class="ob-q-title">${escapeHtml(q.title)}</h2>${q.sub ? `<p class="ob-q-sub">${escapeHtml(q.sub)}</p>` : '<div class="ob-q-gap"></div>'}
+      ${q.eyebrow ? '<p class="ob-q-eyebrow" data-hi></p>' : ''}<h2 class="ob-q-title">${escapeHtml(q.title)}</h2>
+      ${q.why ? `<p class="why-tag">${escapeHtml(q.why)}</p>` : ''}${q.sub ? `<p class="ob-q-sub">${escapeHtml(q.sub)}</p>` : ''}
       <div class="ob-stack ob-pill-list">${q.opts.map(([v, t]) => `<button type="button" class="pill ob-pill" data-v="${v}" onclick="obPick(this, '${q.key}')"><span>${escapeHtml(t)}</span>${q.multi ? OB_TICK : '<span class="arrow" aria-hidden="true">→</span>'}</button>`).join('')}</div>
       ${q.multi ? `<button class="btn" type="button" onclick="obMultiDone('${q.key}')">Continue</button>` : ''}
-      ${q.why ? `<p class="why-tag">${escapeHtml(q.why)}</p>` : ''}
     </section>`).join('');
   })();
   let obFlow = false; // true while our flow is driving, so the auth listener doesn't pull the card back
   let obPlan = 'annual';
   let obAns = {}, obHist = [], obCur = null, obPicking = false;
   let onboardingItems = []; // what came out of the dump (14), as confirmed on 15
-  let obRoom = null, obDraft = null, obEditing = false, obWantsMove = false, obDayEvs = [], obFirstEv = null;
+  let obRoom = null, obDraft = null, obEditing = false, obDayEvs = [], obFirstEv = null;
   const OB_RESUME = 'nenemi.obResume';
   function obEl(id) { return document.getElementById(id); }
   function obCalm() { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
@@ -6004,7 +6021,7 @@
     setTimeout(() => { obPicking = false; advanceTo(nextStepId, progressPct); }, 180);
   }
   // the two narrative beats: one button, straight on
-  const OB_NEXT = { 'ob-reality-check': 'ob-name', 'ob-definition': 'ob-better' };
+  const OB_NEXT = { 'ob-info-day': 'ob-slips', 'ob-info-rooms': 'ob-trips', 'ob-info-shift': 'ob-reality-check', 'ob-reality-check': 'ob-dump', 'ob-definition': 'ob-commit' };
   function obGoNext() { const n = OB_NEXT[obCur]; if (n) advanceTo(n); }
   function obBackStep() { const prev = obHist.pop(); if (prev) advanceTo(prev, null, null, true); }
   function obPick(btn, key) {
@@ -6021,18 +6038,16 @@
     obAns[key] = [...obEl(q.id).querySelectorAll('.pill.on')].map(p => p.dataset.v);
     advanceTo(q.next);
   }
-  function obNameNext() { const n = (obEl('obName').value || '').trim().slice(0, 40); if (n) obAns.name = n; else delete obAns.name; advanceTo('ob-useful'); }
+  function obNameNext() { const n = (obEl('obName').value || '').trim().slice(0, 40); if (n) obAns.name = n; else delete obAns.name; advanceTo('ob-plan'); }
   // answers become the profile the moment the questions end, so everything after already reflects them
   function obCommitProfile() { profile = { ...obAns }; save(); applyProfileChrome(); }
   // what runs as a card comes up
   const OB_ENTER = {
-    'ob-moment': obCommitProfile,
+    'ob-plan': () => { const e = obEl('ob-plan').querySelector('[data-hi]'); if (e) e.textContent = obAns.name ? `Good to meet you, ${obAns.name}.` : 'Good to meet you.'; },
+    'ob-reality-check': obCommitProfile,
     'ob-check': () => obRenderCheck(),
-    'ob-start': () => { obEl('obStartLine').textContent = obRoom ? `“${obRoom.name}” is ready. Everything you said is in it.` : ''; obEl('ob-start').querySelectorAll('.pill').forEach(p => p.classList.remove('on')); },
-    'ob-small': () => obRenderMove(),
-    'ob-today': () => obRenderToday(),
     'ob-commit': () => { const b = obEl('obHoldBtn'); if (b && b._obReset) b._obReset(); }, // came back: a fresh hold
-    'ob-learn': () => { obCommitProfile(); obEl('obLearnList').innerHTML = learnLines(profile).map(l => `<li>${escapeHtml(l)}</li>`).join(''); },
+    'ob-learn': () => { obCommitProfile(); obEl('obLearnList').innerHTML = learnBlocks(profile).map(b => `<div class="ob-lb"><b>${escapeHtml(b.lead)}</b><span>${escapeHtml(b.line)}</span></div>`).join(''); },
     'ob-pay': () => { obPickPlan(obPlan); },
     'ob-acctname': () => { const f = obEl('obFirst'); if (f && !f.value && profile.name) f.value = profile.name; },
   };
@@ -6058,16 +6073,22 @@
     const n = first.replace(/^[\s\-•*·]+|[\s.!?,;:]+$/g, '').replace(/\s+/g, ' ').trim(); // the whole first line, as they wrote it
     return n ? n.charAt(0).toUpperCase() + n.slice(1) : 'First room';
   }
+  const OB_CATCHALL = text => ({ name: 'Catch-All', items: ['Review notes'], text, catchAll: true });
+  function obLowContext(text) { // "a lot and pizza": a fragment, not a project
+    const w = String(text).trim().split(/\s+/).filter(Boolean);
+    return w.length <= 5 && (/\b(a lot|lots|stuff|things|everything|idk|whatever|random|so much|too much|nothing)\b/i.test(text) || (w.length <= 4 && /\band\b/i.test(text)));
+  }
   async function obOrganize(text) {
     let name = null, items = obSplitLines(text);
     if (items.length >= 2) return { name: obNameFrom(text, items), items, text }; // they already listed it: keep their words
+    if (obLowContext(text)) return OB_CATCHALL(text);
     items = [];
     if (auth.smart && location.protocol !== 'file:') {
       try {
         const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 7000);
         const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', signal: ctl.signal, headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ text, rooms: [] }) });
         clearTimeout(t);
-        if (r.ok) { const d = await r.json(); name = (d.room_name || '').trim() || null; items = Array.isArray(d.loops_to_add) ? d.loops_to_add.map(s => String(s).trim()).filter(Boolean).slice(0, 8) : []; }
+        if (r.ok) { const d = await r.json(); if (d.action === 'loose') return OB_CATCHALL(text); name = (d.room_name || '').trim() || null; items = Array.isArray(d.loops_to_add) ? d.loops_to_add.map(s => String(s).trim()).filter(Boolean).slice(0, 8) : []; }
       } catch (e) {}
     }
     if (!items.length) items = obSplitDump(text);
@@ -6080,16 +6101,33 @@
     const b = obEl('obDumpBtn'); b.disabled = true; b.textContent = 'Sorting it…';
     const d = await obOrganize(text);
     b.disabled = false; b.textContent = 'Continue';
-    onboardingItems = d.items; obDraft = d; obEditing = false;
+    obSetDraft(d);
     advanceTo('ob-check');
+  }
+  function obSetDraft(d) { // the top one or two start on Today
+    d.today = d.items.map((_, i) => i < 2 && !d.catchAll);
+    onboardingItems = d.items; obDraft = d; obEditing = false;
+  }
+  // zero typing: a pill starts the room for them
+  function obPreset(k) {
+    if (k === 'clean') { obDraft = null; onboardingItems = []; advanceTo('ob-learn'); return; }
+    const d = k === 'fires'
+      ? { name: "Today's fires", items: ["Write down what's burning today"], text: "Clear today's fires" }
+      : { name: "The one I've been avoiding", items: ['Name the project', 'Find the first file, email, or note'], text: "A project I've been avoiding" };
+    obSetDraft(d); advanceTo('ob-check');
   }
   function obRenderCheck() {
     const host = obEl('obCheckBody'); if (!host || !obDraft) return;
     const d = obDraft;
     if (!obEditing) {
-      host.innerHTML = `<div class="ob-sum"><div class="ob-k">Your first room</div><div class="ob-sum-name">${escapeHtml(d.name)}</div>
-        <ul>${d.items.map((i, n) => `<li class="ob-sum-item"><span>${escapeHtml(i)}</span><button type="button" class="ob-sum-x" onclick="obDropItem(${n})" aria-label="Remove ${escapeHtml(i)}">×</button></li>`).join('') || `<li>${escapeHtml(d.text)}</li>`}</ul></div>
-        <div class="ob-two" style="margin-top:16px"><button type="button" class="pill" onclick="obCheckYes(this)">Yep</button><button type="button" class="pill" onclick="obCheckAlmost()">Almost</button></div>`;
+      const said = d.text.length > 160 ? d.text.slice(0, 157).replace(/\s+\S*$/, '') + '…' : d.text;
+      const first = d.items[0];
+      host.innerHTML = `<div class="ob-demo" aria-hidden="true"><div class="ob-demo-you">${escapeHtml(said)}</div><div class="ob-demo-bot">Got it. This is <b>${escapeHtml(d.name)}</b>.</div></div>
+        <div class="ob-sum"><div class="ob-k">Your first room</div><div class="ob-sum-name">${escapeHtml(d.name)}</div>
+        <ul>${d.items.map((i, n) => `<li class="ob-sum-item"><button type="button" class="ob-today${d.today[n] ? ' on' : ''}" aria-pressed="${d.today[n] ? 'true' : 'false'}" onclick="obToggleToday(${n})">Today</button><span>${escapeHtml(i)}</span><button type="button" class="ob-sum-x" onclick="obDropItem(${n})" aria-label="Remove ${escapeHtml(i)}">×</button></li>`).join('') || `<li>${escapeHtml(d.text)}</li>`}</ul></div>
+        ${first ? `<p class="ob-stuck-line">Stuck? One small move: <b>${escapeHtml(first)}</b>.</p>` : ''}
+        <button class="btn" type="button" onclick="obCheckYes(this)">Looks good, let's lock it in</button>
+        <div class="ob-fine"><button type="button" class="ob-link" onclick="obCheckAlmost()">Edit manually</button></div>`;
     } else {
       host.innerHTML = `<form onsubmit="event.preventDefault(); obCheckSave();">
         <label class="ob-f" for="obEdName">Room</label><input class="ob-input" id="obEdName" maxlength="60" value="${escapeHtml(d.name)}">
@@ -6099,22 +6137,24 @@
         <button class="btn" type="submit">Save</button></form>`;
     }
   }
+  function obToggleToday(n) { if (!obDraft) return; obDraft.today[n] = !obDraft.today[n]; obRenderCheck(); }
   function obEdAddRow() {
     const a = obEl('obEdAdd'); const v = (a.value || '').trim(); if (!v) return;
     const row = document.createElement('div'); row.className = 'ob-edit-row';
     row.innerHTML = `<input class="ob-input" maxlength="160" aria-label="Item"><button type="button" class="ob-x" onclick="this.parentElement.remove()" aria-label="Remove">×</button>`;
     row.querySelector('input').value = v; obEl('obEdItems').appendChild(row); a.value = ''; a.focus();
   }
-  function obDropItem(n) { if (!obDraft) return; onboardingItems = obDraft.items.filter((_, i) => i !== n); obDraft = { ...obDraft, items: onboardingItems }; obRenderCheck(); }
+  function obDropItem(n) { if (!obDraft) return; onboardingItems = obDraft.items.filter((_, i) => i !== n); obDraft = { ...obDraft, items: onboardingItems, today: obDraft.today.filter((_, i) => i !== n) }; obRenderCheck(); }
   function obCheckAlmost() { obEditing = true; obRenderCheck(); const n = obEl('obEdName'); if (n) n.focus(); }
   function obCheckSave() {
     const name = (obEl('obEdName').value || '').trim() || obDraft.name;
     const items = [...document.querySelectorAll('#obEdItems input')].map(i => i.value.trim()).filter(Boolean);
     const extra = (obEl('obEdAdd').value || '').trim(); if (extra) items.push(extra);
-    onboardingItems = items; obDraft = { ...obDraft, name: name.slice(0, 60), items };
-    obEditing = false; obSaveRoom(); advanceTo('ob-start');
+    const was = new Map(obDraft.items.map((t, i) => [t, obDraft.today[i]]));
+    onboardingItems = items; obDraft = { ...obDraft, name: name.slice(0, 60), items, today: items.map((t, i) => was.has(t) ? was.get(t) : false), catchAll: false };
+    obEditing = false; obRenderCheck(); // back to the confirm card, nothing locked in yet
   }
-  function obCheckYes(btn) { if (obPicking) return; obPicking = true; btn.classList.add('on', 'press'); obSaveRoom(); autoPick('ob-start'); }
+  function obCheckYes(btn) { if (obPicking) return; obPicking = true; btn.classList.add('press'); obSaveRoom(); obPlaceToday(); autoPick('ob-learn'); }
   // the room itself: made once, updated if they come back and change it
   function obSaveRoom() {
     const d = obDraft; if (!d) return;
@@ -6129,90 +6169,27 @@
     lastRoomId = obRoom.id; try { localStorage.setItem('nenemi.lastRoom', obRoom.id); } catch (e) {}
     save(); renderRoomList(); renderHomeReturn(); renderSideRooms();
   }
-  function obStartPick(btn, yes) {
-    if (obPicking) return; obPicking = true;
-    btn.classList.add('on', 'press');
-    obWantsMove = !!yes;
-    autoPick(yes && obRoom && obRoom.loops.some(l => !l.resolved) ? 'ob-small' : 'ob-today');
-  }
-  function obRenderMove() {
-    const l = obRoom && obRoom.loops.find(x => !x.resolved);
-    obEl('obMove').textContent = l ? l.text : '';
-    obEl('obSmallForm').hidden = true; obEl('obSmallPills').hidden = false; obEl('obSmallNote').textContent = '';
-    obEl('ob-small').querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-  }
-  function obSmallYes(btn) { if (obPicking) return; obPicking = true; btn.classList.add('on', 'press'); autoPick('ob-today'); }
-  // smaller, as many times as it takes: Claude offers one when it can, otherwise they name it
-  async function obSmaller(btn) {
-    if (!obRoom) return;
-    const idx = obRoom.loops.findIndex(l => !l.resolved); if (idx < 0) return;
-    const cur = obRoom.loops[idx].text;
-    const ask = () => { obEl('obSmallPills').hidden = true; obEl('obSmallForm').hidden = false; const i = obEl('obSmallIn'); i.value = ''; i.focus(); };
-    if (!(auth.smart && location.protocol !== 'file:')) { ask(); return; }
-    btn.disabled = true; btn.textContent = 'One moment…';
-    try {
-      const r = await fetch(apiUrl().replace('/api/state', '/api/route'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }),
-        body: JSON.stringify({ mode: 'shrink_move', pinned_room_id: obRoom.id, text: cur, rooms: [{ id: obRoom.id, name: obRoom.name, one_liner: obRoom.one_liner, brief: obRoom.brief, loops: obRoom.loops.filter(l => !l.resolved).map(l => l.text), recent: [] }] }) });
-      const d = r.ok ? await r.json() : null; const s = d && (d.note || d.reply || '').trim();
-      if (!s) throw new Error('empty');
-      obRoom.loops.splice(idx, 0, { text: s, resolved: false }); save();
-      obRenderMove();
-    } catch (e) { ask(); }
-    btn.disabled = false; btn.textContent = 'Smaller';
-  }
-  function obSmallSave() {
-    const t = (obEl('obSmallIn').value || '').trim(); if (!t || !obRoom) return;
-    const idx = obRoom.loops.findIndex(l => !l.resolved);
-    obRoom.loops.splice(idx < 0 ? 0 : idx, 0, { text: t, resolved: false }); save();
-    obRenderMove();
-  }
-  // 18: what fits today goes on My day; the next move (if they took one) sits at this quarter hour
-  function obRenderToday() {
-    const host = obEl('obTodayList'); if (!host) return;
-    const open = obRoom ? obRoom.loops.filter(l => !l.resolved) : [];
-    if (!open.length) { host.innerHTML = '<p>Nothing to sort yet. Your day can stay open.</p>'; return; }
-    const pre = new Set(obDayEvs.map(e => e.name));
-    if (!obDayEvs.length) open.slice(0, 2).forEach(l => pre.add(l.text)); // first visit: the top one or two (the next move leads when they took one)
-    host.innerHTML = open.map((l, i) => `<button type="button" class="pill${pre.has(l.text) ? ' on' : ''}" data-i="${i}" onclick="this.classList.toggle('on')">${escapeHtml(l.text)}${OB_TICK}</button>`).join('');
-  }
-  function obTodayNext() {
-    const open = obRoom ? obRoom.loops.filter(l => !l.resolved) : [];
-    const picked = [...document.querySelectorAll('#obTodayList .pill.on')].map(p => open[+p.dataset.i]).filter(Boolean);
+  function obPlaceToday() {
     const list = dayList(today);
     obDayEvs.forEach(e => { const i = list.indexOf(e); if (i >= 0) list.splice(i, 1); }); // came back and changed it
     obDayEvs = []; obFirstEv = null;
-    picked.forEach((l, i) => {
+    if (!obRoom || !obDraft) return;
+    const picked = obDraft.items.filter((_, i) => obDraft.today[i]);
+    picked.forEach((t, i) => {
       let ev;
-      if (i === 0 && obWantsMove) {
+      if (i === 0) {
         const n = new Date(); const startH = Math.floor((n.getHours() + n.getMinutes() / 60) * 4) / 4;
-        ev = { name: l.text, kind: 'block', room: obRoom.id, start: startH, end: Math.min(24, startH + 0.5), point: true, createdAt: Date.now() };
+        ev = { name: t, kind: 'block', room: obRoom.id, start: startH, end: Math.min(24, startH + 0.5), point: true, createdAt: Date.now() };
         obFirstEv = ev;
-      } else ev = { name: l.text, kind: 'block', room: obRoom.id, anytime: true, start: 0, end: 0, createdAt: Date.now() };
+      } else ev = { name: t, kind: 'block', room: obRoom.id, anytime: true, start: 0, end: 0, createdAt: Date.now() + i };
       normalizeEvent(ev); list.push(ev); obDayEvs.push(ev);
     });
     save(); renderCal();
-    populateCommitScreen(picked.map(l => l.text));
-    advanceTo('ob-commit');
   }
-  // 18b: hold for 3 seconds to claim the day; letting go resets it, no harm done
+  // the promise: hold for 3 seconds to step in; letting go resets it, no harm done
   let holdRaf = null;
   let holdStart = null;
   const HOLD_DURATION = 3000;
-  function populateCommitScreen(selectedItems) {
-    const listEl = document.getElementById('obCommitList');
-    if (!listEl) return;
-    listEl.innerHTML = '';
-    if (!selectedItems || selectedItems.length === 0) {
-      listEl.innerHTML = '<div class="ob-commit-item">Just exploring today</div>';
-    } else {
-      selectedItems.forEach(text => {
-        const item = document.createElement('div');
-        item.className = 'ob-commit-item';
-        item.textContent = text;
-        listEl.appendChild(item);
-      });
-    }
-  }
   function initHoldButton(onComplete) {
     const btn = document.getElementById('obHoldBtn');
     const fill = document.getElementById('obHoldFill');
@@ -6233,8 +6210,8 @@
       holdStart = null;
       fill.style.width = '0%';
       fill.style.transition = 'width 250ms ease-out';
-      label.textContent = 'Hold to set your day (3s)';
-      sub.textContent = 'Release anytime to reset';
+      label.textContent = 'Hold to commit (3s)';
+      sub.textContent = 'Press and hold to step in.';
     };
     const start = () => {
       if (isComplete) return;
@@ -6246,9 +6223,9 @@
         const elapsed = now - holdStart;
         const progress = Math.min((elapsed / HOLD_DURATION) * 100, 100);
         fill.style.width = progress + '%';
-        if (progress < 40) label.textContent = 'Holding space for today...';
-        else if (progress < 85) label.textContent = 'Letting go of the rest...';
-        else label.textContent = 'Almost there...';
+        if (progress < 40) label.textContent = 'Holding…';
+        else if (progress < 85) label.textContent = 'Stepping in…';
+        else label.textContent = 'Almost there…';
         if (progress > 33 && progress < 36) haptic('tick');
         if (progress > 66 && progress < 69) haptic('tick');
         if (progress < 100) {
@@ -6257,8 +6234,8 @@
           isComplete = true;
           btn.classList.remove('holding');
           btn.classList.add('completed');
-          label.textContent = 'Set for today.';
-          sub.textContent = 'Saved to My Day';
+          label.textContent = 'Committed.';
+          sub.textContent = 'Welcome in.';
           haptic('done');
           setTimeout(() => {
             if (typeof onComplete === 'function') onComplete();
@@ -6288,8 +6265,7 @@
       }
     });
   }
-  initHoldButton(() => advanceTo('ob-learn'));
-  function obAfterQuestions() { advanceTo('ob-pay'); } // 20 is never read, never stored
+  initHoldButton(() => advanceTo('ob-pay'));
   function showOnboard(step) {
     const o = obEl('onboard'); if (!o) return;
     if (o.hidden && !window.__nxSplashDone) { // held under the splash, then floats up as it leaves
@@ -6436,7 +6412,7 @@
   // after an account exists: straight on to checkout for the plan they picked (or back to the restore they asked for)
   function obAfterAccount() { setTimeout(obRestoring ? obRestore : obChoosePaid, 260); }
   function obArrive() {
-    if (obCur && OB_META[obCur] && OB_META[obCur].p >= 65) obCommitProfile(); // answered the questions (a ?welcome replay that stops early keeps the old profile)
+    if (obCur && OB_META[obCur] && OB_META[obCur].p >= 62) obCommitProfile(); // answered the questions (a ?welcome replay that stops early keeps the old profile)
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     obFlow = false;
     const first = obFirstEv && dayList(today).includes(obFirstEv);
