@@ -1564,6 +1564,7 @@
   #onboard .ob-question-card .why-tag { font-size:13px; color:#71717A; line-height:1.45; margin:0 0 20px; }
   #onboard .ob-question-card .ob-q-sub { margin:-12px 0 16px; }
   /* the give-back cards: a picture from mynenemi.com and one thing worth knowing */
+  #onboard #ob-hello .ob-hello-lead { color:#111312; font-size:15px; font-weight:500; margin:4px 0 8px; }
   #onboard .ob-info-card .ob-info-k { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#71717A; margin:0 0 14px; }
   #onboard .ob-info-card .ob-info-tag { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#A1A1AA; margin:-4px 0 8px; }
   /* a phone-style frame, so the picture reads as the app itself */
@@ -2413,9 +2414,10 @@
 
   <!-- 1 -->
   <section class="card" id="ob-hello" role="dialog" aria-labelledby="obTitle">
-    <h1 id="obTitle">Hey, I'm NÈNÈMI.</h1>
-    <p>A quiet place that catches what's in your head when it gets full.</p>
-    <button class="btn" type="button" onclick="advanceTo('ob-name')">Continue</button>
+    <h1 id="obTitle">Hi, I’m NÈNÈMI.</h1>
+    <p class="ob-hello-lead">I’m a calm workspace for non-linear and ADHD minds.</p>
+    <p>I don’t push you into a rigid calendar or a loud task list. I catch messy thoughts, hold onto your project memory so you don’t lose your place, and make it easier to start when you freeze.</p>
+    <button class="btn" type="button" onclick="advanceTo('ob-name')">Let me show you around →</button>
     <div class="ob-fine">Already have a space? <button type="button" class="ob-link" onclick="obSignIn()">Sign in</button></div>
   </section>
 
