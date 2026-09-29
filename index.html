@@ -2112,9 +2112,102 @@
   .nx-fit { margin: 2px 0 10px; font-size: 12.5px; color: var(--slate); }
   .nx-fit[hidden] { display: none; }
 
+  /* ============ The Porch v5 (Sep 2026): a dark, conversational capture screen ============
+     Near-black ground, off-white bot text, #161616 user bubbles, one composer fixed above the home indicator.
+     No tab bar, no app header, no cards on this screen; Second Home (a sheet) holds Day, Rooms and Stuck. */
+  .app.porch-mode .tabbar, .app.porch-mode .wordmark, .app.porch-mode .account-slot, .app.porch-mode .topnav,
+  .app.porch-mode .voice-hint { display: none !important; }
+  .app.porch-mode .main::before { display: none !important; }
+  .app.porch-mode .account-wrap { z-index: 60; }
+  html:has(.app.porch-mode), body:has(.app.porch-mode) { background: #0A0A0A; }
+  #pane-home.active { display: flex !important; flex-direction: column !important; position: fixed !important; inset: 0 !important;
+    margin: 0 !important; padding: 0 !important; background: #0A0A0A !important; color: #E5E5E5; z-index: 40; overflow: hidden !important;
+    font-family: var(--font-body); justify-content: flex-start !important; }
+  #pane-home .porch-head { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 10px 20px; }
+  #pane-home .ph-brand { display: flex; align-items: center; gap: 10px; color: #E5E5E5; font-family: 'Archivo Black', 'Arial Black', sans-serif; font-size: 13px; letter-spacing: .28em; }
+  #pane-home .ph-mark { width: 20px; height: 16px; fill: #E5E5E5; flex: 0 0 auto; }
+  #pane-home .ph-right { display: flex; align-items: center; gap: 2px; }
+  #pane-home .ph-time { font-size: 13px; color: #8C8C8C; margin-right: 6px; }
+  #pane-home .ph-btn { width: 38px; height: 38px; border-radius: var(--pill); border: 0; background: transparent; color: #B8B8B8; display: grid; place-items: center; cursor: pointer; }
+  #pane-home .ph-btn:hover { background: #161616; color: #E5E5E5; }
+  #pane-home .ph-btn:focus-visible, #pane-home .pb-pill:focus-visible, .second-home .sh-tile:focus-visible, .second-home .sh-x:focus-visible { outline: 2px solid #E5E5E5; outline-offset: 2px; }
+
+  /* the thread grows up from the composer, so the bot's opener sits right above it */
+  #pane-home .porch-thread { flex: 1 1 auto; min-height: 0; overflow-y: auto; display: flex; flex-direction: column;
+    width: 100%; max-width: 680px; margin: 0 auto; padding: 16px 20px 18px; -webkit-overflow-scrolling: touch; }
+  #pane-home .porch-thread > :first-child { margin-top: auto; }
+  #pane-home .pb-bot { color: #E5E5E5; font: 400 17px/1.55 var(--font-body); letter-spacing: 0; text-transform: none; margin: 0 0 18px; }
+  #pane-home .pb-bot p { margin: 0 0 6px; color: #E5E5E5; max-width: none; }
+  #pane-home .pb-bot .pb-hello { font-weight: 600; margin-bottom: 10px; }
+  #pane-home .porch-log { display: flex; flex-direction: column; gap: 14px; }
+  #pane-home .porch-log .bubble { background: transparent; border: 0; box-shadow: none; padding: 0; margin: 0; border-radius: 0; max-width: 100%;
+    color: #E5E5E5; font: 400 16px/1.55 var(--font-body); }
+  #pane-home .porch-log .bubble::before { display: none; }
+  #pane-home .porch-log .bubble.user { align-self: flex-end; max-width: 82%; background: #161616; border-radius: 18px 18px 6px 18px; padding: 10px 14px; white-space: pre-wrap; }
+  #pane-home .porch-log .b-time { display: none; }
+  #pane-home .porch-log .mini-btn, #pane-home .porch-log button, #pane-home .porch-moves button, #pane-home .porch-log .choice {
+    background: transparent; color: #E5E5E5; border: 1px solid #2E2E2E; border-radius: var(--radius-sm); font: 600 14px/1 var(--font-body); padding: 11px 14px; cursor: pointer; }
+  #pane-home .porch-log .mini-btn:hover, #pane-home .porch-log button:hover, #pane-home .porch-moves button:hover { border-color: #E5E5E5; }
+  #pane-home .porch-moves { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; justify-content: flex-start; }
+  #pane-home .porch-moves[hidden] { display: none; }
+  #pane-home .porch-moves button.primary { background: #E5E5E5; color: #0A0A0A; border-color: #E5E5E5; }
+
+  /* the one composer: fixed above the home indicator, with a white mic pill inside */
+  #pane-home .porch-bar { flex: 0 0 auto; position: relative; display: flex; align-items: flex-end; gap: 8px;
+    width: calc(100% - 24px); max-width: 680px; margin: 0 auto calc(12px + env(safe-area-inset-bottom, 0px));
+    background: #161616; border: 1px solid #262626; border-radius: 26px; padding: 6px 6px 6px 18px; box-shadow: none; }
+  #pane-home .porch-bar textarea { flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: 0; box-shadow: none; resize: none;
+    color: #E5E5E5; caret-color: #E5E5E5; font: 400 16px/1.4 var(--font-body); padding: 10px 0; margin: 0; min-height: 24px; max-height: 140px; }
+  #pane-home .porch-bar textarea::placeholder { color: #7A7A7A; }
+  #pane-home .pb-pill { flex: 0 0 auto; height: 40px; min-width: 52px; padding: 0 16px; border-radius: var(--pill); border: 0; background: #FFFFFF; color: #0A0A0A;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; }
+  #pane-home .pb-send { display: none; }
+  #pane-home .porch-bar.has-text .pb-send { display: flex; }
+  #pane-home .porch-bar.has-text .pb-mic { display: none; }
+  /* listening: the input steps back, a quiet waveform and one line take its place */
+  #pane-home .pb-listen { display: none; flex: 1 1 auto; min-width: 0; align-items: center; gap: 12px; height: 40px; color: #B8B8B8; font-size: 13.5px; }
+  #pane-home .porch-bar.listening .pb-listen { display: flex; }
+  #pane-home .porch-bar.listening textarea { position: absolute; opacity: 0; pointer-events: none; width: 1px; }
+  #pane-home .porch-bar.listening .pb-mic { display: flex; }
+  #pane-home .porch-bar.listening .pb-send { display: none; }
+  #pane-home .pb-listen-l { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #pane-home .pb-wave { display: inline-flex; align-items: center; gap: 3px; height: 22px; flex: 0 0 auto; }
+  #pane-home .pb-wave i { width: 3px; height: 30%; border-radius: 2px; background: #E5E5E5; animation: pbWave 1s ease-in-out infinite; }
+  #pane-home .pb-wave i:nth-child(2) { animation-delay: .12s } #pane-home .pb-wave i:nth-child(3) { animation-delay: .24s }
+  #pane-home .pb-wave i:nth-child(4) { animation-delay: .36s } #pane-home .pb-wave i:nth-child(5) { animation-delay: .48s }
+  #pane-home .pb-wave i:nth-child(6) { animation-delay: .6s } #pane-home .pb-wave i:nth-child(7) { animation-delay: .72s }
+  @keyframes pbWave { 0%, 100% { height: 25%; } 50% { height: 100%; } }
+  @media (prefers-reduced-motion: reduce) { #pane-home .pb-wave i { animation: none; height: 60%; } }
+
+  /* pop-ups on the Porch start below its header, so the menu and Second Home stay reachable */
+  body:has(.app.porch-mode) .nx-toasts { top: calc(64px + env(safe-area-inset-top, 0px)) !important; }
+
+  /* Second Home: a slide-up sheet with the structured side (Day, Rooms, Stuck) */
+  .second-home { position: fixed; inset: 0; z-index: 70; }
+  .second-home[hidden] { display: none; }
+  .second-home .sh-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.55); opacity: 0; transition: opacity .22s ease; }
+  .second-home .sh-sheet { position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 560px; background: #111111; color: #E5E5E5;
+    border-radius: 20px 20px 0 0; border: 1px solid #222; border-bottom: 0; padding: 10px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+    transform: translateY(100%); transition: transform .22s ease; font-family: var(--font-body); }
+  .second-home.open .sh-scrim { opacity: 1; }
+  .second-home.open .sh-sheet { transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .second-home .sh-sheet, .second-home .sh-scrim { transition: none; } }
+  .second-home .sh-grab { width: 38px; height: 4px; border-radius: 2px; background: #333; margin: 2px auto 12px; }
+  .second-home .sh-head { display: flex; align-items: center; justify-content: space-between; margin: 0 4px 12px; }
+  .second-home .sh-k { font-family: 'Archivo Black', 'Arial Black', sans-serif; font-size: 18px; letter-spacing: -.01em; }
+  .second-home .sh-x { width: 36px; height: 36px; border-radius: var(--pill); border: 0; background: #1C1C1C; color: #E5E5E5; font-size: 20px; line-height: 1; cursor: pointer; }
+  .second-home .sh-tile { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; margin: 0 0 10px; padding: 16px; border-radius: var(--radius);
+    border: 1px solid #242424; background: #161616; color: #E5E5E5; font: inherit; cursor: pointer; }
+  .second-home .sh-tile:hover { border-color: #E5E5E5; }
+  .second-home .sh-tile span { flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; }
+  .second-home .sh-tile b { font-size: 16px; font-weight: 700; }
+  .second-home .sh-tile small { font-size: 13px; color: #9A9A9A; }
+  .second-home .sh-tile i { font-style: normal; font-size: 22px; color: #7A7A7A; }
+  .second-home .sh-stuck { background: #E5E5E5; color: #0A0A0A; border-color: #E5E5E5; }
+  .second-home .sh-stuck small, .second-home .sh-stuck i { color: #3A3A3A; }
+
   /* ---- Front Porch (concierge, Home) and Place (button hub) ---- */
-  #greetingText { font-family: 'Archivo Black', 'Arial Black', sans-serif; font-weight: 900; text-transform: none; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(1.75rem, 5vw, 2.75rem); }
-  .app.talking #greetingText { font-size: clamp(1.25rem, 3.5vw, 1.75rem); }
   .porch-place { display: inline-flex; align-items: center; gap: 10px; align-self: center; margin: 18px auto 0; padding: 12px 22px; border: 1px solid var(--ink); border-radius: 99px; background: #fff; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: var(--card-shadow); }
   .porch-place:hover { border-color: var(--ink); }
   .app.talking .porch-place { display: none; }
@@ -2144,8 +2237,6 @@
   }
 
   @media (max-width: 720px) {
-    /* the Front Porch sits in the middle of the phone, not stacked under the header (auto margins never push it off the top) */
-    .app:not(.talking) #pane-home > .home-center { margin-top: auto; margin-bottom: auto; }
     body { background: #fff; }
     .main::before { background: #fff; height: 64px; border-bottom: 3px solid var(--ink); }
     .app.dark-pane .main::before { background: #050506; border-bottom-color: #26262A; }
@@ -2476,7 +2567,7 @@
 </div>
 
 <div class="nx-toasts" id="nxToasts" aria-live="polite" aria-atomic="false"></div>
-<div class="app">
+<div class="app porch-mode">
 
   <!-- ============ MAIN ============ -->
   <div class="main" id="main" role="main" tabindex="-1">
@@ -2568,31 +2659,35 @@
 
     <!-- HOME -->
     <div class="pane active" id="pane-home">
-      <div class="home-center">
-        <div class="greeting-big" id="greetingText"><span class="hello">Morning</span><span class="accent">Whatever's in your head, put it here.</span></div>
+      <!-- The Porch (v5, Sep 2026): dark, conversational capture. The bot speaks first; one composer at the bottom.
+           Structure (Day, Rooms, Stuck) lives one tap away in Second Home. Same ids as before, so capture,
+           intents, voice and saving are untouched. -->
+      <header class="porch-head">
+        <div class="ph-brand"><svg class="ph-mark" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><span>NÈNÈMI</span></div>
+        <div class="ph-right">
+          <span class="ph-time" id="porchTime">Morning</span>
+          <button type="button" class="ph-btn" id="secondHomeBtn" onclick="openSecondHome()" aria-label="Second Home" title="Second Home"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></button>
+          <button type="button" class="ph-btn ph-more" onclick="toggleAcctMenu(event)" aria-label="Menu" title="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg></button>
+        </div>
+      </header>
 
-        <div class="composer-pill" id="composerPill">
-          <textarea id="composerInput" rows="1" placeholder="Just dump it here. We'll sort it."></textarea>
-          <div class="capture-cta" id="captureCta">
-            <button type="button" class="cap-btn write" onclick="focusWrite()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-              Write
-            </button>
-            <button type="button" class="cap-btn talk" onclick="startTalk()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9v6M10 5.5v13M14 8v8M18 10.5v3"/></svg>
-              Talk
-            </button>
-          </div>
-          <div class="composer-bar">
-            <input type="file" id="homeUploadFile" accept="image/*,application/pdf" hidden onchange="handleHomeUploadFile(this.files)" />
-            <!-- kept for the speech wiring; the visible control is the + menu below -->
-            <div class="mic-btn" id="homeMic" title="Say it instead" hidden>
-              <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="6" y="1.5" width="4" height="7" rx="2"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5" stroke-linecap="round"/></svg>
-            </div>
-            <div class="composer-actions">
-              <!-- mid-conversation escape to the buttons: always beside the box, never a dead end -->
-              <button type="button" class="composer-place" onclick="go('place')" aria-label="Go to Place" title="Go to Place"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Place</span></button>
-              <div class="home-plus-wrap">
+      <div class="porch-thread" id="porchThread">
+        <div class="pb-bot" id="greetingText"><p class="pb-hello">Morning.</p><p>Dump whatever's in your head. Messy is the point.</p><p>I'll sort it into today, a room, or a next step.</p></div>
+        <div class="porch-moves" id="porchMoves" hidden></div>
+        <div class="porch-log" id="chatLog" aria-live="polite"></div>
+      </div>
+
+      <form class="porch-bar" id="composerPill" onsubmit="event.preventDefault(); sendCapture();">
+        <div class="pb-listen" aria-hidden="true"><span class="pb-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="pb-listen-l">Tap when done, or just stop talking.</span></div>
+        <textarea id="composerInput" rows="1" placeholder="Type or hold to talk" aria-label="Type or hold to talk"></textarea>
+        <button type="submit" class="pb-pill pb-send" aria-label="Send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>
+        <button type="button" class="pb-pill pb-mic" id="homeMic" aria-label="Hold to talk, or tap to start and stop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
+      </form>
+
+      <!-- kept for the code that still reaches for them (uploads, the old + menu, re-entry cards); not shown on the Porch -->
+      <div class="porch-kept" hidden>
+        <input type="file" id="homeUploadFile" accept="image/*,application/pdf" hidden onchange="handleHomeUploadFile(this.files)" />
+        <div class="home-plus-wrap">
                 <div class="plus-menu" id="plusMenu">
                   <div class="menu-item" onclick="pickHomeUpload('image/*')">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><circle cx="5.5" cy="6" r="1.3"/><path d="M2 12l4-4 2.5 2.5L12 7l2 2"/></svg>
@@ -2612,30 +2707,23 @@
                   <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 2.5v11M2.5 8h11" stroke-linecap="round"/></svg>
                 </div>
               </div>
-              <div class="send-btn" onclick="sendCapture()">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 8h9M8 3.5l4.5 4.5-4.5 4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="porch-moves" id="porchMoves" hidden></div>
-        <div class="chat-log" id="chatLog"></div>
-
         <div class="home-return home-return-top" id="homeReturnTop" hidden></div>
-        <button type="button" class="porch-place" onclick="go('place')" aria-label="Go to Place"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Go to Place</button>
-
-        <aside class="home-side" id="homeSide">
-          <div class="home-return" id="homeReturn"></div>
-          <div class="home-rooms">
-            <div class="section-row"><h2>Your rooms</h2></div>
-            <div class="room-grid-preview" id="homeRoomsPreview"></div>
-          </div>
-        </aside>
+        <aside class="home-side" id="homeSide"><div class="home-return" id="homeReturn"></div><div class="room-grid-preview" id="homeRoomsPreview"></div></aside>
       </div>
     </div>
 
-    <!-- PLACE: the button hub, for when there's no bandwidth to talk or type -->
+    <!-- Second Home: the structured side (Day, Rooms, Stuck), one tap from the Porch -->
+    <div class="second-home" id="secondHome" hidden>
+      <div class="sh-scrim" onclick="closeSecondHome()"></div>
+      <div class="sh-sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle">
+        <div class="sh-grab" aria-hidden="true"></div>
+        <div class="sh-head"><span class="sh-k" id="shTitle">Second Home</span><button type="button" class="sh-x" onclick="closeSecondHome()" aria-label="Close">×</button></div>
+        <button type="button" class="sh-tile" onclick="shGo('calendar')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span><b>My day</b><small>What's happening now, and what's next.</small></span><i aria-hidden="true">›</i></button>
+        <button type="button" class="sh-tile" onclick="shGo('rooms')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="7.5" r="3.2"/><circle cx="16.5" cy="7.5" r="3.2"/><circle cx="7.5" cy="16.5" r="3.2"/><circle cx="16.5" cy="16.5" r="3.2"/></svg><span><b>Rooms</b><small>Where each thing lives, right where you left it.</small></span><i aria-hidden="true">›</i></button>
+        <button type="button" class="sh-tile sh-stuck" onclick="shGo('stuck')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span><b>I'm stuck</b><small>One small way back in.</small></span><i aria-hidden="true">›</i></button>
+      </div>
+    </div>
+
     <div class="pane" id="pane-place">
       <div class="place-inner">
           <div class="where-now" id="whereNow">
@@ -3130,6 +3218,8 @@
     if (id === 'place') applyProfileChrome();
     renderSideRooms();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
+    document.querySelector('.app').classList.toggle('porch-mode', id === 'home'); // the Porch is its own dark screen: no tab bar, no app header
+    if (id !== 'home') closeSecondHome();
     // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
     const darkPanes = ['stuck','lockdown','humans'];
     document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
@@ -3171,12 +3261,14 @@
       Evening: "Almost done with the day — let's recap it together.",
       Hey: "No rush. Put it down whenever."
     };
-    const sub = `${name ? `Hey ${name}.` : 'Hey.'} What's going on today?`; // the concierge's greeting, every open
-    el.innerHTML = `<span class="hello">${escapeHtml(small)}</span><span class="accent">${escapeHtml(sub)}</span>`;
+    // the Porch: the bot speaks first, every open (Marcos's copy, Sep 2026)
+    const word = /^(Morning|Afternoon|Evening)$/.test(timeWord) ? timeWord : 'Hey';
+    el.innerHTML = `<p class="pb-hello">${escapeHtml(word)}.</p><p>Dump whatever's in your head. Messy is the point.</p><p>I'll sort it into today, a room, or a next step.</p>`;
+    const pt = document.getElementById('porchTime'); if (pt) pt.textContent = word === 'Hey' ? '' : word;
   }
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
   function focusWrite() { const i = document.getElementById('composerInput'); if (i) i.focus(); }
-  function startTalk() { const m = document.getElementById('homeMic'); if (m) m.click(); }
+  function startTalk() { const m = document.getElementById('homeMic'); if (m) (m._toggle ? m._toggle() : m.click()); }
   function menuTalk() { closeMenu(); startTalk(); }
 
   // phone-only nav drawer: the pill nav slides in from the left instead of scrolling sideways
@@ -3988,6 +4080,11 @@
   }
 
   // back to a quiet Front Porch: no old conversation on screen
+  // Second Home: the structured side of the app, as a sheet over the Porch
+  function openSecondHome() { const s = document.getElementById('secondHome'); if (!s) return; s.hidden = false; requestAnimationFrame(() => s.classList.add('open')); const t = s.querySelector('.sh-tile'); if (t) setTimeout(() => t.focus(), 60); }
+  function closeSecondHome() { const s = document.getElementById('secondHome'); if (!s || s.hidden) return; s.classList.remove('open'); setTimeout(() => { if (!s.classList.contains('open')) s.hidden = true; }, 220); }
+  function shGo(id) { closeSecondHome(); go(id); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSecondHome(); });
   function porchFresh() {
     const a = document.querySelector('.app'); if (a) a.classList.remove('talking');
     const log = document.getElementById('chatLog'); if (log) log.innerHTML = '';
@@ -4055,8 +4152,7 @@
   function captureText(text, source, log, mode) {
     if (log.id === 'chatLog') {
       const a = document.querySelector('.app'); if (a) a.classList.add('talking');
-      const g = document.getElementById('greetingText'); if (g) g.innerHTML = `<span class="accent">Let’s sort through it.</span>`;
-      const ci = document.getElementById('composerInput'); if (ci) ci.placeholder = 'Say whatever comes next';
+      // the Porch keeps its opener at the top of the thread; the conversation just continues under it
     }
     log.innerHTML += `<div class="bubble user">${escapeHtml(text)}<span class="b-time">${nowTime()}</span></div>`;
     log.scrollTop = log.scrollHeight;
@@ -4209,7 +4305,7 @@
   function growComposer() {
     const t = document.getElementById('composerInput'); t.style.height = 'auto';
     const talking = document.querySelector('.app').classList.contains('talking');
-    const minH = talking ? 22 : 108, maxH = talking ? 120 : window.innerHeight * 0.4;
+    const minH = 24, maxH = 140; void talking; // the Porch composer is one line that grows
     t.style.height = Math.max(minH, Math.min(t.scrollHeight, maxH)) + 'px';
     const pill = document.getElementById('composerPill'); if (pill) pill.classList.toggle('has-text', t.value.trim().length > 0);
   }
@@ -4483,9 +4579,7 @@
   // the parts of the app that change shape from the answers, applied wherever they show
   function applyProfileChrome() {
     const ci = document.getElementById('composerInput');
-    if (ci) ci.placeholder = pf('showUp') === 'talk' ? "Talk it through here. I'll keep up."
-      : (pfTool('notes') || pfTool('text')) ? "Anything you'd text yourself can land here."
-      : "Just dump it here. We'll sort it.";
+    if (ci && !ci.dataset.dump) ci.placeholder = 'Type or hold to talk';
     // Home cards: what they said matters most leads
     const order = ['rooms', 'day', 'stuck', 'humans'];
     const lead = { track: 'rooms', next: 'day', lighter: 'day' }[pf('useful')];
@@ -5633,6 +5727,17 @@
     };
   }
   attachVoice(document.getElementById('homeMic'), document.getElementById('composerInput'), sendCapture);
+  // the Porch mic: tap to start and tap to finish, or hold to talk and let go. Silence also finishes it.
+  (function porchMic() {
+    const mic = document.getElementById('homeMic'), bar = document.getElementById('composerPill'); if (!mic || !bar) return;
+    const toggle = mic.onclick; if (!toggle) return;
+    mic.onclick = null; mic._toggle = () => toggle();
+    let downAt = 0, startedHere = false;
+    mic.addEventListener('pointerdown', e => { e.preventDefault(); downAt = Date.now(); startedHere = !mic.classList.contains('listening'); if (startedHere) toggle(); });
+    mic.addEventListener('pointerup', () => { if (!startedHere) { toggle(); return; } if (Date.now() - downAt > 450 && mic.classList.contains('listening')) toggle(); });
+    mic.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    new MutationObserver(() => bar.classList.toggle('listening', mic.classList.contains('listening'))).observe(mic, { attributes: true, attributeFilter: ['class'] });
+  })();
   attachVoice(document.getElementById('roomMic'), document.getElementById('quickAddInput'), quickAdd);
   attachVoice(document.getElementById('calMic'), document.getElementById('calDump'), null);
   attachVoice(document.getElementById('stuckMic'), document.getElementById('stuckInput'), stuckSend);

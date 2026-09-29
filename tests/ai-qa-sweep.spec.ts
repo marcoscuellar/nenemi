@@ -7,8 +7,8 @@ import { fileURLToPath } from 'node:url';
 //   1. Regression color audit: every primary view is strictly monochrome ink / paper / carbon.
 //      Maíz is allowed; brand teal only on the onboarding kickers (1b, 19b); a room's own
 //      color only where the person picked it. Anything else chromatic is a FAIL.
-//   2. Critical path: splash → Front Porch → "I'm overwhelmed" → Stuck → back to the Porch, where the
-//      mid-conversation Place escape is on screen → Place → My day →
+//   2. Critical path: splash → the Porch → "I'm overwhelmed" → Stuck → back to the Porch mid-conversation,
+//      where the Second Home button is on screen → Second Home (Day, Rooms, Stuck) → My day →
 //      check a task off → reload, and the state, the layout, and the console all hold.
 // The page is served from this folder under the app host; /api is mocked, the outside world stubbed.
 
@@ -138,7 +138,18 @@ const VIEWS: View[] = [
     name: 'Splash', root: '#nxSplash',
     open: async page => { await expect(page.locator('#nxSplash')).toBeVisible(); await expect(page.locator('#nxSplash')).toHaveCSS('background-color', INK); },
   },
-  { name: 'Front Porch', open: async page => { await pastSplash(page); await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/); } },
+  {
+    name: 'Front Porch', open: async page => {
+      await pastSplash(page); await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
+      // the Porch (v5): dark, the bot speaks first, one composer, no tab bar
+      await expect(page.locator('#pane-home')).toHaveCSS('background-color', 'rgb(10, 10, 10)');
+      await expect(page.locator('#greetingText')).toContainText("Dump whatever's in your head. Messy is the point.");
+      await expect(page.locator('#greetingText')).toContainText("I'll sort it into today, a room, or a next step.");
+      await expect(page.locator('#composerInput')).toHaveAttribute('placeholder', 'Type or hold to talk');
+      await expect(page.locator('#homeMic')).toBeVisible();
+      await expect(page.locator('#tabbar')).toBeHidden();
+    },
+  },
   {
     name: 'Front Porch (mid-conversation)',
     open: async page => {
@@ -146,14 +157,25 @@ const VIEWS: View[] = [
       await page.fill('#composerInput', 'Remember to call the dentist about Thursday');
       await page.press('#composerInput', 'Enter');
       await expect(page.locator('.app')).toHaveClass(/\btalking\b/);
-      await expect(page.locator('.composer-place')).toBeInViewport();
+      await expect(page.locator('#secondHomeBtn')).toBeInViewport(); // always a way out to the structure
       await page.waitForTimeout(600);
-      // the chat box stays clear of the headline (it once sat on it on desktop)
-      const [box, head] = await Promise.all([page.locator('#composerPill').boundingBox(), page.locator('#greetingText').boundingBox()]);
-      expect(box!.y, 'chat box overlaps the headline').toBeGreaterThanOrEqual(head!.y + head!.height);
+      // the composer stays in view and never covers the thread
+      const bar = (await page.locator('#composerPill').boundingBox())!;
+      const last = (await page.locator('#chatLog > *').last().boundingBox())!;
+      const vh = page.viewportSize()!.height;
+      expect(bar.y + bar.height, 'composer below the fold').toBeLessThanOrEqual(vh);
+      expect(last.y + last.height, 'composer covers the thread').toBeLessThanOrEqual(bar.y + 1);
     },
   },
   { name: 'Place', open: async page => { await pastSplash(page); await show(page, 'place'); } },
+  {
+    name: 'Second Home (sheet)', open: async page => {
+      await pastSplash(page); await page.locator('#secondHomeBtn').click();
+      await expect(page.locator('#secondHome')).toBeVisible();
+      await expect(page.locator('#secondHome .sh-tile')).toHaveCount(3);
+      await page.waitForTimeout(300);
+    },
+  },
   {
     name: 'My day (NOW + done)',
     open: async page => {
@@ -246,7 +268,7 @@ test('critical path + storage', async ({ context, page }, info) => {
     await expect(page.locator('#nxSplash')).toHaveCSS('background-color', INK);
     await pastSplash(page);
     await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
-    await expect(page.locator('#greetingText')).toContainText("What's going on today?");
+    await expect(page.locator('#greetingText')).toContainText("Dump whatever's in your head.");
   }, 'body');
 
   await step('"I\'m overwhelmed" → Stuck Rescue', async () => {
@@ -255,23 +277,20 @@ test('critical path + storage', async ({ context, page }, info) => {
     await expect(page.locator('#pane-stuck')).toHaveClass(/\bactive\b/, { timeout: 4_000 });
   }, 'body');
 
-  await step('mid-conversation escape → Place → 4 portal buttons', async () => {
-    // back on the Porch the conversation is still going; the way out to the buttons has to be right there
+  await step('mid-conversation → Second Home (Day, Rooms, Stuck)', async () => {
+    // back on the Porch the conversation is still going; the way out to the structure has to be right there
     await page.locator('#nav-home:visible, #tn-home:visible').first().click();
     await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
     await expect(page.locator('.app')).toHaveClass(/\btalking\b/);
-    const escape = page.locator('.composer-place');
-    await expect(escape).toBeVisible();
+    const escape = page.locator('#secondHomeBtn');
     await expect(escape).toBeInViewport();
     await escape.click();
-    await expect(page.locator('#pane-place')).toHaveClass(/\bactive\b/);
-    const cards = page.locator('#pane-place .where-card');
-    await expect(cards).toHaveCount(4);
-    for (const k of ['rooms', 'day', 'stuck', 'humans']) await expect(page.locator(`#pane-place .where-card[data-k="${k}"]`)).toBeVisible();
+    await expect(page.locator('#secondHome')).toBeVisible();
+    for (const t of ['My day', 'Rooms', "I'm stuck"]) await expect(page.locator('#secondHome .sh-tile', { hasText: t })).toBeVisible();
   }, 'body');
 
   await step('My day → check off → ink check + carbon strike', async () => {
-    await page.locator('#pane-place .where-card[data-k="day"]').click();
+    await page.locator('#secondHome .sh-tile', { hasText: 'My day' }).click();
     await expect(page.locator('#pane-calendar')).toHaveClass(/\bactive\b/);
     await addDayTask(page, 'QA path task');
     const row = page.locator('.nx-task-row', { hasText: 'QA path task' });
