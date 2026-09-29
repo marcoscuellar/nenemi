@@ -2120,12 +2120,14 @@
   .app.porch-mode .main::before { display: none !important; }
   .app.porch-mode .account-wrap { z-index: 60; }
   html:has(.app.porch-mode), body:has(.app.porch-mode) { background: #0A0A0A; }
+  /* brand v4.0: chat, UI and composer are Inter; the wordmark stays Archivo Black */
+  #pane-home, .second-home { --font-body: 'Inter', system-ui, sans-serif; }
   #pane-home.active { display: flex !important; flex-direction: column !important; position: fixed !important; inset: 0 !important;
     margin: 0 !important; padding: 0 !important; background: #0A0A0A !important; color: #E5E5E5; z-index: 40; overflow: hidden !important;
     font-family: var(--font-body); justify-content: flex-start !important; }
   #pane-home .porch-head { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px;
     padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 10px 20px; }
-  #pane-home .ph-brand { display: flex; align-items: center; gap: 10px; color: #E5E5E5; font-family: 'Archivo Black', 'Arial Black', sans-serif; font-size: 13px; letter-spacing: .28em; }
+  #pane-home .ph-brand { display: flex; align-items: center; gap: 10px; color: #E5E5E5; font-family: 'Archivo Black', 'Arial Black', sans-serif; font-size: 13px; letter-spacing: .14em; }
   #pane-home .ph-mark { width: 20px; height: 16px; fill: #E5E5E5; flex: 0 0 auto; }
   #pane-home .ph-right { display: flex; align-items: center; gap: 2px; }
   #pane-home .ph-time { font-size: 13px; color: #8C8C8C; margin-right: 6px; }
@@ -2141,7 +2143,8 @@
   #pane-home .pb-hero.leaving { opacity: 0; transform: translateY(-10px); }
   #pane-home .pb-hero[hidden] { display: none; }
   #pane-home .pb-glyph { display: block; height: 36px; width: auto; margin: 0 auto 18px; fill: #FFFFFF; }
-  #pane-home .pb-hero .pb-hello { margin: 0; font: 700 28px/1.2 var(--font-body); letter-spacing: -0.01em; color: #FFFFFF; text-transform: none; }
+  #pane-home .pb-hero .pb-time { margin: 0 0 8px; font: 400 14px/1.3 var(--font-body); color: #71717A; }
+  #pane-home .pb-hero .pb-hello { margin: 0; font: 700 28px/1.2 'Archivo', system-ui, sans-serif; letter-spacing: -0.01em; color: #FFFFFF; text-transform: none; }
   #pane-home .pb-hero .pb-sub { margin: 8px auto 0; max-width: 34ch; font: 400 16px/1.45 var(--font-body); color: #8E8E93; }
   #pane-home .pb-hero .pb-sub + .pb-sub { margin-top: 4px; }
   /* the thread reads top to bottom from the upper part of the screen, and scrolls naturally as it grows */
@@ -2150,8 +2153,8 @@
   #pane-home .porch-log .bubble { box-shadow: none; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
   #pane-home .porch-log .bubble::before { display: none; }
   /* your words: a light bubble on the right, tighter bottom-right corner */
-  #pane-home .porch-log .bubble.user { align-self: flex-end; max-width: 82%; background: #FFFFFF; color: #0A0A0A; border: 0;
-    border-radius: 18px 18px 6px 18px; padding: 12px 16px; font: 500 15px/1.45 var(--font-body); }
+  #pane-home .porch-log .bubble.user { align-self: flex-end; max-width: 82%; background: #FFFFFF; color: #111312; border: 0;
+    border-radius: 18px 18px 4px 18px; padding: 12px 16px; font: 500 15px/1.45 var(--font-body); }
   /* NÈNÈMI: a raised charcoal container on the left, tighter bottom-left corner */
   #pane-home .porch-log .bubble.dos { align-self: flex-start; max-width: 86%; background: #1A1A1C; color: #EDEDED; border: 1px solid #2C2C2E;
     border-radius: 18px 18px 18px 6px; padding: 14px 16px; font: 400 15px/1.5 var(--font-body); }
@@ -2178,7 +2181,7 @@
     background: #1C1C1E; border: 0; border-radius: var(--pill); padding: 6px 6px 6px 20px; box-shadow: none; }
   #pane-home .porch-bar textarea { flex: 1 1 auto; min-width: 0; background: transparent; border: 0; outline: 0; box-shadow: none; resize: none;
     color: #E5E5E5; caret-color: #E5E5E5; font: 400 16px/1.4 var(--font-body); padding: 10px 0; margin: 0; min-height: 24px; max-height: 140px; }
-  #pane-home .porch-bar textarea::placeholder { color: #8E8E93; }
+  #pane-home .porch-bar textarea::placeholder { color: #71717A; }
   #pane-home .pb-pill { flex: 0 0 auto; height: 40px; min-width: 52px; padding: 0 16px; border-radius: var(--pill); border: 0; background: #FFFFFF; color: #0A0A0A;
     display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: none; -webkit-user-select: none; user-select: none; }
   #pane-home .pb-send { display: none; }
@@ -2691,7 +2694,7 @@
       </header>
 
       <div class="porch-thread" id="porchThread">
-        <div class="pb-hero" id="greetingText"><svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><h1 class="pb-hello">Morning.</h1><p class="pb-sub">Dump whatever's in your head. Messy is the point.</p><p class="pb-sub">I'll sort it into today, a room, or a next step.</p></div>
+        <div class="pb-hero" id="greetingText"><svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">good morning</p><h1 class="pb-hello">Where are you right now?</h1><p class="pb-sub">Say anything. Messy is fine. I'll hold onto it.</p></div>
         <div class="porch-moves" id="porchMoves" hidden></div>
         <div class="porch-log" id="chatLog" aria-live="polite"></div>
       </div>
@@ -3280,9 +3283,9 @@
       Evening: "Almost done with the day — let's recap it together.",
       Hey: "No rush. Put it down whenever."
     };
-    // the Porch: the bot speaks first, every open (Marcos's copy, Sep 2026)
+    // the Porch: the same welcome every open (Marcos's copy, Sep 2026)
     const word = /^(Morning|Afternoon|Evening)$/.test(timeWord) ? timeWord : 'Hey';
-    el.innerHTML = `<svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><h1 class="pb-hello">${escapeHtml(word)}.</h1><p class="pb-sub">Dump whatever's in your head. Messy is the point.</p><p class="pb-sub">I'll sort it into today, a room, or a next step.</p>`;
+    el.innerHTML = `<svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">${word === 'Hey' ? 'hello' : 'good ' + word.toLowerCase()}</p><h1 class="pb-hello">Where are you right now?</h1><p class="pb-sub">Say anything. Messy is fine. I'll hold onto it.</p>`;
     const pt = document.getElementById('porchTime'); if (pt) pt.textContent = word === 'Hey' ? '' : word;
   }
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)
