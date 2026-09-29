@@ -1564,9 +1564,11 @@
   #onboard .ob-question-card .why-tag { font-size:13px; color:#71717A; line-height:1.45; margin:0 0 20px; }
   #onboard .ob-question-card .ob-q-sub { margin:-12px 0 16px; }
   /* the give-back cards: a picture from mynenemi.com and one thing worth knowing */
-  #onboard .ob-info-k { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#71717A; margin:0 0 14px; }
-  #onboard .ob-info-shot { border:1px solid #E5E7EB; border-radius:12px; overflow:hidden; background:#F5F6F5; height:200px; margin:0 0 20px; }
-  #onboard .ob-info-shot img { display:block; width:100%; height:100%; object-fit:cover; object-position:top center; }
+  #onboard .ob-info-card .ob-info-k { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#71717A; margin:0 0 14px; }
+  #onboard .ob-info-card .ob-info-tag { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#A1A1AA; margin:-4px 0 8px; }
+  /* a phone-style frame, so the picture reads as the app itself */
+  #onboard .ob-info-shot { border:1px solid #D4D4D8; border-radius:22px; padding:6px; background:#FFFFFF; height:280px; margin:0 0 20px; box-shadow:0 1px 3px rgba(0,0,0,.04), 0 6px 18px rgba(0,0,0,.05); }
+  #onboard .ob-info-shot img { display:block; width:100%; height:100%; object-fit:cover; object-position:top center; border-radius:16px; }
   #onboard .ob-info-card h2 { font-family:'Archivo', system-ui, sans-serif; font-size:22px; line-height:1.25; letter-spacing:-.015em; margin:0 0 10px; }
   #onboard .ob-info-card p { font-size:14px; color:#6B7280; line-height:1.55; margin:0 0 6px; }
   #onboard .ob-info-card .ob-info-so { color:#111312; font-weight:600; margin:12px 0 0; }
@@ -2442,7 +2444,8 @@
   <!-- give-back cards: after each chapter's questions, one picture from mynenemi.com and one thing worth knowing -->
   <section class="card ob-info-card" id="ob-info-day">
     <p class="ob-info-k">01 · Your day</p>
-    <div class="ob-info-shot"><img src="/photos/landing/app-day.png" alt="" loading="lazy"></div>
+    <p class="ob-info-tag">Inside NÈNÈMI · My day</p>
+    <div class="ob-info-shot"><img src="/photos/onboarding/inside-day.jpg" alt="How My day looks inside NÈNÈMI" loading="lazy" style="object-position:center 39%"></div>
     <h2>Time can feel slippery with ADHD.</h2>
     <p>“Later” and “now” blur together, so the day gets away from you.</p>
     <p>It's called time blindness, and it's common.</p>
@@ -2451,7 +2454,8 @@
   </section>
   <section class="card ob-info-card" id="ob-info-rooms">
     <p class="ob-info-k">02 · Your rooms</p>
-    <div class="ob-info-shot"><img src="/photos/landing/app-rooms.png" alt="" loading="lazy"></div>
+    <p class="ob-info-tag">Inside NÈNÈMI · Rooms</p>
+    <div class="ob-info-shot"><img src="/photos/onboarding/inside-room.jpg" alt="How Rooms looks inside NÈNÈMI" loading="lazy" style="object-position:center 14%"></div>
     <h2>ADHD brains hold less in working memory at once.</h2>
     <p>Every switch drops a little context. It's wiring, not a character flaw.</p>
     <p class="ob-info-so">So each room holds it for you. Where you left off, and one small next move.</p>
@@ -2459,7 +2463,8 @@
   </section>
   <section class="card ob-info-card" id="ob-info-shift">
     <p class="ob-info-k">03 · When the day changes</p>
-    <div class="ob-info-shot"><img src="/photos/landing/app-stuck.png" alt="" loading="lazy"></div>
+    <p class="ob-info-tag">Inside NÈNÈMI · Stuck</p>
+    <div class="ob-info-shot"><img src="/photos/onboarding/inside-stuck.jpg" alt="How Stuck looks inside NÈNÈMI" loading="lazy" style="object-position:center 18%"></div>
     <h2>A plan can make sense at 9 AM and feel impossible by 1 PM.</h2>
     <p>Starting is its own hurdle with ADHD. It's not laziness.</p>
     <p class="ob-info-so">So when you freeze, NÈNÈMI shrinks the first step until it feels doable.</p>
