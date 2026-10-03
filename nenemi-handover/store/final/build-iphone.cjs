@@ -9,8 +9,8 @@ const SL=[
  {h:'Get the noise<br>out<b>.</b>', back:'01-home', front:'03-day'},
  {h:'Pick up where<br>you left off<b>.</b>', back:'05-rooms', front:'02-room'},
  {h:'Frozen?<br>One small step<b>.</b>', back:'04-stuck', front:'04b-stuck-start', dark:true},
- {h:'No streaks.<br>No guilt<b>.</b>', back:'03-day', front:'07-recap'},
- {h:'Real people,<br>one tap away<b>.</b>', back:'02-room', front:'06-humans'},
+ {h:'No streaks.<br>No guilt<b>.</b>', back:'07-recap', front:'09-focus'},
+ {h:'Real people,<br>one tap away<b>.</b>', back:'10-second-home', front:'06-humans'},
 ];
 const page=x=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}html,body{width:414px;height:896px;overflow:hidden}

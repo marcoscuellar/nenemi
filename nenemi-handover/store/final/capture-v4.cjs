@@ -84,6 +84,12 @@ const SEED = () => {
     await p.evaluate(() => go('humans')); await shot('06-humans');
     await p.evaluate(() => { go('notes'); const t = document.getElementById('notesInput'); if (t) { t.value = 'The client call went better than I thought.\nOnboarding copy finally feels right.\nStill need to order the scarf.'; t.dispatchEvent(new Event('input', { bubbles: true })); } });
     await shot('07-recap');
+    // Focus: one task on the dark screen, the clock counting up from where they started (never down)
+    await p.evaluate(() => { openRoom('r-pitch'); focusOnLoop('Swap in the new numbers on slide 4'); lockdownSeconds = 754; clearInterval(lockdownInterval); document.getElementById('lockdownTimer').textContent = '12:34'; });
+    await shot('09-focus');
+    await p.evaluate(() => { clearInterval(lockdownInterval); go('home'); openSecondHome(); });
+    await p.waitForTimeout(400); await shot('10-second-home');
+    await p.evaluate(() => closeSecondHome());
     // the last slide is the app's own name screen (19b), full-bleed, without the onboarding top bar
     const q = await ctx.newPage(); q.on('pageerror', e => errs.push(e.message));
     await q.goto(ORIGIN + '/?welcome', { waitUntil: 'domcontentloaded' });
