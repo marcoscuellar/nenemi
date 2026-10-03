@@ -2193,6 +2193,14 @@
   #pane-home .pb-hero .pb-hello { margin: 0; font: 700 28px/1.2 'Archivo', system-ui, sans-serif; letter-spacing: -0.01em; color: #FFFFFF; text-transform: none; }
   #pane-home .pb-hero .pb-sub { margin: 8px 0 0; max-width: 34ch; font: 400 16px/1.45 var(--font-body); color: #8E8E93; }
   #pane-home .pb-hero .pb-sub + .pb-sub { margin-top: 4px; }
+  /* keyboard up: the Porch fits the visible area and the greeting moves up under the header, a step smaller */
+  #pane-home.active.kb { top: var(--vvt, 0px) !important; bottom: auto !important; height: var(--vvh, 100%) !important; }
+  #pane-home.kb .pb-hero { margin: 4px 0 auto !important; padding-bottom: 0; }
+  #pane-home.kb .pb-glyph { height: 24px; margin-bottom: 12px; }
+  #pane-home.kb .pb-hero .pb-hello { font-size: 24px; }
+  #pane-home.kb .porch-bar { margin-bottom: 8px; }
+  #pane-home .pb-hero, #pane-home .pb-glyph, #pane-home .pb-hero .pb-hello { transition: margin .25s ease, height .25s ease, font-size .25s ease, opacity .25s ease, transform .25s ease; }
+  @media (prefers-reduced-motion: reduce) { #pane-home .pb-hero, #pane-home .pb-glyph, #pane-home .pb-hero .pb-hello { transition: none; } }
   /* the thread reads top to bottom from the upper part of the screen, and scrolls naturally as it grows */
   #pane-home .porch-thread.has-thread { padding-top: 8px; }
   #pane-home .porch-log { display: flex; flex-direction: column; gap: 12px; }
@@ -4196,6 +4204,20 @@
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('chip')) { e.preventDefault(); e.target.click(); } });
   (function () { const t = document.getElementById('porchThread'), log = document.getElementById('chatLog'); if (!t || !log || !window.MutationObserver) return;
     new MutationObserver(() => { t.scrollTop = t.scrollHeight; }).observe(log, { childList: true, subtree: true }); })();
+  // the keyboard: iPhone pushes the page up and the greeting slides off the top. While it's open the Porch
+  // fits the visible area and the greeting sits just under the header, so the ask stays in view.
+  (function () {
+    const vv = window.visualViewport, pane = document.getElementById('pane-home'); if (!vv || !pane) return;
+    const fit = () => {
+      const open = vv.height < window.innerHeight * 0.8 && document.activeElement && document.activeElement.id === 'composerInput';
+      pane.classList.toggle('kb', !!open);
+      if (open) { pane.style.setProperty('--vvh', vv.height + 'px'); pane.style.setProperty('--vvt', vv.offsetTop + 'px'); window.scrollTo(0, 0); }
+    };
+    vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit);
+    document.addEventListener('focusin', () => setTimeout(fit, 60)); document.addEventListener('focusout', () => setTimeout(fit, 60));
+    // the grey ^ v ✓ bar iPhone puts above the keyboard: off, when the app has the Keyboard plugin
+    try { const K = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Keyboard; if (K && K.setAccessoryBarVisible) K.setAccessoryBarVisible({ isVisible: false }); } catch (e) {}
+  })();
   function porchHeroOut() {
     const t = document.getElementById('porchThread'), h = document.getElementById('greetingText'); if (!t || !h || t.classList.contains('has-thread')) return;
     t.classList.add('has-thread'); h.classList.add('leaving'); setTimeout(() => { if (t.classList.contains('has-thread')) h.hidden = true; }, 260);

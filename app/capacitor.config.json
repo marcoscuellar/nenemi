@@ -4,7 +4,15 @@
   "webDir": "www",
   "server": {
     "url": "https://app.mynenemi.com/?open=1",
-    "allowNavigation": ["app.mynenemi.com", "www.mynenemi.com", "mynenemi.com", "*.clerk.accounts.dev", "*.clerk.com", "accounts.google.com", "appleid.apple.com"]
+    "allowNavigation": [
+      "app.mynenemi.com",
+      "www.mynenemi.com",
+      "mynenemi.com",
+      "*.clerk.accounts.dev",
+      "*.clerk.com",
+      "accounts.google.com",
+      "appleid.apple.com"
+    ]
   },
   "ios": {
     "contentInset": "never",
@@ -12,5 +20,10 @@
     "preferredContentMode": "mobile",
     "scheme": "Nenemi"
   },
-  "backgroundColor": "#111312"
+  "backgroundColor": "#111312",
+  "plugins": {
+    "Keyboard": {
+      "resize": "none"
+    }
+  }
 }

@@ -53,7 +53,7 @@ Reference: the FacilityFlow modular SaaS dashboard look. It all lives in one CSS
   - **No** tab bar, app header, cards, Go to Place, or Write/Talk buttons on this screen. `.app.porch-mode`, toggled in `go()`, hides the global chrome.
   - **Zero state:** a left-aligned hero in the upper-middle third (`#greetingText`, written by `renderGreeting`): the white N glyph (36px), "Morning, Maya." (`.pb-time`, Inter 500 15px, #A1A1AA, the time word plus their first name; just "Morning." without a name), the ask (`.pb-hello`, Archivo 700 28px, #FFFFFF), then its line (Inter 16px, #8E8E93). No serif, no italic.
   - **The thread:** the first message fades the hero out (`porchHeroOut`; `porchFresh` brings it back). The conversation then reads top to bottom from just under the header and scrolls to the newest message, never pinned to the composer with a void above.
-  - **One composer** (`#composerPill` / `#composerInput`, placeholder "Type or hold to talk"), fixed above the home indicator.
+  - **One composer** (`#composerPill` / `#composerInput`, placeholder "Type or hold to talk"), fixed above the home indicator. While the keyboard is up (`visualViewport`), `#pane-home.kb` fits the Porch to the visible area and the greeting moves up under the header, a step smaller, so the ask stays in view. The iPhone app hides the grey ^ v ✓ keyboard bar through `@capacitor/keyboard` (`resize: none`).
   - **The mic** is a white pill (`#homeMic`): tap to start and tap to finish, or hold to talk and let go. Silence finishes too. While listening, the input gives way to a waveform and "Tap when done, or just stop talking."
   - **Typing:** once there's text, the mic pill becomes a white send arrow. Enter sends too.
   - **Sent text and transcriptions** render as user bubbles.
