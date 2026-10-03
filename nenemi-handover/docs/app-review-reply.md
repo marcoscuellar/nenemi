@@ -27,6 +27,7 @@ No login or credentials are needed. All core features work without an account.
 - Accounts are optional and only offered with a paid plan (Sign in with Apple, Google, or email code). To delete an account: open the "···" menu at the top right → Delete my account. This permanently deletes the account and all its data on our servers.
 - Subscriptions are sold only through Apple In-App Purchase (monthly and annual with a 7-day free trial), with Restore Purchases, the auto-renewal terms, the Terms of Use (EULA) and the Privacy Policy on the subscription screen.
 - No sample files are needed.
+- No demo account is needed: every feature works without signing in. To see account creation and deletion, buy a plan with a Sandbox Apple Account and choose Sign in with Apple on the account card.
 
 **4. External services**
 - Anthropic (Claude API): sorts the text the person types or dictates into today's plan or a project. Only the text they submit and their project names are sent. If it can't be reached, the app sorts on the device instead.
@@ -52,6 +53,13 @@ Marcos Cuellar
 marcos@ollinos.com
 
 ---
+
+## Before you press Submit (your checklist)
+
+- Attach the two subscriptions (nenemi_monthly_1099, nenemi_annual_5999) to this app version: App Store Connect → the version → In-App Purchases and Subscriptions → add both. Apple wants them submitted with the app (3.1.1).
+- Paste the reply above into the reply AND into App Review Information → Notes.
+- Leave "Sign-in required" unchecked (no demo account needed).
+- Upload the new screenshots and attach the recording below to the reply.
 
 ## Shot list for the screen recording (on a real iPhone, latest iOS)
 
