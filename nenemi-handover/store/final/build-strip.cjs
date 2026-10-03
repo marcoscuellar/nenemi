@@ -29,18 +29,18 @@ const phoneTop = (sl, i) => Math.max(sl[i].top, (sl[i + 1] && sl[i + 1].top) || 
 const page = (sl, slot, w, h) => `<!doctype html><html><head><style>
 *{margin:0;box-sizing:border-box}html,body{width:${w * sl.length}px;height:${h}px;overflow:hidden;background:#111312}
 .cell{position:absolute;top:0;width:${w}px;height:${h}px;object-fit:cover}
-.phone{position:absolute;width:${w * PW}px;padding:${w * 0.022}px;background:#0b0b0b;border-radius:${w * 0.12}px;z-index:5;
+.phone{position:absolute;width:${w * PW}px;padding:${w * 0.022}px;background:#0b0b0b;border-radius:${w * (process.env.IPAD ? 0.05 : 0.12)}px;z-index:5;
  box-shadow:0 ${w * 0.08}px ${w * 0.16}px -${w * 0.02}px rgba(0,0,0,.55),0 ${w * 0.03}px ${w * 0.06}px rgba(0,0,0,.3),0 0 0 ${w * 0.004}px rgba(255,255,255,.16)}
-.phone img{display:block;width:100%;border-radius:${w * 0.1}px}
+.phone img{display:block;width:100%;border-radius:${w * (process.env.IPAD ? 0.035 : 0.1)}px}
 </style></head><body>
 ${sl.map((x, i) => `<img class="cell" style="left:${i * w}px" src="file://${x.bg}">`).join('')}
 ${sl.map((x, i) => x.shot ? `<div class="phone" style="left:${(i + LEFT) * w}px;top:${phoneTop(sl, i) * h}px"><img src="file://${path.join(S, 'store2', slot, x.shot + '.png')}"></div>` : '').join('')}
 </body></html>`;
 (async () => {
   const b = await chromium.launch();
-  for (const [slot, w, h, dir] of [['6.7', 430, 932, 'iphone-6.9'], ['6.5', 414, 896, 'iphone-6.5']]) {
+  for (const [slot, w, h, dir] of (process.env.IPAD ? [['ipad', 1032, 1376, 'ipad-13']] : [['6.7', 430, 932, 'iphone-6.9'], ['6.5', 414, 896, 'iphone-6.5']])) {
     const sl = SLIDES(slot);
-    const p = await b.newPage({ viewport: { width: w * sl.length, height: h }, deviceScaleFactor: 3 });
+    const p = await b.newPage({ viewport: { width: w * sl.length, height: h }, deviceScaleFactor: process.env.IPAD ? 2 : 3 });
     const file = path.join(S, 'frames', 'strip.html'); fs.writeFileSync(file, page(sl, slot, w, h));
     await p.goto('file://' + file); await p.waitForTimeout(500);
     const out = path.join(OUT, dir); fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(out, { recursive: true });

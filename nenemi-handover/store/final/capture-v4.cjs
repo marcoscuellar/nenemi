@@ -60,9 +60,9 @@ const SEED = () => {
 (async () => {
   const S = process.env.S; if (!S) throw new Error('set S to a scratch folder');
   const b = await chromium.launch();
-  for (const [slot, vp] of [['6.7', { width: 430, height: 932 }], ['6.5', { width: 414, height: 896 }]]) {
+  for (const [slot, vp] of (process.env.IPAD ? [['ipad', { width: 1032, height: 1376 }]] : [['6.7', { width: 430, height: 932 }], ['6.5', { width: 414, height: 896 }]])) {
     const out = path.join(S, 'store2', slot); fs.mkdirSync(out, { recursive: true });
-    const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: 3, isMobile: true, hasTouch: true, serviceWorkers: 'block' });
+    const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: process.env.IPAD ? 2 : 3, isMobile: true, hasTouch: true, serviceWorkers: 'block' });
     await serve(ctx);
     await ctx.addInitScript(() => { try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {} });
     const p = await ctx.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));

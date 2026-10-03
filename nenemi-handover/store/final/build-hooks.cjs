@@ -34,8 +34,8 @@ ${process.env.NOPHONE ? '.phone{display:none}' : ''}
 <div class="phone"><img src="file://${S}/store2/${slot}/${f.shot}.png"></div></body></html>`;
 (async () => {
   const b = await chromium.launch();
-  for (const [slot, w, h, dir] of [['6.7', 430, 932, 'iphone-6.9'], ['6.5', 414, 896, 'iphone-6.5']]) {
-    const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 3 });
+  for (const [slot, w, h, dir] of (process.env.IPAD ? [['ipad', 1032, 1376, 'ipad-13']] : [['6.7', 430, 932, 'iphone-6.9'], ['6.5', 414, 896, 'iphone-6.5']])) {
+    const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: process.env.IPAD ? 2 : 3 });
     await p.route(/fonts\.(googleapis|gstatic)\.com/, r => { const u = r.request().url(); try { const body = execFileSync('curl', ['-s', '-A', 'Mozilla/5.0 Chrome/140', u]); r.fulfill({ status: 200, body, contentType: u.includes('gstatic') ? 'font/woff2' : 'text/css', headers: { 'access-control-allow-origin': '*' } }); } catch (e) { r.abort(); } });
     const NP = !!process.env.NOPHONE, out = NP ? path.join(S, 'frames', 'bg-' + slot) : path.join(OUT, dir); fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(out, { recursive: true }); const tops = [];
     for (let i = 0; i < HOOKS.length; i++) {
