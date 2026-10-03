@@ -3360,6 +3360,7 @@
     // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
     const darkPanes = ['stuck','lockdown','humans'];
     document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
+    if (id !== 'stuck') document.querySelector('.app').classList.remove('sanctuary-move'); // leaving Stuck from a small move gives the ··· menu back
     if (id === 'stuck') showDoors();
     stopVoice();
   }
