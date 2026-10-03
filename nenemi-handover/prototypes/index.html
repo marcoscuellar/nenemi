@@ -2351,6 +2351,10 @@
     .nx-toast, .sheet-scrim, .scrim { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
   }
 
+  /* Inside the iPhone app, sign-in is email only (Oct 2026): Apple and Google are hidden on our account card and in Clerk's own sheet.
+     Apple only requires Sign in with Apple when another outside login is offered. The website keeps both. */
+  html.in-app #ob-acct .ob-oauth, html.in-app #ob-acct .ob-divider, html.in-app .cl-socialButtonsRoot, html.in-app .cl-dividerRow { display: none !important; }
+
   @media (max-width: 720px) {
     body { background: #fff; }
     .main::before { background: #fff; height: 64px; border-bottom: 3px solid var(--ink); }
@@ -5629,6 +5633,7 @@
   // ---------- account (Clerk) — only wakes up when the server has a publishable key ----------
   // inside the iPhone app (Capacitor shell) nothing is sold: Apple requires in-app purchase for that, so the web paywall stays on the web.
   const IN_APP_SHELL = (() => { try { const C = window.Capacitor; return !!(C && C.isNativePlatform && C.isNativePlatform()); } catch (e) { return false; } })();
+  if (IN_APP_SHELL) document.documentElement.classList.add('in-app'); // the iPhone app signs in with email only (Oct 2026), see CSS
   document.documentElement.classList.toggle('in-shell', IN_APP_SHELL); // the paywall's Apple-only lines (restore, auto-renew terms)
   const auth = { pk: null, signedIn: false, plan: 'free', roomLimit: 2, fileLimit: 5, ready: false, smart: false, billing: false, price: 10.99, priceAnnual: 59.99, planSource: null, planUntil: null, trialEnd: null };
   function ownRooms() { return rooms.filter(r => !r.demo && !r.archived).length; }
