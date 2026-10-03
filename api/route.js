@@ -167,7 +167,11 @@ async function porchRoute(client, { text, rooms, loose, localTime, weekday, toda
     if (dest === 'room' && !room_id && !d.new_room) dest = 'parked';
     if (dest !== 'room' && dest !== 'parked') room_id = null;
     return { text: t, dest, start: dest === 'today' ? start : null, end: dest === 'today' && end && end > start ? end : null, room_id };
-  }).filter(it => it.text && (it.dest === 'held' || isGrounded(it.text, vocab)));
+  });
+  // a task's first word is capitalized by the model ("Pick up the kids"), so it isn't a name; names later in the line still have to be theirs
+  const kept = d.items.filter(it => it.text && (it.dest === 'held' || isGrounded(it.text.charAt(0).toLowerCase() + it.text.slice(1), vocab)));
+  d.dropped = d.items.filter(it => it.text && it.dest !== 'held').length - kept.filter(it => it.dest !== 'held').length;
+  d.items = kept;
   if (todayCap) { let n = 0; d.items.forEach(it => { if (it.dest === 'today' && ++n > todayCap) it.dest = 'parked'; }); } // their own limit, held even if the model forgets it
   if (d.new_room) {
     if (!d.items.some(it => it.dest === 'room' && !it.room_id)) d.new_room = null;

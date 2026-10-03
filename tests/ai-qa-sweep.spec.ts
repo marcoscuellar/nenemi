@@ -485,6 +485,30 @@ test('Porch router: day, project, mixed dump', async ({ context, page }, info) =
 });
 
 // ---------- 4. onboarding v7: three chapters that ask a little and give something back, then the first room ----------
+test('Porch router: a spoken day plan never comes back as nothing', async ({ context, page }, info) => {
+  // the grounding check reads spoken numbers as digits and a task's first word as a word, not a name
+  const { sourceVocabulary, isGrounded } = await import('../lib/grounding.js');
+  const said = 'ok so I gotta take the kids to school at eight then dentist at nine thirty grab groceries around noon and call Sarah at three';
+  const v = sourceVocabulary([said]), task = (x: string) => isGrounded(x.charAt(0).toLowerCase() + x.slice(1), v);
+  expect(['Take the kids to school at 8', 'Dentist at 9:30', 'Pick up groceries around 12', 'Call Sarah at 3pm'].every(task), 'spoken times kept').toBe(true);
+  expect(task('Email Jessica at 4'), 'a name nobody said is still caught').toBe(false);
+  // and if the check ever throws out everything, the local rules place it: never "Heard. Nothing to file."
+  await serve(context, { route: () => ({ kind: 'day', go_to: null, go_room_id: null, new_room: null, reply: '', items: [], dropped: 3 }) });
+  await asReturning(context);
+  const errors = watchConsole(page);
+  await page.goto(ORIGIN + '/', { waitUntil: 'domcontentloaded' });
+  await pastSplash(page);
+  const before = await page.evaluate('dayList(today).length') as number;
+  await page.fill('#composerInput', 'dentist at 9, groceries at noon, call Sarah at 3');
+  await page.press('#composerInput', 'Enter');
+  await page.waitForTimeout(900);
+  await expect(page.locator('#chatLog')).not.toContainText('Nothing to file');
+  expect(await page.evaluate('dayList(today).length') as number, 'something landed on Today').toBeGreaterThan(before);
+  const ok = errors.length === 0;
+  record(info, { view: 'Porch router: spoken day plan', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
+  expect(errors, 'console errors').toEqual([]);
+});
+
 test('Onboarding walk: chapters, give-back cards, first room, promise', async ({ context, page }, info) => {
   await serve(context);
   const errors = watchConsole(page);

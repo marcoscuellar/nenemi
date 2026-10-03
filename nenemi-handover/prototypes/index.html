@@ -4385,6 +4385,8 @@
     } catch (e) { d = null; }
     wait.remove();
     if (!d || !d.kind || !Array.isArray(d.items)) { porchLocal(text, source, log); return; }
+    // the check threw out everything they asked for: never answer "nothing to file", let the local rules place it instead
+    if (d.dropped > 0 && !d.items.some(it => it.dest !== 'held') && (d.kind === 'day' || d.kind === 'mixed' || d.kind === 'project')) { porchLocal(text, source, log); return; }
     applyPorchPlan(d, text, source, log);
   }
   function applyPorchPlan(d, text, source, log) {
