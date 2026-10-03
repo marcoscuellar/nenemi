@@ -1,41 +1,34 @@
+// App Store slides v3 (Sep 2026, Marcos's call): five slides, one short headline each, no paragraphs,
+// two angled phones per slide (the back one tells what happened, the front one where it landed), soft drop shadows,
+// pure white backgrounds (the Stuck slide stays dark). Story order: outcome, workflow, differentiator, objection, proof.
+//   PWP=$(npm root -g)/playwright S=/scratch SLOT=6.7 PW=1290 PH=2796 node build-iphone.cjs   (capture-v4.cjs first)
+//   -> $S/frames/clean-$SLOT/0N.png at 3x; scale to the slot size before upload
 const {chromium}=require(process.env.PWP);const fs=require('fs');const {execFileSync}=require('child_process');
-const R='/home/user/nenemi/', S=process.env.S, SH=S+'/store2/'+process.env.SLOT+'/';
-const MARK=fs.readFileSync(R+'photos/logo/nenemi-mark.svg','utf8');
+const S=process.env.S, SH=S+'/store2/'+process.env.SLOT+'/';
 const SL=[
- {h:'Get the noise out.<br>Get a day back<b>.</b>', sub:'Type it, say it, start in the middle. You don&rsquo;t have to organize your thoughts before putting them here. NENEMI helps you see what matters today and find a place to begin.', shot:'01-home'},
- {fs:40, h:'Never pretend<br>you remembered<b>.</b>', sub:'That project, the conversation you need to finish, the thing you meant to do next&mdash;give each its own Room. NENEMI keeps the context together, so you can leave when you need to and come back knowing where you were.', shot:'02-room'},
- {fs:40, h:'You had a plan.<br>Then the day<br>happened<b>.</b>', sub:'A plan can make sense at 9 AM and feel impossible by 1 PM. Tell NENEMI where you are right now. It helps you find one small way back in.', shot:'04-stuck', dark:true},
- {fs:40, h:'Your day,<br>with room<br>to move<b>.</b>', sub:'Say it however it comes out. If yesterday didn&rsquo;t go to plan, you can carry something into today.', shot:'03-day'},
- {fs:40, h:'The day ends.<br>What mattered<br>stays<b>.</b>', sub:'Say what happened, messy is fine. NENEMI holds what matters, gives one leftover a home, and lets the rest go. Nothing carries over unless you choose it.', shot:'07-recap'},
- {fs:42, h:'Systems help.<br>People heal<b>.</b>', sub:'NENEMI can help you hold the day. Sometimes the next step is talking to someone who understands. Finding support should be as easy to reach as everything else here.', shot:'06-humans', photos:[['photos/reality-market.jpeg','45% 35%'],['photos/conversation-human.jpg','55% 30%']]},
- {fs:46, h:'It&rsquo;s okay.<br>Nenemi has it<b>.</b>', sub:'Whatever&rsquo;s taking up space, put it here. Start with one thought. You can figure out the rest together.', closer:true},
- {def:true},
+ {h:'Get the noise<br>out<b>.</b>', back:'01-home', front:'03-day'},
+ {h:'Pick up where<br>you left off<b>.</b>', back:'05-rooms', front:'02-room'},
+ {h:'Frozen?<br>One small step<b>.</b>', back:'04-stuck', front:'04b-stuck-start', dark:true},
+ {h:'No streaks.<br>No guilt<b>.</b>', back:'03-day', front:'07-recap'},
+ {h:'Real people,<br>one tap away<b>.</b>', back:'02-room', front:'06-humans'},
 ];
-const page=x=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=Archivo+Black&display=swap" rel="stylesheet"><style>
+const page=x=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet"><style>
 *{margin:0;box-sizing:border-box}html,body{width:414px;height:896px;overflow:hidden}
-body{background:${x.dark||x.def?'#111312':'#FFFFFF'};position:relative;font-family:Archivo,sans-serif}
-.copy{position:absolute;left:26px;right:26px;top:40px}
-h1{font:${x.fs||36}px/1 'Archivo Black',sans-serif;letter-spacing:-.02em;color:${x.dark?'#FFFFFF':'#111312'}}h1 b{color:${x.dark?'#5AA6B0':'#3C8692'}}
-.sub{margin-top:12px;font:500 14.5px/1.42 Archivo,sans-serif;color:${x.dark?'#B9BEBD':'#63696A'}}
-.pad{position:absolute;left:48px;width:318px;padding:9px;background:#0b0b0b;border-radius:54px;z-index:3;
- box-shadow:0 50px 90px -16px rgba(17,19,18,${x.dark?'.85':'.5'}),0 22px 40px -8px rgba(17,19,18,.3),0 0 0 2px rgba(255,255,255,${x.dark?'.2':'.1'})}
-.pad img{display:block;width:100%;border-radius:45px}
-.card{position:absolute;border-radius:22px;background-size:cover;box-shadow:0 20px 44px rgba(17,19,18,.2);z-index:2}
-.nm{position:absolute;left:26px;right:26px;bottom:30px;border-top:1px solid #D5D8D7;padding-top:14px}
-.nm-l{font:600 10.5px Archivo,sans-serif;letter-spacing:.24em;color:#3C8692}.nm-w{margin-top:6px;font:22px 'Archivo Black',sans-serif;letter-spacing:.18em;color:#111312}.nm-w span{font:500 15px Archivo,sans-serif;letter-spacing:0;color:#63696A;margin-left:8px}
-.nm-t{margin-top:6px;font:500 13px/1.42 Archivo,sans-serif;color:#63696A}
-.def{position:absolute;inset:0;background:#050404 url('file:///home/user/nenemi/photos/texture/tex-fret-teal.jpg') right center/cover no-repeat}.dv{position:absolute;inset:0;background:radial-gradient(ellipse 85% 42% at 50% 50%,rgba(5,6,6,.9),rgba(5,6,6,.55) 60%,rgba(5,6,6,.1))}.def:before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 85% 42% at 50% 50%,rgba(5,6,6,.9),rgba(5,6,6,.55) 60%,rgba(5,6,6,.1))}.dc{position:absolute;left:28px;right:28px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px}.dc svg{width:42px;height:auto;filter:drop-shadow(0 12px 34px rgba(0,0,0,.75))}.dc path{fill:#f4f1ea}.d-e{font:700 11px ui-monospace,Menlo,'DejaVu Sans Mono',monospace;letter-spacing:.2em;color:#3C8692}.d-n{font:16px 'Archivo Black',sans-serif;letter-spacing:.16em;color:#9aa0a2;margin-top:-10px}.d-s{font:44px/1 'Archivo Black',sans-serif;letter-spacing:-.02em;color:#f4f1ea;margin-top:-6px;white-space:nowrap}.d-t{font:500 16px/1.65 Archivo,sans-serif;color:#9aa0a2}</style></head><body>
-${x.def?`<div class="def"><div class="dv"></div><div class="dc">${MARK}<div class="d-e">THE NAME</div><div class="d-n">NENEMI</div><div class="d-s">neh-NEH-mee</div><div class="d-t">Nenemi comes from Nahuatl, a living Indigenous language spoken by Nahua communities in Mexico. The word means &ldquo;to walk&rdquo; or &ldquo;to go about.&rdquo; We chose it because your path doesn&rsquo;t have to be straight to keep moving.</div></div></div>`:`<div class="copy" id="cp"><h1>${x.h}</h1><p class="sub">${x.sub}</p></div>`}
-${x.photos?x.photos.map((p,i)=>`<div class="card ph${i}" style="background-image:url('file://${R}${p[0]}');background-position:${p[1]};${i?'right:-20px':'left:-20px'};width:150px;height:230px"></div>`).join(''):''}
-${x.def?'':x.closer?`<div class="card c1" style="left:18px;width:236px;height:420px;background-image:url('file://${R}photos/life-dogwalk.jpg');background-position:55% 30%"></div><div class="card c2" style="left:168px;width:230px;height:400px;background-image:url('file://${R}photos/life-dinner.webp');background-position:45% 55%;z-index:3"></div>
-`:`<div class="pad" id="pd"${x.photos?' style="left:70px;width:274px;"':''}><img src="file://${SH}${x.shot}.png"></div>`}
+body{background:${x.dark?'#111312':'#FFFFFF'};position:relative}
+h1{position:absolute;left:28px;right:24px;top:52px;font:46px/1.02 'Archivo Black',sans-serif;letter-spacing:-.025em;color:${x.dark?'#FFFFFF':'#111312'}}
+h1 b{color:${x.dark?'#5AA6B0':'#3C8692'}}
+.stage{position:absolute;left:0;right:0;top:214px;bottom:-60px}
+.pad{position:absolute;width:214px;padding:6px;background:#0b0b0b;border-radius:36px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,${x.dark?'.22':'.14'});
+ filter:drop-shadow(0 28px 26px rgba(17,19,18,${x.dark?'.7':'.34'})) drop-shadow(0 6px 8px rgba(17,19,18,.22))}
+.pad img{display:block;width:100%;border-radius:30px}
+.back{left:22px;top:0;transform:rotate(-6deg);z-index:1}
+.front{left:180px;top:150px;transform:rotate(6deg);z-index:2;filter:drop-shadow(-14px 30px 30px rgba(17,19,18,${x.dark?'.75':'.42'})) drop-shadow(0 6px 8px rgba(17,19,18,.25))}
+</style></head><body><h1>${x.h}</h1>
+<div class="stage"><div class="pad back"><img src="file://${SH}${x.back}.png"></div><div class="pad front"><img src="file://${SH}${x.front}.png"></div></div>
 </body></html>`;
 (async()=>{const b=await chromium.launch();const W=+process.env.PW,H=+process.env.PH;const p=await b.newPage({viewport:{width:W,height:H},deviceScaleFactor:3});
  await p.route(/fonts\.(googleapis|gstatic)\.com/, r=>{const u=r.request().url(); try{const body=execFileSync('curl',['-s','-A','Mozilla/5.0 Chrome/140',u]); r.fulfill({status:200,body,contentType:u.includes('gstatic')?'font/woff2':'text/css',headers:{'access-control-allow-origin':'*'}});}catch(e){r.abort();}});
- const dir=S+'/frames/clean-'+process.env.SLOT;fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir);
- for(let i=0;i<SL.length;i++){const f=S+'/frames/clean.html';fs.writeFileSync(f,page(SL[i]).replace('<body>','<body style="zoom:'+(W/414)+';height:'+(H*414/W)+'px">'));await p.goto('file://'+f);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(400);
-  await p.evaluate(()=>{const c=document.getElementById('cp');if(!c)return;const t=c.offsetTop+c.offsetHeight+26;const pd=document.getElementById('pd');if(pd)pd.style.top=t+'px';
-   document.querySelectorAll('.ph0,.ph1').forEach((e,i)=>e.style.top=(t+(i?150:40))+'px');
-   const c1=document.querySelector('.c1'),c2=document.querySelector('.c2');if(c1){c1.style.top=t+'px';c2.style.top=(t+210)+'px';}});
-  await p.waitForTimeout(150);await p.screenshot({path:dir+'/0'+(i+1)+'.png'});}
+ const dir=S+'/frames/clean-'+process.env.SLOT;fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir,{recursive:true});
+ for(let i=0;i<SL.length;i++){const f=S+'/frames/clean.html';fs.writeFileSync(f,page(SL[i]).replace('<body>','<body style="zoom:'+(W/414)+';height:'+(H*414/W)+'px">'));await p.goto('file://'+f);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(500);
+  await p.screenshot({path:dir+'/0'+(i+1)+'.png'});}
 await b.close();})();

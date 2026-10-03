@@ -78,6 +78,8 @@ const SEED = () => {
     await p.evaluate(() => openRoom('r-mom')); await shot('02-room');
     await p.evaluate(() => go('calendar')); await shot('03-day');
     await p.evaluate(() => go('stuck')); await shot('04-stuck');
+    await p.evaluate(() => openDoor('start')); await shot('04b-stuck-start');
+    await p.evaluate(() => { const d = document.getElementById('doors'); if (d) d.hidden = false; const m = document.getElementById('stuckMove'); if (m) m.hidden = true; });
     await p.evaluate(() => go('rooms')); await shot('05-rooms');
     await p.evaluate(() => go('humans')); await shot('06-humans');
     await p.evaluate(() => { go('notes'); const t = document.getElementById('notesInput'); if (t) { t.value = 'The client call went better than I thought.\nOnboarding copy finally feels right.\nStill need to order the scarf.'; t.dispatchEvent(new Event('input', { bubbles: true })); } });
