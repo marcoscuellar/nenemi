@@ -3354,15 +3354,25 @@
   }
   let greetTimer = null;
   // an app left open from afternoon into evening says so when they come back to it (unless a conversation is on screen)
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && !document.querySelector('.app.talking')) renderGreeting(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !document.querySelector('.app.talking')) { porchAsk = null; renderGreeting(); } }); // coming back is a new open: a new ask
   function renderGreetingSoon() { clearTimeout(greetTimer); greetTimer = setTimeout(() => { if (!document.getElementById('greetingText').dataset.named && userFirstName()) { document.getElementById('greetingText').dataset.named = '1'; renderGreeting(); } }, 50); }
   // the Porch's welcome, by time of day: mornings build the day, later it just catches what's up there
+  // the ask rotates each open, never the same twice in a row (Marcos's list, Oct 2026); the line under it stays
   const PORCH_ASK = {
-    Morning: ["What's on today?", "Dump everything in your head. I'll sort it into your day."],
-    Afternoon: ["What's on your mind?", "Dump it here. I'll sort it out."],
-    Evening: ["Anything still up there?", "Dump it here. I'll sort it out."],
-    Hey: ["What's on your mind?", "Dump it here. I'll sort it out."],
+    Morning: [["What's on today?", "What's up?", "What's the day looking like?", "What's on your plate?"], "Dump everything in your head. I'll sort it into your day."],
+    Afternoon: [["What's on your mind?", "How's the day treating ya?", "What's happening?", "What's up?"], "Dump it here. I'll sort it out."],
+    Evening: [["How'd the day treat ya?", "What's on your mind?", "What's happening?", "What's up?"], "Dump it here. I'll sort it out."],
+    Hey: [["What's on your mind?"], "Dump it here. I'll sort it out."],
   };
+  var porchAsk = null; // { word, text }: picked once per open, so a re-render never swaps it mid-look
+  function pickPorchAsk(word) {
+    if (porchAsk && porchAsk.word === word) return porchAsk.text;
+    const list = PORCH_ASK[word][0]; let last = null; try { last = localStorage.getItem('nenemi.lastAsk'); } catch (e) {}
+    const pool = list.length > 1 ? list.filter(t => t !== last) : list;
+    const text = pool[Math.floor(Math.random() * pool.length)];
+    try { localStorage.setItem('nenemi.lastAsk', text); } catch (e) {}
+    porchAsk = { word, text }; return text;
+  }
   function renderGreeting() {
     const intro = document.getElementById('intro'); if (intro) intro.hidden = auth.signedIn || !auth.pk;
     const el = document.getElementById('greetingText'); if (!el) return;
@@ -3379,7 +3389,7 @@
     };
     // the Porch: the same welcome every open (Marcos's copy, Sep 2026)
     const word = /^(Morning|Afternoon|Evening)$/.test(timeWord) ? timeWord : 'Hey';
-    el.innerHTML = `<svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">${escapeHtml(word + (name ? ', ' + name.split(' ')[0] : '') + '.')}</p><h1 class="pb-hello">${escapeHtml(PORCH_ASK[word][0])}</h1><p class="pb-sub">${escapeHtml(PORCH_ASK[word][1])}</p>`;
+    el.innerHTML = `<svg class="pb-glyph" viewBox="0 0 1400 1134" aria-hidden="true"><path d="M0 70A70 70 0 0 1 70 0H333Q368.3 0 391.7 26L1116.9 834.1Q1130.3 849 1150.3 849H1400V1064A70 70 0 0 1 1330 1134H985.5Q960.5 1134 943.8 1115.4L215.7 304.2Q205.7 293 190.7 293H0Z"/><path d="M806 0H1330A70 70 0 0 1 1400 70V664Q1400 670 1394 670H1144V288H806Z"/><path d="M0 488Q0 478 10 478H222Q240 478 240 496V849H554V1134H70A70 70 0 0 1 0 1064Z"/></svg><p class="pb-time">${escapeHtml(word + (name ? ', ' + name.split(' ')[0] : '') + '.')}</p><h1 class="pb-hello">${escapeHtml(pickPorchAsk(word))}</h1><p class="pb-sub">${escapeHtml(PORCH_ASK[word][1])}</p>`;
     const pt = document.getElementById('porchTime'); if (pt) pt.textContent = word === 'Hey' ? '' : word;
   }
   // Home capture entries: Write focuses the box, Talk starts voice (reuses the wired mic)

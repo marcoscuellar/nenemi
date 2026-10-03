@@ -152,7 +152,7 @@ const VIEWS: View[] = [
       await expect(page.locator('#tabbar')).toBeHidden();
       // the zero-state hero: glyph, "Morning, {name}.", the welcome question, left-aligned
       await expect(page.locator('#greetingText .pb-glyph')).toBeVisible();
-      await expect(page.locator('#greetingText .pb-hello')).toHaveText(/^(What's on today\?|What's on your mind\?|Anything still up there\?)$/);
+      await expect(page.locator('#greetingText .pb-hello')).toHaveText(/^(What's on today\?|What's up\?|What's the day looking like\?|What's on your plate\?|What's on your mind\?|How's the day treating ya\?|What's happening\?|How'd the day treat ya\?)$/);
       await expect(page.locator('#greetingText')).toHaveCSS('text-align', 'left');
       await expect(page.locator('.nx-toast', { hasText: 'Open Horizon' })).toHaveCount(0); // the morning banner is gone
     },
