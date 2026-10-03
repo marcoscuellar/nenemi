@@ -3,11 +3,11 @@ const R='/home/user/nenemi/', S=process.env.S, SH=S+'/store2/'+process.env.SLOT+
 const MARK=fs.readFileSync(R+'photos/logo/nenemi-mark.svg','utf8');
 const SL=[
  {h:'Get the noise out.<br>Get a day back<b>.</b>', sub:'Type it, say it, start in the middle. You don&rsquo;t have to organize your thoughts before putting them here. NENEMI helps you see what matters today and find a place to begin.', shot:'03-day'},
- {fs:40, h:'Never pretend<br>you remembered<b>.</b>', sub:'That project, the conversation you need to finish, the thing you meant to do next&mdash;give each its own Room. NENEMI keeps the context together, so you can leave when you need to and come back knowing where you were.', shot:'02-room'},
- {fs:40, h:'You had a plan.<br>Then the day<br>happened<b>.</b>', sub:'A plan can make sense at 9 AM and feel impossible by 1 PM. Tell NENEMI where you are right now. It helps you find one small way back in.', shot:'04-stuck', dark:true},
- {fs:40, h:'The day ends.<br>What mattered<br>stays<b>.</b>', sub:'Say what happened, messy is fine. NENEMI holds what matters, gives one leftover a home, and lets the rest go. Nothing carries over unless you choose it.', shot:'07-recap'},
- {fs:42, h:'Systems help.<br>People heal<b>.</b>', sub:'NENEMI can help you hold the day. Sometimes the next step is talking to someone who understands. Finding support should be as easy to reach as everything else here.', shot:'06-humans', photos:[['photos/reality-market.jpeg','45% 35%'],['photos/conversation-human.jpg','55% 30%']]},
- {fs:46, h:'It&rsquo;s okay.<br>Nenemi has it<b>.</b>', sub:'Whatever&rsquo;s taking up space, put it here. Start with one thought. You can figure out the rest together.', closer:true},
+ {fs:34, h:'Never pretend<br>you remembered<b>.</b>', sub:'That project, the conversation you need to finish, the thing you meant to do next&mdash;give each its own Room. NENEMI keeps the context together, so you can leave when you need to and come back knowing where you were.', shot:'02-room'},
+ {fs:34, h:'You had a plan.<br>Then the day<br>happened<b>.</b>', sub:'A plan can make sense at 9 AM and feel impossible by 1 PM. Tell NENEMI where you are right now. It helps you find one small way back in.', shot:'04-stuck', dark:true},
+ {fs:34, h:'The day ends.<br>What mattered<br>stays<b>.</b>', sub:'Say what happened, messy is fine. NENEMI holds what matters, gives one leftover a home, and lets the rest go. Nothing carries over unless you choose it.', shot:'07-recap'},
+ {fs:34, h:'Systems help.<br>People heal<b>.</b>', sub:'NENEMI can help you hold the day. Sometimes the next step is talking to someone who understands. Finding support should be as easy to reach as everything else here.', shot:'06-humans', photos:[['photos/reality-market.jpeg','45% 35%'],['photos/originals/dinner-string-lights.jpg','50% 40%']]},
+ {fs:36, h:'It&rsquo;s okay.<br>Nenemi has it<b>.</b>', sub:'Whatever&rsquo;s taking up space, put it here. Start with one thought. You can figure out the rest together.', closer:true},
  {def:true},
 ];
 const page=x=>`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600&family=Archivo+Black&display=swap" rel="stylesheet"><style>
@@ -19,6 +19,7 @@ h1{font:${x.fs||36}px/1 'Archivo Black',sans-serif;letter-spacing:-.02em;color:$
 .pad{position:absolute;left:48px;width:318px;padding:9px;background:#0b0b0b;border-radius:54px;z-index:3;
  box-shadow:0 50px 90px -16px rgba(17,19,18,${x.dark?'.85':'.5'}),0 22px 40px -8px rgba(17,19,18,.3),0 0 0 2px rgba(255,255,255,${x.dark?'.2':'.1'})}
 .pad img{display:block;width:100%;border-radius:45px}
+${process.env.NOPHONE?'.pad{display:none}':''}
 .card{position:absolute;border-radius:22px;background-size:cover;box-shadow:0 20px 44px rgba(17,19,18,.2);z-index:2}
 .nm{position:absolute;left:26px;right:26px;bottom:30px;border-top:1px solid #D5D8D7;padding-top:14px}
 .nm-l{font:600 10.5px Archivo,sans-serif;letter-spacing:.24em;color:#3C8692}.nm-w{margin-top:6px;font:22px 'Archivo Black',sans-serif;letter-spacing:.18em;color:#111312}.nm-w span{font:500 15px Archivo,sans-serif;letter-spacing:0;color:#63696A;margin-left:8px}
@@ -31,10 +32,11 @@ ${x.def?'':x.closer?`<div class="card c1" style="left:18px;width:236px;height:42
 </body></html>`;
 (async()=>{const b=await chromium.launch();const W=+process.env.PW,H=+process.env.PH;const p=await b.newPage({viewport:{width:W,height:H},deviceScaleFactor:3});
  await p.route(/fonts\.(googleapis|gstatic)\.com/, r=>{const u=r.request().url(); try{const body=execFileSync('curl',['-s','-A','Mozilla/5.0 Chrome/140',u]); r.fulfill({status:200,body,contentType:u.includes('gstatic')?'font/woff2':'text/css',headers:{'access-control-allow-origin':'*'}});}catch(e){r.abort();}});
- const dir=S+'/frames/clean-'+process.env.SLOT;fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir);
+ const dir=S+'/frames/clean-'+process.env.SLOT;fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir);const tops=[];
  for(let i=0;i<SL.length;i++){const f=S+'/frames/clean.html';fs.writeFileSync(f,page(SL[i]).replace('<body>','<body style="zoom:'+(W/414)+';height:'+(H*414/W)+'px">'));await p.goto('file://'+f);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(400);
   await p.evaluate(()=>{const c=document.getElementById('cp');if(!c)return;const t=c.offsetTop+c.offsetHeight+26;const pd=document.getElementById('pd');if(pd)pd.style.top=t+'px';
    document.querySelectorAll('.ph0,.ph1').forEach((e,i)=>e.style.top=(t+(i?150:40))+'px');
    const c1=document.querySelector('.c1'),c2=document.querySelector('.c2');if(c1){c1.style.top=t+'px';c2.style.top=(t+210)+'px';}});
-  await p.waitForTimeout(150);await p.screenshot({path:dir+'/0'+(i+1)+'.png'});}
+  await p.waitForTimeout(150);tops.push(await p.evaluate(()=>{const c=document.getElementById('cp');return c?(c.offsetTop+c.offsetHeight+26)/document.body.offsetHeight:null;}));await p.screenshot({path:dir+'/0'+(i+1)+'.png'});}
+ fs.writeFileSync(dir+'/tops.json',JSON.stringify(tops));
 await b.close();})();

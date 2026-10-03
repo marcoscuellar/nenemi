@@ -73,6 +73,7 @@ const SEED = () => {
     const shot = async (name) => { await p.waitForTimeout(700); await p.screenshot({ path: path.join(out, name + '.png') }); };
 
     await p.evaluate(() => { go('home'); porchFresh(); renderGreeting(); });
+    await shot('00-porch'); // the quiet place they land: the empty Porch, nothing asked yet
     await p.fill('#composerInput', 'ugh ok. call the dentist at 3, text dani back, and make sure the blue scarf is still in stock for mom');
     await p.press('#composerInput', 'Enter'); await p.waitForTimeout(1200); await shot('01-home');
     await p.evaluate(() => openRoom('r-mom')); await shot('02-room');
