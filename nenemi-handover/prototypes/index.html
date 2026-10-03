@@ -2355,6 +2355,29 @@
      Apple only requires Sign in with Apple when another outside login is offered. The website keeps both. */
   html.in-app #ob-acct .ob-oauth, html.in-app #ob-acct .ob-divider, html.in-app .cl-socialButtonsRoot, html.in-app .cl-dividerRow { display: none !important; }
 
+  /* Home (Oct 2026): dark, the same family as Second Home. Size is importance: My day full width on top,
+     Rooms and I'm stuck side by side, Talk to NÈNÈMI a quiet link. Depth from a lighter surface and a bright hairline. */
+  #pane-hub { background: #0A0A0A; color: #EDEDED; overflow-y: auto; font-family: 'Inter', system-ui, sans-serif; padding: calc(96px + var(--sat, 0px)) 16px 120px; }
+  #pane-hub.active { display: block; }
+  #pane-hub .hub-inner { max-width: 560px; margin: 0 auto; }
+  #pane-hub .hub-h { margin: 0 0 20px; font: 700 28px/1.2 'Archivo', system-ui, sans-serif; letter-spacing: -0.015em; color: #FFFFFF; }
+  #pane-hub .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  #pane-hub .hub-tile { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 4px; min-height: 132px; padding: 20px;
+    border-radius: var(--radius); border: 1px solid rgba(255,255,255,.08); background: #161618; color: #EDEDED; font: inherit; text-align: left; cursor: pointer; }
+  #pane-hub .hub-tile svg { margin-bottom: auto; color: #A1A1AA; }
+  #pane-hub .hub-tile b { font-size: 17px; font-weight: 700; color: #FFFFFF; }
+  #pane-hub .hub-tile small { font-size: 13px; color: #A1A1AA; }
+  #pane-hub .hub-tile:hover { background: #1C1C1F; border-color: rgba(255,255,255,.16); }
+  #pane-hub .hub-tile:focus-visible, #pane-hub .hub-talk:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
+  #pane-hub .hub-day { grid-column: 1 / -1; min-height: 160px; }
+  #pane-hub .hub-day b { font-size: 22px; }
+  #pane-hub .hub-stuck { background: #FFFFFF; border-color: #FFFFFF; color: #111312; }
+  #pane-hub .hub-stuck svg, #pane-hub .hub-stuck b { color: #111312; }
+  #pane-hub .hub-stuck:hover { background: #F4F4F5; border-color: #F4F4F5; }
+  #pane-hub .hub-talk { display: block; margin: 20px auto 0; min-height: 44px; padding: 10px 16px; border: 0; background: none; color: #A1A1AA; font: 500 14px/1.4 'Inter', system-ui, sans-serif; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #52525B; }
+  #pane-hub .hub-talk:hover { color: #FFFFFF; }
+  @media (min-width: 900px) { #pane-hub { padding-left: 240px; padding-top: 92px; } }
+
   @media (max-width: 720px) {
     body { background: #fff; }
     .main::before { background: #fff; height: 64px; border-bottom: 3px solid var(--ink); }
@@ -2399,7 +2422,7 @@
     /* room view: modular cards, dock stays side by side, big task shrinks a step */
     #pane-roomview .rv-body { gap: 12px; }
     /* v4: 100px of air between the last thing on any scrolling screen and the tab dock (78px tall) */
-    #pane-rooms, #pane-notes, #pane-humans { padding-bottom: calc(178px + var(--sab)); }
+    #pane-rooms, #pane-notes, #pane-humans, #pane-hub { padding-bottom: calc(178px + var(--sab)); }
     .nx-toasts { top: calc(24px + var(--sat)); width: calc(100vw - 24px); }
     #pane-roomview, .rv-container, #pane-calendar { padding-bottom: calc(120px + env(safe-area-inset-bottom)) !important; }
     #pane-calendar, #pane-roomview { padding-left: 16px; padding-right: 16px; }
@@ -2750,7 +2773,7 @@
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 4.5h12M2 8h12M2 11.5h12" stroke-linecap="round"/></svg>
     </div>
     <nav class="topnav" id="topnav">
-      <div class="tn active" id="tn-home" onclick="go('home')">Home</div>
+      <div class="tn active" id="tn-home" onclick="go('hub')">Home</div>
       <div class="tn-wrap" onmouseenter="openRoomsMega()" onmouseleave="closeRoomsMegaSoon()">
         <div class="tn tn-has-menu" id="tn-rooms" onclick="go('rooms')">Rooms<svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="tn-menu" id="roomsMega" hidden></div>
@@ -2834,6 +2857,19 @@
         <button type="button" class="sh-tile" onclick="shGo('calendar')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span><b>My day</b><small>What's happening now, and what's next.</small></span><i aria-hidden="true">›</i></button>
         <button type="button" class="sh-tile" onclick="shGo('rooms')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="7.5" r="3.2"/><circle cx="16.5" cy="7.5" r="3.2"/><circle cx="7.5" cy="16.5" r="3.2"/><circle cx="16.5" cy="16.5" r="3.2"/></svg><span><b>Rooms</b><small>Where each thing lives, right where you left it.</small></span><i aria-hidden="true">›</i></button>
         <button type="button" class="sh-tile sh-stuck" onclick="shGo('stuck')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><span><b>I'm stuck</b><small>One small way back in.</small></span><i aria-hidden="true">›</i></button>
+      </div>
+    </div>
+
+    <!-- Home (Oct 2026): where the Home tab goes. The Porch is for walking in; this is the way to the structure. -->
+    <div class="pane" id="pane-hub">
+      <div class="hub-inner">
+        <h1 class="hub-h">Home</h1>
+        <div class="hub-grid">
+          <button type="button" class="hub-tile hub-day" onclick="go('calendar')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><b>My day</b><small id="hubDayLine"></small></button>
+          <button type="button" class="hub-tile" onclick="go('rooms')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="7.5" r="3.2"/><circle cx="16.5" cy="7.5" r="3.2"/><circle cx="7.5" cy="16.5" r="3.2"/><circle cx="16.5" cy="16.5" r="3.2"/></svg><b>Rooms</b><small id="hubRoomsLine"></small></button>
+          <button type="button" class="hub-tile hub-stuck" onclick="go('stuck')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg><b>I'm stuck</b></button>
+        </div>
+        <button type="button" class="hub-talk" onclick="porchFresh()">Talk to NÈNÈMI</button>
       </div>
     </div>
 
@@ -3203,7 +3239,7 @@
 
     <!-- SHARED BOTTOM NAV -->
     <nav class="tabbar" id="tabbar" aria-label="Main">
-      <button type="button" class="tab active" id="nav-home" onclick="go('home')">
+      <button type="button" class="tab active" id="nav-home" onclick="go('hub')">
         <span class="tab-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10.5V20h12v-9.5"/></svg></span>
         <span class="tab-lb">Home</span>
       </button>
@@ -3316,25 +3352,26 @@
     document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
     document.getElementById('pane-' + id).classList.add('active');
     document.querySelectorAll('.nav-item, .tabbar .tab').forEach(n => n.classList.remove('active'));
-    const tabMap = { roomview: 'rooms', notes: 'calendar', lockdown: 'stuck', humans: 'stuck', place: 'home' };
+    const tabMap = { roomview: 'rooms', notes: 'calendar', lockdown: 'stuck', humans: 'stuck', place: 'home', hub: 'home' };
     const nav = document.getElementById('nav-' + id) || document.getElementById('nav-' + (tabMap[id] || ''));
     if (nav) nav.classList.add('active');
     closeDayMenu();
     closeRoomsMegaSoon();
     closeNavDrawer();
-    const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id === 'lockdown' ? 'stuck' : id);
+    const tnId = 'tn-' + (id === 'roomview' ? 'rooms' : id === 'lockdown' ? 'stuck' : id === 'hub' ? 'home' : id);
     if (id === 'notes') renderNotes();
     document.querySelectorAll('.topnav .tn').forEach(n => n.classList.toggle('active', n.id === tnId));
     if (id === 'rooms') renderRoomList();
     if (id === 'calendar') scrollCalToNow();
     if (id === 'home') renderHomeReturn();
     if (id === 'place') applyProfileChrome();
+    if (id === 'hub') renderHub();
     renderSideRooms();
     document.querySelector('.app').classList.toggle('quiet', id === 'stuck' || id === 'lockdown' || id === 'humans');
     document.querySelector('.app').classList.toggle('porch-mode', id === 'home'); // the Porch is its own dark screen: no tab bar, no app header
     if (id !== 'home') closeSecondHome();
     // transitional: panes still on the dark system get light top-chrome (wordmark/account). Removed per pane as each is converted.
-    const darkPanes = ['stuck','lockdown','humans'];
+    const darkPanes = ['stuck','lockdown','humans','hub'];
     document.querySelector('.app').classList.toggle('dark-pane', darkPanes.includes(id));
     if (id === 'stuck') showDoors();
     stopVoice();
@@ -4214,6 +4251,13 @@
   function openSecondHome() { const s = document.getElementById('secondHome'); if (!s) return; s.hidden = false; requestAnimationFrame(() => s.classList.add('open')); const t = s.querySelector('.sh-tile'); if (t) setTimeout(() => t.focus(), 60); }
   function closeSecondHome() { const s = document.getElementById('secondHome'); if (!s || s.hidden) return; s.classList.remove('open'); setTimeout(() => { if (!s.classList.contains('open')) s.hidden = true; }, 220); }
   function shGo(id) { closeSecondHome(); go(id); }
+  // Home's tiles each carry one quiet live line: what's open today, and the room they were last in
+  function renderHub() {
+    const open = dayList(today).filter(e => !e.done).length;
+    const d = document.getElementById('hubDayLine'); if (d) d.textContent = open ? `${open} open today` : 'Nothing on today';
+    const last = rooms.filter(r => !r.archived && r.lastVisited).sort((a, b) => b.lastVisited - a.lastVisited)[0];
+    const r = document.getElementById('hubRoomsLine'); if (r) r.textContent = last ? `Last in ${last.name}` : 'Where each thing lives';
+  }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSecondHome(); });
   document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.classList && e.target.classList.contains('chip')) { e.preventDefault(); e.target.click(); } });
   (function () { const t = document.getElementById('porchThread'), log = document.getElementById('chatLog'); if (!t || !log || !window.MutationObserver) return;

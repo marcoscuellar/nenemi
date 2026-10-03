@@ -290,11 +290,15 @@ test('critical path + storage', async ({ context, page }, info) => {
     await expect(page.locator('#pane-stuck')).toHaveClass(/\bactive\b/, { timeout: 4_000 });
   }, 'body');
 
-  await step('mid-conversation → Second Home (Day, Rooms, Stuck)', async () => {
-    // back on the Porch the conversation is still going; the way out to the structure has to be right there
+  await step('Home tab → Home (Day, Rooms, Stuck) → a fresh Porch → Second Home', async () => {
+    // the Home tab goes to Home, never back into an old conversation
     await page.locator('#nav-home:visible, #tn-home:visible').first().click();
+    await expect(page.locator('#pane-hub')).toHaveClass(/\bactive\b/);
+    for (const t of ['My day', 'Rooms', "I'm stuck"]) await expect(page.locator('#pane-hub .hub-tile', { hasText: t })).toBeVisible();
+    await page.locator('#pane-hub .hub-talk').click();
     await expect(page.locator('#pane-home')).toHaveClass(/\bactive\b/);
-    await expect(page.locator('.app')).toHaveClass(/\btalking\b/);
+    await expect(page.locator('.app')).not.toHaveClass(/\btalking\b/);
+    await expect(page.locator('#greetingText .pb-hello')).toBeVisible();
     const escape = page.locator('#secondHomeBtn');
     await expect(escape).toBeInViewport();
     await escape.click();
