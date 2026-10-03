@@ -24,16 +24,16 @@ No login or credentials are needed. All core features work without an account.
 - Full path: tap "Let me show you around", answer a few short questions, type one thing on your mind, and the app creates your first project. After the subscription screen (you can choose Free), you land on the home screen.
 - Home: type or hold the mic to talk. The app sorts what you wrote into today's plan or a project.
 - The grid button at the top right opens My day, Rooms, and I'm stuck.
-- Accounts are optional and only offered with a paid plan (Sign in with Apple, Google, or email code). To delete an account: open the "···" menu at the top right → Delete my account. This permanently deletes the account and all its data on our servers.
+- Accounts are optional and only offered with a paid plan (email and password). To delete an account: open the "···" menu at the top right → Delete my account. This permanently deletes the account and all its data on our servers.
 - Subscriptions are sold only through Apple In-App Purchase (monthly and annual with a 7-day free trial), with Restore Purchases, the auto-renewal terms, the Terms of Use (EULA) and the Privacy Policy on the subscription screen.
 - No sample files are needed.
-- No demo account is needed: every feature works without signing in. To see account creation and deletion, buy a plan with a Sandbox Apple Account and choose Sign in with Apple on the account card.
+- No demo account is needed: every feature works without signing in. To see account creation and deletion, buy a plan with a Sandbox Apple Account, then create an account with any email and password on the account card.
 
 **4. External services**
 - Anthropic (Claude API): sorts the text the person types or dictates into today's plan or a project. Only the text they submit and their project names are sent. If it can't be reached, the app sorts on the device instead.
 - Apple Speech framework: turns voice into text for the mic.
 - Apple In-App Purchase through RevenueCat: subscriptions and restoring purchases.
-- Clerk: optional sign-in (Sign in with Apple, Google, email code).
+- Clerk: optional sign-in (email and password in the iPhone app).
 - Neon (Postgres database): syncs the person's data between devices when they have an account or a sync code.
 - Vercel: hosts the app and its API. Vercel Blob stores photos and PDFs the person attaches to a project.
 - Calendar feed (our own): an optional subscribe link so the day plan shows up in the person's calendar app.
@@ -70,7 +70,7 @@ Turn on recording: Settings → Control Center → add Screen Recording. Start r
 3. Type a name, answer the questions quickly, type one thing on your mind, tap "Looks good, let's lock it in".
 4. Hold the promise button for 3 seconds.
 5. Subscription screen: show the plans, scroll to Restore Purchases and the Terms / Privacy links. Pick the annual plan and buy it in the sandbox (this shows paid content).
-6. Account card: Sign in with Apple (this shows account creation).
+6. Account card: sign up with an email and password (this shows account creation).
 7. Home: type a messy thought and send it. Show it get sorted. Tap "Open Today".
 8. My day: check a task off.
 9. Grid button → Rooms → open a room → "Start focus" → "That's done."
