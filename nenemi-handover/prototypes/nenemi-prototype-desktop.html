@@ -2065,6 +2065,11 @@
   .nx-task-row .nx-task-check { margin-top: 0; }
   .nx-task-name { font-size: 14px; font-weight: 600; color: var(--ink); }
   .nx-task-sub { font-size: 12px; color: #6B7280; margin-top: 3px; }
+  /* planner cues (Oct 2026, from COS): a quiet walk-in line under a block, the day's intention under My day, the pace pill */
+  .nx-walkin { font-size: 12px; color: #71717A; margin-top: 3px; }
+  .nx-intro.is-intention { color: #111312; font-weight: 600; }
+  .nx-pace { border: 1px solid #E5E7EB; background: #fff; color: #111312; border-radius: 99px; padding: 3px 10px; font-family: inherit; font-size: 12px; font-weight: 650; cursor: pointer; }
+  .nx-pace:hover { border-color: #111312; }
   .nx-dot { margin: 0 7px; color: #B6BDC0; }
   .nx-time { white-space: nowrap; font-variant-numeric: tabular-nums; }
   .nx-task-row.now { margin: 4px -12px; padding-left: 11px; padding-right: 11px; background: rgba(17,19,18,0.04); border: 1px solid rgba(17,19,18,0.35); border-radius: 12px; box-shadow: 0 4px 16px -2px rgba(17,19,18,0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.03); }
@@ -2449,8 +2454,8 @@
     #pane-home .pb-pill { height: 44px; }
     #pane-home .porch-bar { padding-top: 4px; padding-bottom: 4px; }
     .nx-quick-add input, .nx-quick-add select { min-height: 44px; }
-    .nx-task-check, .nx-row-jump, .nx-bump, .nx-row-link, .nx-text-button, .nx-crumb button, .nx-shrink button, #pane-home .porch-demo button { position: relative; }
-    .nx-task-check::after, .nx-row-jump::after, .nx-bump::after, .nx-row-link::after, .nx-text-button::after, .nx-crumb button::after, .nx-shrink button::after, #pane-home .porch-demo button::after {
+    .nx-task-check, .nx-row-jump, .nx-bump, .nx-row-link, .nx-text-button, .nx-crumb button, .nx-shrink button, #pane-home .porch-demo button, .nx-pace { position: relative; }
+    .nx-task-check::after, .nx-row-jump::after, .nx-bump::after, .nx-row-link::after, .nx-text-button::after, .nx-crumb button::after, .nx-shrink button::after, #pane-home .porch-demo button::after, .nx-pace::after {
       content: ''; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
   }
 </style>
@@ -2900,7 +2905,7 @@
           <div>
             <div class="nx-crumb">Your space · <span id="nxDateCrumb"></span></div>
             <h1 class="nx-h1">My day</h1>
-            <p class="nx-intro">A little room for what matters now.</p>
+            <p class="nx-intro" id="nxIntro">A little room for what matters now.</p>
           </div>
           <button type="button" id="clearDayBtn" class="nx-text-button" onclick="clearDay()">Clear day</button>
         </div>
@@ -2944,6 +2949,7 @@
               <div class="nx-small-divider"></div>
               <div class="nx-mini-row"><span>Today</span><strong id="nxSummaryToday">Clear</strong></div>
               <div class="nx-mini-row"><span>Waiting in rooms</span><strong id="nxSummaryRooms">0 open</strong></div>
+              <div class="nx-mini-row"><span>Pace</span><button type="button" class="nx-pace" id="nxPace" onclick="cyclePace()">Steady</button></div>
             </section>
             <section class="nx-card nx-pad nx-note-card">
               <div class="nx-eyebrow">Whenever you're ready</div>
@@ -4475,6 +4481,7 @@
     const toToday = it => {
       const a = hrs(it.start), b = hrs(it.end);
       const ev = { name: it.text, kind: 'block', createdAt: Date.now() + onToday, source };
+      if (typeof it.walk_in === 'string' && it.walk_in) ev.walkIn = it.walk_in.slice(0, 80);
       if (a !== null) { ev.start = a; ev.end = b !== null && b > a ? b : a + 0.5; } else { ev.anytime = true; ev.start = 0; ev.end = 0; }
       normalizeEvent(ev); dayList(today).push(ev); onToday++;
     };
@@ -4491,6 +4498,8 @@
       parkedLoose.push(it.text); loose.unshift({ text: it.text, source, ts: Date.now() });
     }
     touched.forEach(r => { if (r !== fresh) r.log.unshift({ source, ts: Date.now(), text }); });
+    const intention = onToday && typeof d.intention === 'string' && d.intention ? d.intention.slice(0, 120) : null;
+    if (intention) setDayMeta(today, { intention });
     save(); try { renderCal(); renderRoomList(); renderSideRooms(); renderHomeReturn(); renderLoose(); } catch (e) {}
     const kept = d.items.filter(it => it.dest !== 'held').length;
     const chips = [];
@@ -4510,6 +4519,7 @@
       line = bits.length ? `Got it. ${bits.join(', ')}.` : 'Heard. Nothing to file.';
     }
     if (!kept && !d.reply) line = 'Heard. Nothing to file.';
+    if (intention) line += ' ' + intention;
     say(line, chips);
   }
 
@@ -4869,6 +4879,7 @@
   let carried = [];
   let loose = []; // thoughts you chose not to put in a room yet
   let notes = {}; // yyyy-mm-dd -> what they wrote about that day. theirs only.
+  let dayMeta = {}; // yyyy-mm-dd -> { intention, pace }: the planner's one line for the day, and a pace they said out loud for it
   let checklist = []; // one ongoing to-do list on My Day: [{ id, text, done }]
   // how they said they work (onboarding 2–12). Every answer changes something real; no answer = the default app.
   let profile = {};
@@ -4997,6 +5008,9 @@
     const waiting = rooms.filter(r => !r.archived).reduce((n, r) => n + r.loops.filter(l => !l.resolved).length, 0);
     const sR = document.getElementById('nxSummaryRooms'); if (sR) { sR.textContent = `${waiting} open`; sR.parentElement.hidden = pf('longList') === 'urgent'; } // everything feels urgent: no pile count
     const sync = document.getElementById('nxSyncLink'); if (sync) sync.hidden = !pfTool('calendar');
+    const intent = (dayMeta[dkey(today)] || {}).intention, intro = document.getElementById('nxIntro');
+    if (intro) { intro.textContent = intent && all.length ? intent : 'A little room for what matters now.'; intro.classList.toggle('is-intention', Boolean(intent && all.length)); }
+    const paceBtn = document.getElementById('nxPace'); if (paceBtn) { const pc = dayPace(today); paceBtn.textContent = PACE_LABEL[pc]; paceBtn.setAttribute('aria-label', `Pace for planning the day: ${PACE_LABEL[pc]}. Changes it.`); }
     const sel = document.getElementById('nxDayRoom');
     if (sel) { const keep = sel.value; sel.innerHTML = `<option value="">No room</option>` + rooms.filter(r => !r.archived).map(r => `<option value="${escapeHtml(r.id)}">${escapeHtml(r.name)}</option>`).join(''); sel.value = [...sel.options].some(o => o.value === keep) ? keep : ''; }
     const el = document.getElementById('nxHorizon');
@@ -5025,7 +5039,7 @@
           ].join('');
           return `<div class="nx-task-row${isNow ? ' now' : ''}${e.done ? ' is-done' : ''}">
             <button type="button" class="nx-task-check${e.done ? ' completed' : ''}" onclick="nxToggleEvent(${i})" aria-label="${e.done ? 'Mark as open' : 'Mark as done'}">${e.done ? '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="m4 10 4 4 8-8"/></svg>' : ''}</button>
-            <div class="nx-task-body"><div class="nx-task-name${e.done ? ' completed' : ''}">${escapeHtml(e.name)}${isNow ? '<span class="nx-now">NOW</span>' : ''}${e === startHere ? '<span class="nx-start-here">Start here</span>' : ''}</div><div class="nx-task-sub">${sub}</div>${bar}</div>
+            <div class="nx-task-body"><div class="nx-task-name${e.done ? ' completed' : ''}">${escapeHtml(e.name)}${isNow ? '<span class="nx-now">NOW</span>' : ''}${e === startHere ? '<span class="nx-start-here">Start here</span>' : ''}</div><div class="nx-task-sub">${sub}</div>${e.walkIn && !e.done ? `<div class="nx-walkin">${escapeHtml(e.walkIn)}</div>` : ''}${bar}</div>
             <div class="nx-task-right">${right}</div>
           </div>`;
         };
@@ -5387,7 +5401,23 @@
     save(); renderCal();
   }
   function letRest() { try { localStorage.setItem(REST_KEY, dkey(today)); } catch (e) {} renderCarryPrompt(); }
-  function clearDay() { events[dkey(today)] = []; save(); renderCal(); }
+  function clearDay() { events[dkey(today)] = []; if (dayMeta[dkey(today)]) delete dayMeta[dkey(today)].intention; save(); renderCal(); }
+  // pace (Oct 2026, from COS): how full the planner makes a day. Already set, never asked: a tap moves it along,
+  // and saying it in a dump ("go easy today", "deep work day") sets it for that day only.
+  const PACES = ['steady', 'easy', 'deep'], PACE_LABEL = { steady: 'Steady', easy: 'Easy', deep: 'Deep work' };
+  function dayPace(d) { const m = dayMeta[dkey(d)]; return (m && PACES.includes(m.pace) && m.pace) || (PACES.includes(profile.pace) && profile.pace) || 'steady'; }
+  function cyclePace() {
+    const next = PACES[(PACES.indexOf(dayPace(today)) + 1) % PACES.length];
+    profile.pace = next; if (dayMeta[dkey(today)]) delete dayMeta[dkey(today)].pace;
+    save(); renderCal();
+  }
+  function paceFrom(raw) {
+    if (/\b(go(ing)? easy|easy day|low[- ]energy|gentle day|wiped|exhausted|drained|breathing room|take it slow)\b/i.test(raw)) return 'easy';
+    if (/\b(deep work|heads[- ]down|deep focus|long focus|no interruptions)\b/i.test(raw)) return 'deep';
+    if (/\b(packed|tight day|full day|busy day|get through a lot)\b/i.test(raw)) return 'steady';
+    return null;
+  }
+  function setDayMeta(d, patch) { const k = dkey(d); dayMeta[k] = Object.assign({}, dayMeta[k], patch); }
 
   // ---------- zero-shame rollover ----------
   function renderRollover() {
@@ -5479,6 +5509,7 @@
       now: toTimeValue(now.getHours() + now.getMinutes() / 60),
       existing: dayList(selectedDay).slice().sort((a, b) => a.start - b.start).map(e => ({ start: toTimeValue(e.start), end: toTimeValue(e.end), name: e.name, kind: e.kind })),
       rooms: rooms.filter(r => !r.archived).map(r => ({ id: r.id, name: r.name })),
+      pace: dayPace(selectedDay),
     };
     const r = await fetch(apiUrl().replace('/api/state', '/api/plan'), { method: 'POST', headers: await authHeaders({ 'content-type': 'application/json' }), body: JSON.stringify(ctx) });
     if (!r.ok) throw new Error('plan ' + r.status);
@@ -5493,27 +5524,28 @@
   }
   function placeItems(items, dayStart) {
     const list = dayList(selectedDay);
+    const AIR = dayPace(selectedDay) === 'easy' ? 0.5 : 0.25; // an easy day leaves more air between things
     const from = planFrom(dayStart);
     const out = { fixed: 0, blocks: 0, buffers: 0, skipped: 0, tomorrowCount: 0, firstAvoid: null, placed: [] };
     // anything that doesn't fit today goes first thing tomorrow instead of vanishing
     const tmDate = new Date(selectedDay); tmDate.setDate(tmDate.getDate() + 1); const tmList = dayList(tmDate);
     const roomFor = it => rooms.find(r => r.id === it.room_id) || rooms.find(r => { const w = r.name.toLowerCase().split(' ')[0]; return w.length >= 4 && it.name.toLowerCase().includes(w); }) || null;
     function spill(it, dur) { const s = nextFreeSlot(tmList, dur, dayStart != null ? dayStart : 8); if (s === null) { out.skipped++; return; } const room = roomFor(it); tmList.push({ start: s, end: s + dur, name: it.name, kind: it.kind, room: room ? room.id : null }); out.tomorrowCount++; }
-    function put(it, s, dur) { const room = roomFor(it); list.push({ start: s, end: s + dur, name: it.name, kind: it.kind, room: room ? room.id : null }); out.placed.push({ it, s, e: s + dur, room }); if (it.kind === 'fixed') out.fixed++; else if (it.kind === 'buffer') out.buffers++; else out.blocks++; }
+    function put(it, s, dur) { const room = roomFor(it); list.push({ start: s, end: s + dur, name: it.name, kind: it.kind, room: room ? room.id : null, ...(it.walk_in ? { walkIn: it.walk_in } : {}) }); out.placed.push({ it, s, e: s + dur, room }); if (it.kind === 'fixed') out.fixed++; else if (it.kind === 'buffer') out.buffers++; else out.blocks++; }
     const dupe = it => list.some(x => x.name.toLowerCase() === it.name.toLowerCase());
     // 1. anything with a clock time goes exactly there
     items.filter(i => i.start !== null).forEach(i => { if (dupe(i)) return; const dur = i.minutes / 60; if (i.start + dur > DAY_END) { spill(i, dur); return; } put(i, i.start, dur); });
     // 2. what they asked to prioritize goes before everything else, full length, so it finishes on time
     items.filter(i => i.start === null && i.priority).forEach(i => {
       if (dupe(i)) return; const dur = i.minutes / 60;
-      const s = nextFreeSlot(list, dur + 0.25, from); if (s === null) { spill(i, dur); return; }
+      const s = nextFreeSlot(list, dur + AIR, from); if (s === null) { spill(i, dur); return; }
       put(i, s, dur); out.firstPriority = out.firstPriority || i.name;
       if (i.due != null && s + dur > i.due) out.lateFor = out.lateFor || i.name;
     });
     // 3. the thing being avoided goes next, and small
     items.filter(i => i.start === null && !i.priority && i.avoiding).forEach(i => {
       if (dupe(i)) return; const dur = Math.min(i.minutes, 30) / 60;
-      const s = nextFreeSlot(list, dur + 0.25, from); if (s === null) { spill(i, dur); return; }
+      const s = nextFreeSlot(list, dur + AIR, from); if (s === null) { spill(i, dur); return; }
       put(i, s, dur); if (!out.firstAvoid) out.firstAvoid = i.name;
     });
     // 4. everything else in the order it came, with 15 minutes of air after each (lunch lands around 12:15 when that's free)
@@ -5524,8 +5556,8 @@
       const meal = i.kind === 'buffer' ? (/lunch/i.test(i.name) ? { pref: 12.25, notBefore: 11.5 } : /dinner/i.test(i.name) ? { pref: 18, notBefore: 17.5 } : /breakfast/i.test(i.name) ? { pref: 8, notBefore: 6.5 } : null) : null;
       const pref = meal && from <= meal.pref ? meal.pref : null;
       const lowFrom = i.kind === 'block' && i.energy === 'low' && from < SLUMP ? SLUMP : from;
-      let s = (pref !== null && !overlaps(list, pref, pref + dur)) ? pref : nextFreeSlot(list, dur + 0.25, meal ? Math.max(from, meal.notBefore) : lowFrom);
-      if (s === null && lowFrom !== from) s = nextFreeSlot(list, dur + 0.25, from);
+      let s = (pref !== null && !overlaps(list, pref, pref + dur)) ? pref : nextFreeSlot(list, dur + AIR, meal ? Math.max(from, meal.notBefore) : lowFrom);
+      if (s === null && lowFrom !== from) s = nextFreeSlot(list, dur + AIR, from);
       if (s === null) { spill(i, dur); return; }
       put(i, s, dur);
     });
@@ -5546,9 +5578,19 @@
     if (dkey(selectedDay) === dkey(today) && new Date().getHours() >= DAY_END - 1) {
       const tm = new Date(today); tm.setDate(tm.getDate() + 1); selectedDay = tm; builtTomorrow = true;
     }
+    // a pace said out loud ("go easy today") holds for this day only; the pill keeps the everyday one
+    const said = paceFrom(raw); if (said) setDayMeta(selectedDay, { pace: said });
     let plan = null;
     if (auth.smart && location.protocol !== 'file:') { try { plan = await smartPlan(raw); } catch (e) { plan = null; } }
-    const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), priority: Boolean(it.priority), due: hourOf(it.due), energy: it.energy === 'low' ? 'low' : 'high', room_id: it.room_id || null })) : heuristicItems(raw);
+    if (plan && PACES.includes(plan.pace)) setDayMeta(selectedDay, { pace: plan.pace });
+    const items = plan ? (plan.items || []).map(it => ({ name: it.name, kind: it.kind, start: hourOf(it.start), minutes: it.minutes || 40, avoiding: Boolean(it.avoiding), priority: Boolean(it.priority), due: hourOf(it.due), energy: it.energy === 'low' ? 'low' : 'high', room_id: it.room_id || null, walk_in: typeof it.walk_in === 'string' && it.walk_in ? it.walk_in.slice(0, 80) : null })) : heuristicItems(raw);
+    if (!plan) { // no Claude: the pace still shapes the lengths
+      const pc = dayPace(selectedDay); let deep = 0;
+      items.forEach(it => { if (it.kind !== 'block' || it.start !== null) return;
+        if (pc === 'easy') it.minutes = Math.min(it.minutes, 35);
+        else if (pc === 'deep' && it.energy === 'high' && !it.avoiding && deep++ < 2) it.minutes = Math.max(it.minutes, 75); });
+    }
+    if (plan && typeof plan.intention === 'string' && plan.intention) setDayMeta(selectedDay, { intention: plan.intention.slice(0, 120) });
     const dayStart = plan ? hourOf(plan.day_start) : dayStartFrom(raw);
     if (!items.length) {
       if (builtTomorrow) selectedDay = new Date(today);
@@ -5559,6 +5601,7 @@
     const n = r.fixed + r.blocks + r.buffers;
     let note = builtTomorrow ? "It's late, so this is tomorrow's day. " : '';
     if (plan && plan.reply && n) note += plan.reply + ' ';
+    if (plan && plan.intention && n) note += plan.intention + ' ';
     else note += `Built. ${r.fixed} fixed, ${r.blocks} block${r.blocks === 1 ? '' : 's'}, ${r.buffers} buffer${r.buffers === 1 ? '' : 's'}.`;
     if (!plan && r.firstPriority) note += ` "${r.firstPriority}" goes first, like you asked.`;
     if (!plan && r.firstAvoid && !r.firstPriority) note += ` "${r.firstAvoid}" goes first, 30 minutes, that's all.`;
@@ -5585,7 +5628,7 @@
   // ---------- storage (local for now — see docs/nenemi-storage-plan.md for the real thing) ----------
   const STORE_KEY = 'nenemi.v1';
   function save() {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, checklist, profile, savedAt: Date.now() })); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ rooms, events, carried, loose, notes, checklist, profile, dayMeta, savedAt: Date.now() })); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     clearTimeout(syncTimer); syncTimer = setTimeout(pushState, 800);
   }
   function restore() {
@@ -5602,6 +5645,7 @@
       notes = d.notes && typeof d.notes === 'object' ? d.notes : {};
       checklist = Array.isArray(d.checklist) ? d.checklist : [];
       profile = d.profile && typeof d.profile === 'object' && !Array.isArray(d.profile) ? d.profile : {};
+      dayMeta = d.dayMeta && typeof d.dayMeta === 'object' && !Array.isArray(d.dayMeta) ? d.dayMeta : {};
       return true;
     } catch (e) { return false; }
   }
@@ -5633,7 +5677,7 @@
     const d = demoSample();
     rooms.splice(0, rooms.length, ...d.rooms);
     Object.keys(events).forEach(k => delete events[k]); Object.assign(events, d.events);
-    loose = []; carried = []; profile = {};
+    loose = []; carried = []; profile = {}; dayMeta = {};
     save();
     try { localStorage.setItem('nenemi.onboarded', '1'); localStorage.setItem('nenemi.seen', '1'); } catch (e) {}
     obFlow = false; hideOnboard();

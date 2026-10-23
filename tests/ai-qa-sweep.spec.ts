@@ -24,8 +24,8 @@ const TYPES: Record<string, string> = {
 };
 
 // ---------- harness ----------
-async function serve(context: BrowserContext, { billing = false, iap = false, route = null as null | ((body: any) => any) } = {}) {
-  const routeFn = route;
+async function serve(context: BrowserContext, { billing = false, iap = false, route = null as null | ((body: any) => any), plan = null as null | ((body: any) => any) } = {}) {
+  const routeFn = route, planFn = plan;
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
     if (url.origin !== ORIGIN) {
@@ -38,6 +38,7 @@ async function serve(context: BrowserContext, { billing = false, iap = false, ro
     if (url.pathname === '/api/iap')
       return route.fulfill({ json: { plan: 'paid', planSource: 'apple', planUntil: null, trialEnd: null, roomLimit: null } });
     if (url.pathname === '/api/route' && routeFn) return route.fulfill({ json: routeFn(JSON.parse(route.request().postData() || '{}')) });
+    if (url.pathname === '/api/plan' && planFn) return route.fulfill({ json: planFn(JSON.parse(route.request().postData() || '{}')) });
     if (url.pathname.startsWith('/api/')) return route.fulfill({ json: {} });
     const file = path.join(ROOT, url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname));
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return route.fulfill({ status: 200, body: '' });
@@ -510,6 +511,62 @@ test('Porch router: a spoken day plan never comes back as nothing', async ({ con
   expect(await page.evaluate('dayList(today).length') as number, 'something landed on Today').toBeGreaterThan(before);
   const ok = errors.length === 0;
   record(info, { view: 'Porch router: spoken day plan', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
+  expect(errors, 'console errors').toEqual([]);
+});
+
+// ---------- planner cues (Oct 2026, from COS): walk-in line, the day's intention, pace ----------
+test('Planner cues: walk-in, intention, pace', async ({ context, page }, info) => {
+  // the server's own check: grounded, calm, never an instruction aimed at the person
+  const { sourceVocabulary } = await import('../lib/grounding.js');
+  const { cleanCue } = await import('../lib/cues.js');
+  const v = sourceVocabulary(['finish the report, call mom at 3, laundry']);
+  expect(cleanCue('The doc open is enough', v, 8)).toBe('The doc open is enough.');
+  expect(cleanCue('The report gets the morning. Everything else can wait!', v, 14)).toBe('The report gets the morning. Everything else can wait.');
+  for (const bossy of ['Just open the doc.', 'Protect the morning.', 'You should start early.', 'Start with one line.']) expect(cleanCue(bossy, v, 14), bossy).toBeNull();
+  expect(cleanCue('Five minutes with Sarah counts.', v, 8), 'a name nobody said').toBeNull();
+  expect(cleanCue('One rough line counts, even a messy one, really it does.', v, 8), 'too long').toBeNull();
+
+  const plans: any[] = [];
+  await serve(context, {
+    route: () => ({ kind: 'day', go_to: null, go_room_id: null, new_room: null, reply: 'Got it. Slotted into Today.', intention: 'The report gets the morning. The rest can wait.', items: [
+      { text: 'Finish the report', dest: 'today', start: null, end: null, room_id: null, walk_in: 'The doc open is enough.' },
+      { text: 'Call mom', dest: 'today', start: '15:00', end: null, room_id: null, walk_in: null },
+      { text: 'Laundry', dest: 'today', start: null, end: null, room_id: null, walk_in: null } ] }),
+    plan: body => { plans.push(body); return { items: [], day_start: null, pace: null, intention: null, heard_but_left_out: [], reply: '' }; },
+  });
+  await asReturning(context);
+  const errors = watchConsole(page);
+  await page.goto(ORIGIN + '/', { waitUntil: 'domcontentloaded' });
+  await pastSplash(page);
+  await page.fill('#composerInput', 'plan my day: finish the report, call mom at 3, laundry');
+  await page.press('#composerInput', 'Enter');
+  await expect(page.locator('#chatLog .bubble.sorted').last()).toHaveText('Got it. Slotted into Today. The report gets the morning. The rest can wait.');
+  expect(await page.evaluate("dayList(today).find(e => e.name === 'Finish the report').walkIn")).toBe('The doc open is enough.');
+
+  await page.evaluate("go('calendar')");
+  await expect(page.locator('#nxIntro')).toHaveText('The report gets the morning. The rest can wait.');
+  const cue = page.locator('.nx-walkin').filter({ visible: true });
+  await expect(cue).toHaveText(['The doc open is enough.']);
+  expect(await cue.first().evaluate(el => getComputedStyle(el).color)).toBe(CARBON);
+  // pace: already set, one tap moves it along, and it holds
+  const pill = page.locator('#nxPace');
+  await expect(pill).toHaveText('Steady');
+  await pill.click(); await expect(pill).toHaveText('Easy');
+  expect(await page.evaluate('profile.pace')).toBe('easy');
+  // a pace said out loud holds for that day and goes to the planner
+  await page.evaluate("planDay('deep work day, finish the slides')");
+  await expect.poll(() => plans.length).toBe(1);
+  expect(plans[0].pace).toBe('deep');
+  // done rows drop the cue; clearing the day drops the intention
+  await page.evaluate("dayList(today).find(e => e.name === 'Finish the report').done = true; renderCal();");
+  await expect(page.locator('.nx-walkin').filter({ visible: true })).toHaveCount(0);
+  await page.evaluate('clearDay()');
+  await expect(page.locator('#nxIntro')).toHaveText('A little room for what matters now.');
+  // and everything holds across a reload
+  await page.reload({ waitUntil: 'domcontentloaded' }); await pastSplash(page);
+  expect(await page.evaluate('[profile.pace, dayPace(today)]')).toEqual(['easy', 'deep']);
+  const ok = errors.length === 0;
+  record(info, { view: 'Planner cues: walk-in, intention, pace', consoleErrors: errors.length, tokenAudit: '—', status: ok ? 'PASS' : 'FAIL' });
   expect(errors, 'console errors').toEqual([]);
 });
 

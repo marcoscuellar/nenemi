@@ -10,7 +10,8 @@
 // mode "porch" is the Porch (Home) talking: Claude is the primary router there, not a fallback.
 //   body adds local_time ("14:05") and weekday; returns
 //   { kind: 'day'|'project'|'mixed'|'stuck'|'go', go_to, go_room_id, items: [{ text, dest, start, end, room_id }],
-//     new_room: { name, one_liner } | null, reply }
+//     new_room: { name, one_liner } | null, intention, reply }
+//   Today items may carry walk_in, and a day of three or more may carry one intention line (lib/cues.js).
 //   One dump can become many items, each with its own place: today (Today's horizon, timed or anytime),
 //   room (a project's steps, grouped), parked (big-picture, a room or held loose), held (venting: heard, not stored).
 //
@@ -42,6 +43,7 @@ import { z } from 'zod';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { getIdentity } from '../lib/auth.js';
 import { sourceVocabulary, isGrounded, calm } from '../lib/grounding.js';
+import { cleanCue, CUE_RULES } from '../lib/cues.js';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY || '';
 const MODEL = 'claude-opus-5';
@@ -107,6 +109,7 @@ const PorchItem = z.object({
   start: z.string().nullable(),
   end: z.string().nullable(),
   room_id: z.string().nullable(),
+  walk_in: z.string().nullable(),
 });
 const PorchPlan = z.object({
   kind: z.enum(['day', 'project', 'mixed', 'stuck', 'go']),
@@ -114,6 +117,7 @@ const PorchPlan = z.object({
   go_room_id: z.string().nullable(),
   items: z.array(PorchItem),
   new_room: z.object({ name: z.string(), one_liner: z.string() }).nullable(),
+  intention: z.string().nullable(),
   reply: z.string(),
 });
 
@@ -135,7 +139,11 @@ Each item:
 
 today_cap: when set, it's how many things this person can hold on Today. If more do-now items come up than fit, the most pressing ones go to "today" and the rest become "parked".
 
-reply: what NENEMI says back, calm, short, specific, no exclamation marks, no therapy language, no praise, never a question, under 40 words. For "day": "Got it. Slotted into Today." For "project": "Grouped these N steps into ROOM." (N and ROOM real). For "mixed": one tight summary of where things went, e.g. "Two things on Today, the app idea is parked in Side projects. The rest I heard, not filing it." For "stuck" and "go": one short line.`;
+reply: what NENEMI says back, calm, short, specific, no exclamation marks, no therapy language, no praise, never a question, under 40 words. For "day": "Got it. Slotted into Today." For "project": "Grouped these N steps into ROOM." (N and ROOM real). For "mixed": one tight summary of where things went, e.g. "Two things on Today, the app idea is parked in Side projects. The rest I heard, not filing it." For "stuck" and "go": one short line.
+
+Cues, only for items with dest "today" and only when kind is "day" or "mixed" (null everywhere else):
+${CUE_RULES}
+intention is only for a day with three or more things on Today.`;
 
 function hhmm(v) { const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(String(v || '').trim()); return m ? `${m[1].padStart(2, '0')}:${m[2]}` : null; }
 
@@ -148,7 +156,7 @@ async function porchRoute(client, { text, rooms, loose, localTime, weekday, toda
     system: [{ type: 'text', text: PORCH_SYSTEM, cache_control: { type: 'ephemeral' } }],
     messages: [{ role: 'user', content: JSON.stringify({ rooms, loose_thoughts: loose, local_time: localTime, weekday, today_cap: todayCap, they_said: text }) }],
   });
-  if (response.stop_reason === 'refusal') return { kind: 'mixed', go_to: null, go_room_id: null, items: [], new_room: null, reply: 'Heard. Holding that one.' };
+  if (response.stop_reason === 'refusal') return { kind: 'mixed', go_to: null, go_room_id: null, items: [], new_room: null, intention: null, reply: 'Heard. Holding that one.' };
   const d = response.parsed_output;
   if (!d) return null;
 
@@ -166,7 +174,8 @@ async function porchRoute(client, { text, rooms, loose, localTime, weekday, toda
     let dest = it.dest;
     if (dest === 'room' && !room_id && !d.new_room) dest = 'parked';
     if (dest !== 'room' && dest !== 'parked') room_id = null;
-    return { text: t, dest, start: dest === 'today' ? start : null, end: dest === 'today' && end && end > start ? end : null, room_id };
+    const walk_in = dest === 'today' && (d.kind === 'day' || d.kind === 'mixed') ? cleanCue(it.walk_in, vocab, 8) : null;
+    return { text: t, dest, start: dest === 'today' ? start : null, end: dest === 'today' && end && end > start ? end : null, room_id, walk_in };
   });
   // a task's first word is capitalized by the model ("Pick up the kids"), so it isn't a name; names later in the line still have to be theirs
   const kept = d.items.filter(it => it.text && (it.dest === 'held' || isGrounded(it.text.charAt(0).toLowerCase() + it.text.slice(1), vocab)));
@@ -181,6 +190,7 @@ async function porchRoute(client, { text, rooms, loose, localTime, weekday, toda
   const replyVocab = new Set([...vocab, ...rooms.map(r => r.name.toLowerCase()), 'today', 'tomorrow', 'room', 'rooms', 'parked', 'loose', 'day',
     ...Array.from({ length: 21 }, (_, i) => String(i))]);
   d.reply = calm(isGrounded(d.reply, replyVocab) ? trim(d.reply, 280) : '');
+  d.intention = (d.kind === 'day' || d.kind === 'mixed') && d.items.filter(it => it.dest === 'today').length >= 3 ? cleanCue(d.intention, vocab, 14) : null;
   return d;
 }
 
