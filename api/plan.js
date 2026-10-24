@@ -4,7 +4,9 @@
 //   headers: Authorization: Bearer <clerk token>   (or ?device=<sync code> while signed out)
 //   body:    { text, day: 'YYYY-MM-DD', weekday, is_today, now: 'HH:MM',
 //              existing: [{ start:'HH:MM', end:'HH:MM', name, kind }], rooms: [{ id, name }] }
-//   returns: { items: [{ name, kind, start, minutes, avoiding, priority, due, energy, room_id }], day_start, heard_but_left_out, reply }
+//            pace?: 'easy' | 'steady' | 'deep'   (what the page is kept on; words in the dump win)
+//   returns: { items: [{ name, kind, start, minutes, avoiding, priority, due, energy, room_id, walk_in }], day_start, pace, intention, heard_but_left_out, reply }
+//   walk_in and intention are quiet cues (lib/cues.js): grounded, never an instruction, null when they don't pass.
 //
 // Claude reads the rambling voice dump (ums, asides, apologies, questions)
 // and returns only the real things that belong on the day. The page places
@@ -16,6 +18,8 @@ import Anthropic from '@anthropic-ai/sdk';
 import { z } from 'zod';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { getIdentity } from '../lib/auth.js';
+import { sourceVocabulary } from '../lib/grounding.js';
+import { cleanCue, CUE_RULES } from '../lib/cues.js';
 
 const API_KEY = process.env.ANTHROPIC_API_KEY || '';
 const MODEL = 'claude-opus-5';
@@ -38,8 +42,11 @@ const Plan = z.object({
     due: z.string().nullable(),
     energy: z.enum(['high', 'low']),
     room_id: z.string().nullable(),
+    walk_in: z.string().nullable(),
   })),
   day_start: z.string().nullable(),
+  pace: z.enum(['easy', 'steady', 'deep']).nullable(),
+  intention: z.string().nullable(),
   heard_but_left_out: z.array(z.string()),
   reply: z.string(),
 });
@@ -82,7 +89,16 @@ Order items the way the day should go: fixed things stay where they are, the avo
 
 reply: one short line back in NENEMI's voice. Calm, specific, no exclamation marks, no imperatives at the person. Say what the day now holds in plain words, e.g. "Built around the 2pm. Taxes goes first, 30 minutes, then lunch has air around it." If they asked to prioritize something, say it went first. If you left real things out, say so in one clause.
 
-Never invent items that aren't in what they said.`;
+Pace: how full and how long the blocks run.
+- pace (output): only what they asked for in so many words this time: "easy" (go easy, low energy, gentle day, lots of air, I'm wiped), "deep" (deep work, heads down, long focus, no interruptions), "steady" (a full day, tight, packed, get through a lot). null when they didn't say.
+- The pace to plan with is the one they just said, else page_pace (what they keep the app on), else steady.
+- easy: blocks 25 to 40 minutes, a buffer after every second block, keep at most 5 non-buffer items and put the rest in heard_but_left_out.
+- steady: the lengths above, nothing changes.
+- deep: the one or two high-energy blocks run 60 to 90 minutes and go first; low-energy work stays short and later.
+
+${CUE_RULES}
+
+Never invent items that aren't in what they said.`
 
 function trim(s, n) { return typeof s === 'string' ? (s.length > n ? s.slice(0, n) + '…' : s) : ''; }
 function hhmm(s) { return typeof s === 'string' && HHMM.test(s.trim()) ? s.trim() : null; }
@@ -105,6 +121,8 @@ export default async function handler(req, res) {
     start: hhmm(e.start), end: hhmm(e.end), name: trim(e.name, 80), kind: ['fixed', 'block', 'buffer'].includes(e.kind) ? e.kind : 'block',
   })).filter(e => e.start && e.name);
 
+  const pace = ['easy', 'steady', 'deep'].includes(body.pace) ? body.pace : null;
+
   const client = new Anthropic({ apiKey: API_KEY });
   try {
     const response = await client.messages.parse({
@@ -119,6 +137,7 @@ export default async function handler(req, res) {
           the_day: { date: trim(String(body.day || ''), 10), weekday: trim(String(body.weekday || ''), 12), is_today: Boolean(body.is_today), local_time_now: hhmm(body.now) },
           existing_on_the_day: existing,
           rooms,
+          page_pace: pace,
           they_said: text,
         }),
       }],
@@ -129,7 +148,8 @@ export default async function handler(req, res) {
     const p = response.parsed_output;
     if (!p) return res.status(502).json({ error: 'could not read the model reply' });
 
-    // keep the page safe from anything odd the model hands back
+    // keep the page safe from anything odd the model hands back; cues may only use words they (or their day and rooms) said
+    const vocab = sourceVocabulary([text, rooms.map(r => r.name), existing.map(e => e.name), (p.items || []).map(it => it.name)]);
     const items = (p.items || []).slice(0, MAX_ITEMS).map(it => ({
       name: trim(String(it.name || '').trim(), 80),
       kind: ['fixed', 'block', 'buffer'].includes(it.kind) ? it.kind : 'block',
@@ -140,6 +160,7 @@ export default async function handler(req, res) {
       due: hhmm(it.due),
       energy: it.energy === 'low' ? 'low' : 'high',
       room_id: rooms.some(r => r.id === it.room_id) ? it.room_id : null,
+      walk_in: cleanCue(it.walk_in, vocab, 8),
     })).filter(it => it.name);
     items.forEach(it => { if (it.kind === 'fixed' && !it.start) it.kind = 'block'; });
     let prio = 0; items.forEach(it => { if (it.priority && ++prio > 2) it.priority = false; });
@@ -147,6 +168,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       items,
       day_start: hhmm(p.day_start),
+      pace: ['easy', 'steady', 'deep'].includes(p.pace) ? p.pace : null,
+      intention: cleanCue(p.intention, vocab, 14),
       heard_but_left_out: (p.heard_but_left_out || []).slice(0, 10).map(s => trim(String(s), 80)),
       reply: trim(String(p.reply || ''), 240),
       usage: { input: response.usage.input_tokens, output: response.usage.output_tokens, cached: response.usage.cache_read_input_tokens || 0 },
